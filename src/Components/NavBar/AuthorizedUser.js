@@ -4,10 +4,10 @@ const authorizedUser = props => {
   var RoleList = props => {
     if (props.user.roleID === 1) {
       return (
-        <li className="dropdown">
+        <div className="navbar-item has-dropdown">
           <a
             href="#"
-            className="dropdown-toggle"
+            className="navbar-link"
             data-toggle="dropdown"
             role="button"
             aria-expanded="false"
@@ -15,29 +15,31 @@ const authorizedUser = props => {
             <span className="glyphicon glyphicon-info-sign"></span>{" "}
             Administration <span className="caret"></span>
           </a>
-          <ul className="dropdown-menu" role="menu">
-            <li>
-              <a href="/admin/teams/all">All Teams</a>
-            </li>
-            <li className="divider"></li>
-            <li>
-              <a href="/admin/teams/assign">Assign Team</a>
-            </li>
-          </ul>
-        </li>
+          <div className="navbar-dropdown">
+            <a className="navbar-item" href="/admin/teams/all">
+              All Teams
+            </a>
+            <hr className="navbar-divider"></hr>
+            <a href="/admin/teams/assign">Assign Team</a>
+          </div>
+        </div>
       );
-    }
+    } else return null;
   };
 
   return (
-    <div>
-      <a style={{ display: "inline-block" }} href="/profile">
-        <span className="glyphicon glyphicon-user"></span>
-        {props.user.username}
-      </a>
-      <a style={{ display: "inline-block" }} href="/logout">
-        <span className="fas fa-sign-out-alt"></span> log out
-      </a>
+    <div className="navbar-end">
+      <div className="navbar-item">
+        <a href="/profile">
+          <span className="glyphicon glyphicon-user"></span>
+          {props.user.username}
+        </a>
+      </div>
+      <div className="navbar-item">
+        <a href="/logout">
+          <span className="fas fa-sign-out-alt"></span> log out
+        </a>
+      </div>
       <RoleList user={props.user} />
     </div>
   );

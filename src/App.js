@@ -10,7 +10,7 @@ class App extends Component {
     user: {
       username: "TuscanSota",
       teamAbbr: "WAST",
-      roleID: 1
+      roleID: 0
     }
   };
   // Global Variables

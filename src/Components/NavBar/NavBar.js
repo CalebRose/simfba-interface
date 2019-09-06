@@ -12,9 +12,9 @@ class NavBar extends Component {
         typeof this.props.user.username !== "undefined"
       ) {
         return (
-          <li className="">
+          <div className="navbar-item">
             {this.props.user.teamAbbr != null ? <Team /> : <AvailableTeams />}
-          </li>
+          </div>
         );
       }
     };
@@ -35,27 +35,61 @@ class NavBar extends Component {
       );
     };
     return (
-      <div className="navbar navbar-default navbar-static-top navbar-inverse">
-        <div className="container">
-          <ul className="nav navbar-nav">
-            <li className="active">
-              <a href="/">
-                <span className="glyphicon glyphicon-home"></span> Home
-              </a>
-            </li>
-            <TeamTab />
-          </ul>
-          <ul className="nav navbar-nav navbar-right">
-            <li className="navbar-right">
-              {typeof this.props.user.username != "undefined" ? (
-                <AuthorizedUser user={this.props.user} />
-              ) : (
-                <UnauthorizedUser />
-              )}
-            </li>
-          </ul>
+      <nav className="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="https://bulma.io">
+            {/* Switch image to a home icon */}
+            {/* <img
+              src="https://bulma.io/images/bulma-logo.png"
+              alt="Bulma: Free, open source, & modern CSS framework based on Flexbox"
+              width="112"
+              height="28"
+            /> */}
+            <span className="glyphicon glyphicon-home"></span> Home
+          </a>
+          <a
+            role="button"
+            class="navbar-burger"
+            aria-label="menu"
+            aria-expanded="false"
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
         </div>
-      </div>
+        <div className="navbar-menu">
+          <div className="navbar-start"></div>
+          <div>
+            {typeof this.props.user.username != "undefined" ? (
+              <AuthorizedUser user={this.props.user} />
+            ) : (
+              <UnauthorizedUser />
+            )}
+          </div>
+        </div>
+      </nav>
+      // <nav className="navbar navbar-default navbar-static-top navbar-inverse">
+      //   <div className="container">
+      //     <ul className="nav navbar-nav">
+      //       <li className="active">
+      //         <a href="/">
+      //           <span className="glyphicon glyphicon-home"></span> Home
+      //         </a>
+      //       </li>
+      //       <TeamTab />
+      //     </ul>
+      //     <ul className="nav navbar-nav navbar-right">
+      //       <li className="navbar-right">
+      //         {typeof this.props.user.username != "undefined" ? (
+      //           <AuthorizedUser user={this.props.user} />
+      //         ) : (
+      //           <UnauthorizedUser />
+      //         )}
+      //       </li>
+      //     </ul>
+      //   </div>
+      // </nav>
     );
   }
   // Return
