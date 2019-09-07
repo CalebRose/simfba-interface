@@ -39,7 +39,9 @@ class NavBar extends Component {
         </div>
         <div className="navbar-menu">
           {/* Probably create a component for navbar-start*/}
-          <NavBarStart user={this.props.user} />
+          {typeof this.props.user.username != "undefined" ? (
+            <NavBarStart user={this.props.user} />
+          ) : null}
           {typeof this.props.user.username != "undefined" ? (
             <AuthorizedUser user={this.props.user} />
           ) : (

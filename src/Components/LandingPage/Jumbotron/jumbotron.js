@@ -11,7 +11,7 @@ const jumbotron = () => {
           <img src="img/sfalogo.png"></img>
           {/* <h1 className="title is-1 heroText">SIMFBA</h1> */}
           <h3 className="subtitle is-3 heroText">
-            Your team. Your players. Your reality.
+            Your team. Your players. Your legacy.
           </h3>
         </div>
       </div>
