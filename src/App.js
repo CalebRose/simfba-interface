@@ -9,6 +9,7 @@ class App extends Component {
   state = {
     user: {
       username: "TuscanSota",
+      team: "Washington State",
       teamAbbr: "WAST",
       roleID: 0
     }
@@ -17,9 +18,13 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <div className="App">
+        <div className="App hero is-fullheight">
           <NavBar user={this.state.user} />
           <Route exact path={routes.LANDING} component={LandingPage} />
+          <Route exact path={routes.USER} component={LandingPage} />
+          <Route exact path={routes.TEAM} component={LandingPage} />
+          <Route exact path={routes.AVAILABLE_TEAMS} component={LandingPage} />
+          <Route exact path={routes.RECRUITING} component={LandingPage} />
         </div>
       </Router>
     );
