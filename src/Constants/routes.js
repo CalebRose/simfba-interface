@@ -5,6 +5,6 @@ export default {
   ROSTER: "/team/roster",
   SCHEDULING: "/team/scheduling",
   RECRUITING_BOARD: "/team/recruits",
-  AVAILABLE_TEAMS: "availableteams",
+  AVAILABLE_TEAMS: "/availableteams",
   RECRUITING: "/recruiting"
 };

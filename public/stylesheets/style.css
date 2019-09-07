@@ -55,6 +55,26 @@
   background-color: rgba(255, 255, 255, 1) !important;
 }
 
+.userInterface {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.team {
+  background-color: rgba(255, 255, 255, 1) !important;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+.media {
+  height: 70%;
+}
+
+.teams {
+  flex-wrap: wrap;
+}
+
 .center,
 .center-column,
 .top,

@@ -14,8 +14,8 @@ class NavBar extends Component {
         role="navigation"
         aria-label="main navigation"
       >
-        <div class="navbar-brand">
-          <Link to={routes.LANDING} class="navbar-item">
+        <div className="navbar-brand">
+          <Link to={routes.LANDING} className="navbar-item">
             {/* Switch image to a home icon */}
             {/* <img
               src="https://bulma.io/images/bulma-logo.png"
@@ -28,7 +28,7 @@ class NavBar extends Component {
           <a
             href=""
             role="button"
-            class="navbar-burger"
+            className="navbar-burger"
             aria-label="menu"
             aria-expanded="false"
           >

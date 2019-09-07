@@ -4,13 +4,14 @@ import "./App.css";
 import routes from "./Constants/routes";
 import NavBar from "./Components/NavBar/NavBar";
 import LandingPage from "./Components/LandingPage/LandingPage";
+import AvailableTeams from "./Components/AvailableTeams/AvailableTeams";
 
 class App extends Component {
   state = {
     user: {
-      username: undefined,
+      username: "TuscanSota",
       team: "Washington State",
-      teamAbbr: "WAST",
+      teamAbbr: "",
       roleID: 0
     }
   };
@@ -23,7 +24,11 @@ class App extends Component {
           <Route exact path={routes.LANDING} component={LandingPage} />
           <Route exact path={routes.USER} component={LandingPage} />
           <Route exact path={routes.TEAM} component={LandingPage} />
-          <Route exact path={routes.AVAILABLE_TEAMS} component={LandingPage} />
+          <Route
+            exact
+            path={routes.AVAILABLE_TEAMS}
+            component={AvailableTeams}
+          />
           <Route exact path={routes.RECRUITING} component={LandingPage} />
         </div>
       </Router>
