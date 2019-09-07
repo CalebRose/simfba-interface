@@ -8,7 +8,7 @@ import LandingPage from "./Components/LandingPage/LandingPage";
 class App extends Component {
   state = {
     user: {
-      username: "TuscanSota",
+      username: undefined,
       team: "Washington State",
       teamAbbr: "WAST",
       roleID: 0
