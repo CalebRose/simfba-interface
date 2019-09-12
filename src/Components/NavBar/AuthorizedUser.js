@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import routes from "../../Constants/routes";
 
 const authorizedUser = props => {
   var RoleList = props => {
@@ -30,15 +32,15 @@ const authorizedUser = props => {
   return (
     <div className="navbar-end">
       <div className="navbar-item">
-        <a href="/profile">
+        <Link to={routes.USER}>
           <span className="glyphicon glyphicon-user"></span>
           {props.user.username}
-        </a>
+        </Link>
       </div>
       <div className="navbar-item">
-        <a href="/logout">
+        <Link to={routes.LANDING}>
           <span className="fas fa-sign-out-alt"></span> log out
-        </a>
+        </Link>
       </div>
       <RoleList user={props.user} />
     </div>

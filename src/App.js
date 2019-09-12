@@ -5,6 +5,7 @@ import routes from "./Constants/routes";
 import NavBar from "./Components/NavBar/NavBar";
 import LandingPage from "./Components/LandingPage/LandingPage";
 import AvailableTeams from "./Components/AvailableTeams/AvailableTeams";
+import Profile from "./Components/Profile/Profile";
 
 class App extends Component {
   state = {
@@ -22,7 +23,11 @@ class App extends Component {
         <div className="App hero is-fullheight">
           <NavBar user={this.state.user} />
           <Route exact path={routes.LANDING} component={LandingPage} />
-          <Route exact path={routes.USER} component={LandingPage} />
+          <Route
+            exact
+            path={routes.USER}
+            render={() => <Profile data={this.state.user} />}
+          />
           <Route exact path={routes.TEAM} component={LandingPage} />
           <Route
             exact
