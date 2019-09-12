@@ -1,115 +1,88 @@
 import React, { Component } from "react";
+import logos from "../../Constants/logos.js";
+import TeamCard from "./TeamCard.js";
 
 class AvailableTeams extends Component {
   render() {
     return (
       <div className="hero-body center">
         <div className="container has-text-centered userInterface">
-          <h2 className="subtitle">This is the available teams page</h2>
-          <div className="tile is-ancestor teams">
-            {/* <div className="tile is-3 box is-parent">
-              <div className="is-child media-left">
-                <figure className="image is-128x128">
-                  <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/40/Boise_State_Broncos_logo.svg/1200px-Boise_State_Broncos_logo.svg.png" />
-                </figure>
-              </div>
-              <div className="is-child">
-                <p className="title">Boise State</p>
-                <p className="subtitle">Broncos</p>
-                <p>Conference</p>
-                <p>
-                  <strong>Head Coach:</strong> <i>None</i>
-                </p>
-                <button className="button is-info">Request</button>
-              </div>
-            </div> */}
-            <div className="tile is-3 is-parent">
-              <div className="card team">
-                <div className="media">
-                  <div className="media-left">
-                    <figure className="image is-128x128">
-                      <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/40/Boise_State_Broncos_logo.svg/1200px-Boise_State_Broncos_logo.svg.png" />
-                    </figure>
-                  </div>
-                  <div className="">
-                    <p className="title is-4">Boise State</p>
-                    <p className="subtitle is-6">Broncos</p>
-                    <p>Mountain West Conference</p>
-                    <p>
-                      <strong>Head Coach:</strong> <i>None</i>
-                    </p>
-                  </div>
-                </div>
-                <footer className="card-footer">
-                  <a className="card-footer-item">Request</a>
-                </footer>
-              </div>
-            </div>
-            <div className="tile is-3 is-parent">
-              <div className="card team">
-                <div className="media">
-                  <div className="media-left">
-                    <figure className="image is-128x128">
-                      <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/40/Boise_State_Broncos_logo.svg/1200px-Boise_State_Broncos_logo.svg.png" />
-                    </figure>
-                  </div>
-                  <div className="">
-                    <p className="title is-4">LSU</p>
-                    <p className="subtitle is-6">Tigers</p>
-                    <p>South Eastern Conference</p>
-                    <p>
-                      <strong>Head Coach:</strong> <i>None</i>
-                    </p>
-                  </div>
-                </div>
-                <footer className="card-footer">
-                  <a className="card-footer-item">Request</a>
-                </footer>
-              </div>
-            </div>
-            <div className="tile is-3 is-parent">
-              <div className="card team">
-                <div className="media">
-                  <div className="media-left">
-                    <figure className="image is-128x128">
-                      <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/40/Boise_State_Broncos_logo.svg/1200px-Boise_State_Broncos_logo.svg.png" />
-                    </figure>
-                  </div>
-                  <div className="">
-                    <p className="title is-4">Baylor</p>
-                    <p className="subtitle is-6">Bears</p>
-                    <p>Big 12 Conference</p>
-                    <p>
-                      <strong>Head Coach:</strong> <i>None</i>
-                    </p>
-                  </div>
-                </div>
-                <footer className="card-footer">
-                  <a className="card-footer-item">Request</a>
-                </footer>
-              </div>
-            </div>
-            <div className="tile is-3 is-parent">
-              <div className="card team">
-                <div className="media">
-                  <div className="media-left">
-                    <figure className="image is-128x128">
-                      <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/40/Boise_State_Broncos_logo.svg/1200px-Boise_State_Broncos_logo.svg.png" />
-                    </figure>
-                  </div>
-                  <div className="">
-                    <p className="title is-4">Washington</p>
-                    <p className="subtitle is-6">Huskies</p>
-                    <p>Pac 12 Conference</p>
-                    <p>
-                      <strong>Head Coach:</strong> <i>None</i>
-                    </p>
-                  </div>
-                </div>
-                <footer className="card-footer">
-                  <a className="card-footer-item">Request</a>
-                </footer>
-              </div>
+          <h2 className="subtitle is-3">Available Teams</h2>
+          <div className="scrollbar">
+            <div className="tile is-ancestor teams">
+              <TeamCard team="Baylor" mascot="Bears" logo={logos.Baylor} />
+              <TeamCard
+                team="Boise State"
+                mascot="Broncos"
+                conference="Mountain West Conference"
+                logo={logos.Boise_State}
+              />
+              <TeamCard
+                team="California"
+                mascot="Golden Bears"
+                conference="Pac 12 Conference"
+                logo={logos.California}
+              />
+              <TeamCard
+                team="Eastern Michigan"
+                mascot="Eagles"
+                conference="Mid-American Conference"
+                logo={logos.Eastern_Michigan}
+              />
+              <TeamCard
+                team="Florida"
+                mascot="Gators"
+                conference="South Eastern Conference"
+                logo={logos.Florida}
+              />
+              <TeamCard
+                team="FIU"
+                mascot="Panthers"
+                conference="Conference-USA"
+                logo={logos.FIU}
+              />
+              <TeamCard
+                team="Hawaii"
+                mascot="Rainbow Warriors"
+                conference="Mountain West Conference"
+                logo={logos.Hawaii}
+              />
+              <TeamCard
+                team="Kansas"
+                mascot="Jayhawks"
+                conference="Big 12 Conference"
+                logo={logos.Kansas}
+              />
+              <TeamCard
+                team="LSU"
+                mascot="Tigers"
+                conference="South Eastern Conference"
+                logo={logos.LSU}
+              />
+              <TeamCard
+                team="Michigan"
+                mascot="Wolverines"
+                conference="Big 10 Conference"
+                logo={logos.Michigan}
+              />
+              <TeamCard
+                team="Nevada"
+                mascot="Wolf Pack"
+                conference="Mountain West Conference"
+                logo={logos.Nevada}
+              />
+              <TeamCard
+                team="Oregon"
+                mascot="Ducks"
+                conference="Pac 12 Conference"
+                logo={logos.Oregon}
+              />
+              <TeamCard
+                team="West Virginia"
+                mascot="Mountaineers"
+                conference="Big 12 Conference"
+                logo={logos.West_Virginia}
+              />
             </div>
           </div>
         </div>

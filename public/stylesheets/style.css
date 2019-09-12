@@ -57,8 +57,34 @@
 
 .userInterface {
   background-color: rgba(255, 255, 255, 0.9) !important;
-  padding: 20px;
+  padding: 24px;
   border-radius: 10px;
+}
+.scrollbar {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 1325px;
+  max-height: 500px;
+  padding: 6px;
+}
+
+.scrollbar::-webkit-scrollbar {
+  padding-left: 5px;
+  width: 6px;
+  background-color: #f5f5f5;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(20, 20, 20, 0.4);
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
+}
+
+.teams {
+  flex-wrap: wrap;
 }
 
 .team {
@@ -67,12 +93,21 @@
   border-radius: 6px;
 }
 
-.media {
-  height: 70%;
+.overlay {
+  vertical-align: middle;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
-.teams {
-  flex-wrap: wrap;
+.overlay-text {
+  font-weight: bold !important;
+  font-size: 4rem !important;
+  color: white;
+  padding-top: 20%;
+  /* vertical-align: middle !important; */
+}
+
+.media {
+  height: 70%;
 }
 
 .center,
