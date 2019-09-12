@@ -45,39 +45,51 @@ const Profile = props => {
 
           <div className="tile is-parent is-vertical">
             <div className="tile is-parent">
-              <div className="tile card is-4">
-                <div className="card-image">
-                  <figure className="image">
-                    <img src="/img/userpage/roster.jpg" alt="Roster" />
-                  </figure>
-                  <div className="is-overlay overlay">
-                    <h1 className="overlay-text">ROSTER</h1>
-                  </div>
+              <div className="card-image image-gap">
+                <figure className="image profile-image">
+                  <img
+                    src="/img/userpage/roster.jpg"
+                    alt="Roster"
+                    className="profile-image"
+                  />
+                </figure>
+                <div className="is-overlay overlay">
+                  <h1 className="overlay-text">ROSTER</h1>
                 </div>
               </div>
-              <div className="tile card is-4">
-                <div className="card-image">
-                  <figure className="image">
-                    <img src="/img/userpage/depthchart1.jpg" alt="Roster" />
-                  </figure>
-                  <div className="is-overlay overlay">
-                    <h1 className="overlay-text">DEPTH CHART</h1>
-                  </div>
+              <div className="card-image image-gap">
+                <figure className="image profile-image">
+                  <img
+                    src="/img/userpage/depthchart1.jpg"
+                    alt="Roster"
+                    className="profile-image"
+                  />
+                </figure>
+                <div className="is-overlay overlay">
+                  <h1 className="overlay-text">DEPTH CHART</h1>
                 </div>
               </div>
             </div>
             <div className="tile is-parent">
-              <div className="card-image">
-                <figure className="image">
-                  <img src="/img/userpage/recruits3.png" alt="Roster" />
+              <div className="card-image image-gap">
+                <figure className="image profile-image">
+                  <img
+                    src="/img/userpage/recruits3.png"
+                    alt="Roster"
+                    className="profile-image"
+                  />
                 </figure>
                 <div className="is-overlay overlay">
                   <h1 className="overlay-text">RECRUITING</h1>
                 </div>
               </div>
-              <div className="card-image">
-                <figure className="image">
-                  <img src="/img/userpage/schedule.jpg" alt="Roster" />
+              <div className="card-image image-gap">
+                <figure className="image profile-image">
+                  <img
+                    src="/img/userpage/schedule.jpg"
+                    alt="Roster"
+                    className="profile-image"
+                  />
                 </figure>
                 <div className="is-overlay overlay">
                   <h1 className="overlay-text">SCHEDULING</h1>

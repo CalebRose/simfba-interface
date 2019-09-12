@@ -93,16 +93,25 @@
   border-radius: 6px;
 }
 
+.profile-image {
+  max-width: 400px !important;
+  max-height: 225px !important;
+}
+
+.image-gap {
+  margin-right: 2rem;
+}
+
 .overlay {
   vertical-align: middle;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .overlay-text {
   font-weight: bold !important;
-  font-size: 4rem !important;
-  color: white;
-  padding-top: 20%;
+  font-size: 3.5rem !important;
+  color: rgba(255, 255, 255, 0.9);
+  padding-top: 15%;
   /* vertical-align: middle !important; */
 }
 
