@@ -31,6 +31,8 @@
   max-width: 100%;
 } */
 
+/* Hero Container + Nav for all pages */
+/* Background Image */
 .hero {
   background: url(../img/stadium.jpg) center / cover;
 }
@@ -60,6 +62,9 @@
   padding: 24px;
   border-radius: 10px;
 }
+/* End of Hero Container + Nav */
+
+/* For Available Teams + Roster page */
 .scrollbar {
   overflow-y: auto;
   overflow-x: hidden;
@@ -86,14 +91,18 @@
 .teams {
   flex-wrap: wrap;
 }
+/* End of Available Teams + Roster Page */
 
+/* For team cards on Available Teams page */
 .team {
   background-color: rgba(255, 255, 255, 1) !important;
   padding: 12px;
   border-radius: 6px;
 }
+/* End of team card on Available Teams Page */
 
-.profile-image {
+/* For Image Icons on User Profile Page */
+.tile-image {
   max-width: 400px !important;
   max-height: 225px !important;
 }
@@ -114,7 +123,28 @@
   padding-top: 15%;
   /* vertical-align: middle !important; */
 }
+/* End of Image Icons on User Profile Page */
 
+/* For Team Roster Page */
+.roster-header {
+  text-align: center !important;
+  align-content: center;
+}
+
+.roster-item {
+  text-align: center !important;
+  align-content: center;
+}
+
+.roster-title {
+  padding-left: 3rem;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+/* End of Team Roster Page */
 .media {
   height: 70%;
 }

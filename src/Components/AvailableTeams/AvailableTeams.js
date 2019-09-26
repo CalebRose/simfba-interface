@@ -4,6 +4,10 @@ import TeamCard from "./TeamCard.js";
 
 class AvailableTeams extends Component {
   render() {
+    // Check whether the team is available or not
+    // For all teams available, run a loop
+    // And render a teamcard for each available team
+    // Pass all team info as a prop
     return (
       <div className="hero-body center">
         <div className="container has-text-centered userInterface">
@@ -52,6 +56,12 @@ class AvailableTeams extends Component {
                 mascot="Jayhawks"
                 conference="Big 12 Conference"
                 logo={logos.Kansas}
+              />
+              <TeamCard
+                team="Kansas State"
+                mascot="Wildcats"
+                conference="Big 12 Conference"
+                logo={logos.Kansas_State}
               />
               <TeamCard
                 team="LSU"
