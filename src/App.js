@@ -6,13 +6,15 @@ import NavBar from "./Components/NavBar/NavBar";
 import LandingPage from "./Components/LandingPage/LandingPage";
 import AvailableTeams from "./Components/AvailableTeams/AvailableTeams";
 import Profile from "./Components/Profile/Profile";
+import Team from "./Components/Team/Team";
 
 class App extends Component {
   state = {
     user: {
       username: "TuscanSota",
       team: "Washington State",
-      teamAbbr: "",
+      teamAbbr: "WAST",
+      mascot: "Cougars",
       roleID: 0
     }
   };
@@ -28,7 +30,11 @@ class App extends Component {
             path={routes.USER}
             render={() => <Profile data={this.state.user} />}
           />
-          <Route exact path={routes.TEAM} component={LandingPage} />
+          <Route
+            exact
+            path={routes.TEAM}
+            render={() => <Team data={this.state.user} />}
+          />
           <Route
             exact
             path={routes.AVAILABLE_TEAMS}

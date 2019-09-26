@@ -13,7 +13,7 @@ const TeamCard = props => {
           <div className="">
             <p className="title is-4">{props.team}</p>
             <p className="subtitle is-6">{props.mascot}</p>
-            <p>{props.conference}</p>
+            <p className="Conference">{props.conference}</p>
             <p>
               <strong>Head Coach:</strong> <i>None</i>
             </p>
