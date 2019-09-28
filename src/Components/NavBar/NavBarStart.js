@@ -29,6 +29,9 @@ class NavBar_Start extends Component {
             <Link to={routes.ROSTER} className="navbar-item">
               Roster
             </Link>
+            <Link to={routes.DEPTHCHART} className="navbar-item">
+              Depth Chart
+            </Link>
             <Link to={routes.RECRUITING_BOARD} className="navbar-item">
               Recruiting Board
             </Link>

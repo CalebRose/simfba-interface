@@ -118,7 +118,7 @@
 
 .overlay-text {
   font-weight: bold !important;
-  font-size: 3.5rem !important;
+  font-size: 2.5rem !important;
   color: rgba(255, 255, 255, 0.9);
   padding-top: 15%;
   /* vertical-align: middle !important; */
@@ -175,6 +175,10 @@
 }
 .left {
   justify-content: flex-start;
+}
+
+.text-left {
+  text-align: left;
 }
 
 .single-spaced,

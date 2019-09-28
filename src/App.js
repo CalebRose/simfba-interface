@@ -6,6 +6,7 @@ import NavBar from "./Components/NavBar/NavBar";
 import LandingPage from "./Components/LandingPage/LandingPage";
 import AvailableTeams from "./Components/AvailableTeams/AvailableTeams";
 import Profile from "./Components/Profile/Profile";
+import Roster from "./Components/Roster/Roster";
 import Team from "./Components/Team/Team";
 
 class App extends Component {
@@ -35,6 +36,12 @@ class App extends Component {
             path={routes.TEAM}
             render={() => <Team data={this.state.user} />}
           />
+          <Route
+            exact
+            path={routes.ROSTER}
+            render={() => <Roster data={this.state.user} />}
+          />
+          <Route exact path={routes.DEPTHCHART} component={LandingPage} />
           <Route
             exact
             path={routes.AVAILABLE_TEAMS}
