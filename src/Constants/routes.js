@@ -6,5 +6,6 @@ export default {
   SCHEDULING: "/team/scheduling",
   RECRUITING_BOARD: "/team/recruits",
   AVAILABLE_TEAMS: "/availableteams",
-  RECRUITING: "/recruiting"
+  RECRUITING: "/recruiting",
+  DEPTHCHART: "/depthchart"
 };
