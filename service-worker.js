@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/simfba-interface/precache-manifest.e50c09b3cc3364c185614e1da21929e0.js"
+  "/simfba-interface/precache-manifest.d2099d40d00313cdc42d798d872e129f.js"
 );
 
 self.addEventListener('message', (event) => {
