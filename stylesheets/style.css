@@ -1,0 +1,206 @@
+/* .jumbotron {
+  background: #404040;
+  color: white;
+}
+.jumbotron .btn-primary {
+  background: #845ac7;
+  border-color: #845ac7;
+}
+.jumbotron .btn-primary:hover {
+  background: #7646c1;
+}
+.jumbotron p {
+  color: #d9ccee;
+  max-width: 75%;
+  margin: 1em auto 2em;
+}
+.navbar + .jumbotron {
+  margin-top: -20px;
+}
+.jumbotron .lang-logo {
+  display: block;
+  background: #b3adac;
+  border-radius: 10%;
+  overflow: hidden;
+  width: 200px;
+  height: 200px;
+  margin: auto;
+  border: 2px solid white;
+}
+.jumbotron .lang-logo img {
+  max-width: 100%;
+} */
+
+/* Hero Container + Nav for all pages */
+/* Background Image */
+.hero {
+  background: url(../img/stadium.jpg) center / cover;
+}
+
+.heroText {
+  color: white;
+}
+
+@media (max-width: 1024px) {
+  .hero {
+    background: url(../img/stadium.jpg);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    background: url(../img/stadium.jpg);
+  }
+}
+
+.navbar {
+  background-color: rgba(255, 255, 255, 1) !important;
+}
+
+.userInterface {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  padding: 24px;
+  border-radius: 10px;
+}
+/* End of Hero Container + Nav */
+
+/* For Available Teams + Roster page */
+.scrollbar {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 1325px;
+  max-height: 500px;
+  padding: 6px;
+}
+
+.scrollbar::-webkit-scrollbar {
+  padding-left: 5px;
+  width: 6px;
+  background-color: #f5f5f5;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(20, 20, 20, 0.4);
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
+}
+
+.teams {
+  flex-wrap: wrap;
+}
+/* End of Available Teams + Roster Page */
+
+/* For team cards on Available Teams page */
+.team {
+  background-color: rgba(255, 255, 255, 1) !important;
+  padding: 12px;
+  border-radius: 6px;
+}
+/* End of team card on Available Teams Page */
+
+/* For Image Icons on User Profile Page */
+.tile-image {
+  max-width: 385px !important;
+  max-height: 210px !important;
+}
+
+.image-gap {
+  margin-right: 2rem;
+}
+
+.overlay {
+  vertical-align: middle;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.9);
+  transition: all 0.4s ease;
+  -webkit-transition: all 0.4s ease;
+  height: 222px;
+}
+
+.is-overlay.overlay:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 1);
+}
+
+.overlay-text {
+  font-weight: bold !important;
+  font-size: 2.5rem !important;
+
+  padding-top: 20%;
+  /* vertical-align: middle !important; */
+}
+/* End of Image Icons on User Profile Page */
+
+/* For Team Roster Page */
+.roster-scrollbar {
+  max-height: 425px;
+}
+
+.roster-header {
+  text-align: center !important;
+  align-content: center;
+}
+
+.roster-item {
+  text-align: center !important;
+  align-content: center;
+}
+
+.roster-title {
+  padding-left: 3rem;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+/* End of Team Roster Page */
+.media {
+  height: 70%;
+}
+
+.center,
+.center-column,
+.top,
+.right,
+.bottom,
+.left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-column {
+  flex-direction: column;
+}
+
+.top {
+  align-items: flex-start;
+}
+.right {
+  justify-content: flex-end;
+}
+.bottom {
+  align-items: flex-end;
+}
+.left {
+  justify-content: flex-start;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.single-spaced,
+.single-spaced * {
+  line-height: 1;
+}
+
+@media (max-width: 1024px) {
+  .desktop {
+    display: none;
+  }
+}
