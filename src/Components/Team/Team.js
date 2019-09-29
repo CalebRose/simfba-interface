@@ -1,5 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 import logos from "../../Constants/logos";
+import ImageCard from "../ImageCard/ImageCard";
+import routes from "../../Constants/routes";
 
 const Team = props => {
   return (
@@ -54,56 +56,28 @@ const Team = props => {
           </div>
           <div className="column is-7">
             <div className="tile is-parent">
-              <div className="card-image image-gap">
-                <figure className="image tile-image">
-                  <img
-                    src="/img/userpage/roster.jpg"
-                    alt="Roster"
-                    className="profile-image"
-                  />
-                </figure>
-                <div className="is-overlay overlay">
-                  <h1 className="overlay-text">ROSTER</h1>
-                </div>
-              </div>
-              <div className="card-image image-gap">
-                <figure className="image tile-image">
-                  <img
-                    src="/img/userpage/depthchart1.jpg"
-                    alt="Roster"
-                    className="profile-image"
-                  />
-                </figure>
-                <div className="is-overlay overlay">
-                  <h1 className="overlay-text">DEPTH CHART</h1>
-                </div>
-              </div>
+              <ImageCard
+                image="/img/userpage/roster4.jpg"
+                title="ROSTER"
+                route={routes.ROSTER}
+              />
+              <ImageCard
+                image="/img/userpage/depthchart2.jpg"
+                title="DEPTH CHART"
+                route={routes.DEPTHCHART}
+              />
             </div>
             <div className="tile is-parent">
-              <div className="card-image image-gap">
-                <figure className="image tile-image">
-                  <img
-                    src="/img/userpage/recruits3.png"
-                    alt="Roster"
-                    className="profile-image"
-                  />
-                </figure>
-                <div className="is-overlay overlay">
-                  <h1 className="overlay-text">RECRUITING</h1>
-                </div>
-              </div>
-              <div className="card-image image-gap">
-                <figure className="image tile-image">
-                  <img
-                    src="/img/userpage/schedule.jpg"
-                    alt="Roster"
-                    className="profile-image"
-                  />
-                </figure>
-                <div className="is-overlay overlay">
-                  <h1 className="overlay-text">SCHEDULING</h1>
-                </div>
-              </div>
+              <ImageCard
+                image="/img/userpage/roster5.jpg"
+                title="RECRUITING"
+                route={routes.RECRUITING}
+              />
+              <ImageCard
+                image="/img/userpage/schedule2.jpg"
+                title="SCHEDULING"
+                route={routes.SCHEDULING}
+              />
             </div>
           </div>
         </div>

@@ -35,7 +35,7 @@ const Roster = props => {
     <div className="hero-body center">
       <div className="container has-text-centered userInterface">
         <h2 className="title is-3">
-          {props.data.team} {props.data.mascot}
+          {props.data.team} {props.data.mascot} Roster
         </h2>
         <div className="columns is-12">
           <div className="column is-3">
@@ -52,12 +52,12 @@ const Roster = props => {
           </div>
         </div>
         <div class="is-divider" />
-        <div className="tile is-ancestor">
+        {/* <div className="tile is-ancestor">
           <div className="tile is-parent">
             <h2 className="title roster-title">Roster</h2>
           </div>
-        </div>
-        <div className="scrollbar">
+        </div> */}
+        <div className="scrollbar roster-scrollbar">
           <div className="table-wrapper">
             <table className="table is-fullwidth is-hoverable">
               <thead>
