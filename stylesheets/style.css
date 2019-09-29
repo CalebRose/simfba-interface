@@ -34,7 +34,7 @@
 /* Hero Container + Nav for all pages */
 /* Background Image */
 .hero {
-  background: url(../img/stadium.jpg) center / cover;
+  background: url(./../img/stadium.jpg) center / cover;
 }
 
 .heroText {
@@ -43,13 +43,13 @@
 
 @media (max-width: 1024px) {
   .hero {
-    background: url(../img/stadium.jpg);
+    background: url(./../img/stadium.jpg);
   }
 }
 
 @media (max-width: 768px) {
   .hero {
-    background: url(../img/stadium.jpg);
+    background: url(./../img/stadium.jpg);
   }
 }
 
