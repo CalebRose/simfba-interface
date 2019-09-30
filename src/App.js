@@ -8,6 +8,7 @@ import AvailableTeams from "./Components/AvailableTeams/AvailableTeams";
 import Profile from "./Components/Profile/Profile";
 import Roster from "./Components/Roster/Roster";
 import Team from "./Components/Team/Team";
+import "./style.css";
 
 class App extends Component {
   state = {
@@ -22,7 +23,7 @@ class App extends Component {
   // Global Variables
   render() {
     return (
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <div className="App hero is-fullheight">
           <NavBar user={this.state.user} />
           <Route exact path={routes.LANDING} component={LandingPage} />

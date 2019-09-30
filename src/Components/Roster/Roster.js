@@ -33,11 +33,11 @@ const Roster = props => {
   const playerCount = SampleContent.length;
   return (
     <div className="hero-body center">
-      <div className="container has-text-centered userInterface">
+      <div className="container is-fluid has-text-centered userInterface">
         <h2 className="title is-3">
           {props.data.team} {props.data.mascot} Roster
         </h2>
-        <div className="columns is-12">
+        <div className="columns center is-12">
           <div className="column is-3">
             <h2>Coach: {props.data.username}</h2>
           </div>

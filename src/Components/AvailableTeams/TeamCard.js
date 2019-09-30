@@ -2,7 +2,7 @@ import React from "react";
 
 const TeamCard = props => {
   return (
-    <div className="tile is-3 is-parent">
+    <div className="tile is-parent">
       <div className="card team">
         <div className="media">
           <div className="media-left">
