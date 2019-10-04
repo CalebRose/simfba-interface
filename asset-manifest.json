@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/simfba-interface/static/css/main.8fc9decf.chunk.css",
-    "main.js": "/simfba-interface/static/js/main.277749ce.chunk.js",
-    "main.js.map": "/simfba-interface/static/js/main.277749ce.chunk.js.map",
+    "main.js": "/simfba-interface/static/js/main.515bc05f.chunk.js",
+    "main.js.map": "/simfba-interface/static/js/main.515bc05f.chunk.js.map",
     "runtime~main.js": "/simfba-interface/static/js/runtime~main.0149df8b.js",
     "runtime~main.js.map": "/simfba-interface/static/js/runtime~main.0149df8b.js.map",
     "static/js/2.2727ca7a.chunk.js": "/simfba-interface/static/js/2.2727ca7a.chunk.js",
     "static/js/2.2727ca7a.chunk.js.map": "/simfba-interface/static/js/2.2727ca7a.chunk.js.map",
     "index.html": "/simfba-interface/index.html",
-    "precache-manifest.c4ef17f1501e29df924ebf0be5e00772.js": "/simfba-interface/precache-manifest.c4ef17f1501e29df924ebf0be5e00772.js",
+    "precache-manifest.6a1e13fc3540675753a03dc6ec59a0d6.js": "/simfba-interface/precache-manifest.6a1e13fc3540675753a03dc6ec59a0d6.js",
     "service-worker.js": "/simfba-interface/service-worker.js",
     "static/css/main.8fc9decf.chunk.css.map": "/simfba-interface/static/css/main.8fc9decf.chunk.css.map",
     "static/media/style.css": "/simfba-interface/static/media/stadium.8e1480bb.jpg"
