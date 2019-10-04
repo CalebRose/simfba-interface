@@ -62,24 +62,24 @@ const Profile = props => {
             <div className="tile is-parent is-vertical">
               <div className="tile is-parent">
                 <ImageCard
-                  image="/img/userpage/roster4.jpg"
+                  image="./img/userpage/roster4.jpg"
                   title="ROSTER"
                   route={routes.ROSTER}
                 />
                 <ImageCard
-                  image="/img/userpage/depthchart2.jpg"
+                  image="./img/userpage/depthchart2.jpg"
                   title="DEPTH CHART"
                   route={routes.DEPTHCHART}
                 />
               </div>
               <div className="tile is-parent">
                 <ImageCard
-                  image="/img/userpage/roster5.jpg"
+                  image="./img/userpage/roster5.jpg"
                   title="RECRUITING"
                   route={routes.RECRUITING}
                 />
                 <ImageCard
-                  image="/img/userpage/schedule2.jpg"
+                  image="./img/userpage/schedule2.jpg"
                   title="SCHEDULING"
                   route={routes.SCHEDULING}
                 />

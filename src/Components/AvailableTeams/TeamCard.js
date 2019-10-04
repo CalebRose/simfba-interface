@@ -2,12 +2,12 @@ import React from "react";
 
 const TeamCard = props => {
   return (
-    <div className="tile is-3 is-parent">
+    <div className="tile is-parent">
       <div className="card team">
         <div className="media">
           <div className="media-left">
             <figure className="image is-128x128">
-              <img src={props.logo} />
+              <img src={props.logo} alt="logo" />
             </figure>
           </div>
           <div className="">
@@ -20,7 +20,7 @@ const TeamCard = props => {
           </div>
         </div>
         <footer className="card-footer">
-          <a className="card-footer-item">Request</a>
+          <p className="card-footer-item">Request</p>
         </footer>
       </div>
     </div>

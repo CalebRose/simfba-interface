@@ -34,7 +34,7 @@
 /* Hero Container + Nav for all pages */
 /* Background Image */
 .hero {
-  background: url(../img/stadium.jpg) center / cover;
+  background: url(./Constants/stadium.jpg) center / cover;
 }
 
 .heroText {
@@ -43,14 +43,19 @@
 
 @media (max-width: 1024px) {
   .hero {
-    background: url(../img/stadium.jpg);
+    background: url(./Constants/stadium.jpg);
   }
 }
 
 @media (max-width: 768px) {
   .hero {
-    background: url(../img/stadium.jpg);
+    background: url(./Constants/stadium.jpg);
   }
+}
+
+/* logo */
+.logo {
+  height: 36vh;
 }
 
 .navbar {
@@ -62,15 +67,24 @@
   padding: 24px;
   border-radius: 10px;
 }
+
+.container {
+  height: 75vh !important;
+}
 /* End of Hero Container + Nav */
 
 /* For Available Teams + Roster page */
 .scrollbar {
   overflow-y: auto;
   overflow-x: hidden;
-  max-width: 1325px;
-  max-height: 500px;
+  max-height: 55vh;
   padding: 6px;
+  margin: auto;
+}
+
+/* Specific UI height for Available Teams UI */
+.available-ui-height {
+  max-height: 60vh;
 }
 
 .scrollbar::-webkit-scrollbar {
@@ -98,6 +112,8 @@
   background-color: rgba(255, 255, 255, 1) !important;
   padding: 12px;
   border-radius: 6px;
+  overflow-wrap: break-word;
+  width: 20em;
 }
 /* End of team card on Available Teams Page */
 
@@ -134,10 +150,7 @@
 }
 /* End of Image Icons on User Profile Page */
 
-/* For Team Roster Page */
-.roster-scrollbar {
-  max-height: 425px;
-}
+/* For  Roster Page */
 
 .roster-header {
   text-align: center !important;
@@ -155,9 +168,32 @@
 
 .table-wrapper {
   overflow-x: auto;
+  font-size: 1.25em;
 }
 
-/* End of Team Roster Page */
+/* For Player Card */
+.AttributeTable {
+  flex-wrap: wrap;
+  overflow-x: hidden;
+}
+
+.attribute {
+  padding: 7px;
+}
+
+.gap {
+  text-align: left;
+}
+
+/* End of Player Card */
+
+/* End of  Roster Page */
+
+/* Team Page */
+.team-text {
+  font-size: 1.2rem;
+}
+/* End of Team Page */
 .media {
   height: 70%;
 }
