@@ -20,7 +20,7 @@ const TeamCard = props => {
           </div>
         </div>
         <footer className="card-footer">
-          <a className="card-footer-item">Request</a>
+          <p className="card-footer-item">Request</p>
         </footer>
       </div>
     </div>

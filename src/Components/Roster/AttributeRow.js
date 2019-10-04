@@ -1,11 +1,11 @@
 import React from "react";
 
 const AttributeRow = props => {
-  let stringValue = props.data.value.toString();
+  console.log(props.data);
   return (
-    <div className="level">
-      <p className="level-left title is-6">{props.data.name}</p>
-      <p className="level-right subtitle is-6">{props.data.letter_val}</p>
+    <div className="tile is-child is-4 attribute">
+      <p className="title is-5">{props.data.name}</p>
+      <p className="subtitle is-5">{props.data.letter}</p>
     </div>
   );
 };

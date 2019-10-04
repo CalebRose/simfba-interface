@@ -8,7 +8,7 @@ const jumbotron = () => {
           className="has-text-centered is-vcentered"
           style={{ paddingBottom: 33 + "vh" }}
         >
-          <img className="logo" src="img/sfalogo.png"></img>
+          <img className="logo" src="img/sfalogo.png" alt="site logo"></img>
           {/* <h1 className="title is-1 heroText">SIMFBA</h1> */}
           <h3 className="subtitle is-size-2 heroText">
             Your team. Your players. Your legacy.

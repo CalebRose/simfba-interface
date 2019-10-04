@@ -30,11 +30,12 @@ const SampleContent = [
       route_running: { name: "Route Running", value: 5 },
       run_block: { name: "Run Blocking", value: 0 },
       run_defense: { name: "Run Defense", value: 0 },
-      speed: { name: "Speed", value: 69, priority: 4 },
-      strength: { name: "Strength", value: 30, priority: 2 },
+      speed: { name: "Speed", value: 69 },
+      strength: { name: "Strength", value: 30 },
       tackle: { name: "Tackle", value: 0 },
-      throw_power: { name: "Throw Power", value: 43, priority: 5 },
-      throw_accuracy: { name: "Throw Accuracy", value: 43, priority: 6 }
+      throw_power: { name: "Throw Power", value: 43 },
+      throw_accuracy: { name: "Throw Accuracy", value: 43 },
+      stamina: { name: "Stamina", value: 40 }
     }
   },
   {
@@ -72,7 +73,8 @@ const SampleContent = [
       strength: { name: "Strength", value: 30 },
       tackle: { name: "Tackle", value: 0 },
       throw_power: { name: "Throw Power", value: 43 },
-      throw_accuracy: { name: "Throw Accuracy", value: 43 }
+      throw_accuracy: { name: "Throw Accuracy", value: 43 },
+      stamina: { name: "Stamina", value: 40 }
     }
   },
   {
@@ -110,7 +112,8 @@ const SampleContent = [
       strength: { name: "Strength", value: 22 },
       tackle: { name: "Tackle", value: 0 },
       throw_power: { name: "Throw Power", value: 12 },
-      throw_accuracy: { name: "Throw Accuracy", value: 5 }
+      throw_accuracy: { name: "Throw Accuracy", value: 5 },
+      stamina: { name: "Stamina", value: 40 }
     }
   },
   {
@@ -148,7 +151,8 @@ const SampleContent = [
       strength: { name: "Strength", value: 41 },
       tackle: { name: "Tackle", value: 54 },
       throw_power: { name: "Throw Power", value: 1 },
-      throw_accuracy: { name: "Throw Accuracy", value: 1 }
+      throw_accuracy: { name: "Throw Accuracy", value: 1 },
+      stamina: { name: "Stamina", value: 40 }
     }
   },
   {
@@ -186,7 +190,8 @@ const SampleContent = [
       strength: { name: "Strength", value: 7 },
       tackle: { name: "Tackle", value: 11 },
       throw_power: { name: "Throw Power", value: 1 },
-      throw_accuracy: { name: "Throw Accuracy", value: 1 }
+      throw_accuracy: { name: "Throw Accuracy", value: 1 },
+      stamina: { name: "Stamina", value: 40 }
     }
   },
   {
@@ -224,7 +229,8 @@ const SampleContent = [
       strength: { name: "Strength", value: 50 },
       tackle: { name: "Tackle", value: 40 },
       throw_power: { name: "Throw Power", value: 23 },
-      throw_accuracy: { name: "Throw Accuracy", value: 16 }
+      throw_accuracy: { name: "Throw Accuracy", value: 16 },
+      stamina: { name: "Stamina", value: 40 }
     }
   },
   {
@@ -262,7 +268,8 @@ const SampleContent = [
       strength: { name: "Strength", value: 47 },
       tackle: { name: "Tackle", value: 20 },
       throw_power: { name: "Throw Power", value: 3 },
-      throw_accuracy: { name: "Throw Accuracy", value: 3 }
+      throw_accuracy: { name: "Throw Accuracy", value: 3 },
+      stamina: { name: "Stamina", value: 40 }
     }
   },
   {
@@ -300,7 +307,8 @@ const SampleContent = [
       strength: { name: "Strength", value: 58 },
       tackle: { name: "Tackle", value: 0 },
       throw_power: { name: "Throw Power", value: 2 },
-      throw_accuracy: { name: "Throw Accuracy", value: 2 }
+      throw_accuracy: { name: "Throw Accuracy", value: 2 },
+      stamina: { name: "Stamina", value: 40 }
     }
   },
   {
@@ -338,7 +346,8 @@ const SampleContent = [
       strength: { name: "Strength", value: 58 },
       tackle: { name: "Tackle", value: 0 },
       throw_power: { name: "Throw Power", value: 2 },
-      throw_accuracy: { name: "Throw Accuracy", value: 2 }
+      throw_accuracy: { name: "Throw Accuracy", value: 2 },
+      stamina: { name: "Stamina", value: 40 }
     }
   },
   {
@@ -376,7 +385,8 @@ const SampleContent = [
       strength: { name: "Strength", value: 32 },
       tackle: { name: "Tackle", value: 38 },
       throw_power: { name: "Throw Power", value: 43 },
-      throw_accuracy: { name: "Throw Accuracy", value: 43 }
+      throw_accuracy: { name: "Throw Accuracy", value: 43 },
+      stamina: { name: "Stamina", value: 40 }
     }
   },
   {
@@ -414,7 +424,8 @@ const SampleContent = [
       strength: { name: "Strength", value: 32 },
       tackle: { name: "Tackle", value: 37 },
       throw_power: { name: "Throw Power", value: 1 },
-      throw_accuracy: { name: "Throw Accuracy", value: 1 }
+      throw_accuracy: { name: "Throw Accuracy", value: 1 },
+      stamina: { name: "Stamina", value: 40 }
     }
   },
   {
@@ -452,7 +463,8 @@ const SampleContent = [
       strength: { name: "Strength", value: 10 },
       tackle: { name: "Tackle", value: 10 },
       throw_power: { name: "Throw Power", value: 10 },
-      throw_accuracy: { name: "Throw Accuracy", value: 10 }
+      throw_accuracy: { name: "Throw Accuracy", value: 10 },
+      stamina: { name: "Stamina", value: 40 }
     }
   },
   {
@@ -490,7 +502,8 @@ const SampleContent = [
       strength: { name: "Strength", value: 22 },
       tackle: { name: "Tackle", value: 10 },
       throw_power: { name: "Throw Power", value: 10 },
-      throw_accuracy: { name: "Throw Accuracy", value: 10 }
+      throw_accuracy: { name: "Throw Accuracy", value: 10 },
+      stamina: { name: "Stamina", value: 40 }
     }
   }
 ];

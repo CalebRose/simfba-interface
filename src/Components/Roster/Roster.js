@@ -15,7 +15,6 @@ const Roster = props => {
   const [player, setPlayer] = React.useState(null);
   const [attributes, setAttributes] = React.useState([]);
   let playerAttributes = [];
-  let AttributeQueue = [];
   const toggleModal = () => {
     const newState = !modalState;
     return setModal(newState);
@@ -34,7 +33,6 @@ const Roster = props => {
   const setPriority = data => {
     switch (data.position) {
       case "QB":
-        data.attr.football_iq.priority = true;
         data.attr.agility.priority = true;
         data.attr.speed.priority = true;
         data.attr.strength.priority = true;
@@ -46,7 +44,6 @@ const Roster = props => {
         data.attr.agility.priority = true;
         data.attr.speed.priority = true;
         data.attr.catching.priority = true;
-        data.attr.football_iq.priority = true;
         data.attr.pass_block.priority = true;
         data.attr.strength.priority = true;
         break;
@@ -55,7 +52,6 @@ const Roster = props => {
         data.attr.agility.priority = true;
         data.attr.speed.priority = true;
         data.attr.catching.priority = true;
-        data.attr.football_iq.priority = true;
         data.attr.pass_block.priority = true;
         data.attr.run_block.priority = true;
         data.attr.strength.priority = true;
@@ -65,7 +61,6 @@ const Roster = props => {
         data.attr.agility.priority = true;
         data.attr.speed.priority = true;
         data.attr.catching.priority = true;
-        data.attr.football_iq.priority = true;
         data.attr.route_running.priority = true;
         data.attr.strength.priority = true;
         break;
@@ -74,7 +69,6 @@ const Roster = props => {
         data.attr.agility.priority = true;
         data.attr.speed.priority = true;
         data.attr.catching.priority = true;
-        data.attr.football_iq.priority = true;
         data.attr.pass_block.priority = true;
         data.attr.run_block.priority = true;
         data.attr.route_running.priority = true;
@@ -84,14 +78,12 @@ const Roster = props => {
       case "OG":
       case "C":
         data.attr.agility.priority = true;
-        data.attr.football_iq.priority = true;
         data.attr.pass_block.priority = true;
         data.attr.run_block.priority = true;
         data.attr.strength.priority = true;
         break;
       case "DE":
         data.attr.agility.priority = true;
-        data.attr.football_iq.priority = true;
         data.attr.pass_rush.priority = true;
         data.attr.run_defense.priority = true;
         data.attr.speed.priority = true;
@@ -100,7 +92,6 @@ const Roster = props => {
         break;
       case "DT":
         data.attr.agility.priority = true;
-        data.attr.football_iq.priority = true;
         data.attr.pass_rush.priority = true;
         data.attr.run_defense.priority = true;
         data.attr.strength.priority = true;
@@ -111,7 +102,6 @@ const Roster = props => {
         data.attr.agility.priority = true;
         data.attr.man_coverage.priority = true;
         data.attr.zone_coverage.priority = true;
-        data.attr.football_iq.priority = true;
         data.attr.pass_rush.priority = true;
         data.attr.run_defense.priority = true;
         data.attr.speed.priority = true;
@@ -123,7 +113,6 @@ const Roster = props => {
         data.attr.catching.priority = true;
         data.attr.man_coverage.priority = true;
         data.attr.zone_coverage.priority = true;
-        data.attr.football_iq.priority = true;
         data.attr.speed.priority = true;
         data.attr.strength.priority = true;
         data.attr.tackle.priority = true;
@@ -134,48 +123,35 @@ const Roster = props => {
         data.attr.catching.priority = true;
         data.attr.man_coverage.priority = true;
         data.attr.zone_coverage.priority = true;
-        data.attr.football_iq.priority = true;
         data.attr.run_defense.priority = true;
         data.attr.speed.priority = true;
         data.attr.strength.priority = true;
         data.attr.tackle.priority = true;
         break;
       case "K":
-        data.attr.football_iq.priority = true;
         data.attr.kick_accuracy.priority = true;
         data.attr.kick_power.priority = true;
         break;
       case "P":
-        data.attr.football_iq.priority = true;
         data.attr.punt_accuracy.priority = true;
         data.attr.punt_power.priority = true;
+        break;
       default:
         break;
     }
+    data.attr.football_iq.priority = true;
+    data.attr.stamina.priority = true;
     for (let attribute in data.attr) {
       if (data.attr[attribute].priority) {
         // Algorithm to provide letter value to attribute
         // NOTE: Move this outside of the if statement for implementation to see all attributes
         let attr = data.attr[attribute];
-        switch (attr.value) {
-          case attr.value < 15:
-            attr.letter_val = "F";
-            break;
-          case attr.value < 25:
-            attr.letter_val = "D";
-            break;
-          case attr.value < 35:
-            attr.letter_val = "C";
-            break;
-          case attr.value < 45:
-            attr.letter_val = "B";
-            break;
-          case attr.value >= 45:
-            attr.letter_val = "A";
-          default:
-            break;
-        }
-        playerAttributes.push(data.attr[attribute]);
+        if (attr.value < 15) attr.letter = "F";
+        else if (attr.value < 25) attr.letter = "D";
+        else if (attr.value < 35) attr.letter = "C";
+        else if (attr.value < 45) attr.letter = "B";
+        else if (attr.value >= 45) attr.letter = "A";
+        playerAttributes.push(attr);
       }
     }
   };
@@ -200,9 +176,12 @@ const Roster = props => {
           <section className="modal-card-body">
             <div className="level">
               <div className="level-left">
-                <p className="title is-4">
-                  {player.year} {player.position}, {player.archtype}
-                </p>
+                <div className="title is-4">
+                  <p>{player.year}</p>{" "}
+                  <p>
+                    {player.position}, {player.archtype}
+                  </p>
+                </div>
               </div>
               <div className="level-right">
                 <p className="title is-4">{player.team}</p>
@@ -218,7 +197,7 @@ const Roster = props => {
                 <p className="subtitle is-4">Overall: {player.overall}</p>
               </div>
             </div>
-            <div className="AttributeTable">{AttributeRows}</div>
+            <div className="AttributeTable tile is-parent">{AttributeRows}</div>
           </section>
           <footer className="modal-card-foot">
             <button className="button" onClick={closeModal}>

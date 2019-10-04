@@ -12,7 +12,7 @@ const Team = props => {
         </h2>
         <div className="columns is-12">
           <div className="column is-2">
-            <img src={logos.Washington_State} />
+            <img src={logos.Washington_State} alt="Team Logo" />
           </div>
           <div className="column is-3 text-left">
             <div className="team-text">

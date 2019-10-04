@@ -172,8 +172,13 @@
 }
 
 /* For Player Card */
-.attributeRow {
-  width: auto;
+.AttributeTable {
+  flex-wrap: wrap;
+  overflow-x: hidden;
+}
+
+.attribute {
+  padding: 7px;
 }
 
 /* End of Player Card */
