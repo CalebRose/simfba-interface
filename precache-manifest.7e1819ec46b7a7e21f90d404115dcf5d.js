@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "de1b90b7ca1c07f8981b6f17b593971e",
+    "revision": "6233c337e565e0702137db2d28a4e6ef",
     "url": "/simfba-interface/index.html"
   },
   {
