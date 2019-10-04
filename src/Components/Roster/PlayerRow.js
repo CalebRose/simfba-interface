@@ -6,9 +6,14 @@ const PlayerRow = props => {
     HS/JC, Pot, Num
     
     */
+  let data = props.data;
+  const toggleModal = () => {
+    props.toggle();
+    props.getData(data);
+  };
   return (
     <tr>
-      <th>{props.data.name}</th>
+      <th onClick={toggleModal}>{props.data.name}</th>
       <td>{props.data.position}</td>
       <td>{props.data.archtype}</td>
       <td>{props.data.overall}</td>

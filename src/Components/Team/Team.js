@@ -15,44 +15,46 @@ const Team = props => {
             <img src={logos.Washington_State} />
           </div>
           <div className="column is-3 text-left">
-            <p>
-              <strong>Location:</strong> Pullman, Washington
-            </p>
-            <p>
-              <strong>Stadium:</strong> Martin Stadium
-            </p>
-            <p>
-              <strong>Avg Attendance:</strong> 32,952
-            </p>
-            <p>
-              <strong>Conference:</strong> Pac 12 Conference
-            </p>
-            <p>
-              <strong>Division:</strong>North
-            </p>
-            <p>
-              <strong>Rivals:</strong> Washington Huskies, Idaho Vandals
-            </p>
-            <br></br>
-            <p>
-              <strong>Coach:</strong> {props.data.username}
-            </p>
-            <p>
-              <strong>Overall:</strong> 30 Wins, 18 Losses
-            </p>
-            <p>
-              <strong>Current Season:</strong> 12 Wins, 0 Losses
-            </p>
-            <p>
-              <strong>Division Titles:</strong> 2018, 2019
-            </p>
-            <p>
-              <strong>Conference Championships:</strong> 1917, 1930, 1997, 2002,
-              2019
-            </p>
-            <p>
-              <strong>Bowl Record:</strong> 8 Wins, 7 Losses
-            </p>
+            <div className="team-text">
+              <p>
+                <strong>Location:</strong> Pullman, Washington
+              </p>
+              <p>
+                <strong>Stadium:</strong> Martin Stadium
+              </p>
+              <p>
+                <strong>Avg Attendance:</strong> 32,952
+              </p>
+              <p>
+                <strong>Conference:</strong> Pac 12 Conference
+              </p>
+              <p>
+                <strong>Division:</strong>North
+              </p>
+              <p>
+                <strong>Rivals:</strong> Washington Huskies, Idaho Vandals
+              </p>
+              <br></br>
+              <p>
+                <strong>Coach:</strong> {props.data.username}
+              </p>
+              <p>
+                <strong>Overall:</strong> 30 Wins, 18 Losses
+              </p>
+              <p>
+                <strong>Current Season:</strong> 12 Wins, 0 Losses
+              </p>
+              <p>
+                <strong>Division Titles:</strong> 2018, 2019
+              </p>
+              <p>
+                <strong>Conference Championships:</strong> 1917, 1930, 1997,
+                2002, 2019
+              </p>
+              <p>
+                <strong>Bowl Record:</strong> 8 Wins, 7 Losses
+              </p>
+            </div>
           </div>
           <div className="column is-7">
             <div className="tile is-parent">

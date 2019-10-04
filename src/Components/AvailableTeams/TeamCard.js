@@ -7,7 +7,7 @@ const TeamCard = props => {
         <div className="media">
           <div className="media-left">
             <figure className="image is-128x128">
-              <img src={props.logo} />
+              <img src={props.logo} alt="logo" />
             </figure>
           </div>
           <div className="">
