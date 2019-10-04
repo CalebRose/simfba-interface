@@ -503,7 +503,8 @@ const SampleContent = [
       tackle: { name: "Tackle", value: 10 },
       throw_power: { name: "Throw Power", value: 10 },
       throw_accuracy: { name: "Throw Accuracy", value: 10 },
-      stamina: { name: "Stamina", value: 40 }
+      stamina: { name: "Stamina", value: 40 },
+      potential: { name: "Potential", value: "C+" }
     }
   }
 ];

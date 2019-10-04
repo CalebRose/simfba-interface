@@ -154,6 +154,11 @@ const Roster = props => {
         playerAttributes.push(attr);
       }
     }
+    playerAttributes.push({
+      name: "Potential",
+      letter: data.potential,
+      priority: "true"
+    });
   };
   const AttributeRows = attributes.map(attribute => (
     <AttributeRow key={attribute.name} data={attribute} />
@@ -177,7 +182,7 @@ const Roster = props => {
             <div className="level">
               <div className="level-left">
                 <div className="title is-4">
-                  <p>{player.year}</p>{" "}
+                  <p className="gap">{player.year}</p>
                   <p>
                     {player.position}, {player.archtype}
                   </p>
