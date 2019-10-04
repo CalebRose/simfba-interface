@@ -322,7 +322,7 @@ const Roster = props => {
                     <abbr title="State">St</abbr>
                   </th>
                   <th>
-                    <abbr title="High School / JUCO">HS/JC</abbr>
+                    <abbr title="High School / JUCO">School</abbr>
                   </th>
                   <th>
                     <abbr title="Potential">Pot</abbr>
