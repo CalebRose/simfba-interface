@@ -157,6 +157,10 @@
   align-content: center;
 }
 
+.roster-scrollbar {
+  max-height: 50vh !important;
+}
+
 .roster-item {
   text-align: center !important;
   align-content: center;

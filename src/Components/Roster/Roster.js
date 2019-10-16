@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PlayerRow from "./PlayerRow";
 import SampleContent from "./SampleContent";
 import AttributeRow from "./AttributeRow";
+import DropdownItem from "./DropdownItem";
 
 const Roster = props => {
   /* 
@@ -14,11 +15,32 @@ const Roster = props => {
   const [modalState, setModal] = React.useState(false);
   const [player, setPlayer] = React.useState(null);
   const [attributes, setAttributes] = React.useState([]);
+  const [team, setTeam] = React.useState(
+    props.data.team + " " + props.data.mascot
+  );
+  const [roster, setRoster] = React.useState([]);
   let playerAttributes = [];
   const toggleModal = () => {
     const newState = !modalState;
     return setModal(newState);
   };
+
+  // Dropdown Toggle
+  const activeDropdown = event => {
+    const dropdown = document.querySelector(".dropdown");
+    dropdown.classList.toggle("is-active");
+  };
+
+  const selectTeam = event => {
+    setTeam(event.target.value);
+    activeDropdown();
+  };
+
+  useEffect(() => {
+    let playerList = SampleContent.filter(player => player.team === team);
+    setRoster(playerList);
+  }, [team]);
+
   // Call Back Function
   const getPlayerData = data => {
     if (data) {
@@ -215,7 +237,7 @@ const Roster = props => {
   };
 
   // Rows
-  const PlayerRows = SampleContent.map(player => (
+  const PlayerRows = roster.map(player => (
     <PlayerRow
       key={player.id}
       data={player}
@@ -223,13 +245,11 @@ const Roster = props => {
       getData={getPlayerData}
     />
   ));
-  const playerCount = SampleContent.length;
+  const playerCount = roster.length;
   return (
     <div className="hero-body center">
       <div className="container is-fluid has-text-centered userInterface">
-        <h2 className="title is-3">
-          {props.data.team} {props.data.mascot} Roster
-        </h2>
+        <h2 className="title is-3">{team} Roster</h2>
         <div className="columns center is-12">
           <div className="column is-3">
             <h2>Coach: {props.data.username}</h2>
@@ -244,12 +264,43 @@ const Roster = props => {
             <h2>Redshirts: 0</h2>
           </div>
         </div>
-        <div className="is-divider" />
-        {/* <div className="tile is-ancestor">
-          <div className="tile is-parent">
-            <h2 className="title roster-title">Roster</h2>
+        <div className="columns is-left is-12">
+          <div className="column is-2">
+            <div className="dropdown is-left">
+              <div className="dropdown-trigger">
+                <button
+                  name="team"
+                  className="button"
+                  aria-haspopup="true"
+                  aria-controls="dropdown-menu6"
+                  onClick={activeDropdown}
+                >
+                  <span>{team}</span>
+                  <span className="icon is-small">
+                    <i className="fas fa-angle-down" aria-hidden="true"></i>
+                  </span>
+                </button>
+              </div>
+              <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                <div className="dropdown-content">
+                  <DropdownItem
+                    team={props.data.team + " " + props.data.mascot}
+                    click={selectTeam}
+                  />
+                  <DropdownItem team="Michigan Wolverines" click={selectTeam} />
+                  <DropdownItem team="New Mexico Lobos" click={selectTeam} />
+                  <DropdownItem
+                    team="California Golden Bears"
+                    click={selectTeam}
+                  />
+                  <DropdownItem team="LSU Tigers" click={selectTeam} />
+                </div>
+              </div>
+            </div>
           </div>
-        </div> */}
+          <div className="column is-2"></div>
+        </div>
+        <div className="is-divider" />
         <div className="scrollbar roster-scrollbar">
           <Modal
             closeModal={toggleModal}
