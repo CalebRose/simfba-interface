@@ -175,6 +175,10 @@
   font-size: 1.25em;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 /* For Player Card */
 .AttributeTable {
   flex-wrap: wrap;
@@ -187,6 +191,10 @@
 
 .gap {
   text-align: left;
+}
+
+.gap-right {
+  text-align: right;
 }
 
 /* End of Player Card */
