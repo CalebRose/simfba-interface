@@ -13,7 +13,9 @@ const PlayerRow = props => {
   };
   return (
     <tr>
-      <th onClick={toggleModal}>{props.data.name}</th>
+      <th className="clickable" onClick={toggleModal}>
+        {props.data.name}
+      </th>
       <td>{props.data.position}</td>
       <td>{props.data.archtype}</td>
       <td>{props.data.overall}</td>

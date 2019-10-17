@@ -204,14 +204,15 @@ const Roster = props => {
             <div className="level">
               <div className="level-left">
                 <div className="title is-4">
-                  <p className="gap">{player.year}</p>
-                  <p>
-                    {player.position}, {player.archtype}
-                  </p>
+                  <p>{player.team}</p>
+                  <p className="gap">Year: {player.year}</p>
                 </div>
               </div>
               <div className="level-right">
-                <p className="title is-4">{player.team}</p>
+                <div className="title is-4">
+                  <p className="gap-right">Position: {player.position}</p>
+                  <p>Archtype: {player.archtype}</p>
+                </div>
               </div>
             </div>
             <div className="level">
@@ -287,6 +288,7 @@ const Roster = props => {
                     team={props.data.team + " " + props.data.mascot}
                     click={selectTeam}
                   />
+                  <hr className="dropdown-divider"></hr>
                   <DropdownItem team="Michigan Wolverines" click={selectTeam} />
                   <DropdownItem team="New Mexico Lobos" click={selectTeam} />
                   <DropdownItem
