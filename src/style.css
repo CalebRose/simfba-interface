@@ -189,6 +189,11 @@
   padding: 7px;
 }
 
+.attribute-icon {
+  height: 4rem;
+  width: 4rem;
+}
+
 .gap {
   text-align: left;
 }
