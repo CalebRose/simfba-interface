@@ -1,11 +1,13 @@
 import React from "react";
 
 const AttributeRow = props => {
-  console.log(props.data);
+  let attributeImage = "../img/attributes/" + props.data.name + ".png";
+  console.log(attributeImage);
   return (
     <div className="tile is-child is-4 attribute">
-      <p className="title is-5">{props.data.name}</p>
-      <p className="subtitle is-5">{props.data.letter}</p>
+      <img src={attributeImage} className="attribute-icon" />
+      <p className="title is-6">{props.data.name}</p>
+      <p className="subtitle is-6">{props.data.letter}</p>
     </div>
   );
 };
