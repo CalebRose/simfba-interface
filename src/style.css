@@ -118,9 +118,13 @@
 /* End of team card on Available Teams Page */
 
 /* For Image Icons on User Profile Page */
+.images {
+  /* max-height: 100vh !important; */
+}
+
 .tile-image {
-  max-width: 385px !important;
-  max-height: 210px !important;
+  max-width: 40vh !important;
+  max-height: 40vh !important;
 }
 
 .image-gap {
@@ -133,7 +137,7 @@
   color: rgba(255, 255, 255, 0.9);
   transition: all 0.4s ease;
   -webkit-transition: all 0.4s ease;
-  height: 222px;
+  height: 100%;
 }
 
 .is-overlay.overlay:hover {
@@ -158,7 +162,7 @@
 }
 
 .roster-scrollbar {
-  max-height: 50vh !important;
+  max-height: 49vh !important;
 }
 
 .roster-item {

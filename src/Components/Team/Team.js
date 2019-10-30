@@ -56,7 +56,7 @@ const Team = props => {
               </p>
             </div>
           </div>
-          <div className="column is-7">
+          <div className="column is-7 is-vertical">
             <div className="tile is-parent">
               <ImageCard
                 image="./img/userpage/roster4.jpg"
