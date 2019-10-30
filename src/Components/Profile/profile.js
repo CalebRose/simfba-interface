@@ -59,7 +59,7 @@ const Profile = props => {
               </div>
             </div>
 
-            <div className="tile is-parent is-vertical">
+            <div className="tile is-parent is-vertical images">
               <div className="tile is-parent">
                 <ImageCard
                   image="./img/userpage/roster4.jpg"

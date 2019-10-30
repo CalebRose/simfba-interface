@@ -9,6 +9,7 @@ import Profile from "./Components/Profile/Profile";
 import Roster from "./Components/Roster/Roster";
 import Team from "./Components/Team/Team";
 import "./style.css";
+import DepthChart from "./Components/DepthChart/DepthChart";
 
 class App extends Component {
   state = {
@@ -42,7 +43,11 @@ class App extends Component {
             path={routes.ROSTER}
             render={() => <Roster data={this.state.user} />}
           />
-          <Route exact path={routes.DEPTHCHART} component={LandingPage} />
+          <Route
+            exact
+            path={routes.DEPTHCHART}
+            render={() => <DepthChart data={this.state.user} />}
+          />
           <Route
             exact
             path={routes.AVAILABLE_TEAMS}
