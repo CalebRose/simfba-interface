@@ -82,6 +82,14 @@
   margin: auto;
 }
 
+.scrollbar-dc {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 55vh;
+  padding: 6px;
+  max-width: 92vw;
+}
+
 /* Specific UI height for Available Teams UI */
 .available-ui-height {
   max-height: 60vh;
