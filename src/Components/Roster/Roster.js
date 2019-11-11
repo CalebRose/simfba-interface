@@ -3,6 +3,7 @@ import PlayerRow from "./PlayerRow";
 import SampleContent from "./SampleContent";
 import AttributeRow from "./AttributeRow";
 import DropdownItem from "./DropdownItem";
+import DepthChartRow from "../DepthChart/DepthChartRow";
 
 const Roster = props => {
   /* 
@@ -247,6 +248,12 @@ const Roster = props => {
     />
   ));
   const playerCount = roster.length;
+
+  // Designations
+  // Objects inside design. array; designation being QB1, QB2, etc...
+  // Position being the position related to the designation
+  // Use the position key-value as a means to grab players from sample content and display them in player
+
   return (
     <div className="hero-body center">
       <div className="container is-fluid has-text-centered userInterface">
@@ -285,17 +292,20 @@ const Roster = props => {
               <div className="dropdown-menu" id="dropdown-menu" role="menu">
                 <div className="dropdown-content">
                   <DropdownItem
-                    team={props.data.team + " " + props.data.mascot}
+                    value={props.data.team + " " + props.data.mascot}
                     click={selectTeam}
                   />
                   <hr className="dropdown-divider"></hr>
-                  <DropdownItem team="Michigan Wolverines" click={selectTeam} />
-                  <DropdownItem team="New Mexico Lobos" click={selectTeam} />
                   <DropdownItem
-                    team="California Golden Bears"
+                    value="Michigan Wolverines"
                     click={selectTeam}
                   />
-                  <DropdownItem team="LSU Tigers" click={selectTeam} />
+                  <DropdownItem value="New Mexico Lobos" click={selectTeam} />
+                  <DropdownItem
+                    value="California Golden Bears"
+                    click={selectTeam}
+                  />
+                  <DropdownItem value="LSU Tigers" click={selectTeam} />
                 </div>
               </div>
             </div>

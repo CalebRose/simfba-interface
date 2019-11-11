@@ -13,6 +13,7 @@ const SampleContent = [
     potential: "C",
     jersey: "12",
     team: "Washington State Cougars",
+    designation: "QB1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 40 },
@@ -52,6 +53,7 @@ const SampleContent = [
     potential: "C",
     jersey: "2",
     team: "Washington State Cougars",
+    designation: "QB2",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 40 },
@@ -91,6 +93,7 @@ const SampleContent = [
     potential: "B-",
     jersey: "15",
     team: "Washington State Cougars",
+    designation: "WR1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 40 },
@@ -130,6 +133,7 @@ const SampleContent = [
     potential: "A",
     jersey: "72",
     team: "Washington State Cougars",
+    designation: "LE1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 40 },
@@ -169,6 +173,7 @@ const SampleContent = [
     potential: "D",
     jersey: "30",
     team: "Washington State Cougars",
+    designation: "CB1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 22 },
@@ -208,6 +213,7 @@ const SampleContent = [
     potential: "B",
     jersey: "30",
     team: "Washington State Cougars",
+    designation: "DT1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 24 },
@@ -247,6 +253,7 @@ const SampleContent = [
     potential: "C",
     jersey: "61",
     team: "Washington State Cougars",
+    designation: "LT1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 16 },
@@ -286,6 +293,7 @@ const SampleContent = [
     potential: "C+",
     jersey: "51",
     team: "Washington State Cougars",
+    designation: "LG1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 20 },
@@ -325,6 +333,7 @@ const SampleContent = [
     potential: "B+",
     jersey: "63",
     team: "Washington State Cougars",
+    designation: "RG1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 20 },
@@ -364,6 +373,7 @@ const SampleContent = [
     potential: "C+",
     jersey: "53",
     team: "Washington State Cougars",
+    designation: "ILB1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 20 },
@@ -403,6 +413,7 @@ const SampleContent = [
     potential: "C+",
     jersey: "50",
     team: "Washington State Cougars",
+    designation: "LOLB1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 20 },
@@ -442,6 +453,7 @@ const SampleContent = [
     potential: "C+",
     jersey: "40",
     team: "Washington State Cougars",
+    designation: "K1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 10 },
@@ -481,6 +493,7 @@ const SampleContent = [
     potential: "C+",
     jersey: "24",
     team: "Washington State Cougars",
+    designation: "RB1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 19 },
@@ -521,6 +534,7 @@ const SampleContent = [
     potential: "B-",
     jersey: "17",
     team: "California Golden Bears",
+    designation: "QB1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 30 },
@@ -561,6 +575,7 @@ const SampleContent = [
     potential: "B",
     jersey: "46",
     team: "California Golden Bears",
+    designation: "ILB1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 19 },
@@ -601,6 +616,7 @@ const SampleContent = [
     potential: "C+",
     jersey: "60",
     team: "California Golden Bears",
+    designation: "LE1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 19 },
@@ -641,6 +657,7 @@ const SampleContent = [
     potential: "A+",
     jersey: "43",
     team: "California Golden Bears",
+    designation: "CB1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 19 },
@@ -681,6 +698,7 @@ const SampleContent = [
     potential: "A-",
     jersey: "64",
     team: "California Golden Bears",
+    designation: "DT1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 19 },
@@ -721,6 +739,7 @@ const SampleContent = [
     potential: "C",
     jersey: "61",
     team: "Michigan Wolverines",
+    designation: "LT1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 18 },
@@ -761,6 +780,7 @@ const SampleContent = [
     potential: "C+",
     jersey: "00",
     team: "Michigan Wolverines",
+    designation: "LE1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 26 },
@@ -801,6 +821,7 @@ const SampleContent = [
     potential: "C+",
     jersey: "58",
     team: "Michigan Wolverines",
+    designation: "RT1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 28 },
@@ -841,6 +862,7 @@ const SampleContent = [
     potential: "C",
     jersey: "36",
     team: "Michigan Wolverines",
+    designation: "SS1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 18 },
@@ -881,6 +903,7 @@ const SampleContent = [
     potential: "B",
     jersey: "44",
     team: "Michigan Wolverines",
+    designation: "LOLB1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 21 },
@@ -921,6 +944,7 @@ const SampleContent = [
     potential: "B",
     jersey: "68",
     team: "New Mexico Lobos",
+    designation: "LE1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 28 },
@@ -961,6 +985,7 @@ const SampleContent = [
     potential: "B-",
     jersey: "72",
     team: "New Mexico Lobos",
+    designation: "LT1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 21 },
@@ -1001,6 +1026,7 @@ const SampleContent = [
     potential: "B+",
     jersey: "25",
     team: "New Mexico Lobos",
+    designation: "CB1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 21 },
@@ -1041,6 +1067,7 @@ const SampleContent = [
     potential: "C+",
     jersey: "33",
     team: "New Mexico Lobos",
+    designation: "FB1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 31 },
@@ -1081,6 +1108,7 @@ const SampleContent = [
     potential: "B+",
     jersey: "66",
     team: "New Mexico Lobos",
+    designation: "LG1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 20 },
@@ -1121,6 +1149,7 @@ const SampleContent = [
     potential: "A-",
     jersey: "46",
     team: "LSU Tigers",
+    designation: "ILB1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 30 },
@@ -1161,6 +1190,7 @@ const SampleContent = [
     potential: "C+",
     jersey: "93",
     team: "LSU Tigers",
+    designation: "FS1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 20 },
@@ -1201,6 +1231,7 @@ const SampleContent = [
     potential: "B-",
     jersey: "35",
     team: "LSU Tigers",
+    designation: "CB1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 29 },
@@ -1241,6 +1272,7 @@ const SampleContent = [
     potential: "C",
     jersey: "68",
     team: "LSU Tigers",
+    designation: "LG1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 20 },
@@ -1281,6 +1313,7 @@ const SampleContent = [
     potential: "B-",
     jersey: "69",
     team: "LSU Tigers",
+    designation: "LE1",
     // Attributes === attr
     attr: {
       carrying: { name: "Carrying", value: 20 },
