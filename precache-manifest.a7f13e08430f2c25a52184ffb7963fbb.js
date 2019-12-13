@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "8a77558b766c70456b0fc91e38fc3932",
+    "revision": "bc36bbe8a52554f3a6606f52e4c10bce",
     "url": "/simfba-interface/index.html"
   },
   {
@@ -8,8 +8,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/simfba-interface/static/css/main.82035141.chunk.css"
   },
   {
-    "revision": "7d80b197ea11fc1a0581",
-    "url": "/simfba-interface/static/js/2.f61d9fc3.chunk.js"
+    "revision": "493be17cb2d1a7bab13b",
+    "url": "/simfba-interface/static/js/2.917331f3.chunk.js"
   },
   {
     "revision": "b1fe8520f92a750f2935",
