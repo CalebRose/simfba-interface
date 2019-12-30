@@ -2,6 +2,7 @@ const passport = require("passport");
 const bcrypt = require("bcrypt");
 const salt = bcrypt.genSaltSync(10);
 
+// Login Page
 exports.login = function(req, res, next) {
   passport.authenticate("local", function(err, user, info) {
     if (err) {
@@ -24,6 +25,7 @@ exports.login = function(req, res, next) {
   })(req, res, next);
 };
 
+// View Profile
 exports.profileView = function(req, res) {
   res.render("pages/profile", {
     userID: req.user.userID,
@@ -32,6 +34,7 @@ exports.profileView = function(req, res) {
   });
 };
 
+// Sign Up
 exports.signup = function(req, res) {
   message = "";
   var username1 = "";
