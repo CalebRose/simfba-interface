@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "concurrently": "^5.0.2",
     "connect-flash": "^0.1.1",
     "express-session": "^1.17.0",
     "fs": "0.0.1-security",
@@ -22,7 +23,7 @@
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "start": "react-scripts start",
+    "start": "concurrently \"cd server && nodemon --ignore 'client/*'\" \"cd client && npm start\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

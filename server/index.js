@@ -27,12 +27,12 @@ const salt = bcrypt.genSaltSync(10);
 
 var app = express();
 app
-  .use(express.static(path.join(__dirname + "../public")))
+  .use(express.static(path.join(__dirname + "../client/public")))
   .use(bodyParser.json({ type: "application/*+json" }))
   .use(bodyParser.text({ type: "text/html" }))
   .use(bodyParser.urlencoded({ extended: true }))
-  // .set("views", path.join(__dirname, "../public"))
-  //.set("view engine", "ejs")
+  .set("views", path.join(__dirname, "../public"))
+  .set("view engine", "ejs")
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 app.use(
@@ -49,7 +49,7 @@ app.use(logger("dev"));
 
 // Routes
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/index.html"));
+  res.sendFile(path.join(__dirname, "../client/public/index.html"));
 });
 
 // app.use("/", require("./routes/index"));
