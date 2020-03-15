@@ -1,17 +1,19 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import routes from "../../Constants/routes";
 
 var UnauthorizedUser = () => {
   return (
     <div className="navbar-end">
       <div className="navbar-item">
-        <a href="/signup">
+        <Link to={routes.LOGIN}>
           <span class="fas fa-user-plus"></span> Sign up
-        </a>
+        </Link>
       </div>
       <div className="navbar-item">
-        <a href="/login">
+        <Link to={routes.LOGIN}>
           <span className="fas fa-sign-in-alt"></span> Login
-        </a>
+        </Link>
       </div>
     </div>
   );
