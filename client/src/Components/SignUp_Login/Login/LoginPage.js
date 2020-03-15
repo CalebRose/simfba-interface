@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import FormInput from "../FormInput/FormInput";
 import "./LoginPage.style.css";
 import { auth, signInWithGoogle } from "./../../../Firebase/firebase";
+import { Link } from "react-router-dom";
+import routes from "../../../Constants/routes";
 
 class LoginPage extends Component {
   state = {
@@ -41,18 +43,26 @@ class LoginPage extends Component {
             name="email"
             value={email}
             label="Email"
+            type="email"
             handleChange={this.handleChange}
           />
           <FormInput
             name="password"
             value={password}
             label="Password"
+            type="password"
             handleChange={this.handleChange}
           />
           <div className="tile buttons">
-            <button className="button login-button" onClick={this.handleSubmit}>
-              Login
-            </button>
+            <Link to={routes.LANDING}>
+              <button
+                className="button login-button"
+                onClick={this.handleSubmit}
+              >
+                Login
+              </button>
+            </Link>
+
             {/* <button
               className="button login-button google"
               onClick={signInWithGoogle}
