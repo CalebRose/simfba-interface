@@ -12,6 +12,7 @@ class NavBar extends Component {
   */
 
   render() {
+    const user = this.props.user;
     return (
       <nav
         className="navbar is-transparent is-marginless heading has-text-weight-bold"
@@ -29,8 +30,7 @@ class NavBar extends Component {
             /> */}
             <span className="glyphicon glyphicon-home"></span> Interface
           </Link>
-          <a
-            href=""
+          <p
             role="button"
             className="navbar-burger"
             aria-label="menu"
@@ -39,16 +39,15 @@ class NavBar extends Component {
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
-          </a>
+          </p>
         </div>
         <div className="navbar-menu">
           {/* Probably create a component for navbar-start*/}
-          {this.props.user.username != "" ||
-          typeof this.props.user.username != "undefined" ? (
-            <NavBarStart user={this.props.user} />
+          {user.username !== "" || typeof user !== "undefined" ? (
+            <NavBarStart user={user} />
           ) : null}
-          {this.props.user.username != "" ? (
-            <AuthorizedUser user={this.props.user} />
+          {user.username !== "" ? (
+            <AuthorizedUser user={user} />
           ) : (
             <UnauthorizedUser />
           )}

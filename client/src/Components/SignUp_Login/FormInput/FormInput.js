@@ -1,7 +1,7 @@
 import React from "react";
 import "./FormInput.style.css";
 
-const FormInput = ({ label }) => {
+const FormInput = ({ handleChange, label, ...otherProps }) => {
   let placeholder = label => {
     switch (label) {
       case "Name":
@@ -21,9 +21,11 @@ const FormInput = ({ label }) => {
         {label ? <label className="label">{label}</label> : null}
         <div className="control">
           <input
+            onChange={handleChange}
             className="input"
             type="text"
             placeholder={placeholder(label)}
+            {...otherProps}
           ></input>
         </div>
       </div>

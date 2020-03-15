@@ -6,12 +6,14 @@ class NavBar_Start extends Component {
   state = {};
 
   render() {
+    const user = this.props.user;
     var TeamTab = props => {
       if (
-        typeof this.props.user !== "undefined" &&
-        typeof this.props.user.username !== "undefined"
+        typeof props.user !== "undefined" &&
+        (typeof props.username !== "undefined" ||
+          typeof props.username !== null)
       ) {
-        if (this.props.user.teamAbbr !== "") {
+        if (props.teamAbbr !== "") {
           return <Team />;
         } else {
           return <AvailableTeams />;
@@ -54,7 +56,11 @@ class NavBar_Start extends Component {
     };
     return (
       <div className="navbar-start">
-        <TeamTab />
+        <TeamTab
+          user={user}
+          username={user.username}
+          teamAbbr={user.teamAbbr}
+        />
         <div className="navbar-item">
           <Link to={routes.RECRUITING}>Recruits</Link>
         </div>
