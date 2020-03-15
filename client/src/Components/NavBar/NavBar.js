@@ -6,7 +6,11 @@ import routes from "../../Constants/routes";
 import NavBarStart from "./NavBarStart";
 
 class NavBar extends Component {
-  state = { test: true };
+  state = { test: true, modalState: false };
+  /*
+    Will Need to setup some kind of Modal
+  */
+
   render() {
     return (
       <nav
@@ -39,10 +43,11 @@ class NavBar extends Component {
         </div>
         <div className="navbar-menu">
           {/* Probably create a component for navbar-start*/}
-          {typeof this.props.user.username != "undefined" ? (
+          {this.props.user.username != "" ||
+          typeof this.props.user.username != "undefined" ? (
             <NavBarStart user={this.props.user} />
           ) : null}
-          {typeof this.props.user.username != "undefined" ? (
+          {this.props.user.username != "" ? (
             <AuthorizedUser user={this.props.user} />
           ) : (
             <UnauthorizedUser />

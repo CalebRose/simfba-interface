@@ -48,11 +48,11 @@ app.use(logger("dev"));
 //
 
 // Routes
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/public/index.html"));
-});
+// app.get("/", (req, res) => {
+//   res.sendFile(path.join(__dirname, "../client/public/index.html"));
+// });
 
-// app.use("/", require("./routes/index"));
+app.use("/", require("./routes/index"));
 
 // var connection = mysql.createConnection({
 //   host: process.env.DBHOST,

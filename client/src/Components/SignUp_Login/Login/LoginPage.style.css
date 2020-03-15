@@ -1,0 +1,14 @@
+.LoginPage {
+  width: 30vw;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-logo {
+  font-size: x-large;
+  text-align: left;
+}
+
+.login-button {
+  margin-top: 3%;
+}

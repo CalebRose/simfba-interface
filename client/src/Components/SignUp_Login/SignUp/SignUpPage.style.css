@@ -1,0 +1,14 @@
+.SignUp {
+  width: 35vw;
+  display: flex;
+  flex-direction: column;
+}
+
+.sign-up-logo {
+  font-size: x-large;
+  text-align: left;
+}
+
+.signup-button {
+  margin-top: 3%;
+}

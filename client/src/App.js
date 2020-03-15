@@ -8,17 +8,18 @@ import AvailableTeams from "./Components/AvailableTeams/AvailableTeams";
 import Profile from "./Components/Profile/Profile";
 import Roster from "./Components/Roster/Roster";
 import Team from "./Components/Team/Team";
+import Login from "./Components/SignUp_Login/SignUpLoginBody";
 import "./style.css";
 import DepthChart from "./Components/DepthChart/DepthChart";
 
 class App extends Component {
   state = {
     user: {
-      username: "TuscanSota",
-      team: "Washington State",
-      teamAbbr: "WAST",
-      mascot: "Cougars",
-      roleID: 0
+      username: "",
+      team: "",
+      teamAbbr: "",
+      mascot: "",
+      roleID: null
     }
   };
   // Global Variables
@@ -54,6 +55,7 @@ class App extends Component {
             component={AvailableTeams}
           />
           <Route exact path={routes.RECRUITING} component={LandingPage} />
+          <Route exact path={routes.LOGIN} component={Login} />
         </div>
       </Router>
     );
