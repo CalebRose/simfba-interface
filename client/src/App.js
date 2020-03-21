@@ -11,10 +11,12 @@ import Team from "./Components/Team/Team";
 import Login from "./Components/SignUp_Login/SignUpLoginBody";
 import "./style.css";
 import DepthChart from "./Components/DepthChart/DepthChart";
+import { auth, createUserProfileDocument } from "./Firebase/firebase";
 
 class App extends Component {
   state = {
     user: {
+      id: null,
       username: "",
       team: "",
       teamAbbr: "",
@@ -23,6 +25,28 @@ class App extends Component {
     }
   };
   // Global Variables
+  unSubscribeFromAuth = null;
+
+  // Components
+  componentDidMount() {
+    this.unSubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      if (userAuth !== null) {
+        const userRef = await createUserProfileDocument(userAuth);
+        userRef.onSnapshot(snapShot => {
+          this.setState({
+            user: {
+              id: snapShot.id,
+              ...snapShot.data()
+            }
+          });
+        });
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    this.unSubscribeFromAuth();
+  }
   render() {
     return (
       <Router basename={process.env.PUBLIC_URL}>

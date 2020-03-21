@@ -7,7 +7,7 @@ var UnauthorizedUser = () => {
     <div className="navbar-end">
       <div className="navbar-item">
         <Link to={routes.LOGIN}>
-          <span class="fas fa-user-plus"></span> Sign up
+          <span className="fas fa-user-plus"></span> Sign up
         </Link>
       </div>
       <div className="navbar-item">

@@ -1,8 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { auth } from "../../Firebase/firebase";
 import routes from "../../Constants/routes";
 
 const authorizedUser = props => {
+  const { user } = props;
   var RoleList = props => {
     if (props.user.roleID === 1) {
       return (
@@ -14,7 +16,7 @@ const authorizedUser = props => {
             role="button"
             aria-expanded="false"
           >
-            <span className="glyphicon glyphicon-info-sign"></span>{" "}
+            <span className="glyphicon glyphicon-info-sign"></span>
             Administration <span className="caret"></span>
           </a>
           <div className="navbar-dropdown">
@@ -34,15 +36,15 @@ const authorizedUser = props => {
       <div className="navbar-item">
         <Link to={routes.USER}>
           <span className="glyphicon glyphicon-user"></span>
-          {props.user.username}
+          {user.username}
         </Link>
       </div>
       <div className="navbar-item">
-        <Link to={routes.LANDING}>
+        <Link to={routes.LANDING} onClick={() => auth.signOut()}>
           <span className="fas fa-sign-out-alt"></span> log out
         </Link>
       </div>
-      <RoleList user={props.user} />
+      <RoleList user={user} />
     </div>
   );
 };

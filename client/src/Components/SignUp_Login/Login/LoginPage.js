@@ -1,20 +1,79 @@
-import React from "react";
+import React, { Component } from "react";
 import FormInput from "../FormInput/FormInput";
 import "./LoginPage.style.css";
+import { auth, signInWithGoogle } from "./../../../Firebase/firebase";
+import { Link } from "react-router-dom";
+import routes from "../../../Constants/routes";
 
-const LoginPage = () => {
-  return (
-    <div className="LoginPage">
-      <h2 className="login-logo">Login</h2>
-      <form>
-        <FormInput label="Username or Email" />
-        <FormInput label="Password" />
-        <div className="tile login-button">
-          <button className="button">Login</button>
-        </div>{" "}
-      </form>
-    </div>
-  );
-};
+class LoginPage extends Component {
+  state = {
+    email: "",
+    password: ""
+  };
+
+  handleSubmit = async event => {
+    event.preventDefault();
+    const { email, password } = this.state;
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+      this.setState({ email: "", password: "" });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // handleGoogle = () => {
+  //   try {
+  //     signInWithGoogle();
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  handleChange = event => {
+    //
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+  };
+  render() {
+    const { email, password } = this.state;
+    return (
+      <div className="LoginPage">
+        <h2 className="login-logo">Login</h2>
+        <form>
+          <FormInput
+            name="email"
+            value={email}
+            label="Email"
+            type="email"
+            handleChange={this.handleChange}
+          />
+          <FormInput
+            name="password"
+            value={password}
+            label="Password"
+            type="password"
+            handleChange={this.handleChange}
+          />
+          <div className="tile buttons">
+            <Link to={routes.LANDING}>
+              <button
+                className="button login-button"
+                onClick={this.handleSubmit}
+              >
+                Login
+              </button>
+            </Link>
+
+            {/* <button
+              className="button login-button google"
+              onClick={signInWithGoogle}
+            >
+              Login With Google
+            </button> */}
+          </div>
+        </form>
+      </div>
+    );
+  }
+}
 
 export default LoginPage;
