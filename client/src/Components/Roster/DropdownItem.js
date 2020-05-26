@@ -1,12 +1,12 @@
-import React, { Component } from "react";
+import React from "react";
 
 const DropdownItem = props => {
   return (
-    <a className="dropdown-item">
+    <div className="dropdown-item" style={{ textAlign: "left" }} >
       <option value={props.value} onClick={props.click}>
         {props.value}
       </option>
-    </a>
+    </div>
   );
 };
 

@@ -3,7 +3,7 @@ import PlayerRow from "./PlayerRow";
 import SampleContent from "./SampleContent";
 import AttributeRow from "./AttributeRow";
 import DropdownItem from "./DropdownItem";
-import DepthChartRow from "../DepthChart/DepthChartRow";
+// import DepthChartRow from "../DepthChart/DepthChartRow";
 
 const Roster = props => {
   /* 
@@ -319,7 +319,7 @@ const Roster = props => {
             modalState={modalState}
             title="TEST"
           />
-          <div className="table-wrapper">
+          <div className="table-wrapper dTable">
             <table className="table is-fullwidth is-hoverable">
               <thead>
                 <tr>
