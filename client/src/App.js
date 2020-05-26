@@ -90,9 +90,10 @@ class App extends Component {
     );
   }
 }
-const mapStateToProps = ({ user }) => ({
-  setCurrentUser: user.currentUser
-});
+
+// const mapStateToProps = ({ user }) => ({ // commenting out, not used
+//   setCurrentUser: user.currentUser
+// });
 
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: user => dispatch(setCurrentUser(user))

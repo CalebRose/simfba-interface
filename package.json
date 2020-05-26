@@ -56,12 +56,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CalebRose/Project-Kotar.git"
+    "url": "git+https://github.com/CalebRose/simfba-interface.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/CalebRose/Project-Kotar/issues"
+    "url": "https://github.com/CalebRose/simfba-interface/issues"
   }
 }
