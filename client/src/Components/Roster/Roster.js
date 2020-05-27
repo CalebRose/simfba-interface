@@ -1,11 +1,12 @@
-import React, { useEffect } from "react";
-import PlayerRow from "./PlayerRow";
-import SampleContent from "./SampleContent";
-import AttributeRow from "./AttributeRow";
-import DropdownItem from "./DropdownItem";
+import React, { useEffect } from 'react';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import PlayerRow from './PlayerRow';
+import SampleContent from './SampleContent';
+import AttributeRow from './AttributeRow';
+import DropdownItem from './DropdownItem';
 // import DepthChartRow from "../DepthChart/DepthChartRow";
 
-const Roster = props => {
+const Roster = ({ currentUser }) => {
   /* 
         API Call to get team data
         Loop through array list to acquire players
@@ -13,12 +14,13 @@ const Roster = props => {
 
   // React Hooks for Modal
   //
+  const user = useSelector((state) => state.user.currentUser); // Selecting redux state
+  console.log(user);
   const [modalState, setModal] = React.useState(false);
   const [player, setPlayer] = React.useState(null);
   const [attributes, setAttributes] = React.useState([]);
-  const [team, setTeam] = React.useState(
-    props.data.team + " " + props.data.mascot
-  );
+  let initialTeam = user ? user.team + ' ' + user.mascot : null; // Initial value from redux state
+  const [team, setTeam] = React.useState(initialTeam); // Redux value as initial value for react hook
   const [roster, setRoster] = React.useState([]);
   let playerAttributes = [];
   const toggleModal = () => {
@@ -27,23 +29,29 @@ const Roster = props => {
   };
 
   // Dropdown Toggle
-  const activeDropdown = event => {
-    const dropdown = document.querySelector(".dropdown");
-    dropdown.classList.toggle("is-active");
+  const activeDropdown = (event) => {
+    const dropdown = document.querySelector('.dropdown');
+    dropdown.classList.toggle('is-active');
   };
 
-  const selectTeam = event => {
+  const selectTeam = (event) => {
     setTeam(event.target.value);
     activeDropdown();
   };
 
   useEffect(() => {
-    let playerList = SampleContent.filter(player => player.team === team);
+    if (user) {
+      setTeam(user.team + ' ' + user.mascot);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    let playerList = SampleContent.filter((player) => player.team === team);
     setRoster(playerList);
   }, [team]);
 
   // Call Back Function
-  const getPlayerData = data => {
+  const getPlayerData = (data) => {
     if (data) {
       playerAttributes = [];
       setPriority(data);
@@ -53,16 +61,16 @@ const Roster = props => {
   };
   // Priority Queue
 
-  const setPriority = data => {
+  const setPriority = (data) => {
     switch (data.position) {
-      case "QB":
+      case 'QB':
         data.attr.agility.priority = true;
         data.attr.speed.priority = true;
         data.attr.strength.priority = true;
         data.attr.throw_power.priority = true;
         data.attr.throw_accuracy.priority = true;
         break;
-      case "RB":
+      case 'RB':
         data.attr.carrying.priority = true;
         data.attr.agility.priority = true;
         data.attr.speed.priority = true;
@@ -70,7 +78,7 @@ const Roster = props => {
         data.attr.pass_block.priority = true;
         data.attr.strength.priority = true;
         break;
-      case "FB":
+      case 'FB':
         data.attr.carrying.priority = true;
         data.attr.agility.priority = true;
         data.attr.speed.priority = true;
@@ -79,7 +87,7 @@ const Roster = props => {
         data.attr.run_block.priority = true;
         data.attr.strength.priority = true;
         break;
-      case "WR":
+      case 'WR':
         data.attr.carrying.priority = true;
         data.attr.agility.priority = true;
         data.attr.speed.priority = true;
@@ -87,7 +95,7 @@ const Roster = props => {
         data.attr.route_running.priority = true;
         data.attr.strength.priority = true;
         break;
-      case "TE":
+      case 'TE':
         data.attr.carrying.priority = true;
         data.attr.agility.priority = true;
         data.attr.speed.priority = true;
@@ -97,15 +105,15 @@ const Roster = props => {
         data.attr.route_running.priority = true;
         data.attr.strength.priority = true;
         break;
-      case "OT":
-      case "OG":
-      case "C":
+      case 'OT':
+      case 'OG':
+      case 'C':
         data.attr.agility.priority = true;
         data.attr.pass_block.priority = true;
         data.attr.run_block.priority = true;
         data.attr.strength.priority = true;
         break;
-      case "DE":
+      case 'DE':
         data.attr.agility.priority = true;
         data.attr.pass_rush.priority = true;
         data.attr.run_defense.priority = true;
@@ -113,15 +121,15 @@ const Roster = props => {
         data.attr.strength.priority = true;
         data.attr.tackle.priority = true;
         break;
-      case "DT":
+      case 'DT':
         data.attr.agility.priority = true;
         data.attr.pass_rush.priority = true;
         data.attr.run_defense.priority = true;
         data.attr.strength.priority = true;
         data.attr.tackle.priority = true;
         break;
-      case "ILB":
-      case "OLB":
+      case 'ILB':
+      case 'OLB':
         data.attr.agility.priority = true;
         data.attr.man_coverage.priority = true;
         data.attr.zone_coverage.priority = true;
@@ -131,7 +139,7 @@ const Roster = props => {
         data.attr.strength.priority = true;
         data.attr.tackle.priority = true;
         break;
-      case "CB":
+      case 'CB':
         data.attr.agility.priority = true;
         data.attr.catching.priority = true;
         data.attr.man_coverage.priority = true;
@@ -140,8 +148,8 @@ const Roster = props => {
         data.attr.strength.priority = true;
         data.attr.tackle.priority = true;
         break;
-      case "FS":
-      case "SS":
+      case 'FS':
+      case 'SS':
         data.attr.agility.priority = true;
         data.attr.catching.priority = true;
         data.attr.man_coverage.priority = true;
@@ -151,11 +159,11 @@ const Roster = props => {
         data.attr.strength.priority = true;
         data.attr.tackle.priority = true;
         break;
-      case "K":
+      case 'K':
         data.attr.kick_accuracy.priority = true;
         data.attr.kick_power.priority = true;
         break;
-      case "P":
+      case 'P':
         data.attr.punt_accuracy.priority = true;
         data.attr.punt_power.priority = true;
         break;
@@ -169,67 +177,67 @@ const Roster = props => {
         // Algorithm to provide letter value to attribute
         // NOTE: Move this outside of the if statement for implementation to see all attributes
         let attr = data.attr[attribute];
-        if (attr.value < 15) attr.letter = "F";
-        else if (attr.value < 25) attr.letter = "D";
-        else if (attr.value < 35) attr.letter = "C";
-        else if (attr.value < 45) attr.letter = "B";
-        else if (attr.value >= 45) attr.letter = "A";
+        if (attr.value < 15) attr.letter = 'F';
+        else if (attr.value < 25) attr.letter = 'D';
+        else if (attr.value < 35) attr.letter = 'C';
+        else if (attr.value < 45) attr.letter = 'B';
+        else if (attr.value >= 45) attr.letter = 'A';
         playerAttributes.push(attr);
       }
     }
     playerAttributes.push({
-      name: "Potential",
+      name: 'Potential',
       letter: data.potential,
-      priority: "true"
+      priority: 'true',
     });
   };
-  const AttributeRows = attributes.map(attribute => (
+  const AttributeRows = attributes.map((attribute) => (
     <AttributeRow key={attribute.name} data={attribute} />
   ));
   const Modal = ({ children, closeModal, modalState, title }) => {
     if (!modalState) return null;
 
     return (
-      <div className="modal is-active">
-        <div className="modal-background" onClick={closeModal}></div>
-        <div className="modal-card">
-          <header className="modal-card-head">
-            <p className="modal-card-title">{player.name}</p>
+      <div className='modal is-active'>
+        <div className='modal-background' onClick={closeModal}></div>
+        <div className='modal-card'>
+          <header className='modal-card-head'>
+            <p className='modal-card-title'>{player.name}</p>
             <button
-              className="delete"
-              aria-label="close"
+              className='delete'
+              aria-label='close'
               onClick={closeModal}
             ></button>
           </header>
-          <section className="modal-card-body">
-            <div className="level">
-              <div className="level-left">
-                <div className="title is-4">
+          <section className='modal-card-body'>
+            <div className='level'>
+              <div className='level-left'>
+                <div className='title is-4'>
                   <p>{player.team}</p>
-                  <p className="gap">Year: {player.year}</p>
+                  <p className='gap'>Year: {player.year}</p>
                 </div>
               </div>
-              <div className="level-right">
-                <div className="title is-4">
-                  <p className="gap-right">Position: {player.position}</p>
+              <div className='level-right'>
+                <div className='title is-4'>
+                  <p className='gap-right'>Position: {player.position}</p>
                   <p>Archtype: {player.archtype}</p>
                 </div>
               </div>
             </div>
-            <div className="level">
-              <div className="level-left">
-                <p className="title is-4">
+            <div className='level'>
+              <div className='level-left'>
+                <p className='title is-4'>
                   {player.height} {player.weight}
                 </p>
               </div>
-              <div className="level-right">
-                <p className="subtitle is-4">Overall: {player.overall}</p>
+              <div className='level-right'>
+                <p className='subtitle is-4'>Overall: {player.overall}</p>
               </div>
             </div>
-            <div className="AttributeTable tile is-parent">{AttributeRows}</div>
+            <div className='AttributeTable tile is-parent'>{AttributeRows}</div>
           </section>
-          <footer className="modal-card-foot">
-            <button className="button" onClick={closeModal}>
+          <footer className='modal-card-foot'>
+            <button className='button' onClick={closeModal}>
               Cancel
             </button>
           </footer>
@@ -239,7 +247,7 @@ const Roster = props => {
   };
 
   // Rows
-  const PlayerRows = roster.map(player => (
+  const PlayerRows = roster.map((player) => (
     <PlayerRow
       key={player.id}
       data={player}
@@ -255,106 +263,106 @@ const Roster = props => {
   // Use the position key-value as a means to grab players from sample content and display them in player
 
   return (
-    <div className="hero-body center">
-      <div className="container is-fluid has-text-centered userInterface">
-        <h2 className="title is-3">{team} Roster</h2>
-        <div className="columns center is-12">
-          <div className="column is-3">
-            <h2>Coach: {props.data.username}</h2>
+    <div className='hero-body center'>
+      <div className='container is-fluid has-text-centered userInterface'>
+        <h2 className='title is-3'>{team} Roster</h2>
+        <div className='columns center is-12'>
+          <div className='column is-3'>
+            <h2>Coach: {user ? user.username : ''}</h2>
           </div>
-          <div className="column is-3">
+          <div className='column is-3'>
             <h2>Season: 2019</h2>
           </div>
-          <div className="column is-3">
+          <div className='column is-3'>
             <h2>Players: {playerCount}</h2>
           </div>
-          <div className="column is-3">
+          <div className='column is-3'>
             <h2>Redshirts: 0</h2>
           </div>
         </div>
-        <div className="columns is-left is-12">
-          <div className="column is-2">
-            <div className="dropdown is-left">
-              <div className="dropdown-trigger">
+        <div className='columns is-left is-12'>
+          <div className='column is-2'>
+            <div className='dropdown is-left'>
+              <div className='dropdown-trigger'>
                 <button
-                  name="team"
-                  className="button"
-                  aria-haspopup="true"
-                  aria-controls="dropdown-menu6"
+                  name='team'
+                  className='button'
+                  aria-haspopup='true'
+                  aria-controls='dropdown-menu6'
                   onClick={activeDropdown}
                 >
-                  <span>{team}</span>
-                  <span className="icon is-small">
-                    <i className="fas fa-angle-down" aria-hidden="true"></i>
+                  <span>{user ? team : null}</span>
+                  <span className='icon is-small'>
+                    <i className='fas fa-angle-down' aria-hidden='true'></i>
                   </span>
                 </button>
               </div>
-              <div className="dropdown-menu" id="dropdown-menu" role="menu">
-                <div className="dropdown-content">
+              <div className='dropdown-menu' id='dropdown-menu' role='menu'>
+                <div className='dropdown-content'>
                   <DropdownItem
-                    value={props.data.team + " " + props.data.mascot}
+                    value={user ? user.team + ' ' + user.mascot : null}
                     click={selectTeam}
                   />
-                  <hr className="dropdown-divider"></hr>
+                  <hr className='dropdown-divider'></hr>
                   <DropdownItem
-                    value="Michigan Wolverines"
+                    value='Michigan Wolverines'
                     click={selectTeam}
                   />
-                  <DropdownItem value="New Mexico Lobos" click={selectTeam} />
+                  <DropdownItem value='New Mexico Lobos' click={selectTeam} />
                   <DropdownItem
-                    value="California Golden Bears"
+                    value='California Golden Bears'
                     click={selectTeam}
                   />
-                  <DropdownItem value="LSU Tigers" click={selectTeam} />
+                  <DropdownItem value='LSU Tigers' click={selectTeam} />
                 </div>
               </div>
             </div>
           </div>
-          <div className="column is-2"></div>
+          <div className='column is-2'></div>
         </div>
-        <div className="is-divider" />
-        <div className="scrollbar roster-scrollbar">
+        <div className='is-divider' />
+        <div className='scrollbar roster-scrollbar'>
           <Modal
             closeModal={toggleModal}
             modalState={modalState}
-            title="TEST"
+            title='TEST'
           />
-          <div className="table-wrapper dTable">
-            <table className="table is-fullwidth is-hoverable">
+          <div className='table-wrapper dTable'>
+            <table className='table is-fullwidth is-hoverable'>
               <thead>
                 <tr>
                   <th>
                     <abbr>Name</abbr>
                   </th>
                   <th>
-                    <abbr title="Position">Pos</abbr>
+                    <abbr title='Position'>Pos</abbr>
                   </th>
                   <th>
-                    <abbr title="Archtype">Archtype</abbr>
+                    <abbr title='Archtype'>Archtype</abbr>
                   </th>
                   <th>
-                    <abbr title="Overall">Ovr</abbr>
+                    <abbr title='Overall'>Ovr</abbr>
                   </th>
                   <th>
-                    <abbr title="Year">Yr</abbr>
+                    <abbr title='Year'>Yr</abbr>
                   </th>
                   <th>
-                    <abbr title="Height">Ht</abbr>
+                    <abbr title='Height'>Ht</abbr>
                   </th>
                   <th>
-                    <abbr title="Weight">Wt</abbr>
+                    <abbr title='Weight'>Wt</abbr>
                   </th>
                   <th>
-                    <abbr title="State">St</abbr>
+                    <abbr title='State'>St</abbr>
                   </th>
                   <th>
-                    <abbr title="High School / JUCO">School</abbr>
+                    <abbr title='High School / JUCO'>School</abbr>
                   </th>
                   <th>
-                    <abbr title="Potential">Pot</abbr>
+                    <abbr title='Potential'>Pot</abbr>
                   </th>
                   <th>
-                    <abbr title="Jersey Number">Num</abbr>
+                    <abbr title='Jersey Number'>Num</abbr>
                   </th>
                 </tr>
               </thead>
@@ -364,34 +372,34 @@ const Roster = props => {
                     <abbr>Name</abbr>
                   </th>
                   <th>
-                    <abbr title="Position">Pos</abbr>
+                    <abbr title='Position'>Pos</abbr>
                   </th>
                   <th>
-                    <abbr title="Archtype">Archtype</abbr>
+                    <abbr title='Archtype'>Archtype</abbr>
                   </th>
                   <th>
-                    <abbr title="Overall">Ovr</abbr>
+                    <abbr title='Overall'>Ovr</abbr>
                   </th>
                   <th>
-                    <abbr title="Year">Yr</abbr>
+                    <abbr title='Year'>Yr</abbr>
                   </th>
                   <th>
-                    <abbr title="Height">Ht</abbr>
+                    <abbr title='Height'>Ht</abbr>
                   </th>
                   <th>
-                    <abbr title="Weight">Wt</abbr>
+                    <abbr title='Weight'>Wt</abbr>
                   </th>
                   <th>
-                    <abbr title="State">St</abbr>
+                    <abbr title='State'>St</abbr>
                   </th>
                   <th>
-                    <abbr title="High School / JUCO">School</abbr>
+                    <abbr title='High School / JUCO'>School</abbr>
                   </th>
                   <th>
-                    <abbr title="Potential">Pot</abbr>
+                    <abbr title='Potential'>Pot</abbr>
                   </th>
                   <th>
-                    <abbr title="Jersey Number">Num</abbr>
+                    <abbr title='Jersey Number'>Num</abbr>
                   </th>
                 </tr>
               </tfoot>
@@ -404,4 +412,8 @@ const Roster = props => {
   );
 };
 
+// const mapStateToProps = ({ user: { currentUser } }) => ({
+//   currentUser,
+// });
 export default Roster;
+// export default connect(mapStateToProps)(Roster);

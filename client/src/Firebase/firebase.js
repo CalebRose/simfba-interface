@@ -1,7 +1,7 @@
-import firebase from "firebase/app";
-import "firebase/firestore";
-import "firebase/auth";
-import config_env from "./../config";
+import firebase from 'firebase/app';
+import 'firebase/firestore';
+import 'firebase/auth';
+import config_env from './../config';
 
 const config = {
   apiKey: config_env.apiKey,
@@ -11,7 +11,7 @@ const config = {
   storageBucket: config_env.storageBucket,
   messagingSenderId: config_env.messagingSenderId,
   appId: config_env.appId,
-  measurementId: config_env.measurementId
+  measurementId: config_env.measurementId,
   //   apiKey: process.env.API_KEY,
   //   authDomain: process.env.DOMAIN,
   //   databaseURL: process.env.DB_URL,
@@ -38,10 +38,10 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
         username,
         email,
         createdAt,
-        ...additionalData
+        ...additionalData,
       });
     } catch (error) {
-      console.log("error creating user", error.message);
+      console.log('error creating user', error.message);
     }
   }
   return userRef;
@@ -52,7 +52,7 @@ export const firestore = firebase.firestore();
 
 const provider = new firebase.auth.GoogleAuthProvider();
 provider.setCustomParameters({
-  prompt: "select_account"
+  prompt: 'select_account',
 });
 
 export const signInWithGoogle = () => auth.signInWithPopup(provider);
