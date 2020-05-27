@@ -126,9 +126,9 @@
 /* End of team card on Available Teams Page */
 
 /* For Image Icons on User Profile Page */
-.images {
-  /* max-height: 100vh !important; */
-}
+/* .images {
+  /* max-height: 100vh !important; * /
+} */
 
 .tile-image {
   max-width: 40vh !important;
@@ -269,3 +269,70 @@
     display: none;
   }
 }
+
+/* 
+.dTable {
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  box-shadow: 10px 10px 5px -4px rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  margin: 5px;
+  margin-bottom: 50px;
+  margin-top: 20px;
+  /* word-break: break-word; * /
+} */
+
+@media screen and (max-width: 900px) {
+  table thead, table tfoot {
+    display: none;
+  }
+
+  table tbody {
+    display: table-caption;
+  }
+
+  table td {
+    display: flex;
+	padding: .75rem 0!important;
+  }
+
+  table th {
+    text-align: center!important;
+  }
+  
+
+  
+  table td::before {
+    content: attr(label);
+    font-weight: bold;
+	min-width: 5rem;;
+    max-width: fit-content;
+	margin: auto 1rem;
+	text-align: right;
+	display: block;
+  }
+  
+  tr {
+	border-radius: .5rem!important;
+    box-shadow: 0px 0px 15px -5px dimgrey inset!important;
+    display: grid;
+    width: 100%;
+
+  }
+  
+  .table {
+	border-collapse: separate!important;
+  border-spacing: 1rem;
+  }
+  
+  /* .dTable {
+    border: unset;
+    border-radius: unset!important;
+    box-shadow: unset!important;
+    padding: 0;
+  } */
+  
+  .container {
+	  padding: 0;
+  }
+}  

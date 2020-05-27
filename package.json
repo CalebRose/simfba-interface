@@ -7,7 +7,7 @@
     "concurrently": "^5.1.0",
     "connect-flash": "^0.1.1",
     "express-session": "^1.17.0",
-    "firebase": "^7.12.0",
+    "firebase": "^7.14.5",
     "fs": "0.0.1-security",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
@@ -56,12 +56,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CalebRose/Project-Kotar.git"
+    "url": "git+https://github.com/CalebRose/simfba-interface.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/CalebRose/Project-Kotar/issues"
+    "url": "https://github.com/CalebRose/simfba-interface/issues"
   }
 }
