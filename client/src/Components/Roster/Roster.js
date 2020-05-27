@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux';
+// import { connect, useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PlayerRow from './PlayerRow';
 import SampleContent from './SampleContent';
 import AttributeRow from './AttributeRow';
