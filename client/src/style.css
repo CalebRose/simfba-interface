@@ -1,56 +1,20 @@
-/* .jumbotron {
-  background: #404040;
-  color: white;
-}
-.jumbotron .btn-primary {
-  background: #845ac7;
-  border-color: #845ac7;
-}
-.jumbotron .btn-primary:hover {
-  background: #7646c1;
-}
-.jumbotron p {
-  color: #d9ccee;
-  max-width: 75%;
-  margin: 1em auto 2em;
-}
-.navbar + .jumbotron {
-  margin-top: -20px;
-}
-.jumbotron .lang-logo {
-  display: block;
-  background: #b3adac;
-  border-radius: 10%;
-  overflow: hidden;
-  width: 200px;
-  height: 200px;
-  margin: auto;
-  border: 2px solid white;
-}
-.jumbotron .lang-logo img {
-  max-width: 100%;
-} */
-
 /* Hero Container + Nav for all pages */
 /* Background Image */
 .hero {
-  background: url(./Constants/stadium.jpg) center / cover;
+  /* background: url(./Constants/stadium.jpg) center / cover; */
+  background-image: url(./Constants/stadium.jpg);
+  background-position-x: center;
+  background-position-y: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-origin: initial;
+  background-clip: initial;
+  background-color: initial;
 }
 
 .heroText {
   color: white;
-}
-
-@media (max-width: 1024px) {
-  .hero {
-    background: url(./Constants/stadium.jpg);
-  }
-}
-
-@media (max-width: 768px) {
-  .hero {
-    background: url(./Constants/stadium.jpg);
-  }
 }
 
 /* logo */
@@ -68,24 +32,16 @@
   border-radius: 10px;
 }
 
-.container {
-  height: 75vh !important;
-}
 /* End of Hero Container + Nav */
 
 /* For Available Teams + Roster page */
 .scrollbar {
-  overflow-y: auto;
-  overflow-x: hidden;
-  max-height: 55vh;
   padding: 6px;
   margin: auto;
+  max-width: 1100px;
 }
 
 .scrollbar-dc {
-  overflow-y: auto;
-  overflow-x: hidden;
-  max-height: 55vh;
   padding: 6px;
   max-width: 92vw;
 }
@@ -125,11 +81,6 @@
 }
 /* End of team card on Available Teams Page */
 
-/* For Image Icons on User Profile Page */
-/* .images {
-  /* max-height: 100vh !important; * /
-} */
-
 .tile-image {
   max-width: 40vh !important;
   max-height: 40vh !important;
@@ -156,9 +107,7 @@
 .overlay-text {
   font-weight: bold !important;
   font-size: 2.5rem !important;
-
   padding-top: 20%;
-  /* vertical-align: middle !important; */
 }
 /* End of Image Icons on User Profile Page */
 
@@ -167,10 +116,6 @@
 .roster-header {
   text-align: center !important;
   align-content: center;
-}
-
-.roster-scrollbar {
-  max-height: 49vh !important;
 }
 
 .roster-item {
@@ -186,6 +131,26 @@
   overflow-x: auto;
   font-size: 1.25em;
 }
+
+.table.is-truncated {
+  width: 100%;
+  table-layout: fixed;
+  white-space: nowrap;
+  max-width: 1100px;
+}
+
+.table.is-truncated td, .table.is-truncated th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table td, .table th {
+  padding: .5em .25em;
+}
+/* 
+.table .is-truncated td &:first-child {
+  text-overflow: clip;
+} */
 
 .clickable {
   cursor: pointer;
@@ -264,25 +229,23 @@
   line-height: 1;
 }
 
+td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 @media (max-width: 1024px) {
   .desktop {
     display: none;
   }
 }
 
-/* 
-.dTable {
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
-  box-shadow: 10px 10px 5px -4px rgba(0, 0, 0, 0.5);
-  padding: 10px;
-  margin: 5px;
-  margin-bottom: 50px;
-  margin-top: 20px;
-  /* word-break: break-word; * /
-} */
-
 @media screen and (max-width: 900px) {
+
+  .container {
+    padding-bottom: 0;
+  }
+
   table thead, table tfoot {
     display: none;
   }
@@ -291,33 +254,36 @@
     display: table-caption;
   }
 
+  table tbody tr:last-child td {
+    border-bottom-width: 1px!important;
+  } /* This style overrides something from Bulma */
+
   table td {
     display: flex;
-	padding: .75rem 0!important;
+  	padding: .75rem 0!important;
   }
 
   table th {
     text-align: center!important;
   }
   
-
-  
   table td::before {
     content: attr(label);
     font-weight: bold;
-	min-width: 5rem;;
+    min-width: 40%;
     max-width: fit-content;
-	margin: auto 1rem;
-	text-align: right;
-	display: block;
+    margin: auto 1rem;
+    text-align: right;
+    display: block;
   }
   
   tr {
-	border-radius: .5rem!important;
-    box-shadow: 0px 0px 15px -5px dimgrey inset!important;
+	  border-radius: .5rem!important;
+    box-shadow: 0px 0px 15px -5px dimgrey!important;
     display: grid;
-    width: 100%;
-
+    width: auto;
+    margin: .5rem;
+    background-color: white;
   }
   
   .table {
@@ -325,14 +291,10 @@
   border-spacing: 1rem;
   }
   
-  /* .dTable {
-    border: unset;
-    border-radius: unset!important;
-    box-shadow: unset!important;
-    padding: 0;
-  } */
-  
-  .container {
-	  padding: 0;
-  }
 }  
+
+@media screen and (max-width: 480px) {
+  table td::before {
+    min-width: 5rem;
+  }
+}
