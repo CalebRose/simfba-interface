@@ -1,7 +1,16 @@
 /* Hero Container + Nav for all pages */
 /* Background Image */
 .hero {
-  background: url(./Constants/stadium.jpg) center / cover;
+  /* background: url(./Constants/stadium.jpg) center / cover; */
+  background-image: url(./Constants/stadium.jpg);
+  background-position-x: center;
+  background-position-y: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-origin: initial;
+  background-clip: initial;
+  background-color: initial;
 }
 
 .heroText {
