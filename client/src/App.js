@@ -31,8 +31,8 @@ class App extends Component {
       team: '',
       teamAbbr: '',
       mascot: '',
-      roleID: null
-    }
+      roleID: null,
+    },
   };
   // Global Variables
   unSubscribeFromAuth = null;
@@ -41,13 +41,13 @@ class App extends Component {
   componentDidMount() {
     const { setCurrentUser } = this.props;
 
-    this.unSubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+    this.unSubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth !== null) {
         const userRef = await createUserProfileDocument(userAuth);
-        userRef.onSnapshot(snapShot => {
+        userRef.onSnapshot((snapShot) => {
           setCurrentUser({
             id: snapShot.id,
-            ...snapShot.data()
+            ...snapShot.data(),
           });
         });
       }
@@ -95,8 +95,8 @@ class App extends Component {
 //   setCurrentUser: user.currentUser
 // });
 
-const mapDispatchToProps = dispatch => ({
-  setCurrentUser: user => dispatch(setCurrentUser(user))
+const mapDispatchToProps = (dispatch) => ({
+  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
 });
 
 export default connect(null, mapDispatchToProps)(App);

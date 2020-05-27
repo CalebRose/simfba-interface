@@ -1,5 +1,4 @@
 import React from 'react';
-import logos from '../../Constants/logos';
 import routes from '../../Constants/routes';
 import ImageCard from '../ImageCard/ImageCard';
 import { Link } from 'react-router-dom';
@@ -99,7 +98,7 @@ const Profile = ({ currentUser }) => {
 };
 
 const mapStateToProps = ({ user: { currentUser } }) => ({
-  currentUser
+  currentUser,
 });
 
 export default connect(mapStateToProps)(Profile);
