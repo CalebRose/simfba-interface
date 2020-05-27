@@ -329,77 +329,77 @@ const Roster = ({ currentUser }) => {
             title='TEST'
           />
           <div className='table-wrapper dTable'>
-            <table className='table is-fullwidth is-hoverable'>
+            <table className='table is-fullwidth is-hoverable is-truncated'>
               <thead>
                 <tr>
-                  <th>
+                  <th style={{ width: "200px" }} >
                     <abbr>Name</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Position'>Pos</abbr>
                   </th>
                   <th>
                     <abbr title='Archtype'>Archtype</abbr>
                   </th>
-                  <th>
+                  <th style={{ width: "50px" }}>
+                    <abbr title='Position'>Pos</abbr>
+                  </th>
+                  <th style={{ width: "50px" }}>
                     <abbr title='Overall'>Ovr</abbr>
                   </th>
-                  <th>
+                  <th style={{ width: "50px" }}>
                     <abbr title='Year'>Yr</abbr>
                   </th>
-                  <th>
+                  <th style={{ width: "60px" }}>
                     <abbr title='Height'>Ht</abbr>
                   </th>
-                  <th>
+                  <th style={{ width: "80px" }}>
                     <abbr title='Weight'>Wt</abbr>
                   </th>
-                  <th>
+                  <th style={{ width: "50px" }}>
                     <abbr title='State'>St</abbr>
                   </th>
                   <th>
                     <abbr title='High School / JUCO'>School</abbr>
                   </th>
-                  <th>
+                  <th style={{ width: "50px" }}>
                     <abbr title='Potential'>Pot</abbr>
                   </th>
-                  <th>
+                  <th style={{ width: "60px" }}>
                     <abbr title='Jersey Number'>Num</abbr>
                   </th>
                 </tr>
               </thead>
               <tfoot>
                 <tr>
-                  <th>
+                  <th style={{ width: "200px" }} >
                     <abbr>Name</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Position'>Pos</abbr>
                   </th>
                   <th>
                     <abbr title='Archtype'>Archtype</abbr>
                   </th>
-                  <th>
+                  <th style={{ width: "50px" }}>
+                    <abbr title='Position'>Pos</abbr>
+                  </th>
+                  <th style={{ width: "50px" }}>
                     <abbr title='Overall'>Ovr</abbr>
                   </th>
-                  <th>
+                  <th style={{ width: "50px" }}>
                     <abbr title='Year'>Yr</abbr>
                   </th>
-                  <th>
+                  <th style={{ width: "60px" }}>
                     <abbr title='Height'>Ht</abbr>
                   </th>
-                  <th>
+                  <th style={{ width: "80px" }}>
                     <abbr title='Weight'>Wt</abbr>
                   </th>
-                  <th>
+                  <th style={{ width: "50px" }}>
                     <abbr title='State'>St</abbr>
                   </th>
                   <th>
                     <abbr title='High School / JUCO'>School</abbr>
                   </th>
-                  <th>
+                  <th style={{ width: "50px" }}>
                     <abbr title='Potential'>Pot</abbr>
                   </th>
-                  <th>
+                  <th style={{ width: "60px" }}>
                     <abbr title='Jersey Number'>Num</abbr>
                   </th>
                 </tr>
