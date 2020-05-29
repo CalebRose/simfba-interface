@@ -1,14 +1,16 @@
 import React, { useEffect } from 'react';
 import SampleContent from '../Roster/SampleContent';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import DropdownItem from '../Roster/DropdownItem';
 import DepthChartRow from './DepthChartRow';
 import DC_Dropdown from './DC_DropDown';
 import DesignationRow from './DesignationRow';
 
-const DepthChart = ({ user }) => {
-  const [team, setTeam] = React.useState(user.team + ' ' + user.mascot);
+const DepthChart = ({ currentUser }) => {
+  const user = useSelector((state) => state.user.currentUser);
+  let initialTeam = user ? user.team + ' ' + user.mascot : null; // Initial value from redux state
+  const [team, setTeam] = React.useState(initialTeam);
   const [roster, setRoster] = React.useState([]);
 
   // DropDown
@@ -21,6 +23,12 @@ const DepthChart = ({ user }) => {
     setTeam(event.target.value);
     activeDropdown();
   };
+
+  useEffect(() => {
+    if (user) {
+      setTeam(user.team + ' ' + user.mascot);
+    }
+  }, [user]);
 
   useEffect(() => {
     let playerList = SampleContent.filter((player) => player.team === team);
@@ -335,8 +343,4 @@ const DepthChart = ({ user }) => {
   );
 };
 
-const mapStateToProps = ({ user: { user } }) => ({
-  user,
-});
-
-export default connect(mapStateToProps)(DepthChart);
+export default DepthChart;
