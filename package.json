@@ -3,18 +3,13 @@
   "name": "interface",
   "version": "0.1.0",
   "private": true,
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "browser": "index.html",
+  "devDependencies": {
+    "gh-pages": "^2.2.0"
+  },
   "dependencies": {
-    "concurrently": "^5.1.0",
-    "connect-flash": "^0.1.1",
-    "express-session": "^1.17.0",
     "firebase": "^7.12.0",
-    "fs": "0.0.1-security",
-    "morgan": "^1.10.0",
-    "mysql": "^2.18.1",
-    "node-gyp": "^5.1.0",
-    "node-pre-gyp": "^0.14.0",
-    "passport": "^0.4.1",
-    "passport-local": "^1.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
@@ -22,6 +17,7 @@
     "react-scripts": "^3.4.1",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
+    "redux-persist": "^6.0.0",
     "simplebar-react": "^1.3.0-alpha.0"
   },
   "scripts": {
@@ -47,19 +43,14 @@
       "last 1 safari version"
     ]
   },
-  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
-  "main": "index.js",
-  "devDependencies": {
-    "gh-pages": "^2.2.0"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CalebRose/Project-Kotar.git"
+    "url": "git+https://github.com/CalebRose/simfba-interface.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Caleb T. Rose",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/CalebRose/Project-Kotar/issues"
+    "url": "https://github.com/CalebRose/simfba-interface/issues"
   }
 }
