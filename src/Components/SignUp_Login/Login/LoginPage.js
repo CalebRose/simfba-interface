@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import FormInput from "../FormInput/FormInput";
 import "./LoginPage.style.css";
-import { auth, signInWithGoogle } from "./../../../Firebase/firebase";
+// import { auth, signInWithGoogle } from "./../../../Firebase/firebase";
+import { auth } from "./../../../Firebase/firebase";
 import { Link } from "react-router-dom";
 import routes from "../../../Constants/routes";
 
@@ -12,11 +13,14 @@ class LoginPage extends Component {
   };
 
   handleSubmit = async event => {
+    console.log(this.props);
     event.preventDefault();
     const { email, password } = this.state;
     try {
       await auth.signInWithEmailAndPassword(email, password);
       this.setState({ email: "", password: "" });
+      console.log("successful login.");
+      this.props.history.push("/user"); // on successful login, change user's location to their home page: /user
     } catch (error) {
       console.log(error);
     }
