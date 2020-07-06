@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from "react-router"
 import { Route } from 'react-router-dom';
 
 // Redux
@@ -99,4 +100,4 @@ const mapDispatchToProps = (dispatch) => ({
   setCurrentUser: (user) => dispatch(setCurrentUser(user)),
 });
 
-export default connect(null, mapDispatchToProps)(App);
+export default withRouter(connect(null, mapDispatchToProps)(App));
