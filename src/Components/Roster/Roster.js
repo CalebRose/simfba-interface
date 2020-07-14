@@ -20,7 +20,7 @@ const Roster = ({ currentUser }) => {
   const [modalState, setModal] = React.useState(false);
   const [player, setPlayer] = React.useState(null);
   const [attributes, setAttributes] = React.useState([]);
-  let initialTeam = user ? user.team + ' ' + user.mascot : null; // Initial value from redux state
+  let initialTeam = user ? user.team : null; // Initial value from redux state
   const [team, setTeam] = React.useState(initialTeam); // Redux value as initial value for react hook
   const [roster, setRoster] = React.useState([]);
   let playerAttributes = [];
@@ -42,13 +42,33 @@ const Roster = ({ currentUser }) => {
 
   useEffect(() => {
     if (user) {
-      setTeam(user.team + ' ' + user.mascot);
+      setTeam(user.team);
     }
   }, [user]);
 
   useEffect(() => {
-    let playerList = SampleContent.filter((player) => player.team === team);
-    setRoster(playerList);
+    const getRoster = async () => {
+      let response = await fetch('http://localhost:3001/api/rosters');
+      /* {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      } */
+      let json;
+      if (response.ok) {
+        json = await response.json();
+      } else {
+        alert('HTTP-Error:', response.status);
+      }
+      let playerList = json
+        ? json.filter((player) => player.Team === team)
+        : null;
+      console.log(playerList);
+      setRoster(playerList);
+    };
+    getRoster();
+    // let playerList = SampleContent.filter((player) => player.team === team);
   }, [team]);
 
   // Call Back Function
@@ -63,13 +83,13 @@ const Roster = ({ currentUser }) => {
   // Priority Queue
 
   const setPriority = (data) => {
-    switch (data.position) {
+    switch (data.Position) {
       case 'QB':
-        data.attr.agility.priority = true;
-        data.attr.speed.priority = true;
-        data.attr.strength.priority = true;
-        data.attr.throw_power.priority = true;
-        data.attr.throw_accuracy.priority = true;
+        data.Agility.priority = true;
+        data.Speed.priority = true;
+        data.Strength.priority = true;
+        data.Throw_Power.priority = true;
+        data.Throw_Accuracy.priority = true;
         break;
       case 'RB':
         data.attr.carrying.priority = true;
@@ -109,10 +129,10 @@ const Roster = ({ currentUser }) => {
       case 'OT':
       case 'OG':
       case 'C':
-        data.attr.agility.priority = true;
-        data.attr.pass_block.priority = true;
-        data.attr.run_block.priority = true;
-        data.attr.strength.priority = true;
+        data.Agility.priority = true;
+        data.Pass_Block.priority = true;
+        data.Run_Block.priority = true;
+        data.Strength.priority = true;
         break;
       case 'DE':
         data.attr.agility.priority = true;
@@ -151,28 +171,28 @@ const Roster = ({ currentUser }) => {
         break;
       case 'FS':
       case 'SS':
-        data.attr.agility.priority = true;
-        data.attr.catching.priority = true;
-        data.attr.man_coverage.priority = true;
-        data.attr.zone_coverage.priority = true;
-        data.attr.run_defense.priority = true;
-        data.attr.speed.priority = true;
-        data.attr.strength.priority = true;
-        data.attr.tackle.priority = true;
+        data.agility.priority = true;
+        data.catching.priority = true;
+        data.man_coverage.priority = true;
+        data.zone_coverage.priority = true;
+        data.run_defense.priority = true;
+        data.speed.priority = true;
+        data.strength.priority = true;
+        data.tackle.priority = true;
         break;
       case 'K':
-        data.attr.kick_accuracy.priority = true;
-        data.attr.kick_power.priority = true;
+        data.kick_accuracy.priority = true;
+        data.kick_power.priority = true;
         break;
       case 'P':
-        data.attr.punt_accuracy.priority = true;
-        data.attr.punt_power.priority = true;
+        data.punt_accuracy.priority = true;
+        data.punt_power.priority = true;
         break;
       default:
         break;
     }
-    data.attr.football_iq.priority = true;
-    data.attr.stamina.priority = true;
+    data.Football_Iq.priority = true;
+    data.Stamina.Priority = true;
     for (let attribute in data.attr) {
       if (data.attr[attribute].priority) {
         // Algorithm to provide letter value to attribute
@@ -188,7 +208,7 @@ const Roster = ({ currentUser }) => {
     }
     playerAttributes.push({
       name: 'Potential',
-      letter: data.potential,
+      letter: data.Potential,
       priority: 'true',
     });
   };
@@ -203,7 +223,9 @@ const Roster = ({ currentUser }) => {
         <div className='modal-background' onClick={closeModal}></div>
         <div className='modal-card'>
           <header className='modal-card-head'>
-            <p className='modal-card-title'>{player.name}</p>
+            <p className='modal-card-title'>
+              {player.First_Name + ' ' + player.Last_Name}
+            </p>
             <button
               className='delete'
               aria-label='close'
@@ -332,74 +354,74 @@ const Roster = ({ currentUser }) => {
             <table className='table is-fullwidth is-hoverable is-truncated'>
               <thead>
                 <tr>
-                  <th style={{ width: "200px" }} >
+                  <th style={{ width: '200px' }}>
                     <abbr>Name</abbr>
                   </th>
                   <th>
                     <abbr title='Archtype'>Archtype</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Position'>Pos</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Overall'>Ovr</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Year'>Yr</abbr>
                   </th>
-                  <th style={{ width: "60px" }}>
+                  <th style={{ width: '60px' }}>
                     <abbr title='Height'>Ht</abbr>
                   </th>
-                  <th style={{ width: "80px" }}>
+                  <th style={{ width: '80px' }}>
                     <abbr title='Weight'>Wt</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='State'>St</abbr>
                   </th>
                   <th>
                     <abbr title='High School / JUCO'>School</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Potential'>Pot</abbr>
                   </th>
-                  <th style={{ width: "60px" }}>
+                  <th style={{ width: '60px' }}>
                     <abbr title='Jersey Number'>Num</abbr>
                   </th>
                 </tr>
               </thead>
               <tfoot>
                 <tr>
-                  <th style={{ width: "200px" }} >
+                  <th style={{ width: '200px' }}>
                     <abbr>Name</abbr>
                   </th>
                   <th>
                     <abbr title='Archtype'>Archtype</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Position'>Pos</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Overall'>Ovr</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Year'>Yr</abbr>
                   </th>
-                  <th style={{ width: "60px" }}>
+                  <th style={{ width: '60px' }}>
                     <abbr title='Height'>Ht</abbr>
                   </th>
-                  <th style={{ width: "80px" }}>
+                  <th style={{ width: '80px' }}>
                     <abbr title='Weight'>Wt</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='State'>St</abbr>
                   </th>
                   <th>
                     <abbr title='High School / JUCO'>School</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Potential'>Pot</abbr>
                   </th>
-                  <th style={{ width: "60px" }}>
+                  <th style={{ width: '60px' }}>
                     <abbr title='Jersey Number'>Num</abbr>
                   </th>
                 </tr>

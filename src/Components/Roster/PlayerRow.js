@@ -1,10 +1,14 @@
-import React from "react";
+import React from 'react';
 
-const PlayerRow = props => {
-  const [ showRow, setShowRow ] = React.useState(false);
-  const [ viewWidth, setViewWidth ] = React.useState(window.innerWidth);
+const PlayerRow = (props) => {
+  const [showRow, setShowRow] = React.useState(false);
+  const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
 
-  React.useEffect(() => { if (!viewWidth) { setViewWidth(window.innerWidth); }}, [viewWidth]);
+  React.useEffect(() => {
+    if (!viewWidth) {
+      setViewWidth(window.innerWidth);
+    }
+  }, [viewWidth]);
 
   const handleResize = () => {
     setViewWidth(window.innerWidth);
@@ -23,38 +27,45 @@ const PlayerRow = props => {
   };
   if (showRow || viewWidth >= 901) {
     return (
-          <tr onTouchEnd={(e) => {
-              if (e.cancelable) { e.preventDefault(); }
-              setShowRow(!showRow);
-            }} >
-              <th className="clickable" onClick={toggleModal}>
-                {props.data.name}
-              </th>
-              <td label="Archtype">{props.data.archtype}</td>
-              <td label="Position">{props.data.position}</td>
-              <td label="Overall">{props.data.overall}</td>
-              <td label="Year">{props.data.year}</td>
-              <td label="Height">{props.data.height}</td>
-              <td label="Weight">{props.data.weight}</td>
-              <td label="State">{props.data.state}</td>
-              <td label="School">{props.data.school}</td>
-              <td label="Potential">{props.data.potential}</td>
-              <td label="Number">{props.data.jersey}</td>
-          </tr>
+      <tr
+        onTouchEnd={(e) => {
+          if (e.cancelable) {
+            e.preventDefault();
+          }
+          setShowRow(!showRow);
+        }}
+      >
+        <th className='clickable' onClick={toggleModal}>
+          {props.data.First_Name + ' ' + props.data.Last_Name}
+        </th>
+        <td label='Archtype'>{props.data.Archetype}</td>
+        <td label='Position'>{props.data.Position}</td>
+        <td label='Overall'>{props.data.Overall}</td>
+        <td label='Year'>{props.data.Year}</td>
+        <td label='Height'>{props.data.Height}</td>
+        <td label='Weight'>{props.data.Weight}</td>
+        <td label='State'>{props.data.State}</td>
+        <td label='School'>{props.data.School}</td>
+        <td label='Potential'>{props.data.Potential}</td>
+        <td label='Number'>{props.data.JerseyNum}</td>
+      </tr>
     );
   } else {
     return (
-      <tr onTouchEnd={(e) => {
-        if (e.cancelable) { e.preventDefault(); }
-        setShowRow(!showRow);
-      }} >
-        <th className="clickable" onClick={toggleModal}>
+      <tr
+        onTouchEnd={(e) => {
+          if (e.cancelable) {
+            e.preventDefault();
+          }
+          setShowRow(!showRow);
+        }}
+      >
+        <th className='clickable' onClick={toggleModal}>
           {props.data.name}
         </th>
       </tr>
     );
-  };
-
-}
+  }
+};
 
 export default PlayerRow;
