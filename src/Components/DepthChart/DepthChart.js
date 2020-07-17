@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import SampleContent from '../Roster/SampleContent';
 import { useSelector } from 'react-redux';
-
-import DropdownItem from '../Roster/DropdownItem';
-import DepthChartRow from './DepthChartRow';
+// import DropdownItem from '../Roster/DropdownItem';
+// import DepthChartRow from './DepthChartRow';
 import DC_Dropdown from './DC_DropDown';
 import DesignationRow from './DesignationRow';
 
@@ -19,10 +18,10 @@ const DepthChart = ({ currentUser }) => {
     dropdown.classList.toggle('is-active');
   };
 
-  const selectTeam = (event) => {
-    setTeam(event.target.value);
-    activeDropdown();
-  };
+  // const selectTeam = (event) => {
+  //   setTeam(event.target.value);
+  //   activeDropdown();
+  // };
 
   useEffect(() => {
     if (user) {
@@ -99,53 +98,48 @@ const DepthChart = ({ currentUser }) => {
     />
   ));
 
+  console.log("roster = ", roster);
   return (
     <div className='hero-body center'>
       <div className='container is-fluid has-text-centered userInterface'>
         <h2 className='title is-3'>Depth Chart</h2>
         <div className='columns center is-12'></div>
         <div className='columns is-left is-12'>
-          <div className='column is-2'>
+          <div className='column is-2' style={{ textAlign: "start" }}>
+            <div className='column'>
+              <label htmlFor="team">Team:&emsp;</label>
+              <input value="LSU Tigers" id="team" disabled/>
+            </div>
+            <div className='column'>
+              <label htmlFor="position">Position:&emsp;</label>
+              <select defaultValue="Quarterback" id="position">
+                <option value="Quarterback">Quarterback</option>
+                <option value="Running Back">Running Back</option>
+                <option value="Wide Receiver">Wide Receiver</option>
+                <option value="Tackle">Tackle</option>
+                <option value="Guard">Guard</option>
+                <option value="Center">Center</option>
+                <option value="Tight End">Tight End</option>
+                <option value="End">End</option>
+                <option value="Linebacker">Linebacker</option>
+                <option value="Cornerback">Cornerback</option>
+                <option value="Safety">Safety</option>
+              </select>
+            </div>
+{/*
             <DC_Dropdown
               team={team}
               data={user}
               align='left'
               id='team-dropdown'
             />
-          </div>
-          <div className='column is-8' />
-          <div className='column is-2'>
             <DC_Dropdown
               position='Position'
               data={user}
               align='right'
               id='position-dropdown'
             />
-            {/* <div className="dropdown is-right">
-              <div className="dropdown-trigger">
-                <button
-                  name="position"
-                  className="button"
-                  aria-haspopup="true"
-                  aria-controls="dropdown-menu6"
-                  onClick={activeDropdown}
-                >
-                  <span>Position</span>
-                  <span className="icon is-small">
-                    <i className="fas fa-angle-down" aria-hidden="true"></i>
-                  </span>
-                </button>
-              </div>
-              <div className="dropdown-menu" id="dropdown-menu" role="menu">
-                <div className="dropdown-content">
-                  <DropdownItem
-                    team={props.data.team + " " + props.data.mascot}
-                    click={selectTeam}
-                  />
-                  <hr className="dropdown-divider"></hr>
-                </div>
-              </div>
-            </div> */}
+*/}
           </div>
         </div>
         <div className='is-divider' />
@@ -334,7 +328,13 @@ const DepthChart = ({ currentUser }) => {
                   </th>
                 </tr>
               </tfoot>
-              <tbody>{DesignationRows}</tbody>
+              <tbody>
+                {
+                  roster.map((player, index) => <DesignationRow designation={player.designation} pos={player.pos} key={index} players={roster} />)
+                }
+              </tbody>
+
+              {/* <tbody>{roster.map(player => <p>{player}</p>)}</tbody> */}
             </table>
           </div>
         </div>

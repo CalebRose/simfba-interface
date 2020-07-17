@@ -2,6 +2,7 @@ import React from "react";
 import Player_Dropdown from "./Player_Dropdown";
 
 const DesignationRow = props => {
+  console.log(props.players);
   /* 
     Name, Position, Archtype, Ovr, Yr, Ht, Wt, St,
     HS/JC, Pot, Num
