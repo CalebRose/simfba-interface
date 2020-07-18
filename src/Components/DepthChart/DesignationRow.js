@@ -33,6 +33,7 @@ const DesignationRow = props => {
       <td>{props.player.throw_power || Math.floor(Math.random() * 5)}</td>
       <td>{props.player.throw_accuracy || Math.floor(Math.random() * 5)}</td>
       <td>{props.player.stamina || Math.floor(Math.random() * 5)}</td>
+      <td><button>Promote</button><button>Demote</button></td>
     </tr>
   );
 };

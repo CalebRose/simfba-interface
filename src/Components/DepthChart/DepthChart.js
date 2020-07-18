@@ -235,6 +235,9 @@ const DepthChart = ({ currentUser }) => {
                   <th>
                     <abbr title='Stamina'>Stm</abbr>
                   </th>
+                  <th>
+                    <abbr title='Promote'>Promote</abbr>
+                  </th>
                 </tr>
               </thead>
               <tfoot>
@@ -326,6 +329,9 @@ const DepthChart = ({ currentUser }) => {
                   </th>
                   <th>
                     <abbr title='Stamina'>Stm</abbr>
+                  </th>
+                  <th>
+                    <abbr title='Promote'>Promote</abbr>
                   </th>
                 </tr>
               </tfoot>
