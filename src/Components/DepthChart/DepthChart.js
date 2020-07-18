@@ -44,61 +44,60 @@ const DepthChart = ({ currentUser }) => {
   // Go to the sample content and assign each player a designation
   // If they match the designation, ahve them in the proper dropdown
 
-  let designations = [
-    { designation: 'QB1', position: 'QB' },
-    { designation: 'QB2', position: 'QB' },
-    { designation: 'RB1', position: 'RB' },
-    { designation: 'RB2', position: 'RB' },
-    { designation: 'WR1', position: 'WR' },
-    { designation: 'WR2', position: 'WR' },
-    { designation: 'WR3', position: 'WR' },
-    { designation: 'TE1', position: 'TE' },
-    { designation: 'TE2', position: 'TE' },
-    { designation: 'LT1', position: 'LT' },
-    { designation: 'LT2', position: 'LT' },
-    { designation: 'LG1', position: 'LG' },
-    { designation: 'LG2', position: 'LG' },
-    { designation: 'C1', position: 'C' },
-    { designation: 'C2', position: 'C' },
-    { designation: 'RG1', position: 'RG' },
-    { designation: 'RG2', position: 'RG' },
-    { designation: 'RT1', position: 'RT' },
-    { designation: 'RT2', position: 'RT' },
-    { designation: 'LE1', position: 'LE' },
-    { designation: 'LE2', position: 'LE' },
-    { designation: 'DT1', position: 'LT' },
-    { designation: 'DT2', position: 'DT' },
-    { designation: 'RE1', position: 'RE' },
-    { designation: 'RE2', position: 'RE' },
-    { designation: 'LOLB1', position: 'OLB' },
-    { designation: 'LOLB2', position: 'OLB' },
-    { designation: 'ILB1', position: 'ILB' },
-    { designation: 'ILB2', position: 'ILB' },
-    { designation: 'ROLB1', position: 'OLB' },
-    { designation: 'ROLB2', position: 'OLB' },
-    { designation: 'CB1', position: 'CB' },
-    { designation: 'CB2', position: 'CB' },
-    { designation: 'CB3', position: 'CB' },
-    { designation: 'FS1', position: 'FS' },
-    { designation: 'FS2', position: 'FS' },
-    { designation: 'SS1', position: 'SS' },
-    { designation: 'SS2', position: 'SS' },
-    { designation: 'P1', position: 'P' },
-    { designation: 'P2', position: 'P' },
-    { designation: 'K1', position: 'K' },
-    { designation: 'K2', position: 'K' },
-  ];
+  // let designations = [
+  //   { designation: 'QB1', position: 'QB' },
+  //   { designation: 'QB2', position: 'QB' },
+  //   { designation: 'RB1', position: 'RB' },
+  //   { designation: 'RB2', position: 'RB' },
+  //   { designation: 'WR1', position: 'WR' },
+  //   { designation: 'WR2', position: 'WR' },
+  //   { designation: 'WR3', position: 'WR' },
+  //   { designation: 'TE1', position: 'TE' },
+  //   { designation: 'TE2', position: 'TE' },
+  //   { designation: 'LT1', position: 'LT' },
+  //   { designation: 'LT2', position: 'LT' },
+  //   { designation: 'LG1', position: 'LG' },
+  //   { designation: 'LG2', position: 'LG' },
+  //   { designation: 'C1', position: 'C' },
+  //   { designation: 'C2', position: 'C' },
+  //   { designation: 'RG1', position: 'RG' },
+  //   { designation: 'RG2', position: 'RG' },
+  //   { designation: 'RT1', position: 'RT' },
+  //   { designation: 'RT2', position: 'RT' },
+  //   { designation: 'LE1', position: 'LE' },
+  //   { designation: 'LE2', position: 'LE' },
+  //   { designation: 'DT1', position: 'LT' },
+  //   { designation: 'DT2', position: 'DT' },
+  //   { designation: 'RE1', position: 'RE' },
+  //   { designation: 'RE2', position: 'RE' },
+  //   { designation: 'LOLB1', position: 'OLB' },
+  //   { designation: 'LOLB2', position: 'OLB' },
+  //   { designation: 'ILB1', position: 'ILB' },
+  //   { designation: 'ILB2', position: 'ILB' },
+  //   { designation: 'ROLB1', position: 'OLB' },
+  //   { designation: 'ROLB2', position: 'OLB' },
+  //   { designation: 'CB1', position: 'CB' },
+  //   { designation: 'CB2', position: 'CB' },
+  //   { designation: 'CB3', position: 'CB' },
+  //   { designation: 'FS1', position: 'FS' },
+  //   { designation: 'FS2', position: 'FS' },
+  //   { designation: 'SS1', position: 'SS' },
+  //   { designation: 'SS2', position: 'SS' },
+  //   { designation: 'P1', position: 'P' },
+  //   { designation: 'P2', position: 'P' },
+  //   { designation: 'K1', position: 'K' },
+  //   { designation: 'K2', position: 'K' },
+  // ];
 
-  let DesignationRows = designations.map((x) => (
-    <DesignationRow
-      designation={x.designation}
-      pos={x.position}
-      players={roster}
-      key={x.designation}
-    />
-  ));
+  // let DesignationRows = designations.map((x) => (
+  //   <DesignationRow
+  //     designation={x.designation}
+  //     pos={x.position}
+  //     players={roster}
+  //     key={x.designation}
+  //   />
+  // ));
 
-  console.log("roster = ", roster);
   return (
     <div className='hero-body center'>
       <div className='container is-fluid has-text-centered userInterface'>
@@ -148,6 +147,7 @@ const DepthChart = ({ currentUser }) => {
             <table className='table is-hoverable'>
               <thead>
                 <tr>
+                  <td></td>
                   <th>
                     <abbr title='Designation'>Pos</abbr>
                   </th>
@@ -238,12 +238,13 @@ const DepthChart = ({ currentUser }) => {
                 </tr>
               </thead>
               <tfoot>
-                <tr>
+              <tr>
+                  <td></td>
                   <th>
-                    <abbr title='Designation'>Desig.</abbr>
+                    <abbr title='Designation'>Pos</abbr>
                   </th>
                   <th>
-                    <abbr>Player Name</abbr>
+                    <abbr>Name</abbr>
                   </th>
                   <th>
                     <abbr title='Archtype'>Archtype</abbr>
@@ -330,7 +331,7 @@ const DepthChart = ({ currentUser }) => {
               </tfoot>
               <tbody>
                 {
-                  roster.map((player, index) => <DesignationRow designation={player.designation} pos={player.pos} key={index} players={roster} />)
+                  roster.map((player, index) => <DesignationRow player={player} designation={player.designation} pos={player.pos} key={index} rank={index} players={roster} />)
                 }
               </tbody>
 
