@@ -1,9 +1,11 @@
 import React from 'react';
 
 const PlayerRow = (props) => {
+  console.log(props);
   const [showRow, setShowRow] = React.useState(false);
   const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
-
+  const [overall, setOverall] = React.useState('');
+  let ovr = props.data.Overall;
   React.useEffect(() => {
     if (!viewWidth) {
       setViewWidth(window.innerWidth);
@@ -13,6 +15,18 @@ const PlayerRow = (props) => {
   const handleResize = () => {
     setViewWidth(window.innerWidth);
   };
+
+  React.useEffect(() => {
+    if (ovr) {
+      let letter = '';
+      if (ovr >= 46) letter = 'A';
+      else if (ovr > 36) letter = 'B';
+      else if (ovr > 26) letter = 'C';
+      else if (ovr > 16) letter = 'D';
+      else letter = 'F';
+      setOverall(letter);
+    }
+  }, [overall]);
 
   window.addEventListener('resize', handleResize);
   /* 
@@ -40,7 +54,7 @@ const PlayerRow = (props) => {
         </th>
         <td label='Archtype'>{props.data.Archetype}</td>
         <td label='Position'>{props.data.Position}</td>
-        <td label='Overall'>{props.data.Overall}</td>
+        <td label='Overall'>{overall}</td>
         <td label='Year'>{props.data.Year}</td>
         <td label='Height'>{props.data.Height}</td>
         <td label='Weight'>{props.data.Weight}</td>

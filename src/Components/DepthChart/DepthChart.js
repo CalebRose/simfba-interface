@@ -67,7 +67,7 @@ const DepthChart = ({ currentUser }) => {
     { designation: 'RT2', position: 'RT' },
     { designation: 'LE1', position: 'LE' },
     { designation: 'LE2', position: 'LE' },
-    { designation: 'DT1', position: 'LT' },
+    { designation: 'DT1', position: 'DT' },
     { designation: 'DT2', position: 'DT' },
     { designation: 'RE1', position: 'RE' },
     { designation: 'RE2', position: 'RE' },
@@ -89,6 +89,65 @@ const DepthChart = ({ currentUser }) => {
     { designation: 'K1', position: 'K' },
     { designation: 'K2', position: 'K' },
   ];
+
+  let positions = [
+    { position: 'QB' },
+    { position: 'RB' },
+    { position: 'WR' },
+    { position: 'TE' },
+    { position: 'LT' },
+    { position: 'LG' },
+    { position: 'C' },
+    { position: 'RG' },
+    { position: 'RT' },
+    { position: 'LE' },
+    { position: 'DT' },
+    { position: 'RE' },
+    { position: 'LOLB' },
+    { position: 'ILB' },
+    { position: 'ROLB' },
+    { position: 'CB' },
+    { position: 'FS' },
+    { position: 'SS' },
+  ];
+
+  let headers = [
+    { title: 'Designation', Label: 'Pos' },
+    { title: 'Name', Label: 'Name' },
+    { title: 'Archetype', Label: 'Archetype' },
+    { title: 'Overall', Label: 'Ovr' },
+    { title: 'Year', Label: 'Yr' },
+    { title: 'Height', Label: 'Ht' },
+    { title: 'Weight', Label: 'Wt' },
+    { title: 'Potential', Label: 'Pot' },
+    { title: 'Carrying', Label: 'Carr' },
+    { title: 'Agility', Label: 'Agi' },
+    { title: 'Catching', Label: 'Ctch' },
+    { title: 'Zone Coverage', Label: 'Z.C.' },
+    { title: 'Man Coverage', Label: 'M.C.' },
+    { title: 'Football IQ', Label: 'IQ' },
+    { title: 'Kick Accuracy', Label: 'K.A.' },
+    { title: 'Kick Power', Label: 'K.P.' },
+    { title: 'Pass Blocking', Label: 'P.B.' },
+    { title: 'Pass Rush', Label: 'P.R.' },
+    { title: 'Punt Accuracy', Label: 'P.A.' },
+    { title: 'Punt Power', Label: 'P.P.' },
+    { title: 'Route Running', Label: 'R.R.' },
+    { title: 'Run Blocking', Label: 'R.B.' },
+    { title: 'Run Defense', Label: 'R.D.' },
+    { title: 'Speed', Label: 'Spd' },
+    { title: 'Strength', Label: 'Str' },
+    { title: 'Tackle', Label: 'Tck' },
+    { title: 'Throw Power', Label: 'T.P.' },
+    { title: 'Throw Accuracy', Label: 'T.A.' },
+    { title: 'Stamina', Label: 'Stm' },
+  ];
+
+  let headerRows = headers.map((x) => (
+    <th>
+      <abbr title={x.title}>{x.Label}</abbr>
+    </th>
+  ));
 
   let DesignationRows = designations.map((x) => (
     <DesignationRow
@@ -112,15 +171,15 @@ const DepthChart = ({ currentUser }) => {
               align='left'
               id='team-dropdown'
             />
-          </div>
-          <div className='column is-8' />
-          <div className='column is-2'>
             <DC_Dropdown
               position='Position'
               data={user}
               align='right'
               id='position-dropdown'
             />
+          </div>
+          <div className='column is-8' />
+          <div className='column is-2'>
             {/* <div className="dropdown is-right">
               <div className="dropdown-trigger">
                 <button
@@ -153,188 +212,12 @@ const DepthChart = ({ currentUser }) => {
           <div className='table-wrapper table-container'>
             <table className='table is-hoverable'>
               <thead>
-                <tr>
-                  <th>
-                    <abbr title='Designation'>Pos</abbr>
-                  </th>
-                  <th>
-                    <abbr>Name</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Archtype'>Archtype</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Overall'>Ovr</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Year'>Yr</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Height'>Ht</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Weight'>Wt</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Potential'>Pot</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Carrying'>Carr</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Agility'>Agi</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Catching'>Ctch</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Zone Coverage'>Z.C.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Man Coverage'>M.C.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Football IQ'>IQ</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Kick Accuracy'>K.A.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Kick Power'>K.P.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Pass Blocking'>P.B.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Pass Rush'>P.R.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Punt Accuracy'>P.A.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Punt Power'>P.P.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Route Running'>R.R.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Run Blocking'>R.B.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Run Defense'>R.D.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Speed'>Spd</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Strength'>Str</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Tackle'>Tck</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Throw Power'>T.P.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Throw Accuracy'>T.A.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Stamina'>Stm</abbr>
-                  </th>
-                </tr>
+                <tr>{headerRows}</tr>
               </thead>
               <tfoot>
-                <tr>
-                  <th>
-                    <abbr title='Designation'>Desig.</abbr>
-                  </th>
-                  <th>
-                    <abbr>Player Name</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Archtype'>Archtype</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Overall'>Ovr</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Year'>Yr</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Height'>Ht</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Weight'>Wt</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Potential'>Pot</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Carrying'>Carr</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Agility'>Agi</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Catching'>Ctch</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Zone Coverage'>Z.C.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Man Coverage'>M.C.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Football IQ'>IQ</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Kick Accuracy'>K.A.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Kick Power'>K.P.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Pass Blocking'>P.B.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Pass Rush'>P.R.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Punt Accuracy'>P.A.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Punt Power'>P.P.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Route Running'>R.R.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Run Blocking'>R.B.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Run Defense'>R.D.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Speed'>Spd</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Strength'>Str</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Tackle'>Tck</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Throw Power'>T.P.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Throw Accuracy'>T.A.</abbr>
-                  </th>
-                  <th>
-                    <abbr title='Stamina'>Stm</abbr>
-                  </th>
-                </tr>
+                <tr>{headerRows}</tr>
               </tfoot>
-              <tbody>{DesignationRows}</tbody>
+              {/* <tbody>{DesignationRows}</tbody> */}
             </table>
           </div>
         </div>
