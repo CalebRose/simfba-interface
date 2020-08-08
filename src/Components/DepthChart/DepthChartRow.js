@@ -1,73 +1,41 @@
 import React from "react";
 
-const DepthChartRow = props => {
-  /* 
-    Name, Position, Archtype, Ovr, Yr, Ht, Wt, St,
-    HS/JC, Pot, Num
-    
-    */
-  let position = props.designation.slice(0, 2);
-
-  let data = props.data;
-  const playerAttributes = {};
-  for (let attribute in data.attr) {
-    // Algorithm to provide letter value to attribute
-    // NOTE: Move this outside of the if statement for implementation to see all attributes
-    let attr = data.attr[attribute];
-    if (attr.value < 15) {
-      playerAttributes[attribute] = "F";
-      attr.letter = "F";
-    } else if (attr.value < 25) {
-      playerAttributes[attribute] = "D";
-      attr.letter = "D";
-    } else if (attr.value < 35) {
-      playerAttributes[attribute] = "C";
-      attr.letter = "C";
-    } else if (attr.value < 45) {
-      playerAttributes[attribute] = "B";
-      attr.letter = "B";
-    } else if (attr.value >= 45) {
-      playerAttributes[attribute] = "A";
-      attr.letter = "A";
-    }
-  }
-  const toggleModal = () => {
-    props.toggle();
-    props.getData(data);
-  };
+const PlayerRow = props => {
   return (
     <tr>
-      <td>{props.data.position}</td>
-      <th className="clickable">{props.data.name}</th>
-      <td>{props.data.archtype}</td>
-      <td>{props.data.overall}</td>
-      <td>{props.data.year}</td>
-      <td>{props.data.height}</td>
-      <td>{props.data.weight}</td>
-      <td>{props.data.potential}</td>
-      <td>{playerAttributes.carrying}</td>
-      <td>{playerAttributes.agility}</td>
-      <td>{playerAttributes.catching}</td>
-      <td>{playerAttributes.zone_coverage}</td>
-      <td>{playerAttributes.man_coverage}</td>
-      <td>{playerAttributes.football_iq}</td>
-      <td>{playerAttributes.kick_accuracy}</td>
-      <td>{playerAttributes.kick_power}</td>
-      <td>{playerAttributes.pass_block}</td>
-      <td>{playerAttributes.pass_rush}</td>
-      <td>{playerAttributes.punt_accuracy}</td>
-      <td>{playerAttributes.punt_power}</td>
-      <td>{playerAttributes.route_running}</td>
-      <td>{playerAttributes.run_block}</td>
-      <td>{playerAttributes.run_defense}</td>
-      <td>{playerAttributes.speed}</td>
-      <td>{playerAttributes.strength}</td>
-      <td>{playerAttributes.tackle}</td>
-      <td>{playerAttributes.throw_power}</td>
-      <td>{playerAttributes.throw_accuracy}</td>
-      <td>{playerAttributes.stamina}</td>
+      {props.rank === 0 ? <th scope="row">first string</th> : props.rank === 1 ? <th scope="row">second string</th> : props.rank === 2 ? <th scope="row">bench</th> : <td></td>}
+      <td>{props.player.position}</td>
+      <td>{props.player.name}</td>
+      <td>{props.player.archtype}</td>
+      <td>{props.player.overall}</td>
+      <td>{props.player.year}</td>
+      <td>{props.player.height || "5'10\""}</td>
+      <td>{props.player.weight}</td>
+      <td>{props.player.potential}</td>
+      <td>{props.player.carrying || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.agility || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.catching || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.zone_coverage || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.man_coverage || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.football_iq || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.kick_accuracy || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.kick_power || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.pass_block || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.pass_rush || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.punt_accuracy || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.punt_power || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.route_running || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.run_block || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.run_defense || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.speed || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.strength || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.tackle || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.throw_power || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.throw_accuracy || Math.floor(Math.random() * 5)}</td>
+      <td>{props.player.stamina || Math.floor(Math.random() * 5)}</td>
+      <td><button onClick={() => props.moveRow(true)} disabled={props.rank === 0}><span style={{fontSize: "2rem"}}>&#8593;</span></button><button onClick={() => props.moveRow(false)} disabled={props.rank === props.arrLength - 1}><span style={{fontSize: "2rem"}}>&#8595;</span></button></td>
     </tr>
   );
 };
 
-export default DepthChartRow;
+export default PlayerRow;
