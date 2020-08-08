@@ -94,8 +94,6 @@ class SignUp extends React.Component {
             </form>
           </div>
         </div>
-
-        {/* Implement Sign Up Button. Fetch Request for implmenting a new user */}
       </div>
     );
   }
