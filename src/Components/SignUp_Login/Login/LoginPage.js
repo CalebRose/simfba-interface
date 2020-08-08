@@ -16,21 +16,20 @@ class LoginPage extends Component {
     console.log(this.props);
     event.preventDefault();
     const { email, password } = this.state;
+    let isEmail = this.isEmail(email);
     try {
-      await auth.signInWithEmailAndPassword(email, password);
+      if (isEmail) {
+        await auth.signInWithEmailAndPassword(email, password);
+      } else {
+        // auth using username
+      }
       this.setState({ email: '', password: '' });
       console.log('successful login.');
       this.props.history.push('/user'); // on successful login, change user's location to their home page: /user
       auth.currentUser
         .getIdToken(/* forceRefresh */ true)
         .then(function (idToken) {
-          // Send token to your backend via HTTPS
-          // ...
-          console.log('====== ID TOKEN ======');
-          console.log(idToken);
           localStorage.setItem('token', idToken);
-          console.log('======================');
-          console.log(localStorage);
         })
         .catch(function (error) {
           // Handle error
@@ -54,6 +53,14 @@ class LoginPage extends Component {
       // Handle error
     });
   */
+
+  isEmail = (input) => {
+    for (let i = 0; i < input.length; i++) {
+      if (input[i] === '@') return true;
+    }
+    return false;
+  };
+
   handleChange = (event) => {
     //
     const { name, value } = event.target;
@@ -68,8 +75,8 @@ class LoginPage extends Component {
           <FormInput
             name='email'
             value={email}
-            label='Email'
-            type='email'
+            label='Username or Email'
+            type='text'
             handleChange={this.handleChange}
           />
           <FormInput
