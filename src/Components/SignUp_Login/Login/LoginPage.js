@@ -57,7 +57,7 @@ class LoginPage extends Component {
             type="password"
             handleChange={this.handleChange}
           />
-          <div className="tile buttons">
+          <div className="tile signup-button">
             <Link to={routes.LANDING}>
               <button
                 className="button login-button"

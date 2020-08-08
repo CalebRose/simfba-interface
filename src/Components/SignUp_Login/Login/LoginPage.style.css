@@ -2,6 +2,7 @@
   width: 400px;
   display: flex;
   flex-direction: column;
+  margin: auto;
 }
 
 .login-logo {
