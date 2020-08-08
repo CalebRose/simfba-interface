@@ -5,6 +5,7 @@ import PlayerRow from './PlayerRow';
 import SampleContent from './SampleContent';
 import AttributeRow from './AttributeRow';
 import DropdownItem from './DropdownItem';
+import Player from '../../Models/Player';
 // import DepthChartRow from "../DepthChart/DepthChartRow";
 
 const Roster = ({ currentUser }) => {
@@ -16,11 +17,10 @@ const Roster = ({ currentUser }) => {
   // React Hooks for Modal
   //
   const user = useSelector((state) => state.user.currentUser); // Selecting redux state
-  console.log(user);
   const [modalState, setModal] = React.useState(false);
   const [player, setPlayer] = React.useState(null);
   const [attributes, setAttributes] = React.useState([]);
-  let initialTeam = user ? user.team + ' ' + user.mascot : null; // Initial value from redux state
+  let initialTeam = user ? user.team : null; // Initial value from redux state
   const [team, setTeam] = React.useState(initialTeam); // Redux value as initial value for react hook
   const [roster, setRoster] = React.useState([]);
   let playerAttributes = [];
@@ -42,158 +42,210 @@ const Roster = ({ currentUser }) => {
 
   useEffect(() => {
     if (user) {
-      setTeam(user.team + ' ' + user.mascot);
+      setTeam(user.team);
     }
   }, [user]);
 
   useEffect(() => {
-    let playerList = SampleContent.filter((player) => player.team === team);
-    setRoster(playerList);
+    const getRoster = async () => {
+      let response = await fetch('http://localhost:3001/api/rosters');
+      /* {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      } */
+      let json;
+      if (response.ok) {
+        json = await response.json();
+      } else {
+        alert('HTTP-Error:', response.status);
+      }
+      let playerList = json
+        ? json.filter((player) => player.Team === team)
+        : null;
+      console.log(playerList);
+      setRoster(playerList);
+    };
+    getRoster();
+    // let playerList = SampleContent.filter((player) => player.team === team);
   }, [team]);
 
   // Call Back Function
   const getPlayerData = (data) => {
     if (data) {
-      playerAttributes = [];
-      setPriority(data);
-      setPlayer(data);
-      setAttributes(playerAttributes);
+      let playerRecord = new Player(data);
+      setPriority(playerRecord);
+      setPlayer(playerRecord);
+      setAttributes(playerRecord.priorityAttributes);
     }
   };
   // Priority Queue
 
   const setPriority = (data) => {
-    switch (data.position) {
+    console.log('SET PRIORITY');
+    console.log(data);
+    switch (data.Position) {
       case 'QB':
-        data.attr.agility.priority = true;
-        data.attr.speed.priority = true;
-        data.attr.strength.priority = true;
-        data.attr.throw_power.priority = true;
-        data.attr.throw_accuracy.priority = true;
+        data.priorityAttributes = [
+          { Name: 'Agility', Value: data.Agility, Letter: '' },
+          { Name: 'Speed', Value: data.Speed, Letter: '' },
+          { Name: 'Strength', Value: data.Strength, Letter: '' },
+          { Name: 'Throw Power', Value: data.Throw_Power, Letter: '' },
+          { Name: 'Throw Accuracy', Value: data.Throw_Accuracy, Letter: '' },
+        ];
         break;
       case 'RB':
-        data.attr.carrying.priority = true;
-        data.attr.agility.priority = true;
-        data.attr.speed.priority = true;
-        data.attr.catching.priority = true;
-        data.attr.pass_block.priority = true;
-        data.attr.strength.priority = true;
+        data.priorityAttributes = [
+          { Name: 'Agility', Value: data.Agility, Letter: '' },
+          { Name: 'Speed', Value: data.Speed, Letter: '' },
+          { Name: 'Carrying', Value: data.Carrying, Letter: '' },
+          { Name: 'Catching', Value: data.Catching, Letter: '' },
+          { Name: 'Pass Block', Value: data.Pass_Block, Letter: '' },
+          { Name: 'Strength', Value: data.Strength, Letter: '' },
+        ];
         break;
       case 'FB':
-        data.attr.carrying.priority = true;
-        data.attr.agility.priority = true;
-        data.attr.speed.priority = true;
-        data.attr.catching.priority = true;
-        data.attr.pass_block.priority = true;
-        data.attr.run_block.priority = true;
-        data.attr.strength.priority = true;
+        data.priorityAttributes = [
+          { Name: 'Agility', Value: data.Agility, Letter: '' },
+          { Name: 'Speed', Value: data.Speed, Letter: '' },
+          { Name: 'Carrying', Value: data.Carrying, Letter: '' },
+          { Name: 'Catching', Value: data.Catching, Letter: '' },
+          { Name: 'Pass Block', Value: data.Pass_Block, Letter: '' },
+          { Name: 'Run Block', Value: data.Run_Block, Letter: '' },
+          { Name: 'Strength', Value: data.Strength, Letter: '' },
+        ];
         break;
       case 'WR':
-        data.attr.carrying.priority = true;
-        data.attr.agility.priority = true;
-        data.attr.speed.priority = true;
-        data.attr.catching.priority = true;
-        data.attr.route_running.priority = true;
-        data.attr.strength.priority = true;
+        data.priorityAttributes = [
+          { Name: 'Agility', Value: data.Agility, Letter: '' },
+          { Name: 'Speed', Value: data.Speed, Letter: '' },
+          { Name: 'Carrying', Value: data.Carrying, Letter: '' },
+          { Name: 'Catching', Value: data.Catching, Letter: '' },
+          { Name: 'Route Running', Value: data.Route_Running, Letter: '' },
+          { Name: 'Strength', Value: data.Strength, Letter: '' },
+        ];
         break;
       case 'TE':
-        data.attr.carrying.priority = true;
-        data.attr.agility.priority = true;
-        data.attr.speed.priority = true;
-        data.attr.catching.priority = true;
-        data.attr.pass_block.priority = true;
-        data.attr.run_block.priority = true;
-        data.attr.route_running.priority = true;
-        data.attr.strength.priority = true;
+        data.priorityAttributes = [
+          { Name: 'Agility', Value: data.Agility, Letter: '' },
+          { Name: 'Speed', Value: data.Speed, Letter: '' },
+          { Name: 'Carrying', Value: data.Carrying, Letter: '' },
+          { Name: 'Catching', Value: data.Catching, Letter: '' },
+          { Name: 'Route Running', Value: data.Route_Running, Letter: '' },
+          { Name: 'Strength', Value: data.Strength, Letter: '' },
+          { Name: 'Pass Block', Value: data.Pass_Block, Letter: '' },
+          { Name: 'Run Block', Value: data.Run_Block, Letter: '' },
+        ];
         break;
       case 'OT':
       case 'OG':
       case 'C':
-        data.attr.agility.priority = true;
-        data.attr.pass_block.priority = true;
-        data.attr.run_block.priority = true;
-        data.attr.strength.priority = true;
+        data.priorityAttributes = [
+          { Name: 'Agility', Value: data.Agility, Letter: '' },
+          { Name: 'Strength', Value: data.Strength, Letter: '' },
+          { Name: 'Pass Block', Value: data.Pass_Block, Letter: '' },
+          { Name: 'Run Block', Value: data.Run_Block, Letter: '' },
+        ];
         break;
       case 'DE':
-        data.attr.agility.priority = true;
-        data.attr.pass_rush.priority = true;
-        data.attr.run_defense.priority = true;
-        data.attr.speed.priority = true;
-        data.attr.strength.priority = true;
-        data.attr.tackle.priority = true;
+        data.priorityAttributes = [
+          { Name: 'Agility', Value: data.Agility, Letter: '' },
+          { Name: 'Speed', Value: data.Speed, Letter: '' },
+          { Name: 'Tackle', Value: data.Tackle, Letter: '' },
+          { Name: 'Strength', Value: data.Strength, Letter: '' },
+          { Name: 'Pass Rush', Value: data.Pass_Rush, Letter: '' },
+          { Name: 'Run Defense', Value: data.Run_Defense, Letter: '' },
+        ];
         break;
       case 'DT':
-        data.attr.agility.priority = true;
-        data.attr.pass_rush.priority = true;
-        data.attr.run_defense.priority = true;
-        data.attr.strength.priority = true;
-        data.attr.tackle.priority = true;
+        data.priorityAttributes = [
+          { Name: 'Agility', Value: data.Agility, Letter: '' },
+          { Name: 'Tackle', Value: data.Tackle, Letter: '' },
+          { Name: 'Strength', Value: data.Strength, Letter: '' },
+          { Name: 'Pass Rush', Value: data.Pass_Rush, Letter: '' },
+          { Name: 'Run Defense', Value: data.Run_Defense, Letter: '' },
+        ];
         break;
       case 'ILB':
       case 'OLB':
-        data.attr.agility.priority = true;
-        data.attr.man_coverage.priority = true;
-        data.attr.zone_coverage.priority = true;
-        data.attr.pass_rush.priority = true;
-        data.attr.run_defense.priority = true;
-        data.attr.speed.priority = true;
-        data.attr.strength.priority = true;
-        data.attr.tackle.priority = true;
+        data.priorityAttributes = [
+          { Name: 'Agility', Value: data.Agility, Letter: '' },
+          { Name: 'Speed', Value: data.Speed, Letter: '' },
+          { Name: 'Tackle', Value: data.Tackle, Letter: '' },
+          { Name: 'Strength', Value: data.Strength, Letter: '' },
+          { Name: 'Pass Rush', Value: data.Pass_Rush, Letter: '' },
+          { Name: 'Run Defense', Value: data.Run_Defense, Letter: '' },
+          { Name: 'Zone Coverage', Value: data.Zone_coverage, Letter: '' },
+          { Name: 'Man Coverage', Value: data.Man_Coverage, Letter: '' },
+        ];
         break;
       case 'CB':
-        data.attr.agility.priority = true;
-        data.attr.catching.priority = true;
-        data.attr.man_coverage.priority = true;
-        data.attr.zone_coverage.priority = true;
-        data.attr.speed.priority = true;
-        data.attr.strength.priority = true;
-        data.attr.tackle.priority = true;
+        data.priorityAttributes = [
+          { Name: 'Agility', Value: data.Agility, Letter: '' },
+          { Name: 'Speed', Value: data.Speed, Letter: '' },
+          { Name: 'Tackle', Value: data.Tackle, Letter: '' },
+          { Name: 'Strength', Value: data.Strength, Letter: '' },
+          { Name: 'Zone Coverage', Value: data.Zone_coverage, Letter: '' },
+          { Name: 'Man Coverage', Value: data.Man_Coverage, Letter: '' },
+          { Name: 'Catching', Value: data.Catching, Letter: '' },
+        ];
         break;
       case 'FS':
       case 'SS':
-        data.attr.agility.priority = true;
-        data.attr.catching.priority = true;
-        data.attr.man_coverage.priority = true;
-        data.attr.zone_coverage.priority = true;
-        data.attr.run_defense.priority = true;
-        data.attr.speed.priority = true;
-        data.attr.strength.priority = true;
-        data.attr.tackle.priority = true;
+        data.priorityAttributes = [
+          { Name: 'Agility', Value: data.Agility, Letter: '' },
+          { Name: 'Speed', Value: data.Speed, Letter: '' },
+          { Name: 'Run_Defense', Value: data.Run_Defense, Letter: '' },
+          { Name: 'Tackle', Value: data.Tackle, Letter: '' },
+          { Name: 'Strength', Value: data.Strength, Letter: '' },
+          { Name: 'Zone Coverage', Value: data.Zone_coverage, Letter: '' },
+          { Name: 'Man Coverage', Value: data.Man_Coverage, Letter: '' },
+          { Name: 'Catching', Value: data.Catching, Letter: '' },
+        ];
         break;
       case 'K':
-        data.attr.kick_accuracy.priority = true;
-        data.attr.kick_power.priority = true;
+        data.priorityAttributes = [
+          { Name: 'Kick Accuracy', Value: data.Kick_Accuracy, Letter: '' },
+          { Name: 'KickPower', Value: data.Kick_Power, Letter: '' },
+        ];
         break;
       case 'P':
-        data.attr.punt_accuracy.priority = true;
-        data.attr.punt_power.priority = true;
+        data.priorityAttributes = [
+          { Name: 'Punt Accuracy', Value: data.Punt_Accuracy, Letter: '' },
+          { Name: 'Punt Power', Value: data.Punt_Power, Letter: '' },
+        ];
         break;
       default:
         break;
     }
-    data.attr.football_iq.priority = true;
-    data.attr.stamina.priority = true;
-    for (let attribute in data.attr) {
-      if (data.attr[attribute].priority) {
-        // Algorithm to provide letter value to attribute
-        // NOTE: Move this outside of the if statement for implementation to see all attributes
-        let attr = data.attr[attribute];
-        if (attr.value < 15) attr.letter = 'F';
-        else if (attr.value < 25) attr.letter = 'D';
-        else if (attr.value < 35) attr.letter = 'C';
-        else if (attr.value < 45) attr.letter = 'B';
-        else if (attr.value >= 45) attr.letter = 'A';
-        playerAttributes.push(attr);
-      }
+    data.priorityAttributes.push({
+      Name: 'Football IQ',
+      Value: data.Football_IQ,
+      Letter: '',
+    });
+    data.priorityAttributes.push({
+      Name: 'Stamina',
+      Value: data.Stamina,
+      Letter: '',
+    });
+    for (let i = 0; i < data.priorityAttributes.length; i++) {
+      const attribute = data.priorityAttributes[i];
+      // Algorithm to provide letter value to attribute
+      // NOTE: Move this outside of the if statement for implementation to see all attributes
+      if (attribute.Value < 15) attribute.Letter = 'F';
+      else if (attribute.Value < 25) attribute.Letter = 'D';
+      else if (attribute.Value < 35) attribute.Letter = 'C';
+      else if (attribute.Value < 45) attribute.Letter = 'B';
+      else if (attribute.Value >= 45) attribute.Letter = 'A';
     }
-    playerAttributes.push({
-      name: 'Potential',
-      letter: data.potential,
-      priority: 'true',
+    data.priorityAttributes.push({
+      Name: 'Potential',
+      Letter: data.Potential,
     });
   };
   const AttributeRows = attributes.map((attribute) => (
-    <AttributeRow key={attribute.name} data={attribute} />
+    <AttributeRow key={attribute.Name} data={attribute} />
   ));
   const Modal = ({ children, closeModal, modalState, title }) => {
     if (!modalState) return null;
@@ -203,7 +255,9 @@ const Roster = ({ currentUser }) => {
         <div className='modal-background' onClick={closeModal}></div>
         <div className='modal-card'>
           <header className='modal-card-head'>
-            <p className='modal-card-title'>{player.name}</p>
+            <p className='modal-card-title'>
+              {player.First_Name + ' ' + player.Last_Name}
+            </p>
             <button
               className='delete'
               aria-label='close'
@@ -214,25 +268,33 @@ const Roster = ({ currentUser }) => {
             <div className='level'>
               <div className='level-left'>
                 <div className='title is-4'>
-                  <p>{player.team}</p>
-                  <p className='gap'>Year: {player.year}</p>
+                  <p>{player.Team}</p>
+                  <p className='gap'>
+                    <strong>Year: </strong>
+                    {player.Year}
+                  </p>
                 </div>
               </div>
               <div className='level-right'>
                 <div className='title is-4'>
-                  <p className='gap-right'>Position: {player.position}</p>
-                  <p>Archtype: {player.archtype}</p>
+                  <p className='gap-right'>
+                    <strong>Position: </strong>
+                    {player.Position}
+                  </p>
+                  <p>
+                    <strong>Archetype:</strong> {player.Archetype}
+                  </p>
                 </div>
               </div>
             </div>
             <div className='level'>
               <div className='level-left'>
                 <p className='title is-4'>
-                  {player.height} {player.weight}
+                  {player.Height} inches, {player.Weight} lbs
                 </p>
               </div>
               <div className='level-right'>
-                <p className='subtitle is-4'>Overall: {player.overall}</p>
+                <p className='subtitle is-4'>Overall: {player.Overall}</p>
               </div>
             </div>
             <div className='AttributeTable tile is-parent'>{AttributeRows}</div>
@@ -332,74 +394,74 @@ const Roster = ({ currentUser }) => {
             <table className='table is-fullwidth is-hoverable is-truncated'>
               <thead>
                 <tr>
-                  <th style={{ width: "200px" }} >
+                  <th style={{ width: '200px' }}>
                     <abbr>Name</abbr>
                   </th>
                   <th>
-                    <abbr title='Archtype'>Archtype</abbr>
+                    <abbr title='Archetype'>Archetype</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Position'>Pos</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Overall'>Ovr</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Year'>Yr</abbr>
                   </th>
-                  <th style={{ width: "60px" }}>
+                  <th style={{ width: '60px' }}>
                     <abbr title='Height'>Ht</abbr>
                   </th>
-                  <th style={{ width: "80px" }}>
+                  <th style={{ width: '80px' }}>
                     <abbr title='Weight'>Wt</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='State'>St</abbr>
                   </th>
                   <th>
                     <abbr title='High School / JUCO'>School</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Potential'>Pot</abbr>
                   </th>
-                  <th style={{ width: "60px" }}>
+                  <th style={{ width: '60px' }}>
                     <abbr title='Jersey Number'>Num</abbr>
                   </th>
                 </tr>
               </thead>
               <tfoot>
                 <tr>
-                  <th style={{ width: "200px" }} >
+                  <th style={{ width: '200px' }}>
                     <abbr>Name</abbr>
                   </th>
                   <th>
                     <abbr title='Archtype'>Archtype</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Position'>Pos</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Overall'>Ovr</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Year'>Yr</abbr>
                   </th>
-                  <th style={{ width: "60px" }}>
+                  <th style={{ width: '60px' }}>
                     <abbr title='Height'>Ht</abbr>
                   </th>
-                  <th style={{ width: "80px" }}>
+                  <th style={{ width: '80px' }}>
                     <abbr title='Weight'>Wt</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='State'>St</abbr>
                   </th>
                   <th>
                     <abbr title='High School / JUCO'>School</abbr>
                   </th>
-                  <th style={{ width: "50px" }}>
+                  <th style={{ width: '50px' }}>
                     <abbr title='Potential'>Pot</abbr>
                   </th>
-                  <th style={{ width: "60px" }}>
+                  <th style={{ width: '60px' }}>
                     <abbr title='Jersey Number'>Num</abbr>
                   </th>
                 </tr>
