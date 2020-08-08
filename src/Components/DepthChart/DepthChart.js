@@ -145,7 +145,9 @@ const DepthChart = ({ currentUser }) => {
 
   let headerRows = headers.map((x) => (
     <th>
-      <abbr title={x.title}>{x.Label}</abbr>
+      <abbr key={x.title} title={x.title}>
+        {x.Label}
+      </abbr>
     </th>
   ));
 
@@ -167,13 +169,13 @@ const DepthChart = ({ currentUser }) => {
           <div className='column is-2'>
             <DC_Dropdown
               team={team}
-              data={user}
+              info={user}
               align='left'
               id='team-dropdown'
             />
             <DC_Dropdown
-              position='Position'
-              data={user}
+              info={user}
+              data={positions}
               align='right'
               id='position-dropdown'
             />

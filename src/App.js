@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter } from "react-router"
+import { withRouter } from 'react-router';
 import { Route } from 'react-router-dom';
 
 // Redux
@@ -21,7 +21,8 @@ import AvailableTeams from './Components/AvailableTeams/AvailableTeams';
 import Profile from './Components/Profile/Profile';
 import Roster from './Components/Roster/Roster';
 import Team from './Components/Team/Team';
-import Login from './Components/SignUp_Login/SignUpLoginBody';
+import Login from './Components/SignUp_Login/LoginBody';
+import SignUp from './Components/SignUp_Login/SignUpBody';
 import DepthChart from './Components/DepthChart/DepthChart';
 
 class App extends Component {
@@ -86,6 +87,7 @@ class App extends Component {
         />
         <Route exact path={routes.AVAILABLE_TEAMS} component={AvailableTeams} />
         <Route exact path={routes.RECRUITING} component={LandingPage} />
+        <Route exact path={routes.SIGNUP} component={SignUp} />
         <Route exact path={routes.LOGIN} component={Login} />
       </div>
     );
