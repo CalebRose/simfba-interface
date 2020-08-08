@@ -1,26 +1,40 @@
-import React, { Component } from "react";
-import FormInput from "../FormInput/FormInput";
-import "./LoginPage.style.css";
+import React, { Component } from 'react';
+import FormInput from '../FormInput/FormInput';
+import './LoginPage.style.css';
 // import { auth, signInWithGoogle } from "./../../../Firebase/firebase";
-import { auth } from "./../../../Firebase/firebase";
-import { Link } from "react-router-dom";
-import routes from "../../../Constants/routes";
+import { auth } from './../../../Firebase/firebase';
+import { Link } from 'react-router-dom';
+import routes from '../../../Constants/routes';
 
 class LoginPage extends Component {
   state = {
-    email: "",
-    password: ""
+    email: '',
+    password: '',
   };
 
-  handleSubmit = async event => {
+  handleSubmit = async (event) => {
     console.log(this.props);
     event.preventDefault();
     const { email, password } = this.state;
     try {
       await auth.signInWithEmailAndPassword(email, password);
-      this.setState({ email: "", password: "" });
-      console.log("successful login.");
-      this.props.history.push("/user"); // on successful login, change user's location to their home page: /user
+      this.setState({ email: '', password: '' });
+      console.log('successful login.');
+      this.props.history.push('/user'); // on successful login, change user's location to their home page: /user
+      auth.currentUser
+        .getIdToken(/* forceRefresh */ true)
+        .then(function (idToken) {
+          // Send token to your backend via HTTPS
+          // ...
+          console.log('====== ID TOKEN ======');
+          console.log(idToken);
+          localStorage.setItem('token', idToken);
+          console.log('======================');
+          console.log(localStorage);
+        })
+        .catch(function (error) {
+          // Handle error
+        });
     } catch (error) {
       console.log(error);
     }
@@ -32,7 +46,15 @@ class LoginPage extends Component {
   //     console.log(error);
   //   }
   // };
-  handleChange = event => {
+  /*
+        firebase.auth().currentUser.getIdToken(true).then(function(idToken) {
+      // Send token to your backend via HTTPS
+      // ...
+    }).catch(function(error) {
+      // Handle error
+    });
+  */
+  handleChange = (event) => {
     //
     const { name, value } = event.target;
     this.setState({ [name]: value });
@@ -40,27 +62,27 @@ class LoginPage extends Component {
   render() {
     const { email, password } = this.state;
     return (
-      <div className="LoginPage">
-        <h2 className="login-logo">Login</h2>
+      <div className='LoginPage'>
+        <h2 className='login-logo'>Login</h2>
         <form>
           <FormInput
-            name="email"
+            name='email'
             value={email}
-            label="Email"
-            type="email"
+            label='Email'
+            type='email'
             handleChange={this.handleChange}
           />
           <FormInput
-            name="password"
+            name='password'
             value={password}
-            label="Password"
-            type="password"
+            label='Password'
+            type='password'
             handleChange={this.handleChange}
           />
-          <div className="tile signup-button">
+          <div className='tile signup-button'>
             <Link to={routes.LANDING}>
               <button
-                className="button login-button"
+                className='button login-button'
                 onClick={this.handleSubmit}
               >
                 Login
