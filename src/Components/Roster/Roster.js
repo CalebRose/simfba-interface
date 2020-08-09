@@ -49,7 +49,12 @@ const Roster = ({ currentUser }) => {
   useEffect(() => {
     const getRoster = async () => {
       let response = await fetch(
-        'http://localhost:3001/api/roster/' + user.teamId
+        'http://localhost:3001/api/roster/' + user.teamId,
+        {
+          headers: {
+            authorization: 'Bearer ' + localStorage.getItem('token'),
+          },
+        }
       );
       /* {
         method: 'GET',

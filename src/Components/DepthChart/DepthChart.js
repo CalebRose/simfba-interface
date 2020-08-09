@@ -27,7 +27,11 @@ const DepthChart = ({ currentUser }) => {
 
   useEffect(() => {
     const getTeams = async () => {
-      let res = await fetch('http://localhost:3001/api/teams');
+      let res = await fetch('http://localhost:3001/api/teams', {
+        headers: {
+          authorization: 'Bearer ' + localStorage.getItem('token'),
+        },
+      });
       let json;
       if (res.ok) {
         json = await res.json();
@@ -41,7 +45,12 @@ const DepthChart = ({ currentUser }) => {
 
     const getDepthChart = async () => {
       let res = await fetch(
-        'http://localhost:3001/api/depthchart/' + user.teamId
+        'http://localhost:3001/api/depthchart/' + user.teamId,
+        {
+          headers: {
+            authorization: 'Bearer ' + localStorage.getItem('token'),
+          },
+        }
       );
       let json;
       if (res.ok) {
