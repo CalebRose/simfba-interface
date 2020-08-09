@@ -29,7 +29,8 @@ const DepthChart = ({ currentUser }) => {
     const getTeams = async () => {
       let res = await fetch('http://localhost:3001/api/teams', {
         headers: {
-          authorization: 'Bearer ' + localStorage.getItem('token'),
+          authorization: 'Bearer ' + localStorage.getItem('token')
+          // mode: 'no-cors', // no-cors, *cors, same-origin
         },
       });
       let json;
