@@ -38,9 +38,23 @@ const DepthChart = ({ currentUser }) => {
       console.log(json);
       setTeams(teamList);
     };
+
+    const getDepthChart = async () => {
+      let res = await fetch(
+        'http://localhost:3001/api/depthchart/' + user.teamId
+      );
+      let json;
+      if (res.ok) {
+        json = await res.json();
+      } else {
+        alert('HTTP-Error:', res.status);
+      }
+      setRoster(json);
+    };
     if (user) {
       setTeam(user.team + ' ' + user.mascot);
       getTeams();
+      getDepthChart();
     }
   }, [user]);
 
@@ -50,7 +64,7 @@ const DepthChart = ({ currentUser }) => {
   }, [team]);
 
   // Rows
-  // const PlayerRows = roster.map(player => (
+  // const PlayerRows = roster.map((player) => (
   //   <DepthChartRow key={player.id} data={player} />
   // ));
   // const playerCount = roster.length;
@@ -126,6 +140,7 @@ const DepthChart = ({ currentUser }) => {
   ];
 
   let headers = [
+    { title: 'String', Label: 'String' },
     { title: 'Designation', Label: 'Pos' },
     { title: 'Name', Label: 'Name' },
     { title: 'Archetype', Label: 'Archetype' },
@@ -155,6 +170,7 @@ const DepthChart = ({ currentUser }) => {
     { title: 'Throw Power', Label: 'T.P.' },
     { title: 'Throw Accuracy', Label: 'T.A.' },
     { title: 'Stamina', Label: 'Stm' },
+    { title: 'Promote', Label: 'Promote' },
   ];
 
   let headerRows = headers.map((x) => (
@@ -234,7 +250,7 @@ const DepthChart = ({ currentUser }) => {
               <tfoot>
                 <tr>{headerRows}</tr>
               </tfoot>
-              {/* <tbody>{DesignationRows}</tbody> */}
+              <tbody>{DesignationRows}</tbody>
             </table>
           </div>
         </div>

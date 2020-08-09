@@ -88,8 +88,6 @@ const Roster = ({ currentUser }) => {
   // Priority Queue
 
   const setPriority = (data) => {
-    console.log('SET PRIORITY');
-    console.log(data);
     switch (data.Position) {
       case 'QB':
         data.priorityAttributes = [
