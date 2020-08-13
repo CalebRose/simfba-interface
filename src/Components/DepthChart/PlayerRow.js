@@ -1,63 +1,51 @@
 import React from 'react';
-import Player_Dropdown from './Player_Dropdown';
 
-const DesignationRow = (props) => {
+const PlayerRow = (props) => {
   /* 
     Name, Position, Archtype, Ovr, Yr, Ht, Wt, St,
     HS/JC, Pot, Num
     
     */
   // let position = props.designation.slice(0, 2);
-  let players = props.players;
-  let players_by_position = players.filter(
-    (player) => player.position === props.pos
-  );
-  let starter;
-  let others = [];
-  for (let i = 0; i < players_by_position.length; i++) {
-    if (players_by_position[i].designation === props.designation) {
-      starter = players_by_position[i];
-    } else {
-      others.push(players_by_position[i]);
-    }
-  }
+  let player = props.player;
+
   const playerAttributes = {};
   //   let data = props.data;
-  if (starter) {
-    for (let attribute in starter.attr) {
-      // Algorithm to provide letter value to attribute
-      // NOTE: Move this outside of the if statement for implementation to see all attributes
-      let attr = starter.attr[attribute];
-      if (attr.value < 15) {
-        playerAttributes[attribute] = 'F';
-        attr.letter = 'F';
-      } else if (attr.value < 25) {
-        playerAttributes[attribute] = 'D';
-        attr.letter = 'D';
-      } else if (attr.value < 35) {
-        playerAttributes[attribute] = 'C';
-        attr.letter = 'C';
-      } else if (attr.value < 45) {
-        playerAttributes[attribute] = 'B';
-        attr.letter = 'B';
-      } else if (attr.value >= 45) {
-        playerAttributes[attribute] = 'A';
-        attr.letter = 'A';
-      }
+
+  for (let attribute in player.attr) {
+    // Algorithm to provide letter value to attribute
+    // NOTE: Move this outside of the if statement for implementation to see all attributes
+    let attr = player.attr[attribute];
+    if (attr.value < 15) {
+      playerAttributes[attribute] = 'F';
+      attr.letter = 'F';
+    } else if (attr.value < 25) {
+      playerAttributes[attribute] = 'D';
+      attr.letter = 'D';
+    } else if (attr.value < 35) {
+      playerAttributes[attribute] = 'C';
+      attr.letter = 'C';
+    } else if (attr.value < 45) {
+      playerAttributes[attribute] = 'B';
+      attr.letter = 'B';
+    } else if (attr.value >= 45) {
+      playerAttributes[attribute] = 'A';
+      attr.letter = 'A';
     }
   }
 
   return (
     <tr>
-      <td></td>
+      <td>{player ? player.stringPosition : ''}</td>
       {/* <th>{props.designation}</th> */}
-      <th>{starter ? starter.name : ''}</th>
-      <td>{starter ? starter.archtype : ''}</td>
-      <td>{starter ? starter.overall : ''}</td>
-      <td>{starter ? starter.year : ''}</td>
-      <td>{starter ? starter.height : ''}</td>
-      <td>{starter ? starter.weight : ''}</td>
-      <td>{starter ? starter.potential : ''}</td>
+      <th>{player ? player.position : ''}</th>
+      <th>{player ? player.name : ''}</th>
+      <td>{player ? player.archtype : ''}</td>
+      <td>{player ? player.overall : ''}</td>
+      <td>{player ? player.year : ''}</td>
+      <td>{player ? player.height : ''}</td>
+      <td>{player ? player.weight : ''}</td>
+      <td>{player ? player.potential : ''}</td>
       <td>{playerAttributes.carrying}</td>
       <td>{playerAttributes.agility}</td>
       <td>{playerAttributes.catching}</td>
@@ -94,4 +82,4 @@ const DesignationRow = (props) => {
   );
 };
 
-export default DesignationRow;
+export default PlayerRow;

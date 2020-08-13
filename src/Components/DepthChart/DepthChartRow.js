@@ -1,12 +1,12 @@
-import React from "react";
+import React from 'react';
 
-const DepthChartRow = props => {
+const DepthChartRow = (props) => {
   /* 
     Name, Position, Archtype, Ovr, Yr, Ht, Wt, St,
     HS/JC, Pot, Num
     
     */
-  let position = props.designation.slice(0, 2);
+  // let position = props.designation.slice(0, 2);
 
   let data = props.data;
   const playerAttributes = {};
@@ -15,30 +15,30 @@ const DepthChartRow = props => {
     // NOTE: Move this outside of the if statement for implementation to see all attributes
     let attr = data.attr[attribute];
     if (attr.value < 15) {
-      playerAttributes[attribute] = "F";
-      attr.letter = "F";
+      playerAttributes[attribute] = 'F';
+      attr.letter = 'F';
     } else if (attr.value < 25) {
-      playerAttributes[attribute] = "D";
-      attr.letter = "D";
+      playerAttributes[attribute] = 'D';
+      attr.letter = 'D';
     } else if (attr.value < 35) {
-      playerAttributes[attribute] = "C";
-      attr.letter = "C";
+      playerAttributes[attribute] = 'C';
+      attr.letter = 'C';
     } else if (attr.value < 45) {
-      playerAttributes[attribute] = "B";
-      attr.letter = "B";
+      playerAttributes[attribute] = 'B';
+      attr.letter = 'B';
     } else if (attr.value >= 45) {
-      playerAttributes[attribute] = "A";
-      attr.letter = "A";
+      playerAttributes[attribute] = 'A';
+      attr.letter = 'A';
     }
   }
-  const toggleModal = () => {
-    props.toggle();
-    props.getData(data);
-  };
+  // const toggleModal = () => {
+  //   props.toggle();
+  //   props.getData(data);
+  // };
   return (
     <tr>
       <td>{props.data.position}</td>
-      <th className="clickable">{props.data.name}</th>
+      <th className='clickable'>{props.data.name}</th>
       <td>{props.data.archtype}</td>
       <td>{props.data.overall}</td>
       <td>{props.data.year}</td>

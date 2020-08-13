@@ -12,16 +12,27 @@ const DCDropdown = (props) => {
   const selectItem = (event) => {
     setItem(event.target.value);
     activeDropdown();
+    if (props.call) {
+      props.call(event.target.value);
+    }
   };
 
   let content;
   // If Dropdown is for teams
 
+  // useEffect(() => {
+  //   if (props.team) {
+  //     setItem(props.team);
+  //   } else if (props.data) {
+  //     setItem(props.data[0].position);
+  //   }
+  // }, []);
+
   useEffect(() => {
     if (props.team) {
       setItem(props.team);
     } else if (props.data) {
-      setItem(props.data[0].position);
+      setItem(props.currentPosition);
     }
   }, [props]);
 
