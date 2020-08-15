@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import DropdownItem from '../Roster/DropdownItem';
 import DepthChartRow from './DepthChartRow';
-import DC_Dropdown from './DC_DropDown';
+import Dropdown from './DC_DropDown';
 import DesignationRow from './DesignationRow';
 
 const DepthChart = ({ currentUser }) => {
@@ -12,6 +12,7 @@ const DepthChart = ({ currentUser }) => {
   let initialTeam = user ? user.team + ' ' + user.mascot : null; // Initial value from redux state
   const [team, setTeam] = React.useState(initialTeam);
   const [roster, setRoster] = React.useState([]);
+  const [teams, setTeams] = React.useState([]);
 
   // DropDown
   const activeDropdown = (event) => {
@@ -25,8 +26,45 @@ const DepthChart = ({ currentUser }) => {
   };
 
   useEffect(() => {
+    const getTeams = async () => {
+      let res = await fetch('http://localhost:3001/api/teams', {
+        headers: {
+          authorization: 'Bearer ' + localStorage.getItem('token')
+          // mode: 'no-cors', // no-cors, *cors, same-origin
+        },
+      });
+      let json;
+      if (res.ok) {
+        json = await res.json();
+      } else {
+        alert('HTTP-Error:', res.status);
+      }
+      let teamList = json ? json.filter((team) => user.team !== team) : null;
+      console.log(json);
+      setTeams(teamList);
+    };
+
+    const getDepthChart = async () => {
+      let res = await fetch(
+        'http://localhost:3001/api/depthchart/' + user.teamId,
+        {
+          headers: {
+            authorization: 'Bearer ' + localStorage.getItem('token'),
+          },
+        }
+      );
+      let json;
+      if (res.ok) {
+        json = await res.json();
+      } else {
+        alert('HTTP-Error:', res.status);
+      }
+      setRoster(json);
+    };
     if (user) {
       setTeam(user.team + ' ' + user.mascot);
+      getTeams();
+      getDepthChart();
     }
   }, [user]);
 
@@ -36,7 +74,7 @@ const DepthChart = ({ currentUser }) => {
   }, [team]);
 
   // Rows
-  // const PlayerRows = roster.map(player => (
+  // const PlayerRows = roster.map((player) => (
   //   <DepthChartRow key={player.id} data={player} />
   // ));
   // const playerCount = roster.length;
@@ -91,27 +129,28 @@ const DepthChart = ({ currentUser }) => {
   ];
 
   let positions = [
-    { position: 'QB' },
-    { position: 'RB' },
-    { position: 'WR' },
-    { position: 'TE' },
-    { position: 'LT' },
-    { position: 'LG' },
-    { position: 'C' },
-    { position: 'RG' },
-    { position: 'RT' },
-    { position: 'LE' },
-    { position: 'DT' },
-    { position: 'RE' },
-    { position: 'LOLB' },
-    { position: 'ILB' },
-    { position: 'ROLB' },
-    { position: 'CB' },
-    { position: 'FS' },
-    { position: 'SS' },
+    { position: 'QB', id: 6 },
+    { position: 'RB', id: 5 },
+    { position: 'WR', id: 14 },
+    { position: 'TE', id: 11 },
+    { position: 'LT', id: 1 },
+    { position: 'LG', id: 2 },
+    { position: 'C', id: 15 },
+    { position: 'RG', id: 2 },
+    { position: 'RT', id: 1 },
+    { position: 'LE', id: 7 },
+    { position: 'DT', id: 4 },
+    { position: 'RE', id: 7 },
+    { position: 'LOLB', id: 12 },
+    { position: 'ILB', id: 8 },
+    { position: 'ROLB', id: 12 },
+    { position: 'CB', id: 13 },
+    { position: 'FS', id: 9 },
+    { position: 'SS', id: 10 },
   ];
 
   let headers = [
+    { title: 'String', Label: 'String' },
     { title: 'Designation', Label: 'Pos' },
     { title: 'Name', Label: 'Name' },
     { title: 'Archetype', Label: 'Archetype' },
@@ -141,6 +180,7 @@ const DepthChart = ({ currentUser }) => {
     { title: 'Throw Power', Label: 'T.P.' },
     { title: 'Throw Accuracy', Label: 'T.A.' },
     { title: 'Stamina', Label: 'Stm' },
+    { title: 'Promote', Label: 'Promote' },
   ];
 
   let headerRows = headers.map((x) => (
@@ -167,13 +207,14 @@ const DepthChart = ({ currentUser }) => {
         <div className='columns center is-12'></div>
         <div className='columns is-left is-12'>
           <div className='column is-2'>
-            <DC_Dropdown
+            <Dropdown
               team={team}
               info={user}
+              teams={teams}
               align='left'
               id='team-dropdown'
             />
-            <DC_Dropdown
+            <Dropdown
               info={user}
               data={positions}
               align='right'
@@ -219,7 +260,7 @@ const DepthChart = ({ currentUser }) => {
               <tfoot>
                 <tr>{headerRows}</tr>
               </tfoot>
-              {/* <tbody>{DesignationRows}</tbody> */}
+              <tbody>{DesignationRows}</tbody>
             </table>
           </div>
         </div>

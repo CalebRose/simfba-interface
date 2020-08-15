@@ -48,28 +48,38 @@ const Roster = ({ currentUser }) => {
 
   useEffect(() => {
     const getRoster = async () => {
-      let response = await fetch('http://localhost:3001/api/rosters');
+      let response = await fetch(
+        'http://localhost:3001/api/roster/' + user.teamId,
+        {
+          headers: {
+            authorization: 'Bearer ' + localStorage.getItem('token'),
+          },
+        }
+      );
       /* {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       } */
+
       let json;
       if (response.ok) {
         json = await response.json();
       } else {
         alert('HTTP-Error:', response.status);
       }
-      let playerList = json
-        ? json.filter((player) => player.Team === team)
-        : null;
-      console.log(playerList);
-      setRoster(playerList);
+      // let playerList = json
+      //   ? json.filter((player) => player.Team === team)
+      //   : null;
+      // console.log(playerList);
+      setRoster(json);
     };
-    getRoster();
+    if (user) {
+      getRoster();
+    }
     // let playerList = SampleContent.filter((player) => player.team === team);
-  }, [team]);
+  }, [team, user]);
 
   // Call Back Function
   const getPlayerData = (data) => {
@@ -83,8 +93,6 @@ const Roster = ({ currentUser }) => {
   // Priority Queue
 
   const setPriority = (data) => {
-    console.log('SET PRIORITY');
-    console.log(data);
     switch (data.Position) {
       case 'QB':
         data.priorityAttributes = [
@@ -196,7 +204,7 @@ const Roster = ({ currentUser }) => {
         data.priorityAttributes = [
           { Name: 'Agility', Value: data.Agility, Letter: '' },
           { Name: 'Speed', Value: data.Speed, Letter: '' },
-          { Name: 'Run_Defense', Value: data.Run_Defense, Letter: '' },
+          { Name: 'Run Defense', Value: data.Run_Defense, Letter: '' },
           { Name: 'Tackle', Value: data.Tackle, Letter: '' },
           { Name: 'Strength', Value: data.Strength, Letter: '' },
           { Name: 'Zone Coverage', Value: data.Zone_coverage, Letter: '' },
