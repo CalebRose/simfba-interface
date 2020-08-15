@@ -34,6 +34,7 @@ class App extends Component {
       teamAbbr: '',
       mascot: '',
       roleID: null,
+      teamId: '',
     },
   };
   // Global Variables

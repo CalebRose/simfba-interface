@@ -26,11 +26,7 @@ class LoginPage extends Component {
         .then(function (idToken) {
           // Send token to your backend via HTTPS
           // ...
-          console.log('====== ID TOKEN ======');
-          console.log(idToken);
           localStorage.setItem('token', idToken);
-          console.log('======================');
-          console.log(localStorage);
         })
         .catch(function (error) {
           // Handle error
