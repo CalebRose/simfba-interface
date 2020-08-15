@@ -44,21 +44,21 @@ const DepthChart = ({ currentUser }) => {
   // };
 
   useEffect(() => {
-    const getTeams = async () => {
-      let res = await fetch('http://localhost:3001/api/teams', {
-        headers: {
-          authorization: 'Bearer ' + localStorage.getItem('token'),
-        },
-      });
-      let json;
-      if (res.ok) {
-        json = await res.json();
-      } else {
-        alert('HTTP-Error:', res.status);
-      }
-      let teamList = json ? json.filter((team) => user.team !== team) : null;
-      setTeams(teamList);
-    };
+    // const getTeams = async () => {
+    //   let res = await fetch('http://localhost:3001/api/teams', {
+    //     headers: {
+    //       authorization: 'Bearer ' + localStorage.getItem('token'),
+    //     },
+    //   });
+    //   let json;
+    //   if (res.ok) {
+    //     json = await res.json();
+    //   } else {
+    //     alert('HTTP-Error:', res.status);
+    //   }
+    //   let teamList = json ? json.filter((team) => user.team !== team) : null;
+    //   setTeams(teamList);
+    // };
 
     const getDepthChart = async () => {
       let res = await fetch(
@@ -79,7 +79,7 @@ const DepthChart = ({ currentUser }) => {
     };
     if (user) {
       setTeam(user.team + ' ' + user.mascot);
-      getTeams();
+      // getTeams();
       getDepthChart();
     }
   }, [user]);
