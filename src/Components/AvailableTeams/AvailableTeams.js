@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logos from '../../Constants/logos.js';
 import TeamCard from './TeamCard.js';
+import { getLogo } from '../../Constants/getLogo.js';
 
 class AvailableTeams extends Component {
   state = {
@@ -35,14 +36,26 @@ class AvailableTeams extends Component {
     // For all teams available, run a loop
     // And render a teamcard for each available team
     // Pass all team info as a prop
-    console.log(this.state.filterTeams);
+
+    const teamCards = this.state.filterTeams.map((team) => {
+      return (
+        <TeamCard
+          team={team.Team}
+          mascot={team.Nickname}
+          conference={team.Current_Conference}
+          logo={getLogo(team.Team)}
+        />
+      );
+    });
+
     return (
       <div className='hero-body center'>
-        <div className='container is-fluid has-text-centered userInterface'>
-          <h2 className='subtitle is-3'>Available Teams</h2>
-          <div className='scrollbar available-ui-height'>
+        <div className='is-fluid has-text-centered'>
+          <h2 className='subtitle is-3 availableText'>Available Teams</h2>
+          <div className='availableScrollbar available-ui-height availableTeams'>
             <div className='tile is-ancestor teams'>
-              <TeamCard
+              {teamCards}
+              {/* <TeamCard
                 team='Baylor'
                 mascot='Bears'
                 conference='Big 12 Conference'
@@ -125,7 +138,7 @@ class AvailableTeams extends Component {
                 mascot='Mountaineers'
                 conference='Big 12 Conference'
                 logo={logos.West_Virginia}
-              />
+              /> */}
             </div>
           </div>
         </div>

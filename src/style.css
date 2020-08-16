@@ -32,6 +32,23 @@
   border-radius: 10px;
 }
 
+.availableTeams {
+  padding: 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.availableScrollbar {
+  padding: 6px;
+  margin: auto;
+  max-width: 75%;
+  overflow-x: hidden;
+}
+
+.availableText {
+  color: white;
+}
+
 /* End of Hero Container + Nav */
 
 /* For Available Teams + Roster page */
@@ -48,7 +65,7 @@
 
 /* Specific UI height for Available Teams UI */
 .available-ui-height {
-  max-height: 60vh;
+  max-height: 75vh;
 }
 
 .scrollbar::-webkit-scrollbar {
@@ -77,7 +94,12 @@
   padding: 12px;
   border-radius: 6px;
   overflow-wrap: break-word;
-  width: 20em;
+  width: 23em;
+}
+
+.imageSize {
+  height: 180px;
+  width: 142px;
 }
 /* End of team card on Available Teams Page */
 
