@@ -10,7 +10,8 @@ config.js
 /coverage
 
 # production
-/build
+# /build
+bundle.js
 
 # misc
 .DS_Store
@@ -25,3 +26,4 @@ yarn-debug.log*
 yarn-error.log*
 
 /config
+
