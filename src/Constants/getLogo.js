@@ -171,7 +171,7 @@ export const getLogo = (team) => {
     case 'Penn State':
       return logos.Penn_State;
     case 'Pittsburgh':
-      return logos.Pittsburgh;
+      return logos.Pitt;
     case 'Purdue':
       return logos.Purdue;
     case 'Rice':

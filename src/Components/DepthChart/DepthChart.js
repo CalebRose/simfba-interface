@@ -29,15 +29,20 @@ const DepthChart = ({ currentUser }) => {
   };
 
   const callPosition = (event) => {
-    setPosition(event);
+    let pos = event;
+    if (pos === 'LT' || pos === 'RT') {
+      pos = 'OT';
+    } else if (pos === 'LG' || pos === 'RG') {
+      pos = 'OG';
+    } else if (pos === 'LE' || pos === 'RE') {
+      pos = 'DE';
+    } else if (pos === 'ROLB' || pos === 'LOLB') {
+      pos = 'OLB';
+    }
+    setPosition(pos);
     // const filterRoster = roster.filter((x) => x.position === pos);
     // setFilter(filterRoster);
   };
-  useEffect(() => {
-    const filterRoster = roster.filter((x) => x.position === pos);
-    setFilter(filterRoster);
-    console.log(filterRoster);
-  }, [pos, roster]);
 
   // const callBackPosition = (event) => {
   //   return event.target.value;
@@ -65,13 +70,14 @@ const DepthChart = ({ currentUser }) => {
         'http://localhost:3001/api/depthchart/' + user.teamId,
         {
           headers: {
-            authorization: 'Bearer ' + localStorage.getItem('token'),
+            authorization: localStorage.getItem('token'),
           },
         }
       );
       let json;
       if (res.ok) {
         json = await res.json();
+        console.log(json);
       } else {
         alert('HTTP-Error:', res.status);
       }
@@ -85,9 +91,17 @@ const DepthChart = ({ currentUser }) => {
   }, [user]);
 
   useEffect(() => {
-    let playerList = SampleContent.filter((player) => player.team === team);
-    setRoster(playerList);
-  }, [team]);
+    const filterRoster = roster
+      .filter((x) => x.Position === pos)
+      .sort((a, b) => a.startingTernary - b.startingTernary);
+    setFilter(filterRoster);
+  }, [pos, roster]);
+
+  // useEffect(() => {
+  //   console.log(roster);
+  //   let playerList = roster.filter((player) => player.pos === pos);
+  //   setFilter(playerList);
+  // }, [team, pos, roster]);
 
   // Rows
   // const PlayerRows = roster.map((player) => (
@@ -217,7 +231,7 @@ const DepthChart = ({ currentUser }) => {
   // ));
 
   let PlayerRows = filterRosters.map((x) => {
-    return <PlayerRow pos={x.position} player={x} key={x.id} />;
+    return <PlayerRow pos={x.Position} player={x} key={x.id} />;
   });
 
   return (

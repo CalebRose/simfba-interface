@@ -12,61 +12,66 @@ const PlayerRow = (props) => {
   const playerAttributes = {};
   //   let data = props.data;
 
-  for (let attribute in player.attr) {
+  for (let attribute in player) {
     // Algorithm to provide letter value to attribute
     // NOTE: Move this outside of the if statement for implementation to see all attributes
-    let attr = player.attr[attribute];
-    if (attr.value < 15) {
-      playerAttributes[attribute] = 'F';
-      attr.letter = 'F';
-    } else if (attr.value < 25) {
-      playerAttributes[attribute] = 'D';
-      attr.letter = 'D';
-    } else if (attr.value < 35) {
-      playerAttributes[attribute] = 'C';
-      attr.letter = 'C';
-    } else if (attr.value < 45) {
-      playerAttributes[attribute] = 'B';
-      attr.letter = 'B';
-    } else if (attr.value >= 45) {
-      playerAttributes[attribute] = 'A';
-      attr.letter = 'A';
+    if (!isNaN(player[attribute])) {
+      if (player[attribute] < 15) {
+        playerAttributes[attribute] = 'F';
+      } else if (player[attribute] < 25) {
+        playerAttributes[attribute] = 'D';
+      } else if (player[attribute] < 35) {
+        playerAttributes[attribute] = 'C';
+      } else if (player[attribute] < 45) {
+        playerAttributes[attribute] = 'B';
+      } else if (player[attribute] >= 45) {
+        playerAttributes[attribute] = 'A';
+      }
     }
+  }
+
+  let ternary = '';
+  if (player.startingTernary === 0) {
+    ternary = 'Starting';
+  } else if (player.startingTernary === 1) {
+    ternary = '2nd String';
+  } else {
+    ternary = 'Bench';
   }
 
   return (
     <tr>
-      <td>{player ? player.stringPosition : ''}</td>
+      <td>{player ? ternary : ''}</td>
       {/* <th>{props.designation}</th> */}
-      <th>{player ? player.position : ''}</th>
-      <th>{player ? player.name : ''}</th>
-      <td>{player ? player.archtype : ''}</td>
-      <td>{player ? player.overall : ''}</td>
-      <td>{player ? player.year : ''}</td>
-      <td>{player ? player.height : ''}</td>
-      <td>{player ? player.weight : ''}</td>
-      <td>{player ? player.potential : ''}</td>
-      <td>{playerAttributes.carrying}</td>
-      <td>{playerAttributes.agility}</td>
-      <td>{playerAttributes.catching}</td>
-      <td>{playerAttributes.zone_coverage}</td>
-      <td>{playerAttributes.man_coverage}</td>
-      <td>{playerAttributes.football_iq}</td>
-      <td>{playerAttributes.kick_accuracy}</td>
-      <td>{playerAttributes.kick_power}</td>
-      <td>{playerAttributes.pass_block}</td>
-      <td>{playerAttributes.pass_rush}</td>
-      <td>{playerAttributes.punt_accuracy}</td>
-      <td>{playerAttributes.punt_power}</td>
-      <td>{playerAttributes.route_running}</td>
-      <td>{playerAttributes.run_block}</td>
-      <td>{playerAttributes.run_defense}</td>
-      <td>{playerAttributes.speed}</td>
-      <td>{playerAttributes.strength}</td>
-      <td>{playerAttributes.tackle}</td>
-      <td>{playerAttributes.throw_power}</td>
-      <td>{playerAttributes.throw_accuracy}</td>
-      <td>{playerAttributes.stamina}</td>
+      <th>{player ? player.Position : ''}</th>
+      <th>{player ? player.First_Name + ' ' + player.Last_Name : ''}</th>
+      <td>{player ? player.Archetype : ''}</td>
+      <td>{player ? player.Overall : ''}</td>
+      <td>{player ? player.Year : ''}</td>
+      <td>{player ? player.Height : ''}</td>
+      <td>{player ? player.Weight : ''}</td>
+      <td>{player ? player.Potential : ''}</td>
+      <td>{playerAttributes.Carrying}</td>
+      <td>{playerAttributes.Agility}</td>
+      <td>{playerAttributes.Catching}</td>
+      <td>{playerAttributes.Zone_Coverage}</td>
+      <td>{playerAttributes.Man_Coverage}</td>
+      <td>{playerAttributes.Football_IQ}</td>
+      <td>{playerAttributes.Kick_Accuracy}</td>
+      <td>{playerAttributes.Kick_Power}</td>
+      <td>{playerAttributes.Pass_Block}</td>
+      <td>{playerAttributes.Pass_Rush}</td>
+      <td>{playerAttributes.Punt_Accuracy}</td>
+      <td>{playerAttributes.Punt_Power}</td>
+      <td>{playerAttributes.Route_Running}</td>
+      <td>{playerAttributes.Run_Block}</td>
+      <td>{playerAttributes.Run_Defense}</td>
+      <td>{playerAttributes.Speed}</td>
+      <td>{playerAttributes.Strength}</td>
+      <td>{playerAttributes.Tackle}</td>
+      <td>{playerAttributes.Throw_Power}</td>
+      <td>{playerAttributes.Throw_Accuracy}</td>
+      <td>{playerAttributes.Stamina}</td>
       <td>
         <button onClick={() => props.moveRow(true)} disabled={props.rank === 0}>
           <span style={{ fontSize: '2rem' }}>&#8593;</span>
