@@ -1,6 +1,14 @@
 import React from 'react';
 
 const TeamCard = (props) => {
+  const team = { team: props.team, id: props.teamId };
+
+  const sendRequest = () => {
+    if (props.disable === false) {
+      props.request(team);
+    }
+  };
+
   return (
     <div className='tile is-parent'>
       <div className='card team'>
@@ -19,7 +27,10 @@ const TeamCard = (props) => {
             </p>
           </div>
         </div>
-        <footer className='card-footer'>
+        <footer
+          onClick={sendRequest}
+          className={props.disable ? 'card-footer disabled' : 'card-footer'}
+        >
           <p className='card-footer-item'>Request</p>
         </footer>
       </div>

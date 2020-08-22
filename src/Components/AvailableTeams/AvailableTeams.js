@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import logos from '../../Constants/logos.js';
 import TeamCard from './TeamCard.js';
 import { getLogo } from '../../Constants/getLogo.js';
+import { connect } from 'react-redux';
 
 class AvailableTeams extends Component {
   state = {
     teams: [],
     filterTeams: [],
+    sentRequest: false,
   };
 
   componentDidMount() {
@@ -31,6 +33,30 @@ class AvailableTeams extends Component {
     };
     getTeams();
   }
+
+  sendRequest = async (team) => {
+    console.log(team);
+    console.log(this.props);
+    let postRequest = await fetch(
+      'http://localhost:3001/api/request/' + team.id,
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          team: team.id,
+          username: this.props.currentUser.username,
+        }),
+      }
+    );
+
+    this.setState({ sentRequest: true });
+    console.log(postRequest);
+    console.log(this.state.sentRequest);
+  };
+
   render() {
     // Check whether the team is available or not
     // For all teams available, run a loop
@@ -40,10 +66,14 @@ class AvailableTeams extends Component {
     const teamCards = this.state.filterTeams.map((team) => {
       return (
         <TeamCard
+          key={team.id}
+          teamId={team.id}
           team={team.Team}
           mascot={team.Nickname}
           conference={team.Current_Conference}
           logo={getLogo(team.Team)}
+          request={this.sendRequest}
+          disable={this.state.sentRequest}
         />
       );
     });
@@ -147,4 +177,8 @@ class AvailableTeams extends Component {
   }
 }
 
-export default AvailableTeams;
+const mapStateToProps = ({ user: { currentUser } }) => ({
+  currentUser,
+});
+
+export default connect(mapStateToProps)(AvailableTeams);

@@ -101,6 +101,10 @@
   height: 180px;
   width: 142px;
 }
+
+.disable {
+  color: grey;
+}
 /* End of team card on Available Teams Page */
 
 .tile-image {
