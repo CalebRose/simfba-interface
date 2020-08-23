@@ -44,6 +44,39 @@ const DepthChart = ({ currentUser }) => {
     // setFilter(filterRoster);
   };
 
+  const adjustDepthChart = (callback) => {
+    //
+    let positionRoster = filterRosters;
+    let arr = [];
+
+    let index = 0;
+    while (index < positionRoster.length) {
+      if (positionRoster[index].playerId === callback.player.playerId) {
+        break;
+      }
+      index++;
+    }
+    let temp;
+    if (callback.swap === -1) {
+      positionRoster[index].startingTernary -= 1;
+      positionRoster[index - 1].startingTernary += 1;
+      temp = positionRoster[index];
+      positionRoster[index] = positionRoster[index - 1];
+      positionRoster[index - 1] = temp;
+      arr = [positionRoster[index], positionRoster[index - 1]];
+    } else {
+      positionRoster[index].startingTernary += 1;
+      positionRoster[index - 1].startingTernary -= 1;
+      temp = positionRoster[index];
+      positionRoster[index] = positionRoster[index + 1];
+      positionRoster[index + 1] = temp;
+    }
+    // POST
+
+    //
+    setFilter(positionRoster);
+  };
+
   // const callBackPosition = (event) => {
   //   return event.target.value;
   // };
@@ -231,7 +264,14 @@ const DepthChart = ({ currentUser }) => {
   // ));
 
   let PlayerRows = filterRosters.map((x) => {
-    return <PlayerRow pos={x.Position} player={x} key={x.id} />;
+    return (
+      <PlayerRow
+        pos={x.Position}
+        player={x}
+        key={x.id}
+        swap={adjustDepthChart}
+      />
+    );
   });
 
   return (
