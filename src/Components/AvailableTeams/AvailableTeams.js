@@ -41,12 +41,12 @@ class AvailableTeams extends Component {
       'http://localhost:3001/api/request/' + team.id,
       {
         headers: {
-          Accept: 'application/json',
+          authorization: localStorage.getItem('token'),
           'Content-Type': 'application/json',
         },
         method: 'POST',
         body: JSON.stringify({
-          team: team.id,
+          teamId: team.id,
           username: this.props.currentUser.username,
         }),
       }

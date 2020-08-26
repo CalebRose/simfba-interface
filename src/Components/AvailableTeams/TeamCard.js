@@ -2,10 +2,12 @@ import React from 'react';
 
 const TeamCard = (props) => {
   const team = { team: props.team, id: props.teamId };
+  const [requested, setRequested] = React.useState(false);
 
   const sendRequest = () => {
     if (props.disable === false) {
       props.request(team);
+      setRequested(true);
     }
   };
 
@@ -31,7 +33,15 @@ const TeamCard = (props) => {
           onClick={sendRequest}
           className={props.disable ? 'card-footer disabled' : 'card-footer'}
         >
-          <p className='card-footer-item'>Request</p>
+          <p
+            className={
+              props.disable && !requested
+                ? 'card-footer-item card-footer-item-disabled'
+                : 'card-footer-item card-footer-item-active'
+            }
+          >
+            {!requested ? 'Request' : 'Request Sent!'}
+          </p>
         </footer>
       </div>
     </div>

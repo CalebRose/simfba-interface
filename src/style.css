@@ -135,6 +135,29 @@
   font-size: 2.5rem !important;
   padding-top: 20%;
 }
+
+.card-footer-item-active {
+  font-size: 1.1rem;
+  color: rgb(3, 101, 212);
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+}
+
+.card-footer-item-active:hover {
+  transition-duration: 300ms;
+  color: #f5f5f5;
+  background-color: rgb(3, 101, 212);
+}
+
+.card-footer-item-disabled {
+  font-size: 1.1rem;
+  color: white;
+  background-color: grey;
+  cursor: default;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
 /* End of Image Icons on User Profile Page */
 
 /* For  Roster Page */

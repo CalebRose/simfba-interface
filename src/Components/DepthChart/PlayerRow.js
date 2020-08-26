@@ -30,6 +30,16 @@ const PlayerRow = (props) => {
     }
   }
 
+  const swap = (swap) => {
+    let direction = 0;
+    if (swap === true) {
+      direction = -1;
+    } else {
+      direction = 1;
+    }
+    return props.moveRow({ player: player, swap: direction });
+  };
+
   let ternary = '';
   if (player.startingTernary === 0) {
     ternary = 'Starting';
@@ -73,11 +83,11 @@ const PlayerRow = (props) => {
       <td>{playerAttributes.Throw_Accuracy}</td>
       <td>{playerAttributes.Stamina}</td>
       <td>
-        <button onClick={() => props.moveRow(true)} disabled={props.rank === 0}>
+        <button onClick={() => swap(true)} disabled={props.rank === 0}>
           <span style={{ fontSize: '2rem' }}>&#8593;</span>
         </button>
         <button
-          onClick={() => props.moveRow(false)}
+          onClick={() => swap(false)}
           disabled={props.rank === props.arrLength - 1}
         >
           <span style={{ fontSize: '2rem' }}>&#8595;</span>

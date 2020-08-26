@@ -47,34 +47,88 @@ const DepthChart = ({ currentUser }) => {
   const adjustDepthChart = (callback) => {
     //
     let positionRoster = filterRosters;
-    let arr = [];
+    let player = callback.player;
 
     let index = 0;
     while (index < positionRoster.length) {
-      if (positionRoster[index].playerId === callback.player.playerId) {
+      if (positionRoster[index].playerId === player.playerId) {
         break;
       }
       index++;
     }
-    let temp;
+    // let temp;
+    let playerToSwap = index;
     if (callback.swap === -1) {
-      positionRoster[index].startingTernary -= 1;
-      positionRoster[index - 1].startingTernary += 1;
-      temp = positionRoster[index];
-      positionRoster[index] = positionRoster[index - 1];
-      positionRoster[index - 1] = temp;
-      arr = [positionRoster[index], positionRoster[index - 1]];
+      playerToSwap--;
+      // positionRoster[index].startingTernary -= 1;
+      // positionRoster[playerToSwap].startingTernary += 1;
+      // temp = positionRoster[index];
+      // positionRoster[index] = positionRoster[playerToSwap];
+      // positionRoster[playerToSwap] = temp;
     } else {
-      positionRoster[index].startingTernary += 1;
-      positionRoster[index - 1].startingTernary -= 1;
-      temp = positionRoster[index];
-      positionRoster[index] = positionRoster[index + 1];
-      positionRoster[index + 1] = temp;
+      playerToSwap++;
+      // positionRoster[index].startingTernary += 1;
+      // positionRoster[playerToSwap].startingTernary -= 1;
+      // temp = positionRoster[index];
+      // positionRoster[index] = positionRoster[playerToSwap];
+      // positionRoster[playerToSwap] = temp;
     }
-    // POST
+    let rosterIndex = 0;
+    let secondPlayerIndex = 0;
+    while (rosterIndex < roster.length) {
+      if (roster[rosterIndex].playerId === positionRoster[index].playerId) {
+        break;
+      }
+      rosterIndex++;
+    }
 
+    while (secondPlayerIndex < roster.length) {
+      if (
+        roster[secondPlayerIndex].playerId ===
+        positionRoster[playerToSwap].playerId
+      ) {
+        break;
+      }
+      secondPlayerIndex++;
+    }
+    // swap in Roster
+    if (callback.swap === -1) {
+      roster[rosterIndex].startingTernary -= 1;
+      roster[secondPlayerIndex].startingTernary += 1;
+    } else {
+      roster[rosterIndex].startingTernary += 1;
+      roster[secondPlayerIndex].startingTernary -= 1;
+    }
+    setRoster(roster);
+    setPosition(pos);
+
+    positionRoster = [...positionRoster].sort(
+      (a, b) => a.startingTernary - b.startingTernary
+    );
+
+    // POST
+    let arr = JSON.stringify([roster[rosterIndex], roster[secondPlayerIndex]]);
+    const postUpdate = async (arr) => {
+      let res = await fetch(
+        'http://localhost:3001/api/depthchart/update/' + user.teamId,
+        {
+          headers: {
+            authorization: localStorage.getItem('token'),
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+          body: arr,
+        }
+      );
+      if (res.ok) {
+        console.log('Post Complete');
+      } else {
+        alert('HTTP-Error:', res.status);
+      }
+    };
     //
     setFilter(positionRoster);
+    postUpdate(arr);
   };
 
   // const callBackPosition = (event) => {
@@ -110,7 +164,6 @@ const DepthChart = ({ currentUser }) => {
       let json;
       if (res.ok) {
         json = await res.json();
-        console.log(json);
       } else {
         alert('HTTP-Error:', res.status);
       }
@@ -128,7 +181,7 @@ const DepthChart = ({ currentUser }) => {
       .filter((x) => x.Position === pos)
       .sort((a, b) => a.startingTernary - b.startingTernary);
     setFilter(filterRoster);
-  }, [pos, roster]);
+  }, [roster, pos]);
 
   // useEffect(() => {
   //   console.log(roster);
@@ -145,51 +198,6 @@ const DepthChart = ({ currentUser }) => {
   // Set in stone each designation to be a permanent slot
   // Go to the sample content and assign each player a designation
   // If they match the designation, ahve them in the proper dropdown
-
-  // let designations = [
-  //   { designation: 'QB1', position: 'QB' },
-  //   { designation: 'QB2', position: 'QB' },
-  //   { designation: 'RB1', position: 'RB' },
-  //   { designation: 'RB2', position: 'RB' },
-  //   { designation: 'WR1', position: 'WR' },
-  //   { designation: 'WR2', position: 'WR' },
-  //   { designation: 'WR3', position: 'WR' },
-  //   { designation: 'TE1', position: 'TE' },
-  //   { designation: 'TE2', position: 'TE' },
-  //   { designation: 'LT1', position: 'LT' },
-  //   { designation: 'LT2', position: 'LT' },
-  //   { designation: 'LG1', position: 'LG' },
-  //   { designation: 'LG2', position: 'LG' },
-  //   { designation: 'C1', position: 'C' },
-  //   { designation: 'C2', position: 'C' },
-  //   { designation: 'RG1', position: 'RG' },
-  //   { designation: 'RG2', position: 'RG' },
-  //   { designation: 'RT1', position: 'RT' },
-  //   { designation: 'RT2', position: 'RT' },
-  //   { designation: 'LE1', position: 'LE' },
-  //   { designation: 'LE2', position: 'LE' },
-  //   { designation: 'DT1', position: 'DT' },
-  //   { designation: 'DT2', position: 'DT' },
-  //   { designation: 'RE1', position: 'RE' },
-  //   { designation: 'RE2', position: 'RE' },
-  //   { designation: 'LOLB1', position: 'OLB' },
-  //   { designation: 'LOLB2', position: 'OLB' },
-  //   { designation: 'ILB1', position: 'ILB' },
-  //   { designation: 'ILB2', position: 'ILB' },
-  //   { designation: 'ROLB1', position: 'OLB' },
-  //   { designation: 'ROLB2', position: 'OLB' },
-  //   { designation: 'CB1', position: 'CB' },
-  //   { designation: 'CB2', position: 'CB' },
-  //   { designation: 'CB3', position: 'CB' },
-  //   { designation: 'FS1', position: 'FS' },
-  //   { designation: 'FS2', position: 'FS' },
-  //   { designation: 'SS1', position: 'SS' },
-  //   { designation: 'SS2', position: 'SS' },
-  //   { designation: 'P1', position: 'P' },
-  //   { designation: 'P2', position: 'P' },
-  //   { designation: 'K1', position: 'K' },
-  //   { designation: 'K2', position: 'K' },
-  // ];
 
   let positions = [
     { position: 'QB', id: 6 },
@@ -263,13 +271,15 @@ const DepthChart = ({ currentUser }) => {
   //   />
   // ));
 
-  let PlayerRows = filterRosters.map((x) => {
+  let PlayerRows = filterRosters.map((x, i) => {
     return (
       <PlayerRow
         pos={x.Position}
         player={x}
         key={x.id}
-        swap={adjustDepthChart}
+        moveRow={adjustDepthChart}
+        rank={i}
+        arrLength={filterRosters.length}
       />
     );
   });
@@ -336,7 +346,21 @@ const DepthChart = ({ currentUser }) => {
               <tfoot>
                 <tr>{headerRows}</tr>
               </tfoot>
-              <tbody>{PlayerRows}</tbody>
+              {/* <tbody>{PlayerRows}</tbody> */}
+              <tbody>
+                {filterRosters.map((x, i) => {
+                  return (
+                    <PlayerRow
+                      pos={x.Position}
+                      player={x}
+                      key={x.id}
+                      moveRow={adjustDepthChart}
+                      rank={i}
+                      arrLength={filterRosters.length}
+                    />
+                  );
+                })}
+              </tbody>
             </table>
           </div>
         </div>

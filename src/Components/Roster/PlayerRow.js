@@ -1,7 +1,6 @@
 import React from 'react';
 
 const PlayerRow = (props) => {
-  console.log(props);
   const [showRow, setShowRow] = React.useState(false);
   const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
   const [overall, setOverall] = React.useState('');
