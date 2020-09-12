@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logos from '../../Constants/logos.js';
 import TeamCard from './TeamCard.js';
 import { getLogo } from '../../Constants/getLogo.js';
 import { connect } from 'react-redux';
@@ -62,7 +61,7 @@ class AvailableTeams extends Component {
     // For all teams available, run a loop
     // And render a teamcard for each available team
     // Pass all team info as a prop
-
+    console.log(this.state.filterTeams);
     const teamCards = this.state.filterTeams.map((team) => {
       return (
         <TeamCard
@@ -83,93 +82,7 @@ class AvailableTeams extends Component {
         <div className='is-fluid has-text-centered'>
           <h2 className='subtitle is-3 availableText'>Available Teams</h2>
           <div className='availableScrollbar available-ui-height availableTeams'>
-            <div className='tile is-ancestor teams'>
-              {teamCards}
-              {/* <TeamCard
-                team='Baylor'
-                mascot='Bears'
-                conference='Big 12 Conference'
-                logo={logos.Baylor}
-              />
-              <TeamCard
-                team='Boise State'
-                mascot='Broncos'
-                conference='Mountain West Conference'
-                logo={logos.Boise_State}
-              />
-              <TeamCard
-                team='California'
-                mascot='Golden Bears'
-                conference='Pac 12 Conference'
-                logo={logos.California}
-              />
-              <TeamCard
-                team='Eastern Michigan'
-                mascot='Eagles'
-                conference='Mid-American Conference'
-                logo={logos.Eastern_Michigan}
-              />
-              <TeamCard
-                team='Florida'
-                mascot='Gators'
-                conference='South Eastern Conference'
-                logo={logos.Florida}
-              />
-              <TeamCard
-                team='FIU'
-                mascot='Panthers'
-                conference='Conference-USA'
-                logo={logos.FIU}
-              />
-              <TeamCard
-                team='Hawaii'
-                mascot='Rainbow Warriors'
-                conference='Mountain West Conference'
-                logo={logos.Hawaii}
-              />
-              <TeamCard
-                team='Kansas'
-                mascot='Jayhawks'
-                conference='Big 12 Conference'
-                logo={logos.Kansas}
-              />
-              <TeamCard
-                team='Kansas State'
-                mascot='Wildcats'
-                conference='Big 12 Conference'
-                logo={logos.Kansas_State}
-              />
-              <TeamCard
-                team='LSU'
-                mascot='Tigers'
-                conference='South Eastern Conference'
-                logo={logos.LSU}
-              />
-              <TeamCard
-                team='Michigan'
-                mascot='Wolverines'
-                conference='Big 10 Conference'
-                logo={logos.Michigan}
-              />
-              <TeamCard
-                team='Nevada'
-                mascot='Wolf Pack'
-                conference='Mountain West Conference'
-                logo={logos.Nevada}
-              />
-              <TeamCard
-                team='Oregon'
-                mascot='Ducks'
-                conference='Pac 12 Conference'
-                logo={logos.Oregon}
-              />
-              <TeamCard
-                team='West Virginia'
-                mascot='Mountaineers'
-                conference='Big 12 Conference'
-                logo={logos.West_Virginia}
-              /> */}
-            </div>
+            <div className='tile is-ancestor teams'>{teamCards}</div>
           </div>
         </div>
       </div>

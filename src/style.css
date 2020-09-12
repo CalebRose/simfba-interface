@@ -297,6 +297,17 @@ td {
   End of Depth Chart Page
 */
 
+/*
+  Admin Pages
+*/
+.request-icon {
+  width: 20px;
+}
+
+/*
+  End of Admin Pages
+*/
+
 @media (max-width: 1024px) {
   .desktop {
     display: none;

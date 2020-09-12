@@ -1,5 +1,8 @@
 export default {
   LANDING: '/',
+  APPROVE: '/admin-approve',
+  MANAGE_USERS: '/admin-users',
+  MANAGE_SIM: '/sim',
   USER: '/user',
   TEAM: '/team',
   ROSTER: '/team/roster',

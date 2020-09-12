@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { Route } from 'react-router-dom';
+import { Route, useHistory } from 'react-router-dom';
 
 // Redux
 import { connect } from 'react-redux';
@@ -24,6 +24,9 @@ import Team from './Components/Team/Team';
 import Login from './Components/SignUp_Login/LoginBody';
 import SignUp from './Components/SignUp_Login/SignUpBody';
 import DepthChart from './Components/DepthChart/DepthChart';
+import ApproveRequests from './Components/Admin/ApproveRequests/ApproveRequests';
+import ManageTeams from './Components/Admin/ManageTeams/ManageTeams';
+import ManageSim from './Components/Admin/ManageSim/ManageSim';
 
 class App extends Component {
   state = {
@@ -85,6 +88,21 @@ class App extends Component {
           exact
           path={routes.DEPTHCHART}
           render={() => <DepthChart data={this.state.user} />}
+        />
+        <Route
+          exact
+          path={routes.APPROVE}
+          render={() => <ApproveRequests data={this.state.user} />}
+        />
+        <Route
+          exact
+          path={routes.MANAGE_USERS}
+          render={() => <ManageTeams data={this.state.user} />}
+        />
+        <Route
+          exact
+          path={routes.MANAGE_SIM}
+          render={() => <ManageSim data={this.state.user} />}
         />
         <Route exact path={routes.AVAILABLE_TEAMS} component={AvailableTeams} />
         <Route exact path={routes.RECRUITING} component={LandingPage} />

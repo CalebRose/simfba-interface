@@ -6,8 +6,22 @@ const PlayerRow = (props) => {
     HS/JC, Pot, Num
     
     */
-  // let position = props.designation.slice(0, 2);
   let player = props.player;
+  const [overall, setOverall] = React.useState('');
+  let ovr = player.Overall;
+  React.useEffect(() => {
+    if (ovr) {
+      let letter = '';
+      if (ovr >= 46) letter = 'A';
+      else if (ovr > 36) letter = 'B';
+      else if (ovr > 26) letter = 'C';
+      else if (ovr > 16) letter = 'D';
+      else letter = 'F';
+      setOverall(letter);
+    }
+  }, [overall]);
+
+  // let position = props.designation.slice(0, 2);
 
   const playerAttributes = {};
   //   let data = props.data;
@@ -56,7 +70,7 @@ const PlayerRow = (props) => {
       <th>{player ? player.Position : ''}</th>
       <th>{player ? player.First_Name + ' ' + player.Last_Name : ''}</th>
       <td>{player ? player.Archetype : ''}</td>
-      <td>{player ? player.Overall : ''}</td>
+      <td>{overall}</td>
       <td>{player ? player.Year : ''}</td>
       <td>{player ? player.Height : ''}</td>
       <td>{player ? player.Weight : ''}</td>

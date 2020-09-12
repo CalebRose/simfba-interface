@@ -6,11 +6,10 @@ import routes from '../../Constants/routes';
 const authorizedUser = (props) => {
   const { user } = props;
   var RoleList = (props) => {
-    if (props.user.roleID === 1) {
+    if (props.user.roleID === 'Admin') {
       return (
-        <div className='navbar-item has-dropdown'>
-          <a
-            href='#'
+        <div className='navbar-item has-dropdown is-hoverable'>
+          <p
             className='navbar-link'
             data-toggle='dropdown'
             role='button'
@@ -18,13 +17,18 @@ const authorizedUser = (props) => {
           >
             <span className='glyphicon glyphicon-info-sign'></span>
             Administration <span className='caret'></span>
-          </a>
+          </p>
           <div className='navbar-dropdown'>
-            <a className='navbar-item' href='/admin/teams/all'>
-              All Teams
-            </a>
+            <Link to={routes.MANAGE_SIM} className='navbar-item'>
+              Manage Sim <span className='caret'></span>
+            </Link>
             <hr className='navbar-divider'></hr>
-            <a href='/admin/teams/assign'>Assign Team</a>
+            <Link to={routes.MANAGE_USERS} className='navbar-item'>
+              Manage Teams <span className='caret'></span>
+            </Link>
+            <Link to={routes.APPROVE} className='navbar-item'>
+              Approve Requests <span className='caret'></span>
+            </Link>
           </div>
         </div>
       );
@@ -35,9 +39,21 @@ const authorizedUser = (props) => {
     auth.signOut();
     localStorage.removeItem('token');
   };
+  const Admin = () => {
+    return (
+      <div className='navbar-item'>
+        <Link to={routes.ADMIN}>
+          <span className='glyphicon glyphicon-info-sign'></span>
+          Admin <span className='caret'></span>
+        </Link>
+      </div>
+    );
+  };
 
   return (
     <div className='navbar-end'>
+      {user && user.roleID === 'Admin' ? <Admin /> : null}
+      <RoleList user={user} />
       <div className='navbar-item'>
         <Link to={routes.USER}>
           <span className='glyphicon glyphicon-user'></span>
@@ -49,7 +65,6 @@ const authorizedUser = (props) => {
           <span className='fas fa-sign-out-alt'></span> log out
         </Link>
       </div>
-      <RoleList user={user} />
     </div>
   );
 };
