@@ -14,19 +14,7 @@ import './App.css';
 import './style.css';
 
 // Routes and Pages
-import routes from './Constants/routes';
-import NavBar from './Components/NavBar/NavBar';
-import LandingPage from './Components/LandingPage/LandingPage';
-import AvailableTeams from './Components/AvailableTeams/AvailableTeams';
-import Profile from './Components/Profile/Profile';
-import Roster from './Components/Roster/Roster';
-import Team from './Components/Team/Team';
-import Login from './Components/SignUp_Login/LoginBody';
-import SignUp from './Components/SignUp_Login/SignUpBody';
-import DepthChart from './Components/DepthChart/DepthChart';
-import ApproveRequests from './Components/Admin/ApproveRequests/ApproveRequests';
-import ManageTeams from './Components/Admin/ManageTeams/ManageTeams';
-import ManageSim from './Components/Admin/ManageSim/ManageSim';
+import Home from './Home';
 
 class App extends Component {
   state = {
@@ -66,49 +54,7 @@ class App extends Component {
   }
   render() {
     return (
-      <div className='App hero is-fullheight'>
-        <NavBar />
-        <Route exact path={routes.LANDING} component={LandingPage} />
-        <Route
-          exact
-          path={routes.USER}
-          render={() => <Profile data={this.state.user} />}
-        />
-        <Route
-          exact
-          path={routes.TEAM}
-          render={() => <Team data={this.state.user} />}
-        />
-        <Route
-          exact
-          path={routes.ROSTER}
-          render={() => <Roster data={this.state.user} />}
-        />
-        <Route
-          exact
-          path={routes.DEPTHCHART}
-          render={() => <DepthChart data={this.state.user} />}
-        />
-        <Route
-          exact
-          path={routes.APPROVE}
-          render={() => <ApproveRequests data={this.state.user} />}
-        />
-        <Route
-          exact
-          path={routes.MANAGE_USERS}
-          render={() => <ManageTeams data={this.state.user} />}
-        />
-        <Route
-          exact
-          path={routes.MANAGE_SIM}
-          render={() => <ManageSim data={this.state.user} />}
-        />
-        <Route exact path={routes.AVAILABLE_TEAMS} component={AvailableTeams} />
-        <Route exact path={routes.RECRUITING} component={LandingPage} />
-        <Route exact path={routes.SIGNUP} component={SignUp} />
-        <Route exact path={routes.LOGIN} component={Login} />
-      </div>
+      <Home/>
     );
   }
 }
