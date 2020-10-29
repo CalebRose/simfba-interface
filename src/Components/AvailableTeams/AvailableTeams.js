@@ -34,8 +34,6 @@ class AvailableTeams extends Component {
   }
 
   sendRequest = async (team) => {
-    console.log(team);
-    console.log(this.props);
     let postRequest = await fetch(
       'http://localhost:3001/api/request/' + team.id,
       {
@@ -52,8 +50,6 @@ class AvailableTeams extends Component {
     );
 
     this.setState({ sentRequest: true });
-    console.log(postRequest);
-    console.log(this.state.sentRequest);
   };
 
   render() {
@@ -61,7 +57,6 @@ class AvailableTeams extends Component {
     // For all teams available, run a loop
     // And render a teamcard for each available team
     // Pass all team info as a prop
-    console.log(this.state.filterTeams);
     const teamCards = this.state.filterTeams.map((team) => {
       return (
         <TeamCard

@@ -1,8 +1,6 @@
 import React from 'react';
 
 const RequestRow = (props) => {
-  const [isApproved, setApproval] = React.useState(false);
-  const [isRejected, setReject] = React.useState(false);
   let data = props.request;
 
   const approve = () => {

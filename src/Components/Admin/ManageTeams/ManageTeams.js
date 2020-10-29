@@ -1,17 +1,82 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
+import TeamRow from './TeamRow';
+import firebase from 'firebase';
 
 const ManageTeams = ({ currentUser }) => {
   // State
   const user = useSelector((state) => state.user.currentUser);
   const [teams, setTeams] = React.useState([]);
-  console.log(user);
+
   // Use Effects Begin
+  useEffect(() => {
+    const getCoachedTeams = async () => {
+      let res = await fetch('http://localhost:3001/api/teams/coachedTeams', {
+        headers: {
+          authorization: localStorage.getItem('token'),
+        },
+      });
+      let json;
+      if (res.ok) {
+        json = await res.json();
+      } else {
+        alert('HTTP-Error:', res.status);
+      }
+      console.log(json);
+      setTeams(json);
+    };
+    if (user) {
+      getCoachedTeams();
+    }
+  }, [user]);
 
   // Use Effects End
 
+  // Click Functions
+  const revokeRequest = async (payload) => {
+    // DB Request
+    let res = await fetch('http://localhost:3001/api/requests/revoke/' + payload.reqId, {
+      headers: {
+        authorization: localStorage.getItem('token'),
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      console.log('Revoke Request:', payload.reqId);
+    } else {
+      throw ('HTTP-Error: Revoke incomplete', res.status);
+    }
+    // Firebase Call
+    const firestore = firebase.firestore();
+    let userRef = await firestore
+      .collection('users')
+      .where('username', '==', payload.username)
+      .get();
+
+    userRef.forEach(async (doc) => {
+      let emptyObj = {
+        'username': payload.username,
+        'team': '',
+        'mascot': '',
+        'teamAbbr': '',
+        'teamId': null
+      }
+      await doc.ref.update(emptyObj);
+    });
+    console.log('Firebase Updated');
+
+    // Filter Requests
+    // const filterTeams = teams.filter((x) => x.id !== payload.reqId);
+    // setTeams(filterTeams);    
+  }
+
+
+
   // Admin UI
-  const AdminUI = ({}) => {
+  const AdminUI = () => {
+    console.log(teams);
     return (
       <div className='hero-body center'>
         <div className='container is-fluid has-text-centered userInterface'>
@@ -51,7 +116,9 @@ const ManageTeams = ({ currentUser }) => {
                     </th>
                   </tr>
                 </tfoot>
-                <tbody></tbody>
+    <tbody>{teams.map((x, i) => {
+      return (<TeamRow key={i} team={x} revoke={revokeRequest}/>)
+    })}</tbody>
               </table>
             </div>
           </div>

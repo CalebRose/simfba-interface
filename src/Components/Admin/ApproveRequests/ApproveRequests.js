@@ -22,7 +22,6 @@ const ApproveRequests = ({ currentUser }) => {
       } else {
         alert('HTTP-Error:', res.status);
       }
-      console.log(json);
       setRequests(json);
     };
     if (user) {
@@ -34,10 +33,6 @@ const ApproveRequests = ({ currentUser }) => {
 
   // Click Functions
   const approveRequest = async (payload) => {
-    console.log(payload);
-    console.log('ID:', payload.reqId);
-    const payloadJson = JSON.stringify(payload);
-    console.log(payloadJson);
     try {
       // DB request for Request
       let res = await fetch(
@@ -107,9 +102,10 @@ const ApproveRequests = ({ currentUser }) => {
     let res = await fetch('http://localhost:3001/api/request/reject', {
       headers: {
         authorization: localStorage.getItem('token'),
+        'Content-Type': 'application/json',
       },
       method: 'DELETE',
-      body: payload,
+      body: JSON.stringify(payload),
     });
     if (res.ok) {
       console.log('Rejected Request:', payload.reqId);
