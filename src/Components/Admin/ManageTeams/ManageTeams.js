@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import TeamRow from './TeamRow';
 import firebase from 'firebase';
+import url from '../../../Constants/url';
 
 const ManageTeams = ({ currentUser }) => {
   // State
@@ -11,7 +12,7 @@ const ManageTeams = ({ currentUser }) => {
   // Use Effects Begin
   useEffect(() => {
     const getCoachedTeams = async () => {
-      let res = await fetch('http://localhost:3001/api/teams/coachedTeams', {
+      let res = await fetch(url + 'teams/coachedTeams', {
         headers: {
           authorization: localStorage.getItem('token'),
         },
@@ -35,13 +36,19 @@ const ManageTeams = ({ currentUser }) => {
   // Click Functions
   const revokeRequest = async (payload) => {
     // DB Request
-    let res = await fetch('http://localhost:3001/api/requests/revoke/' + payload.reqId, {
+    let res = await fetch(url + 'requests/revoke/' + payload.reqId, {
       headers: {
         authorization: localStorage.getItem('token'),
         'Content-Type': 'application/json',
       },
       method: 'POST',
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        username: null,
+        team: payload.team,
+        mascot: payload.mascot,
+        teamAbbr: payload.teamAbbr,
+        reqId: payload.reqId,
+      }),
     });
     if (res.ok) {
       console.log('Revoke Request:', payload.reqId);
@@ -57,22 +64,20 @@ const ManageTeams = ({ currentUser }) => {
 
     userRef.forEach(async (doc) => {
       let emptyObj = {
-        'username': payload.username,
-        'team': '',
-        'mascot': '',
-        'teamAbbr': '',
-        'teamId': null
-      }
+        username: payload.username,
+        team: '',
+        mascot: '',
+        teamAbbr: '',
+        teamId: null,
+      };
       await doc.ref.update(emptyObj);
     });
     console.log('Firebase Updated');
 
     // Filter Requests
-    // const filterTeams = teams.filter((x) => x.id !== payload.reqId);
-    // setTeams(filterTeams);    
-  }
-
-
+    const filterTeams = teams.filter((x) => x.id !== payload.reqId);
+    setTeams(filterTeams);
+  };
 
   // Admin UI
   const AdminUI = () => {
@@ -116,9 +121,11 @@ const ManageTeams = ({ currentUser }) => {
                     </th>
                   </tr>
                 </tfoot>
-    <tbody>{teams.map((x, i) => {
-      return (<TeamRow key={i} team={x} revoke={revokeRequest}/>)
-    })}</tbody>
+                <tbody>
+                  {teams.map((x, i) => {
+                    return <TeamRow key={i} team={x} revoke={revokeRequest} />;
+                  })}
+                </tbody>
               </table>
             </div>
           </div>

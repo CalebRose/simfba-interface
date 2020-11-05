@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import TeamCard from './TeamCard.js';
 import { getLogo } from '../../Constants/getLogo.js';
 import { connect } from 'react-redux';
+import url from '../../Constants/url.js';
 
 class AvailableTeams extends Component {
   state = {
@@ -12,8 +13,10 @@ class AvailableTeams extends Component {
 
   componentDidMount() {
     // FETCH FOR TEAMS
+    // const url = 'https://simfba-interface.azurewebsites.net/api';
     const getTeams = async () => {
-      let res = await fetch('http://localhost:3001/api/teams', {
+      // http://localhost:3001/api/teams
+      let res = await fetch(url + 'teams', {
         headers: {
           authorization: 'Bearer ' + localStorage.getItem('token'),
           mode: 'no-cors',
@@ -34,20 +37,17 @@ class AvailableTeams extends Component {
   }
 
   sendRequest = async (team) => {
-    let postRequest = await fetch(
-      'http://localhost:3001/api/request/' + team.id,
-      {
-        headers: {
-          authorization: localStorage.getItem('token'),
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          teamId: team.id,
-          username: this.props.currentUser.username,
-        }),
-      }
-    );
+    let postRequest = await fetch(url + 'request/' + team.id, {
+      headers: {
+        authorization: localStorage.getItem('token'),
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        teamId: team.id,
+        username: this.props.currentUser.username,
+      }),
+    });
 
     this.setState({ sentRequest: true });
   };

@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 // import { connect, useDispatch, useSelector } from 'react-redux';
 import { useSelector } from 'react-redux';
 import PlayerRow from './PlayerRow';
-import SampleContent from './SampleContent';
 import AttributeRow from './AttributeRow';
 import DropdownItem from './DropdownItem';
 import Player from '../../Models/Player';
+import url from '../../Constants/url';
 // import DepthChartRow from "../DepthChart/DepthChartRow";
 
 const Roster = ({ currentUser }) => {
@@ -23,7 +23,6 @@ const Roster = ({ currentUser }) => {
   let initialTeam = user ? user.team : null; // Initial value from redux state
   const [team, setTeam] = React.useState(initialTeam); // Redux value as initial value for react hook
   const [roster, setRoster] = React.useState([]);
-  let playerAttributes = [];
   const toggleModal = () => {
     const newState = !modalState;
     return setModal(newState);
@@ -48,14 +47,11 @@ const Roster = ({ currentUser }) => {
 
   useEffect(() => {
     const getRoster = async () => {
-      let response = await fetch(
-        'http://localhost:3001/api/roster/' + user.teamId,
-        {
-          headers: {
-            authorization: 'Bearer ' + localStorage.getItem('token'),
-          },
-        }
-      );
+      let response = await fetch(url + 'roster/' + user.teamId, {
+        headers: {
+          authorization: 'Bearer ' + localStorage.getItem('token'),
+        },
+      });
       /* {
         method: 'GET',
         headers: {

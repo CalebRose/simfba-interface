@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import RequestRow from './RequestRow';
 import firebase from 'firebase';
+import url from '../../../Constants/url';
 
 const ApproveRequests = ({ currentUser }) => {
   // State
@@ -11,7 +12,7 @@ const ApproveRequests = ({ currentUser }) => {
   // Get Requests
   useEffect(() => {
     const getRequests = async () => {
-      let res = await fetch('http://localhost:3001/api/requests', {
+      let res = await fetch(url + 'requests', {
         headers: {
           authorization: localStorage.getItem('token'),
         },
@@ -35,19 +36,16 @@ const ApproveRequests = ({ currentUser }) => {
   const approveRequest = async (payload) => {
     try {
       // DB request for Request
-      let res = await fetch(
-        'http://localhost:3001/api/requests/approve/' + payload.reqId,
-        {
-          headers: {
-            authorization: localStorage.getItem('token'),
-            'Content-Type': 'application/json',
-          },
-          method: 'POST',
-          body: JSON.stringify({
-            reqId: payload.reqId,
-          }),
-        }
-      );
+      let res = await fetch(url + 'requests/approve/' + payload.reqId, {
+        headers: {
+          authorization: localStorage.getItem('token'),
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          reqId: payload.reqId,
+        }),
+      });
       if (res.ok) {
         console.log(
           'Approved Request:',
@@ -58,17 +56,14 @@ const ApproveRequests = ({ currentUser }) => {
       }
 
       // DB Request for assigning coach to team
-      let assignTeam = await fetch(
-        'http://localhost:3001/api/teams/assign/' + payload.teamId,
-        {
-          headers: {
-            authorization: localStorage.getItem('token'),
-            'Content-Type': 'application/json',
-          },
-          method: 'POST',
-          body: JSON.stringify(payload),
-        }
-      );
+      let assignTeam = await fetch(url + 'teams/assign/' + payload.teamId, {
+        headers: {
+          authorization: localStorage.getItem('token'),
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
       if (assignTeam.ok) {
         console.log(payload.username + ' is now assigned to ' + payload.team);
       } else {
@@ -99,7 +94,7 @@ const ApproveRequests = ({ currentUser }) => {
 
   const rejectRequest = async (payload) => {
     // DB Request
-    let res = await fetch('http://localhost:3001/api/request/reject', {
+    let res = await fetch(url + 'request/reject', {
       headers: {
         authorization: localStorage.getItem('token'),
         'Content-Type': 'application/json',

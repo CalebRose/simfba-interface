@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import SampleContent from '../Roster/SampleContent';
 import { useSelector } from 'react-redux';
+import url from '../../Constants/url';
 
 // import DropdownItem from '../Roster/DropdownItem';
 // import DepthChartRow from './DepthChartRow';
@@ -109,17 +109,14 @@ const DepthChart = ({ currentUser }) => {
     // POST
     let arr = JSON.stringify([roster[rosterIndex], roster[secondPlayerIndex]]);
     const postUpdate = async (arr) => {
-      let res = await fetch(
-        'http://localhost:3001/api/depthchart/update/' + user.teamId,
-        {
-          headers: {
-            authorization: localStorage.getItem('token'),
-            'Content-Type': 'application/json',
-          },
-          method: 'POST',
-          body: arr,
-        }
-      );
+      let res = await fetch(url + 'depthchart/update/' + user.teamId, {
+        headers: {
+          authorization: localStorage.getItem('token'),
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: arr,
+      });
       if (res.ok) {
         console.log('Post Complete');
       } else {
@@ -153,14 +150,11 @@ const DepthChart = ({ currentUser }) => {
     // };
 
     const getDepthChart = async () => {
-      let res = await fetch(
-        'http://localhost:3001/api/depthchart/' + user.teamId,
-        {
-          headers: {
-            authorization: localStorage.getItem('token'),
-          },
-        }
-      );
+      let res = await fetch(url + 'depthchart/' + user.teamId, {
+        headers: {
+          authorization: localStorage.getItem('token'),
+        },
+      });
       let json;
       if (res.ok) {
         json = await res.json();
@@ -271,18 +265,18 @@ const DepthChart = ({ currentUser }) => {
   //   />
   // ));
 
-  let PlayerRows = filterRosters.map((x, i) => {
-    return (
-      <PlayerRow
-        pos={x.Position}
-        player={x}
-        key={x.id}
-        moveRow={adjustDepthChart}
-        rank={i}
-        arrLength={filterRosters.length}
-      />
-    );
-  });
+  // let PlayerRows = filterRosters.map((x, i) => {
+  //   return (
+  //     <PlayerRow
+  //       pos={x.Position}
+  //       player={x}
+  //       key={x.id}
+  //       moveRow={adjustDepthChart}
+  //       rank={i}
+  //       arrLength={filterRosters.length}
+  //     />
+  //   );
+  // });
 
   return (
     <div className='hero-body center'>
