@@ -6,11 +6,14 @@ var UnauthorizedUser = () => {
   return (
     <div className='navbar-end'>
       <div className='navbar-item'>
-        {/*<Link to={routes.SIGNUP}><span className='fas fa-user-plus'></span> Sign up</Link>*/ /*  This link was removed until signup is implemented.  */}
-        <div style={{ color: "lightgray" }}><span className='fas fa-user-plus'></span> Sign up</div>
+        <Link to={routes.SIGNUP}>
+          <span className='fas fa-user-plus'></span> Sign up
+        </Link>
       </div>
       <div className='navbar-item'>
-        <Link to={routes.LOGIN}><span className='fas fa-sign-in-alt'></span> Login</Link>
+        <Link to={routes.LOGIN}>
+          <span className='fas fa-sign-in-alt'></span> Login
+        </Link>
       </div>
     </div>
   );
