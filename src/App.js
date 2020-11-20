@@ -36,6 +36,7 @@ class App extends Component {
 
     this.unSubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth !== null) {
+        console.log(userAuth);
         const userRef = await createUserProfileDocument(userAuth);
         userRef.onSnapshot((snapShot) => {
           setCurrentUser({
@@ -43,8 +44,17 @@ class App extends Component {
             ...snapShot.data(),
           });
         });
-      } else {
-        setCurrentUser(null);
+
+        userAuth
+          .getIdToken(true)
+          .then(function (idToken) {
+            // Send token to your backend via HTTPS
+            // ...
+            localStorage.setItem('token', idToken);
+          })
+          .catch(function (error) {
+            // Handle error
+          });
       }
       // setCurrentUser(userAuth);
     });
