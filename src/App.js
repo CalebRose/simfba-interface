@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { Route, useHistory } from 'react-router-dom';
 
 // Redux
 import { connect } from 'react-redux';
@@ -44,18 +43,27 @@ class App extends Component {
             ...snapShot.data(),
           });
         });
+      } else {
+        setCurrentUser(null);
       }
-      setCurrentUser(userAuth);
+      // setCurrentUser(userAuth);
     });
+
+    // auth.currentUser
+    //   .getIdToken(true)
+    //   .then(function (idToken) {
+    //     localStorage.setItem('token', idToken);
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
   }
 
   componentWillUnmount() {
     this.unSubscribeFromAuth();
   }
   render() {
-    return (
-      <Home/>
-    );
+    return <Home />;
   }
 }
 

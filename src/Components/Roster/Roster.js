@@ -74,7 +74,6 @@ const Roster = ({ currentUser }) => {
     if (user) {
       getRoster();
     }
-    // let playerList = SampleContent.filter((player) => player.team === team);
   }, [team, user]);
 
   // Call Back Function
@@ -180,7 +179,7 @@ const Roster = ({ currentUser }) => {
           { Name: 'Strength', Value: data.Strength, Letter: '' },
           { Name: 'Pass Rush', Value: data.Pass_Rush, Letter: '' },
           { Name: 'Run Defense', Value: data.Run_Defense, Letter: '' },
-          { Name: 'Zone Coverage', Value: data.Zone_coverage, Letter: '' },
+          { Name: 'Zone Coverage', Value: data.Zone_Coverage, Letter: '' },
           { Name: 'Man Coverage', Value: data.Man_Coverage, Letter: '' },
         ];
         break;
@@ -190,7 +189,7 @@ const Roster = ({ currentUser }) => {
           { Name: 'Speed', Value: data.Speed, Letter: '' },
           { Name: 'Tackle', Value: data.Tackle, Letter: '' },
           { Name: 'Strength', Value: data.Strength, Letter: '' },
-          { Name: 'Zone Coverage', Value: data.Zone_coverage, Letter: '' },
+          { Name: 'Zone Coverage', Value: data.Zone_Coverage, Letter: '' },
           { Name: 'Man Coverage', Value: data.Man_Coverage, Letter: '' },
           { Name: 'Catching', Value: data.Catching, Letter: '' },
         ];
@@ -203,7 +202,7 @@ const Roster = ({ currentUser }) => {
           { Name: 'Run Defense', Value: data.Run_Defense, Letter: '' },
           { Name: 'Tackle', Value: data.Tackle, Letter: '' },
           { Name: 'Strength', Value: data.Strength, Letter: '' },
-          { Name: 'Zone Coverage', Value: data.Zone_coverage, Letter: '' },
+          { Name: 'Zone Coverage', Value: data.Zone_Coverage, Letter: '' },
           { Name: 'Man Coverage', Value: data.Man_Coverage, Letter: '' },
           { Name: 'Catching', Value: data.Catching, Letter: '' },
         ];
@@ -211,7 +210,7 @@ const Roster = ({ currentUser }) => {
       case 'K':
         data.priorityAttributes = [
           { Name: 'Kick Accuracy', Value: data.Kick_Accuracy, Letter: '' },
-          { Name: 'KickPower', Value: data.Kick_Power, Letter: '' },
+          { Name: 'Kick Power', Value: data.Kick_Power, Letter: '' },
         ];
         break;
       case 'P':
@@ -251,7 +250,7 @@ const Roster = ({ currentUser }) => {
   const AttributeRows = attributes.map((attribute) => (
     <AttributeRow key={attribute.Name} data={attribute} />
   ));
-  const Modal = ({ children, closeModal, modalState, title }) => {
+  const Modal = ({ children, closeModal, modalState, title, teamName }) => {
     if (!modalState) return null;
 
     return (
@@ -272,7 +271,7 @@ const Roster = ({ currentUser }) => {
             <div className='level'>
               <div className='level-left'>
                 <div className='title is-4'>
-                  <p>{player.Team}</p>
+                  <p>{teamName}</p>
                   <p className='gap'>
                     <strong>Year: </strong>
                     {player.Year}
@@ -393,6 +392,7 @@ const Roster = ({ currentUser }) => {
             closeModal={toggleModal}
             modalState={modalState}
             title='TEST'
+            teamName={team}
           />
           <div className='table-wrapper dTable'>
             <table className='table is-fullwidth is-hoverable is-truncated'>

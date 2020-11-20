@@ -35,6 +35,7 @@ const PlayerRow = (props) => {
     */
   let data = props.data;
   const toggleModal = () => {
+    data.Overall = overall;
     props.toggle();
     props.getData(data);
   };

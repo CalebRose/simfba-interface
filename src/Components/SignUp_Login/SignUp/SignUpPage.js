@@ -46,12 +46,30 @@ class SignUp extends React.Component {
         roleID: null,
       });
 
+      auth.currentUser
+        .sendEmailVerification()
+        .then(function () {})
+        .catch(function (error) {});
+
+      auth.currentUser
+        .getIdToken(/* forceRefresh */ true)
+        .then(function (idToken) {
+          // Send token to your backend via HTTPS
+          // ...
+          localStorage.setItem('token', idToken);
+        })
+        .catch(function (error) {
+          // Handle error
+        });
+
       this.setState({
         username: '',
         email: '',
         password: '',
         confirmPassword: '',
       });
+      this.props.history.push('/user');
+      alert('Successfully registered. Welcome, ' + username + '!');
     } catch (error) {
       console.log(error);
     }

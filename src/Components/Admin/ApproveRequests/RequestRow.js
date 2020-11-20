@@ -16,7 +16,7 @@ const RequestRow = (props) => {
   };
 
   const reject = () => {
-    return props.reject({ reqId: data.TeamId });
+    return props.reject({ reqId: data.TeamId, id: data.id });
   };
 
   return (

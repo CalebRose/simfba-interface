@@ -23,7 +23,6 @@ const ManageTeams = ({ currentUser }) => {
       } else {
         alert('HTTP-Error:', res.status);
       }
-      console.log(json);
       setTeams(json);
     };
     if (user) {
@@ -81,7 +80,6 @@ const ManageTeams = ({ currentUser }) => {
 
   // Admin UI
   const AdminUI = () => {
-    console.log(teams);
     return (
       <div className='hero-body center'>
         <div className='container is-fluid has-text-centered userInterface'>

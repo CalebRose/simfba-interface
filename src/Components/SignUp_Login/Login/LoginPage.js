@@ -13,7 +13,6 @@ class LoginPage extends Component {
   };
 
   handleSubmit = async (event) => {
-    console.log(this.props);
     event.preventDefault();
     const { email, password } = this.state;
     try {

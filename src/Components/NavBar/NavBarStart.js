@@ -5,12 +5,12 @@ import { connect } from 'react-redux';
 
 const NavBar_Start = ({ currentUser }) => {
   const user = currentUser;
-  var TeamTab = props => {
+  var TeamTab = (props) => {
     if (
       typeof props.user !== 'undefined' &&
       (typeof props.username !== 'undefined' || typeof props.username !== null)
     ) {
-      if (props.teamAbbr !== '') {
+      if (props.teamAbbr !== '' && props.teamAbbr.length > 0) {
         return <Team />;
       } else {
         return <AvailableTeams />;
@@ -53,7 +53,11 @@ const NavBar_Start = ({ currentUser }) => {
   };
   return (
     <div className='navbar-start'>
-      {currentUser.team ? <Team /> : <AvailableTeams />}
+      {currentUser.team !== null || currentUser.team !== '' ? (
+        <Team />
+      ) : (
+        <AvailableTeams />
+      )}
       {/* <TeamTab user={user} username={user.username} teamAbbr={user.teamAbbr} /> */}
       <div className='navbar-item'>
         <Link to={routes.RECRUITING}>Recruits</Link>
@@ -63,7 +67,7 @@ const NavBar_Start = ({ currentUser }) => {
 };
 
 const mapStateToProps = ({ user: { currentUser } }) => ({
-  currentUser
+  currentUser,
 });
 
 export default connect(mapStateToProps)(NavBar_Start);

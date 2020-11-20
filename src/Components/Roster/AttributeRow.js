@@ -2,7 +2,6 @@ import React from 'react';
 
 const AttributeRow = (props) => {
   let attributeImage = '../img/attributes/' + props.data.Name + '.png';
-  console.log(props.data);
   return (
     <div className='tile is-child is-4 attribute'>
       <img src={attributeImage} className='attribute-icon' alt='' />

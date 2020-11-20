@@ -108,7 +108,7 @@ const ApproveRequests = ({ currentUser }) => {
       throw ('HTTP-Error: Approval incomplete', res.status);
     }
     // Filter Requests
-    const filterRequests = requests.filter((x) => x.id !== payload.reqId);
+    const filterRequests = requests.filter((x) => x.id !== payload.id);
     setRequests(filterRequests);
   };
 
