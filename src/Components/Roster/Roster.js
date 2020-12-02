@@ -22,6 +22,8 @@ const Roster = ({ currentUser }) => {
   const [attributes, setAttributes] = React.useState([]);
   let initialTeam = user ? user.team : null; // Initial value from redux state
   const [team, setTeam] = React.useState(initialTeam); // Redux value as initial value for react hook
+  const [teams, setTeams] = React.useState([]);
+  const [teamId, setTeamId] = React.useState(0);
   const [roster, setRoster] = React.useState([]);
   const toggleModal = () => {
     const newState = !modalState;
@@ -36,18 +38,40 @@ const Roster = ({ currentUser }) => {
 
   const selectTeam = (event) => {
     setTeam(event.target.value);
+    setTeamId(event.target.id);
     activeDropdown();
   };
 
   useEffect(() => {
     if (user) {
       setTeam(user.team);
+      setTeamId(user.teamId);
     }
   }, [user]);
 
   useEffect(() => {
+    const getTeams = async () => {
+      //
+      let response = await fetch(url + 'teams/', {
+        headers: {
+          authorization: 'Bearer ' + localStorage.getItem('token'),
+        },
+      });
+
+      let json;
+      if (response.ok) {
+        json = await response.json();
+      } else {
+        alert('Http-Error', response.status);
+      }
+      setTeams(json);
+    };
+    getTeams();
+  }, []);
+
+  useEffect(() => {
     const getRoster = async () => {
-      let response = await fetch(url + 'roster/' + user.teamId, {
+      let response = await fetch(url + '/roster/' + teamId, {
         headers: {
           authorization: 'Bearer ' + localStorage.getItem('token'),
         },
@@ -71,10 +95,10 @@ const Roster = ({ currentUser }) => {
       // console.log(playerList);
       setRoster(json);
     };
-    if (user) {
+    if (teamId !== 0) {
       getRoster();
     }
-  }, [team, user]);
+  }, [team, teamId]);
 
   // Call Back Function
   const getPlayerData = (data) => {
@@ -250,6 +274,17 @@ const Roster = ({ currentUser }) => {
   const AttributeRows = attributes.map((attribute) => (
     <AttributeRow key={attribute.Name} data={attribute} />
   ));
+
+  const teamDropDowns =
+    teams.length > 1
+      ? teams.map((team) => (
+          <DropdownItem
+            value={team ? team.Team + ' ' + team.Nickname : ''}
+            id={team ? team.id : null}
+            click={selectTeam}
+          />
+        ))
+      : [];
   const Modal = ({ children, closeModal, modalState, title, teamName }) => {
     if (!modalState) return null;
 
@@ -370,16 +405,7 @@ const Roster = ({ currentUser }) => {
                     click={selectTeam}
                   />
                   <hr className='dropdown-divider'></hr>
-                  <DropdownItem
-                    value='Michigan Wolverines'
-                    click={selectTeam}
-                  />
-                  <DropdownItem value='New Mexico Lobos' click={selectTeam} />
-                  <DropdownItem
-                    value='California Golden Bears'
-                    click={selectTeam}
-                  />
-                  <DropdownItem value='LSU Tigers' click={selectTeam} />
+                  {teamDropDowns}
                 </div>
               </div>
             </div>
