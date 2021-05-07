@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import url from '../../Constants/url';
+import AddPlayerDropdown from './AddPlayerDropdown';
 
 // import DropdownItem from '../Roster/DropdownItem';
 // import DepthChartRow from './DepthChartRow';
@@ -12,10 +13,16 @@ const DepthChart = ({ currentUser }) => {
   const user = useSelector((state) => state.user.currentUser);
   let initialTeam = user ? user.team + ' ' + user.mascot : null; // Initial value from redux state
   const [team, setTeam] = React.useState(initialTeam);
+  const [depthChart, setDepthChart] = React.useState([]);
+  const [filterDepthChart, setFilter] = React.useState([]);
   const [roster, setRoster] = React.useState([]);
-  const [filterRosters, setFilter] = React.useState([]);
   const [teams, setTeams] = React.useState([]);
-  const [pos, setPosition] = React.useState('QB');
+  const [addPlayer, setAddPlayer] = React.useState({});
+  const [pos, setPosition] = React.useState({
+    name: 'Quarterback',
+    position: 'QB',
+    id: 6,
+  });
 
   // DropDown
   const activeDropdown = (event) => {
@@ -30,14 +37,14 @@ const DepthChart = ({ currentUser }) => {
 
   const callPosition = (event) => {
     let pos = event;
-    if (pos === 'LT' || pos === 'RT') {
-      pos = 'OT';
-    } else if (pos === 'LG' || pos === 'RG') {
-      pos = 'OG';
-    } else if (pos === 'LE' || pos === 'RE') {
-      pos = 'DE';
-    } else if (pos === 'ROLB' || pos === 'LOLB') {
-      pos = 'OLB';
+    if (pos.position === 'LT' || pos.position === 'RT') {
+      pos.position = 'OT';
+    } else if (pos.position === 'LG' || pos.position === 'RG') {
+      pos.position = 'OG';
+    } else if (pos.position === 'LE' || pos.position === 'RE') {
+      pos.position = 'DE';
+    } else if (pos.position === 'ROLB' || pos.position === 'LOLB') {
+      pos.position = 'OLB';
     }
     setPosition(pos);
     // const filterRoster = roster.filter((x) => x.position === pos);
@@ -46,7 +53,7 @@ const DepthChart = ({ currentUser }) => {
 
   const adjustDepthChart = (callback) => {
     //
-    let positionRoster = filterRosters;
+    let positionRoster = filterDepthChart;
     let player = callback.player;
 
     let index = 0;
@@ -56,35 +63,24 @@ const DepthChart = ({ currentUser }) => {
       }
       index++;
     }
-    // let temp;
     let playerToSwap = index;
     if (callback.swap === -1) {
       playerToSwap--;
-      // positionRoster[index].startingTernary -= 1;
-      // positionRoster[playerToSwap].startingTernary += 1;
-      // temp = positionRoster[index];
-      // positionRoster[index] = positionRoster[playerToSwap];
-      // positionRoster[playerToSwap] = temp;
     } else {
       playerToSwap++;
-      // positionRoster[index].startingTernary += 1;
-      // positionRoster[playerToSwap].startingTernary -= 1;
-      // temp = positionRoster[index];
-      // positionRoster[index] = positionRoster[playerToSwap];
-      // positionRoster[playerToSwap] = temp;
     }
     let rosterIndex = 0;
     let secondPlayerIndex = 0;
-    while (rosterIndex < roster.length) {
-      if (roster[rosterIndex].playerId === positionRoster[index].playerId) {
+    while (rosterIndex < depthChart.length) {
+      if (depthChart[rosterIndex].playerId === positionRoster[index].playerId) {
         break;
       }
       rosterIndex++;
     }
 
-    while (secondPlayerIndex < roster.length) {
+    while (secondPlayerIndex < depthChart.length) {
       if (
-        roster[secondPlayerIndex].playerId ===
+        depthChart[secondPlayerIndex].playerId ===
         positionRoster[playerToSwap].playerId
       ) {
         break;
@@ -93,13 +89,13 @@ const DepthChart = ({ currentUser }) => {
     }
     // swap in Roster
     if (callback.swap === -1) {
-      roster[rosterIndex].startingTernary -= 1;
-      roster[secondPlayerIndex].startingTernary += 1;
+      depthChart[rosterIndex].startingTernary -= 1;
+      depthChart[secondPlayerIndex].startingTernary += 1;
     } else {
-      roster[rosterIndex].startingTernary += 1;
-      roster[secondPlayerIndex].startingTernary -= 1;
+      depthChart[rosterIndex].startingTernary += 1;
+      depthChart[secondPlayerIndex].startingTernary -= 1;
     }
-    setRoster(roster);
+    setDepthChart(depthChart);
     setPosition(pos);
 
     positionRoster = [...positionRoster].sort(
@@ -107,7 +103,10 @@ const DepthChart = ({ currentUser }) => {
     );
 
     // POST
-    let arr = JSON.stringify([roster[rosterIndex], roster[secondPlayerIndex]]);
+    let arr = JSON.stringify([
+      depthChart[rosterIndex],
+      depthChart[secondPlayerIndex],
+    ]);
     const postUpdate = async (arr) => {
       let res = await fetch(url + 'depthchart/update/' + user.teamId, {
         headers: {
@@ -161,7 +160,7 @@ const DepthChart = ({ currentUser }) => {
       } else {
         alert('HTTP-Error:', res.status);
       }
-      setRoster(json);
+      setDepthChart(json);
     };
     if (user) {
       setTeam(user.team + ' ' + user.mascot);
@@ -171,11 +170,11 @@ const DepthChart = ({ currentUser }) => {
   }, [user]);
 
   useEffect(() => {
-    const filterRoster = roster
-      .filter((x) => x.Position === pos)
+    const filterRoster = depthChart
+      .filter((x) => x.Position === pos.position)
       .sort((a, b) => a.startingTernary - b.startingTernary);
     setFilter(filterRoster);
-  }, [roster, pos]);
+  }, [depthChart, pos]);
 
   // useEffect(() => {
   //   console.log(roster);
@@ -194,24 +193,41 @@ const DepthChart = ({ currentUser }) => {
   // If they match the designation, ahve them in the proper dropdown
 
   let positions = [
-    { position: 'QB', id: 6 },
-    { position: 'RB', id: 5 },
-    { position: 'WR', id: 14 },
-    { position: 'TE', id: 11 },
-    { position: 'LT', id: 1 },
-    { position: 'LG', id: 2 },
-    { position: 'C', id: 15 },
-    { position: 'RG', id: 2 },
-    { position: 'RT', id: 1 },
-    { position: 'LE', id: 7 },
-    { position: 'DT', id: 4 },
-    { position: 'RE', id: 7 },
-    { position: 'LOLB', id: 12 },
-    { position: 'ILB', id: 8 },
-    { position: 'ROLB', id: 12 },
-    { position: 'CB', id: 13 },
-    { position: 'FS', id: 9 },
-    { position: 'SS', id: 10 },
+    { name: 'Quarterback', position: 'QB', id: 6 },
+    { name: 'Runningback', position: 'RB', id: 5 },
+    { name: 'Wide Receiver', position: 'WR', id: 14 },
+    { name: 'Tight End', position: 'TE', id: 11 },
+    { name: 'Left Tackle', position: 'LT', id: 1 },
+    { name: 'Left Guard', position: 'LG', id: 2 },
+    { name: 'Center', position: 'C', id: 15 },
+    { name: 'Right Guard', position: 'RG', id: 2 },
+    { name: 'Right Tackle', position: 'RT', id: 1 },
+    { name: 'Left End', position: 'LE', id: 7 },
+    { name: 'Defensive Tackle', position: 'DT', id: 4 },
+    { name: 'Right End', position: 'RE', id: 7 },
+    { name: 'Left Outside Linebacker', position: 'LOLB', id: 12 },
+    { name: 'Inside Linebacker', position: 'ILB', id: 8 },
+    { name: 'Right Outside Linebacker', position: 'ROLB', id: 12 },
+    { name: 'Cornerback', position: 'CB', id: 13 },
+    { name: 'Free Safety', position: 'FS', id: 9 },
+    { name: 'Strong Safety', position: 'SS', id: 10 },
+    { name: 'Punter', position: 'P', id: 16 },
+    { name: 'Kicker', position: 'K', id: 17 },
+    { name: 'Personal Protector', position: 'PPr', id: 18 },
+    { name: 'Long Snapper', position: 'LS', id: 19 },
+    { name: 'Gunner', position: 'GU', id: 20 },
+    { name: 'Wing', position: 'W', id: 21 },
+    { name: 'Gun Stopper', position: 'GS', id: 22 },
+    { name: 'Punt Rusher', position: 'PRSH', id: 23 },
+    { name: 'Kickoff Coverage', position: 'KCov', id: 24 },
+    { name: 'Punt Returner', position: 'PR', id: 25 },
+    { name: 'Kick Returner', position: 'KR', id: 26 },
+    { name: 'Upback', position: 'UP', id: 27 },
+    { name: 'First Line', position: 'FL', id: 28 },
+    { name: 'Second Line', position: 'SL', id: 29 },
+    { name: 'Holder', position: 'H', id: 30 },
+    { name: 'FG Rushers', position: 'FGR', id: 31 },
+    { name: 'Kickoff Kicker', position: 'KK', id: 32 },
   ];
 
   let headers = [
@@ -342,7 +358,7 @@ const DepthChart = ({ currentUser }) => {
               </tfoot>
               {/* <tbody>{PlayerRows}</tbody> */}
               <tbody>
-                {filterRosters.map((x, i) => {
+                {filterDepthChart.map((x, i) => {
                   return (
                     <PlayerRow
                       pos={x.Position}
@@ -350,13 +366,21 @@ const DepthChart = ({ currentUser }) => {
                       key={x.id}
                       moveRow={adjustDepthChart}
                       rank={i}
-                      arrLength={filterRosters.length}
+                      arrLength={filterDepthChart.length}
                     />
                   );
                 })}
               </tbody>
             </table>
           </div>
+        </div>
+        <div className='is-divider' />
+        <div className='add-player'>
+          <h1>Add to Depth Chart</h1>
+          <div>
+            <AddPlayerDropdown />
+          </div>
+          <div>For Add Player Button</div>
         </div>
       </div>
     </div>

@@ -403,6 +403,7 @@ const Roster = ({ currentUser }) => {
                   <DropdownItem
                     value={user ? user.team + ' ' + user.mascot : null}
                     click={selectTeam}
+                    id={user ? user.teamId : null}
                   />
                   <hr className='dropdown-divider'></hr>
                   {teamDropDowns}

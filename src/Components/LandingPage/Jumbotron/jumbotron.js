@@ -1,28 +1,31 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { useEffect } from 'react/cjs/react.development';
+import CBBHomePage from './jumbotronComponents/cbb/CBBHomepage';
+import NBAHomepage from './jumbotronComponents/nba/NBAHomepage';
 
-const jumbotron = () => {
-  return (
-    <div className=''>
-      <div className='hero-body center'>
-        <div
-          className='has-text-centered is-vcentered'
-          style={{ paddingBottom: 33 + 'vh' }}
-        >
-          <img className='logo' src="./img/sfalogo.png" alt='site logo'></img>
-          {/* <h1 className="title is-1 heroText">SIMFBA</h1> */}
-          <h3 className='subtitle is-size-2 heroText'>
-            Your team. Your players. Your legacy.
-          </h3>
-        </div>
-      </div>
-      {/* //   <div class="container">
-    //     <a href="/" className="lang-logo">
-    //       <img src="/img/sfa1.png" alt="Logo" />
-    //     </a>
-    //     <h1>Welcome to Simulation Football Association</h1>
-    //   </div> */}
-    </div>
-  );
+const Jumbotron = ({ currentUser }) => {
+    const [sport, setSport] = React.useState('CBB');
+    const [homepage, setHomepage] = React.useState('');
+
+    // useEffect(() => {
+    //     switch (sport) {
+    //         case 'CBB':
+    //             // setHomepage(CBBHomePage);
+    //             break;
+    //         case 'NBA':
+    //             // setHomepage(NBAHomepage);
+    //             break;
+
+    //         default:
+    //             setHomepage('');
+    //             break;
+    //     }
+    // }, [sport]);
 };
 
-export default jumbotron;
+const mapStateToProps = ({ user: { currentUser } }) => ({
+    currentUser
+});
+
+export default connect(mapStateToProps)(Jumbotron);
