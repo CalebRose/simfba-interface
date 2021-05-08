@@ -263,7 +263,9 @@ export const getLogo = (team) => {
         case 'Wyoming':
             return logos.Wyoming;
         case 'Seattle Supersonics':
-            return logos.Supersonics;
+            return logos.SEA_Supersonics;
+        case 'Seattle Seahawks':
+            return logos.SEA_Seahawks;
         default:
             return logos.Unknown;
     }

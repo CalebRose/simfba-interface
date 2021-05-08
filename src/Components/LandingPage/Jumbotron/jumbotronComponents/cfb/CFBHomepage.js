@@ -95,13 +95,13 @@ const CFBHomepage = ({ currentUser }) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr className="table-success">
+                                <tr className="table-danger">
                                     <th scope="row">A</th>
                                     <td>Washington State</td>
-                                    <td>69</td>
-                                    <td>3</td>
-                                    <td>Oregon</td>
-                                    <td>W</td>
+                                    <td>41</td>
+                                    <td>42</td>
+                                    <td>Michigan</td>
+                                    <td>L</td>
                                 </tr>
                             </tbody>
                         </table>

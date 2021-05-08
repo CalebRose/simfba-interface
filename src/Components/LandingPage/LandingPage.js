@@ -2,10 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import constants from '../../Constants/constants';
 import CBBHomePage from './Jumbotron/jumbotronComponents/cbb/CBBHomepage';
+import CFBHomepage from './Jumbotron/jumbotronComponents/cfb/CFBHomepage';
 import NBAHomepage from './Jumbotron/jumbotronComponents/nba/NBAHomepage';
 
 const LandingPage = () => {
-    const [sport, setSport] = React.useState('CBB');
+    const [sport, setSport] = React.useState('CFB');
     const selectSport = (event) => {
         setSport(event.target.value);
     };
@@ -19,6 +20,7 @@ const LandingPage = () => {
                             type="button"
                             class="btn btn-primary btn-sm me-2"
                             value="CFB"
+                            onClick={selectSport}
                         >
                             CFB Team
                         </button>
@@ -26,6 +28,7 @@ const LandingPage = () => {
                             type="button"
                             class="btn btn-primary btn-sm me-2"
                             value="NFL"
+                            onClick={selectSport}
                         >
                             NFL Team
                         </button>
@@ -54,6 +57,8 @@ const LandingPage = () => {
                 <CBBHomePage />
             ) : sport === constants.NBA ? (
                 <NBAHomepage />
+            ) : sport === constants.CFB ? (
+                <CFBHomepage />
             ) : (
                 ''
             )}
