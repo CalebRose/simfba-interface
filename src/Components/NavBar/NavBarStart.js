@@ -72,9 +72,9 @@ const NavBar_Start = ({ currentUser }) => {
     var AvailableTeams = () => {
         return (
             <div className="nav-item">
-                <Link to={routes.AVAILABLE_TEAMS}>
-                    <span className="nav-link glyphicon glyphicon-open"></span>{' '}
-                    Request Team
+                <Link className="nav-link" to={routes.AVAILABLE_TEAMS}>
+                    <span className="glyphicon glyphicon-open"></span> Request
+                    Team
                 </Link>
             </div>
         );
@@ -83,7 +83,7 @@ const NavBar_Start = ({ currentUser }) => {
         <div className="">
             <ul className="navbar-nav">
                 <li className="nav-item">
-                    {currentUser.team !== null || currentUser.team !== '' ? (
+                    {currentUser.team !== null && currentUser.team !== '' ? (
                         <Team />
                     ) : (
                         <AvailableTeams />

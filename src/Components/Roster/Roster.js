@@ -7,6 +7,7 @@ import DropdownItem from './DropdownItem';
 import Player from '../../Models/Player';
 import url from '../../Constants/url';
 import RosterService from '../../Services/simFBA/RosterService';
+import TeamService from '../../Services/simFBA/TeamService';
 // import DepthChartRow from "../DepthChart/DepthChartRow";
 
 const Roster = ({ currentUser }) => {
@@ -15,7 +16,7 @@ const Roster = ({ currentUser }) => {
         Loop through array list to acquire players
     */
     let rosterService = new RosterService();
-
+    let teamService = new TeamService();
     // React Hooks for Modal
     //
     const user = useSelector((state) => state.user.currentUser); // Selecting redux state
@@ -54,7 +55,7 @@ const Roster = ({ currentUser }) => {
     useEffect(() => {
         const getTeams = async () => {
             //
-            let teams = await rosterService.GetTeams(url);
+            let teams = await teamService.GetTeams(url);
             setTeams(teams);
         };
         getTeams();
