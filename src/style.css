@@ -80,12 +80,21 @@
     padding: 12px;
     border-radius: 6px;
     overflow-wrap: break-word;
-    width: 23em;
+    width: 18em;
+}
+
+.card-content {
+    margin-top: 1em;
+}
+
+.card-titles {
+    position: absolute;
+    bottom: 0;
 }
 
 .imageSize {
-    height: 180px;
-    width: 142px;
+    max-height: 180px;
+    max-width: 180px;
 }
 
 .disable {
@@ -287,7 +296,8 @@ td {
   Admin Pages
 */
 .request-icon {
-    width: 20px;
+    width: 50px;
+    height: 30px;
 }
 
 /*
