@@ -4,6 +4,7 @@ import constants from '../../Constants/constants';
 import CBBHomePage from './Jumbotron/jumbotronComponents/cbb/CBBHomepage';
 import CFBHomepage from './Jumbotron/jumbotronComponents/cfb/CFBHomepage';
 import NBAHomepage from './Jumbotron/jumbotronComponents/nba/NBAHomepage';
+import NFLHomepage from './Jumbotron/jumbotronComponents/nfl/NFLHomepage';
 
 const LandingPage = () => {
     const [sport, setSport] = React.useState('CFB');
@@ -18,7 +19,7 @@ const LandingPage = () => {
                     <div className="btn-group">
                         <button
                             type="button"
-                            class="btn btn-primary btn-sm me-2"
+                            className="btn btn-primary btn-sm me-2"
                             value="CFB"
                             onClick={selectSport}
                         >
@@ -26,7 +27,7 @@ const LandingPage = () => {
                         </button>
                         <button
                             type="button"
-                            class="btn btn-primary btn-sm me-2"
+                            className="btn btn-primary btn-sm me-2"
                             value="NFL"
                             onClick={selectSport}
                         >
@@ -34,7 +35,7 @@ const LandingPage = () => {
                         </button>
                         <button
                             type="button"
-                            class="btn btn-primary btn-sm me-2"
+                            className="btn btn-primary btn-sm me-2"
                             value="CBB"
                             onClick={selectSport}
                         >
@@ -42,7 +43,7 @@ const LandingPage = () => {
                         </button>
                         <button
                             type="button"
-                            class="btn btn-primary btn-sm"
+                            className="btn btn-primary btn-sm"
                             value="NBA"
                             onClick={selectSport}
                         >
@@ -59,8 +60,10 @@ const LandingPage = () => {
                 <NBAHomepage />
             ) : sport === constants.CFB ? (
                 <CFBHomepage />
+            ) : sport === constants.NFL ? (
+                <NFLHomepage />
             ) : (
-                ''
+                'No Team? Click the Available Teams button'
             )}
         </div>
     );
