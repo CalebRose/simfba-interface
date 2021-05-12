@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { getLogo } from '../../../../../Constants/getLogo';
+import routes from '../../../../../Constants/routes';
 import StandingsTableRow from '../standingsTable/standingsTableRow';
 
 const CBBHomePage = ({ currentUser }) => {
@@ -158,24 +160,30 @@ const CBBHomePage = ({ currentUser }) => {
                     </div>
                     <div className="row mt-3">
                         <div className="btn-group">
-                            <button
-                                type="button"
-                                class="btn btn-primary btn-md me-2 shadow"
-                            >
-                                Gameplan
-                            </button>
-                            <button
-                                type="button"
-                                class="btn btn-primary btn-md me-2 shadow"
-                            >
-                                Recruiting
-                            </button>
-                            <button
-                                type="button"
-                                class="btn btn-primary btn-md shadow"
-                            >
-                                Stats
-                            </button>
+                            <Link to={routes.CBB_GAMEPLAN}>
+                                <button
+                                    type="button"
+                                    class="btn btn-primary btn-md me-2 shadow"
+                                >
+                                    Gameplan
+                                </button>
+                            </Link>
+                            <Link to={routes.CBB_RECRUITING_BOARD}>
+                                <button
+                                    type="button"
+                                    class="btn btn-primary btn-md me-2 shadow"
+                                >
+                                    Recruiting
+                                </button>
+                            </Link>
+                            <Link to={routes.CBB_STATS}>
+                                <button
+                                    type="button"
+                                    class="btn btn-primary btn-md shadow"
+                                >
+                                    Stats
+                                </button>
+                            </Link>
                         </div>
                     </div>
                 </div>

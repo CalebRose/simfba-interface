@@ -20,18 +20,25 @@ import Constants from './Constants/Constants';
 import BBAManageSim from './Components/BBA/Admin/ManageSim/BBAManageSim';
 import BBAApproveRequests from './Components/BBA/Admin/ApproveRequests/BBAApproveRequests';
 import BBAManageTeams from './Components/BBA/Admin/ManageTeams/BBAManageTeams';
+import CBBGameplan from './Components/BBA/Gameplan/CBBGameplan';
 
 const Home = ({ currentUser }) => {
     const user = useSelector((state) => state.user.currentUser);
     const [roleId, setRole] = React.useState('');
     const [bbaRoleId, setBBARole] = React.useState('');
     const [CFBTeam, setCFBTeam] = React.useState(0);
+    const [CBBTeam, setCBBTeam] = React.useState(0);
+    const [NBATeam, setNBATeam] = React.useState(0);
+    const [NFLTeam, setNFLTeam] = React.useState(0);
 
     useEffect(() => {
         if (user) {
             setRole(user.roleID);
             setBBARole(user.bba_roleID);
             setCFBTeam(user.teamId);
+            setCBBTeam(user.cbb_teamId);
+            setNBATeam(user.nba_teamID);
+            setNFLTeam(user.nfl_id);
         }
     }, [user]);
     return (
@@ -135,6 +142,17 @@ const Home = ({ currentUser }) => {
                     <Redirect to={routes.LANDING} />
                 )}
             </Route>
+            <Route
+                exact
+                path={routes.CBB_GAMEPLAN}
+                render={() =>
+                    CBBTeam > 0 ? (
+                        <CBBGameplan />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
             <footer class="footer fixed-bottom mt-auto py-3 bg-light">
                 <div class="container">
                     <span class="text-muted">Simfba, 2021</span>
