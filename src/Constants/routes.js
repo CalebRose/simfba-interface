@@ -16,10 +16,12 @@ export default {
     BBA_ADMIN: '/admin-bba',
     BBA_APPROVE: '/admin-bba/approve',
     BBA_USERS: '/admin-bba/users',
+    CBB_TEAM: '/bba/team/',
     CBB_ROSTER: '/bba/team/roster',
     CBB_GAMEPLAN: '/bba/team/gameplan',
     CBB_RECRUITING_BOARD: '/bba/team/recruiting',
-    CBB_RECRUITING: 'bba/recruiting',
+    CBB_RECRUITING: '/bba/recruiting',
+    CBB_STATS: '/bba/stats',
     CBB_HOME: 'cbb/home',
     NBA_HOME: 'nba/home'
 };
