@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import firebase from 'firebase';
 import SimBBA_url from '../../../../Constants/SimBBA_url';
-import BBATeamService from '../../../../Services/simNBA/BBATeamService';
-import BBARequestService from '../../../../Services/simNBA/BBARequestService';
+import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
+import BBARequestService from '../../../../_Services/simNBA/BBARequestService';
 import TeamRow from '../../../Admin/ManageTeams/TeamRow';
 
 const BBAManageTeams = ({ currentUser }) => {

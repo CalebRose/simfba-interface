@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { getLogo } from '../../../../../Constants/getLogo';
 import StandingsTableRow from '../standingsTable/standingsTableRow';
 
 const NBAHomePage = ({ currentUser }) => {
-    let team =
-        !!currentUser && !!currentUser.nba_team ? currentUser.nba_team : null;
-    const logo = getLogo(team);
+    const [team, setTeam] = React.useState('');
+    const [logo, setLogo] = React.useState('');
+
+    useEffect(() => {
+        if (currentUser) {
+            setTeam(currentUser.nba_team);
+            setLogo(getLogo(currentUser.nba_team));
+        }
+    }, [currentUser]);
 
     const standingsRecords = [
         {

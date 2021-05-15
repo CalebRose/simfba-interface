@@ -6,8 +6,8 @@ import AttributeRow from './AttributeRow';
 import DropdownItem from './DropdownItem';
 import Player from '../../Models/Player';
 import url from '../../Constants/url';
-import RosterService from '../../Services/simFBA/RosterService';
-import TeamService from '../../Services/simFBA/TeamService';
+import RosterService from '../../_Services/simFBA/RosterService';
+import TeamService from '../../_Services/simFBA/TeamService';
 // import DepthChartRow from "../DepthChart/DepthChartRow";
 
 const Roster = ({ currentUser }) => {

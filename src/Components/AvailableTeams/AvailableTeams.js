@@ -4,10 +4,10 @@ import { getLogo } from '../../Constants/getLogo.js';
 import { connect } from 'react-redux';
 import url from '../../Constants/url.js';
 import SimBBA_url from '../../Constants/SimBBA_url';
-import TeamService from '../../Services/simFBA/TeamService.js';
-import RequestService from '../../Services/simFBA/RequestService.js';
-import BBATeamService from '../../Services/simNBA/BBATeamService.js';
-import BBARequestService from '../../Services/simNBA/BBARequestService.js';
+import TeamService from '../../_Services/simFBA/TeamService.js';
+import RequestService from '../../_Services/simFBA/RequestService.js';
+import BBATeamService from '../../_Services/simNBA/BBATeamService.js';
+import BBARequestService from '../../_Services/simNBA/BBARequestService.js';
 import constants from '../../Constants/constants.js';
 import BBATeamCard from '../BBA/TeamCard/BBATeamCard.js';
 

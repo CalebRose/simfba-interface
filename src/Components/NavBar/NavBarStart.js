@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import routes from '../../Constants/routes';
 import { connect } from 'react-redux';
@@ -48,7 +48,7 @@ const NavBar_Start = ({ currentUser }) => {
                     </li>
                     <li>
                         <Link className="dropdown-item" to={routes.RECRUITING}>
-                            AllCFB Recruits
+                            All CFB Recruits
                         </Link>
                     </li>
                     <li>

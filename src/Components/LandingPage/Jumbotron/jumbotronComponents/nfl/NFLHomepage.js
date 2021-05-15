@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { getLogo } from '../../../../../Constants/getLogo';
 import NFLStandingsTableRow from '../standingsTable/NFLStandingsTableRow';
 
-const CFBHomepage = ({ currentUser }) => {
-    let team =
-        !!currentUser && !!currentUser.nfl_team ? currentUser.nfl_team : null;
-    const logo = getLogo(team);
+const NFLHomepage = ({ currentUser }) => {
+    const [team, setTeam] = React.useState('');
+    const [logo, setLogo] = React.useState('');
+
+    useEffect(() => {
+        if (currentUser) {
+            setTeam(currentUser.nfl_team);
+            setLogo(getLogo(currentUser.nfl_id));
+        }
+    }, [currentUser]);
+
+    // let team =
+    //     !!currentUser && !!currentUser.nfl_team ? currentUser.nfl_team : null;
+    // const logo = getLogo(team);
 
     const standingsRecords = [
         {
@@ -170,4 +180,4 @@ const mapStateToProps = ({ user: { currentUser } }) => ({
     currentUser
 });
 
-export default connect(mapStateToProps)(CFBHomepage);
+export default connect(mapStateToProps)(NFLHomepage);

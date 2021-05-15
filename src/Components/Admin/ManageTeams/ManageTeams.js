@@ -3,8 +3,8 @@ import { connect, useSelector } from 'react-redux';
 import TeamRow from './TeamRow';
 import firebase from 'firebase';
 import url from '../../../Constants/url';
-import TeamService from '../../../Services/simFBA/TeamService';
-import RequestService from '../../../Services/simFBA/RequestService';
+import TeamService from '../../../_Services/simFBA/TeamService';
+import RequestService from '../../../_Services/simFBA/RequestService';
 
 const ManageTeams = ({ currentUser }) => {
     // State

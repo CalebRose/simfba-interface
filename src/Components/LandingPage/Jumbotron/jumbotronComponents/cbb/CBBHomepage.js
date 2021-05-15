@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getLogo } from '../../../../../Constants/getLogo';
@@ -6,9 +6,15 @@ import routes from '../../../../../Constants/routes';
 import StandingsTableRow from '../standingsTable/standingsTableRow';
 
 const CBBHomePage = ({ currentUser }) => {
-    let team =
-        !!currentUser && !!currentUser.cbb_team ? currentUser.cbb_team : null;
-    const logo = getLogo(team);
+    const [team, setTeam] = React.useState('');
+    const [logo, setLogo] = React.useState('');
+
+    useEffect(() => {
+        if (currentUser) {
+            setTeam(currentUser.cbb_team);
+            setLogo(getLogo(currentUser.cbb_team));
+        }
+    }, [currentUser]);
 
     const standingsRecords = [
         {
@@ -76,7 +82,7 @@ const CBBHomePage = ({ currentUser }) => {
         <div>
             <div className="row mt-2">
                 <div className="col-md-auto justify-content-start">
-                    <h2>Washington State</h2>
+                    <h2>{team}</h2>
                 </div>
                 <div className="col-3"></div>
                 <div className="col-3"></div>

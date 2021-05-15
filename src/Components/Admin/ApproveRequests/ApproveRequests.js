@@ -3,7 +3,7 @@ import { connect, useSelector } from 'react-redux';
 import RequestRow from './RequestRow';
 import firebase from 'firebase';
 import url from '../../../Constants/url';
-import RequestService from '../../../Services/simFBA/RequestService';
+import RequestService from '../../../_Services/simFBA/RequestService';
 
 const ApproveRequests = ({ currentUser }) => {
     // State

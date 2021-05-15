@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { getLogo } from '../../../../../Constants/getLogo';
+import url from '../../../../../Constants/url';
+import TeamService from '../../../../../_Services/simFBA/TeamService';
 import StandingsTableRow from '../standingsTable/standingsTableRow';
 
 const CFBHomepage = ({ currentUser }) => {
-    let team = !!currentUser && !!currentUser.team ? currentUser.team : null;
-    const logo = getLogo(team);
+    let teamService = new TeamService();
+    const [team, setTeam] = React.useState('');
+    const [logo, setLogo] = React.useState('');
+    const [teamData, setTeamData] = React.useState([]);
 
     const standingsRecords = [
         {
@@ -52,6 +56,22 @@ const CFBHomepage = ({ currentUser }) => {
         }
     ];
 
+    // Get Team call
+    useEffect(() => {
+        if (currentUser) {
+            const getTeam = async () => {
+                let response = await teamService.GetTeamByTeamId(
+                    url,
+                    currentUser.teamId
+                );
+                setTeamData(response[0]);
+            };
+            setTeam(currentUser.team);
+            setLogo(getLogo(currentUser.team));
+            getTeam();
+        }
+    }, [currentUser]);
+
     const standingsRow = standingsRecords.map((x, i) => {
         return <StandingsTableRow key={x.team} record={x} rank={i + 1} />;
     });
@@ -59,14 +79,17 @@ const CFBHomepage = ({ currentUser }) => {
         <div>
             <div className="row mt-2">
                 <div className="col-md-auto justify-content-start">
-                    <h2>Washington State</h2>
+                    <h2>{team}</h2>
                 </div>
                 <div className="col-3"></div>
                 <div className="col-3"></div>
             </div>
             <div className="row mt-2">
                 <div className="col-md-auto col-sm justify-content-start">
-                    <h3>Pac 12 Conference, North Division</h3>
+                    <h3>
+                        {teamData ? teamData.Current_Conference : ''}, North
+                        Division
+                    </h3>
                 </div>
                 <div className="col-md-auto"></div>
                 <div className="col-3"></div>

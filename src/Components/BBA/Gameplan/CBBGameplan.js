@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
-import BBAPlayerService from '../../../Services/simNBA/BBAPlayerService';
+import BBAPlayerService from '../../../_Services/simNBA/BBAPlayerService';
 import SimBBA_url from '../../../Constants/SimBBA_url';
 
 const CBBGameplan = ({ currentUser }) => {
