@@ -88,4 +88,19 @@ export default class BBATeamService {
         }
         return json;
     }
+
+    async GetTeamByTeamId(url, teamId) {
+        let response = await fetch(url + 'team/' + teamId, {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        let json;
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert('Http-Error', response.status);
+        }
+        return json;
+    }
 }

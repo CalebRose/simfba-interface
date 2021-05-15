@@ -1,4 +1,19 @@
 export default class TeamService {
+    async GetTeamByTeamId(url, id) {
+        let response = await fetch(url + 'teams/team/' + id, {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        let json;
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert('Http-Error', response.status);
+        }
+        return json;
+    }
+
     async GetTeams(url) {
         let response = await fetch(url + 'teams/', {
             headers: {
