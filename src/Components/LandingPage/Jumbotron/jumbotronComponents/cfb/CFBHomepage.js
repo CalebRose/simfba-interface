@@ -64,7 +64,7 @@ const CFBHomepage = ({ currentUser }) => {
                     url,
                     currentUser.teamId
                 );
-                setTeamData(response[0]);
+                setTeamData(response);
             };
             setTeam(currentUser.team);
             setLogo(getLogo(currentUser.team));

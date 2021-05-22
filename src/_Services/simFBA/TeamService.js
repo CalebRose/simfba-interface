@@ -11,7 +11,7 @@ export default class TeamService {
         } else {
             alert('Http-Error', response.status);
         }
-        return json;
+        return json[0];
     }
 
     async GetTeams(url) {

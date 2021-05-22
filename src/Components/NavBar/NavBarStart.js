@@ -165,19 +165,16 @@ const NavBar_Start = ({ currentUser }) => {
                 <li className="nav-item">
                     <span className="nav-link">NBA (Soon)</span>
                 </li>
-
+                <li className="nav-item">
+                    <span className="nav-link">|</span>
+                </li>
                 {currentUser.teamId === null ||
                 currentUser.nfl_id === null ||
                 currentUser.cbb_teamId === null ||
                 currentUser.nba_teamID === null ? (
-                    <div>
-                        <li className="nav-item">
-                            <span className="nav-link">|</span>
-                        </li>
-                        <AvailableTeams />
-                    </div>
+                    <AvailableTeams />
                 ) : (
-                    ''
+                    <AvailableTeams />
                 )}
             </ul>
         </div>
