@@ -156,6 +156,21 @@
 /* End of Image Icons on User Profile Page */
 
 /* For  Roster Page */
+.table-height {
+    height: 60vh;
+    overflow: auto;
+}
+
+.table-height th {
+    background: white;
+    box-shadow: 0px 1px 0px 0px #000000;
+}
+
+.table-height thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
 
 .roster-header {
     text-align: center !important;
@@ -302,6 +317,33 @@ td {
 
 /*
   End of Admin Pages
+*/
+
+/*
+  CBB Gameplan
+*/
+.gameplan-table-height {
+    height: 55vh;
+    overflow: auto;
+}
+
+.gameplan-table-height th {
+    background: white;
+    box-shadow: 0px 1px 0px 0px #000000;
+}
+
+.gameplan-table-height thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.minutes-input {
+    width: 13vh !important;
+}
+
+/*
+  End of CBB gameplan
 */
 
 @media (max-width: 1024px) {

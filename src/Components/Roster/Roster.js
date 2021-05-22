@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 // import { connect, useDispatch, useSelector } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import PlayerRow from './PlayerRow';
 import AttributeRow from './AttributeRow';
 import DropdownItem from './DropdownItem';
@@ -19,57 +19,58 @@ const Roster = ({ currentUser }) => {
     let teamService = new TeamService();
     // React Hooks for Modal
     //
-    const user = useSelector((state) => state.user.currentUser); // Selecting redux state
     const [modalState, setModal] = React.useState(false);
     const [player, setPlayer] = React.useState(null);
     const [attributes, setAttributes] = React.useState([]);
-    let initialTeam = user ? user.team : null; // Initial value from redux state
-    const [team, setTeam] = React.useState(initialTeam); // Redux value as initial value for react hook
+    const [userTeam, setUserTeam] = React.useState([]);
+    const [team, setTeam] = React.useState([]); // Redux value as initial value for react hook
     const [teams, setTeams] = React.useState([]);
-    const [teamId, setTeamId] = React.useState(0);
     const [roster, setRoster] = React.useState([]);
     const toggleModal = () => {
         const newState = !modalState;
         return setModal(newState);
     };
 
-    // Dropdown Toggle
-    const activeDropdown = (event) => {
-        const dropdown = document.querySelector('.dropdown');
-        dropdown.classList.toggle('is-active');
-    };
-
-    const selectTeam = (event) => {
-        setTeam(event.target.value);
-        setTeamId(event.target.id);
-        activeDropdown();
-    };
-
     useEffect(() => {
-        if (user) {
-            setTeam(user.team);
-            setTeamId(user.teamId);
+        if (currentUser) {
+            getTeam(currentUser.teamId);
+            getTeams();
         }
-    }, [user]);
+    }, [currentUser]);
 
     useEffect(() => {
-        const getTeams = async () => {
-            //
-            let teams = await teamService.GetTeams(url);
-            setTeams(teams);
-        };
-        getTeams();
-    }, []);
+        if (team) {
+            getRoster(team.id);
+        }
+    }, [team]);
 
-    useEffect(() => {
-        const getRoster = async () => {
-            let roster = await rosterService.GetRoster(url, teamId);
+    // Functions
+    const selectTeam = (team) => {
+        setTeam(team);
+    };
+
+    const selectUserTeam = () => {
+        selectTeam(userTeam);
+    };
+
+    const getTeam = async (id) => {
+        let response = await teamService.GetTeamByTeamId(url, id);
+        setTeam(response);
+        setUserTeam(response);
+    };
+
+    const getTeams = async () => {
+        //
+        let teams = await teamService.GetTeams(url);
+        setTeams(teams);
+    };
+
+    const getRoster = async (id) => {
+        if (id !== null || id > 0) {
+            let roster = await rosterService.GetRoster(url, id);
             setRoster(roster);
-        };
-        if (teamId !== 0) {
-            getRoster();
         }
-    }, [team, teamId]);
+    };
 
     // Call Back Function
     const getPlayerData = (data) => {
@@ -302,16 +303,17 @@ const Roster = ({ currentUser }) => {
         <AttributeRow key={attribute.Name} data={attribute} />
     ));
 
-    const teamDropDowns =
-        teams.length > 1
-            ? teams.map((team) => (
-                  <DropdownItem
-                      value={team ? team.Team + ' ' + team.Nickname : ''}
-                      id={team ? team.id : null}
-                      click={selectTeam}
-                  />
-              ))
-            : [];
+    const teamDropDowns = teams
+        ? teams.map((x) => (
+              <DropdownItem
+                  key={x.id}
+                  value={x.Team + ' ' + x.Nickname}
+                  team={x}
+                  id={x.id}
+                  click={selectTeam}
+              />
+          ))
+        : '';
     const Modal = ({ children, closeModal, modalState, title, teamName }) => {
         if (!modalState) return null;
 
@@ -396,165 +398,104 @@ const Roster = ({ currentUser }) => {
     // Use the position key-value as a means to grab players from sample content and display them in player
 
     return (
-        <div className="hero-body center">
-            <div className="container is-fluid has-text-centered userInterface">
-                <h2 className="title is-3">{team} Roster</h2>
-                <div className="columns center is-12">
-                    <div className="column is-3">
-                        <h2>Coach: {user ? user.username : ''}</h2>
-                    </div>
-                    <div className="column is-3">
-                        <h2>Season: 2019</h2>
-                    </div>
-                    <div className="column is-3">
-                        <h2>Players: {playerCount}</h2>
-                    </div>
-                    <div className="column is-3">
-                        <h2>Redshirts: 0</h2>
+        <div className="container">
+            <div className="row userInterface">
+                <h2 className="">{team ? team.Team : ''} Roster</h2>
+            </div>
+            <div className="row">
+                <div className="col-4">
+                    <div className="drop-start">
+                        <button
+                            name="team"
+                            className="btn btn-secondary dropdown-toggle"
+                            id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            <span>{team ? team.Team : ''}</span>
+                        </button>
+                        <ul className="dropdown-menu dropdown-content">
+                            <DropdownItem
+                                value={
+                                    currentUser
+                                        ? currentUser.team +
+                                          ' ' +
+                                          currentUser.mascot
+                                        : null
+                                }
+                                click={selectUserTeam}
+                                id={currentUser ? currentUser.teamId : null}
+                            />
+                            <hr className="dropdown-divider"></hr>
+                            {teamDropDowns}
+                        </ul>
                     </div>
                 </div>
-                <div className="columns is-left is-12">
-                    <div className="column is-2">
-                        <div className="dropdown is-left">
-                            <div className="dropdown-trigger">
-                                <button
-                                    name="team"
-                                    className="button"
-                                    aria-haspopup="true"
-                                    aria-controls="dropdown-menu6"
-                                    onClick={activeDropdown}
-                                >
-                                    <span>{user ? team : null}</span>
-                                    <span className="icon is-small">
-                                        <i
-                                            className="fas fa-angle-down"
-                                            aria-hidden="true"
-                                        ></i>
-                                    </span>
-                                </button>
-                            </div>
-                            <div
-                                className="dropdown-menu"
-                                id="dropdown-menu"
-                                role="menu"
-                            >
-                                <div className="dropdown-content">
-                                    <DropdownItem
-                                        value={
-                                            user
-                                                ? user.team + ' ' + user.mascot
-                                                : null
-                                        }
-                                        click={selectTeam}
-                                        id={user ? user.teamId : null}
-                                    />
-                                    <hr className="dropdown-divider"></hr>
-                                    {teamDropDowns}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="column is-2"></div>
+                <div className="col-4">
+                    <h2>Players: {playerCount}</h2>
                 </div>
-                <div className="is-divider" />
-                <div className="scrollbar roster-scrollbar">
-                    <Modal
-                        closeModal={toggleModal}
-                        modalState={modalState}
-                        title="TEST"
-                        teamName={team}
-                    />
-                    <div className="table-wrapper dTable">
-                        <table className="table is-fullwidth is-hoverable is-truncated">
-                            <thead>
-                                <tr>
-                                    <th style={{ width: '200px' }}>
-                                        <abbr>Name</abbr>
-                                    </th>
-                                    <th>
-                                        <abbr title="Archetype">Archetype</abbr>
-                                    </th>
-                                    <th style={{ width: '50px' }}>
-                                        <abbr title="Position">Pos</abbr>
-                                    </th>
-                                    <th style={{ width: '50px' }}>
-                                        <abbr title="Overall">Ovr</abbr>
-                                    </th>
-                                    <th style={{ width: '50px' }}>
-                                        <abbr title="Year">Yr</abbr>
-                                    </th>
-                                    <th style={{ width: '60px' }}>
-                                        <abbr title="Height">Ht</abbr>
-                                    </th>
-                                    <th style={{ width: '80px' }}>
-                                        <abbr title="Weight">Wt</abbr>
-                                    </th>
-                                    <th style={{ width: '50px' }}>
-                                        <abbr title="State">St</abbr>
-                                    </th>
-                                    <th>
-                                        <abbr title="High School / JUCO">
-                                            School
-                                        </abbr>
-                                    </th>
-                                    <th style={{ width: '50px' }}>
-                                        <abbr title="Potential">Pot</abbr>
-                                    </th>
-                                    <th style={{ width: '60px' }}>
-                                        <abbr title="Jersey Number">Num</abbr>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                    <th style={{ width: '200px' }}>
-                                        <abbr>Name</abbr>
-                                    </th>
-                                    <th>
-                                        <abbr title="Archtype">Archtype</abbr>
-                                    </th>
-                                    <th style={{ width: '50px' }}>
-                                        <abbr title="Position">Pos</abbr>
-                                    </th>
-                                    <th style={{ width: '50px' }}>
-                                        <abbr title="Overall">Ovr</abbr>
-                                    </th>
-                                    <th style={{ width: '50px' }}>
-                                        <abbr title="Year">Yr</abbr>
-                                    </th>
-                                    <th style={{ width: '60px' }}>
-                                        <abbr title="Height">Ht</abbr>
-                                    </th>
-                                    <th style={{ width: '80px' }}>
-                                        <abbr title="Weight">Wt</abbr>
-                                    </th>
-                                    <th style={{ width: '50px' }}>
-                                        <abbr title="State">St</abbr>
-                                    </th>
-                                    <th>
-                                        <abbr title="High School / JUCO">
-                                            School
-                                        </abbr>
-                                    </th>
-                                    <th style={{ width: '50px' }}>
-                                        <abbr title="Potential">Pot</abbr>
-                                    </th>
-                                    <th style={{ width: '60px' }}>
-                                        <abbr title="Jersey Number">Num</abbr>
-                                    </th>
-                                </tr>
-                            </tfoot>
-                            <tbody>{PlayerRows}</tbody>
-                        </table>
-                    </div>
+                <div className="col-4">
+                    <h2>Redshirts: 0</h2>
+                </div>
+            </div>
+            <div className="row">
+                <Modal
+                    closeModal={toggleModal}
+                    modalState={modalState}
+                    title="TEST"
+                    teamName={team.Team}
+                />
+                <div className="table-wrapper table-height">
+                    <table className="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    <abbr>Name</abbr>
+                                </th>
+                                <th scope="col">
+                                    <abbr title="Archetype">Archetype</abbr>
+                                </th>
+                                <th scope="col">
+                                    <abbr title="Position">Pos</abbr>
+                                </th>
+                                <th scope="col">
+                                    <abbr title="Overall">Ovr</abbr>
+                                </th>
+                                <th scope="col">
+                                    <abbr title="Year">Yr</abbr>
+                                </th>
+                                <th scope="col">
+                                    <abbr title="Height">Ht</abbr>
+                                </th>
+                                <th scope="col">
+                                    <abbr title="Weight">Wt</abbr>
+                                </th>
+                                <th scope="col">
+                                    <abbr title="State">St</abbr>
+                                </th>
+                                <th scope="col">
+                                    <abbr title="High School / JUCO">
+                                        School
+                                    </abbr>
+                                </th>
+                                <th scope="col">
+                                    <abbr title="Potential">Pot</abbr>
+                                </th>
+                                <th scope="col">
+                                    <abbr title="Jersey Number">Num</abbr>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>{PlayerRows}</tbody>
+                    </table>
                 </div>
             </div>
         </div>
     );
 };
 
-// const mapStateToProps = ({ user: { currentUser } }) => ({
-//   currentUser,
-// });
-export default Roster;
-// export default connect(mapStateToProps)(Roster);
+const mapStateToProps = ({ user: { currentUser } }) => ({
+    currentUser
+});
+
+export default connect(mapStateToProps)(Roster);
