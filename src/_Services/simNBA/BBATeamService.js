@@ -29,6 +29,21 @@ export default class BBATeamService {
         return json;
     }
 
+    async GetActiveCollegeTeams(url) {
+        let response = await fetch(url + 'teams/active/college', {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        let json;
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert('Http-Error', response.status);
+        }
+        return json;
+    }
+
     async GetAvailableTeams(url) {
         let response = await fetch(url + 'teams/available', {
             headers: {

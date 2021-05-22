@@ -1,6 +1,6 @@
 export default class BBAPlayerService {
     async GetPlayerByPlayerId(url, playerId) {
-        let response = await fetch(url + '/GetPlayer/' + playerId, {
+        let response = await fetch(url + 'GetPlayer/' + playerId, {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }
@@ -16,23 +16,25 @@ export default class BBAPlayerService {
     }
 
     async GetPlayersByTeam(url, teamId) {
-        let response = await fetch(url + '/players/' + teamId, {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-
         let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('HTTP-Error:', response.status);
+        if (teamId > 0) {
+            let response = await fetch(url + 'players/' + teamId, {
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            });
+
+            if (response.ok) {
+                json = await response.json();
+            } else {
+                alert('HTTP-Error:', response.status);
+            }
         }
         return json;
     }
 
     async GetAllCollegePlayers(url) {
-        let response = await fetch(url + '/players/college', {
+        let response = await fetch(url + 'players/college', {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }
@@ -48,7 +50,7 @@ export default class BBAPlayerService {
     }
 
     async GetRecruits(url) {
-        let response = await fetch(url + '/players/college/recruits', {
+        let response = await fetch(url + 'players/college/recruits', {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }
@@ -64,7 +66,7 @@ export default class BBAPlayerService {
     }
 
     async GetAllNBAPlayers(url) {
-        let response = await fetch(url + '/players/nba', {
+        let response = await fetch(url + 'players/nba', {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }
@@ -80,7 +82,7 @@ export default class BBAPlayerService {
     }
 
     async GetAllNBAFreeAgents(url) {
-        let response = await fetch(url + '/players/nba/freeAgents', {
+        let response = await fetch(url + 'players/nba/freeAgents', {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }

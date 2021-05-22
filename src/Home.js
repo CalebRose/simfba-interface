@@ -21,6 +21,7 @@ import BBAManageSim from './Components/BBA/Admin/ManageSim/BBAManageSim';
 import BBAApproveRequests from './Components/BBA/Admin/ApproveRequests/BBAApproveRequests';
 import BBAManageTeams from './Components/BBA/Admin/ManageTeams/BBAManageTeams';
 import CBBGameplan from './Components/BBA/Gameplan/CBBGameplan';
+import BBATeam from './Components/BBA/Team/BBATeam';
 
 const Home = ({ currentUser }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -36,8 +37,8 @@ const Home = ({ currentUser }) => {
             setRole(user.roleID);
             setBBARole(user.bba_roleID);
             setCFBTeam(user.teamId);
-            setCBBTeam(user.cbb_teamId);
-            setNBATeam(user.nba_teamID);
+            setCBBTeam(user.cbb_id);
+            setNBATeam(user.nba_id);
             setNFLTeam(user.nfl_id);
         }
     }, [user]);
@@ -151,6 +152,13 @@ const Home = ({ currentUser }) => {
                     ) : (
                         <Redirect to={routes.LANDING} />
                     )
+                }
+            />
+            <Route
+                exact
+                path={routes.CBB_TEAM}
+                render={() =>
+                    CBBTeam > 0 ? <BBATeam /> : <Redirect to={routes.LANDING} />
                 }
             />
             <footer class="footer fixed-bottom mt-auto py-3 bg-light">
