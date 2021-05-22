@@ -1,36 +1,174 @@
 import React, { useEffect } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import BBAPlayerService from '../../../_Services/simNBA/BBAPlayerService';
 import SimBBA_url from '../../../Constants/SimBBA_url';
+import CBBGameplanRow from './CBBGameplanRow';
+import BBAGameplanService from '../../../_Services/simNBA/BBAGameplanService';
+import GameplanPlayerRow from './CBBGameplanPlayerRow';
 
 const CBBGameplan = ({ currentUser }) => {
-    const user = useSelector((state) => state.user.currentUser); // Selecting redux state
-
-    let team =
-        !!currentUser && !!currentUser.cbb_team ? currentUser.cbb_team : null;
+    let playerService = new BBAPlayerService();
+    let gameplanService = new BBAGameplanService();
+    const [team, setTeam] = React.useState('');
     const [roster, setRoster] = React.useState([]);
-    const [teamId, setTeamId] = React.useState([]);
-    const [gameplan, setGameplan] = React.useState([]);
+    const [gameplans, setGameplans] = React.useState([]);
+    const [isValid, setValidation] = React.useState(true);
+    const [errorMessage, setErrorMessage] = React.useState('');
+    const [serviceMessage, setServiceMessage] = React.useState('');
+    const isNBA = false;
+    const savingMessage = 'Saving...';
 
     useEffect(() => {
-        if (user) {
-            setTeamId(user.cbb_teamId);
-        }
-    }, [user]);
-
-    useEffect(() => {
-        const getGameplan = () => {
+        const getGameplans = async () => {
             // Get Gameplan Route using team Id
+            let gameplans = await gameplanService.GetGameplans(
+                SimBBA_url,
+                currentUser.cbb_id
+            );
+            setGameplans(gameplans);
         };
 
         const getRoster = async () => {
-            let players = await BBAPlayerService.GetPlayersByTeam(
+            let players = await playerService.GetPlayersByTeam(
                 SimBBA_url,
-                teamId
+                currentUser.cbb_id
             );
             setRoster(players);
         };
-    }, [teamId]);
+
+        if (currentUser) {
+            setTeam(currentUser.cbb_team);
+            getGameplans();
+            getRoster();
+        }
+    }, [currentUser]);
+
+    const updateGameplan = (idx, event) => {
+        let gamePlanList = [...gameplans];
+        let { name, value, min, max } = event.target;
+        // Keep the value in range of what's being changed
+        gamePlanList[idx][name] = Math.max(
+            Number(min),
+            Math.min(Number(max), Number(value))
+        );
+        setGameplans(gamePlanList);
+        checkValidation();
+    };
+
+    const updatePlayer = (idx, event) => {
+        let playerList = [...roster];
+        let { name, value, min } = event.target;
+        playerList[idx][name] = Math.max(Number(min), Number(value));
+        setRoster(playerList);
+        checkValidation();
+    };
+
+    const checkValidation = () => {
+        let valid = true;
+        const proportionLimit = 100;
+        let currentProportion = 0;
+        let message = '';
+        // Check Gameplan
+        for (let i = 0; i < gameplans.length; i++) {
+            currentProportion =
+                gameplans[i].ThreePointProportion +
+                gameplans[i].JumperProportion +
+                gameplans[i].PaintProportion;
+            if (
+                currentProportion > proportionLimit ||
+                currentProportion < proportionLimit
+            ) {
+                message = `Total Proportion for Gameplan ${gameplans[i].Game} set to ${currentProportion}. Please make sure your allocation adds up to 100.`;
+                setErrorMessage(message);
+                valid = false;
+                setValidation(valid);
+                return;
+            }
+        }
+        const minutesLimit = 200;
+        let totalMinutesA = 0;
+        let totalMinutesB = 0;
+        // Check Players
+        for (let i = 0; i < roster.length; i++) {
+            totalMinutesA += roster[i].MinutesA;
+            totalMinutesB += roster[i].MinutesB;
+
+            if (
+                roster[i].MinutesA > roster[i].Stamina ||
+                roster[i].MinutesB > roster[i].Stamina
+            ) {
+                message = `${roster[i].FirstName} ${roster[i].LastName}'s minutes allocation cannot exceed its Stamina.`;
+                setErrorMessage(message);
+                valid = false;
+                setValidation(valid);
+                return;
+            }
+        }
+
+        if (totalMinutesA > minutesLimit || totalMinutesA < minutesLimit) {
+            message = `Total Minutes between all Players for Game A adds up to ${totalMinutesA}.\nPlease make overall total to 200.`;
+            setErrorMessage(message);
+            valid = false;
+            setValidation(valid);
+            return;
+        }
+        if (totalMinutesB > minutesLimit || totalMinutesB < minutesLimit) {
+            message = `Total Minutes between all Players for Game B adds up to ${totalMinutesB}.\nPlease make overall total to 200.`;
+            setErrorMessage(message);
+            valid = false;
+            setValidation(valid);
+            return;
+        }
+        setValidation(valid);
+        setErrorMessage('');
+    };
+
+    const saveGameplanOptions = async () => {
+        checkValidation();
+        if (!isValid) return;
+        const gameplanOptionsDto = {
+            Players: roster,
+            Gameplans: gameplans,
+            teamId: currentUser.cbb_id
+        };
+        setServiceMessage(savingMessage);
+        const save = await gameplanService.SaveGameplanOptions(
+            SimBBA_url,
+            gameplanOptionsDto
+        );
+        console.log(save);
+        if (save.ok) {
+            const message = `Successfully update Gameplan and Minutes`;
+            setServiceMessage(message);
+            console.log(message);
+            setTimeout(() => setServiceMessage(''), 5000);
+        } else {
+            alert('HTTP-Error:', save.status);
+        }
+    };
+
+    // Rows
+    const gamePlanRows = gameplans.map((x, idx) => {
+        return (
+            <CBBGameplanRow
+                key={gameplans.ID}
+                idx={idx}
+                gameplan={x}
+                updateGameplan={updateGameplan}
+            />
+        );
+    });
+
+    const playerRows = roster.map((x, idx) => {
+        return (
+            <GameplanPlayerRow
+                key={x.ID}
+                idx={idx}
+                player={x}
+                updatePlayer={updatePlayer}
+            />
+        );
+    });
 
     return (
         <div className="container mt-3">
@@ -38,7 +176,42 @@ const CBBGameplan = ({ currentUser }) => {
                 <div className="col-md-auto justify-content-start">
                     <h2>{team} Gameplan</h2>
                 </div>
+                <div className="col-md-auto ms-auto">
+                    <button
+                        className="btn btn-primary"
+                        onClick={saveGameplanOptions}
+                    >
+                        Save
+                    </button>
+                </div>
             </div>
+            {serviceMessage.length > 0 || errorMessage.length > 0 ? (
+                <div className="row mt-2 mb-2">
+                    {serviceMessage.length > 0 &&
+                    serviceMessage !== savingMessage ? (
+                        <div className="alert alert-success">
+                            {serviceMessage}
+                        </div>
+                    ) : (
+                        ''
+                    )}
+                    {serviceMessage.length > 0 &&
+                    serviceMessage === savingMessage ? (
+                        <div className="alert alert-secondary">
+                            {serviceMessage}
+                        </div>
+                    ) : (
+                        ''
+                    )}
+                    {errorMessage.length > 0 ? (
+                        <div className="alert alert-danger">{errorMessage}</div>
+                    ) : (
+                        ''
+                    )}
+                </div>
+            ) : (
+                ''
+            )}
             <div className="row mt-3">
                 <table className="table">
                     <thead>
@@ -50,123 +223,11 @@ const CBBGameplan = ({ currentUser }) => {
                             <th scope="col">Paint Proportion</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">
-                                <h4>A</h4>
-                            </th>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="gameAPace"
-                                    aria-describedby="gameAPace"
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="gameA3Pt"
-                                    aria-describedby="gameA3Pt"
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="gameAJumper"
-                                    aria-describedby="gameAJumper"
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="gameAPaint"
-                                    aria-describedby="gameAPaint"
-                                />
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <h4>B</h4>
-                            </th>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="gameBPace"
-                                    aria-describedby="gameBPace"
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="gameB3Pt"
-                                    aria-describedby="gameB3Pt"
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="gameBJumper"
-                                    aria-describedby="gameBJumper"
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="gameBPaint"
-                                    aria-describedby="gameBPaint"
-                                />
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <h4>C</h4>
-                            </th>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="gameCPace"
-                                    aria-describedby="gameCPace"
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="gameC3Pt"
-                                    aria-describedby="gameC3Pt"
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="gameCJumper"
-                                    aria-describedby="gameCJumper"
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="gameCPaint"
-                                    aria-describedby="gameCPaint"
-                                />
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody>{gameplans.length > 0 ? gamePlanRows : ''}</tbody>
                 </table>
             </div>
-            <div className="row mt-3">
-                <table className="table">
+            <div className="row mt-3 overflow-auto gameplan-table-height">
+                <table className="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -183,57 +244,11 @@ const CBBGameplan = ({ currentUser }) => {
                             <th scope="col">Playtime Expectations</th>
                             <th scope="col">Minutes A</th>
                             <th scope="col">Minutes B</th>
-                            <th scope="col">Minutes C</th>
+                            {isNBA ? <th scope="col">Minutes C</th> : ''}
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">
-                                <h4>1</h4>
-                            </th>
-                            <td>
-                                <h6>David Ross</h6>
-                            </td>
-                            <td>F</td>
-                            <td>Fr</td>
-                            <td>90</td>
-                            <td>18</td>
-                            <td>18</td>
-                            <td>18</td>
-                            <td>18</td>
-                            <td>18</td>
-                            <td>40</td>
-                            <td>25</td>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="gameAMinutes"
-                                    aria-describedby="gameAMinutes"
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="gameBMinutes"
-                                    aria-describedby="gameBMinutes"
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="gameCMinutes"
-                                    aria-describedby="gameCMinutes"
-                                />
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody>{roster.length > 0 ? playerRows : ''}</tbody>
                 </table>
-            </div>
-            <div className="row align-items-end">
-                <button className="btn btn-primary">Save</button>
             </div>
         </div>
     );

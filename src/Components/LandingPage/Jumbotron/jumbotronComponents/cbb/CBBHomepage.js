@@ -3,16 +3,31 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getLogo } from '../../../../../Constants/getLogo';
 import routes from '../../../../../Constants/routes';
+import BBATeamService from '../../../../../_Services/simNBA/BBATeamService';
 import StandingsTableRow from '../standingsTable/standingsTableRow';
+import SimBBA_url from '../../../../../Constants/SimBBA_url';
 
 const CBBHomePage = ({ currentUser }) => {
+    let teamService = new BBATeamService();
     const [team, setTeam] = React.useState('');
+    const [teamName, setTeamName] = React.useState('');
     const [logo, setLogo] = React.useState('');
+    const [previousMatches, setPreviousMatches] = React.useState([]);
+    const [currentMatches, setCurrentMatches] = React.useState([]);
+    const [standings, setStandings] = React.useState([]);
 
     useEffect(() => {
         if (currentUser) {
-            setTeam(currentUser.cbb_team);
+            const getTeamRecord = async () => {
+                let response = await teamService.GetTeamByTeamId(
+                    SimBBA_url,
+                    currentUser.cbb_id
+                );
+                setTeam(response);
+            };
+            setTeamName(currentUser.cbb_team);
             setLogo(getLogo(currentUser.cbb_team));
+            getTeamRecord();
         }
     }, [currentUser]);
 
@@ -82,14 +97,17 @@ const CBBHomePage = ({ currentUser }) => {
         <div>
             <div className="row mt-2">
                 <div className="col-md-auto justify-content-start">
-                    <h2>{team}</h2>
+                    <h2>{teamName}</h2>
                 </div>
                 <div className="col-3"></div>
                 <div className="col-3"></div>
             </div>
             <div className="row mt-2">
                 <div className="col-md-auto col-sm justify-content-start">
-                    <h3>Pac 12 Conference, North Division</h3>
+                    <h3>
+                        {team ? `${team.Conference} Conference` : ''},
+                        {team ? `${team.Division} Division` : ''}
+                    </h3>
                 </div>
                 <div className="col-md-auto"></div>
                 <div className="col-3"></div>
@@ -106,63 +124,58 @@ const CBBHomePage = ({ currentUser }) => {
                     </div>
                     <div className="row">
                         <h4 className="text-start">Previous Week</h4>
-                        <table class="table jumbotron-shadow rounded-3">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Game</th>
-                                    <th scope="col">Home Team</th>
-                                    <th scope="col">Home Points</th>
-                                    <th scope="col">Away Points</th>
-                                    <th scope="col">Away Team</th>
-                                    <th scope="col">Result</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr className="table-success">
-                                    <th scope="row">A</th>
-                                    <td>Washington State</td>
-                                    <td>69</td>
-                                    <td>42</td>
-                                    <td>Portland</td>
-                                    <td>W</td>
-                                </tr>
-                                <tr className="table-success">
-                                    <th scope="row">B</th>
-                                    <td>UC Irving</td>
-                                    <td>23</td>
-                                    <td>89</td>
-                                    <td>Washington State</td>
-                                    <td>W</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        {previousMatches.length > 0 ? (
+                            <table class="table jumbotron-shadow rounded-3">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Game</th>
+                                        <th scope="col">Home Team</th>
+                                        <th scope="col">Home Points</th>
+                                        <th scope="col">Away Points</th>
+                                        <th scope="col">Away Team</th>
+                                        <th scope="col">Result</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        ) : (
+                            <div class="alert alert-light" role="alert">
+                                No games played last week.
+                            </div>
+                        )}
                     </div>
                     <div className="row mt-2">
                         <h4 className="text-start">Current Week</h4>
-                        <table class="table jumbotron-shadow rounded-3">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Game</th>
-                                    <th scope="col">Home Team</th>
-                                    <th scope="col"></th>
-                                    <th scope="col">Away Team</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">A</th>
-                                    <td>New Mexico</td>
-                                    <td>vs</td>
-                                    <td>Washington State</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">B</th>
-                                    <td>Washington State</td>
-                                    <td>vs</td>
-                                    <td>USC</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        {currentMatches.length > 0 ? (
+                            <table class="table jumbotron-shadow rounded-3">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Game</th>
+                                        <th scope="col">Home Team</th>
+                                        <th scope="col"></th>
+                                        <th scope="col">Away Team</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">A</th>
+                                        <td>New Mexico</td>
+                                        <td>vs</td>
+                                        <td>Washington State</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">B</th>
+                                        <td>Washington State</td>
+                                        <td>vs</td>
+                                        <td>USC</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        ) : (
+                            <div class="alert alert-light" role="alert">
+                                No games played this week.
+                            </div>
+                        )}
                     </div>
                     <div className="row mt-3">
                         <div className="btn-group">
@@ -196,19 +209,25 @@ const CBBHomePage = ({ currentUser }) => {
                 <div className="col-3 ms-md-auto">
                     <div className="row justify-content-start">
                         <h3 className="text-start">Standings</h3>
-                        <table class="table jumbotron-shadow rounded-3">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Rank</th>
-                                    <th scope="col">Team</th>
-                                    <th scope="col">Conf Wins</th>
-                                    <th scope="col">Conf Losses</th>
-                                    <th scope="col">Total Wins</th>
-                                    <th scope="col me-2">Total Losses</th>
-                                </tr>
-                            </thead>
-                            <tbody>{standingsRow}</tbody>
-                        </table>
+                        {standings.length > 0 ? (
+                            <table class="table jumbotron-shadow rounded-3">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Rank</th>
+                                        <th scope="col">Team</th>
+                                        <th scope="col">Conf Wins</th>
+                                        <th scope="col">Conf Losses</th>
+                                        <th scope="col">Total Wins</th>
+                                        <th scope="col me-2">Total Losses</th>
+                                    </tr>
+                                </thead>
+                                <tbody>{standingsRow}</tbody>
+                            </table>
+                        ) : (
+                            <div class="alert alert-light" role="alert">
+                                To be implemented soon...
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
