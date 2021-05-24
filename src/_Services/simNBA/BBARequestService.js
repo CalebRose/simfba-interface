@@ -15,7 +15,7 @@ export default class BBARequestService {
     }
 
     async CreateTeamRequest(url, team, username) {
-        let postRequest = await fetch(url + 'createTeamRequest', {
+        let postRequest = await fetch(url + 'requests/createTeamRequest', {
             headers: {
                 authorization: localStorage.getItem('token'),
                 'Content-Type': 'application/json'
@@ -38,9 +38,7 @@ export default class BBARequestService {
                 'Content-Type': 'application/json'
             },
             method: 'PUT',
-            body: JSON.stringify({
-                request: payload
-            })
+            body: JSON.stringify(payload)
         });
         return res;
     }

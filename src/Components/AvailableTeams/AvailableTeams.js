@@ -65,7 +65,7 @@ class AvailableTeams extends Component {
 
     sendCBBRequest = async (team) => {
         let postRequest = await this.BBARequestService.CreateTeamRequest(
-            url,
+            SimBBA_url,
             team,
             this.props.currentUser.username
         );
