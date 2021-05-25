@@ -30,7 +30,7 @@ const LandingPage = ({ currentUser }) => {
     }, [currentUser]);
 
     return (
-        <div className="landingPage container">
+        <div className="container">
             <div className="row mt-3">
                 <div className="col col-sm justify-content-start">
                     <div className="btn-group">
