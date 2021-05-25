@@ -10,13 +10,9 @@ const NFLHomepage = ({ currentUser }) => {
     useEffect(() => {
         if (currentUser) {
             setTeam(currentUser.nfl_team);
-            setLogo(getLogo(currentUser.nfl_id));
+            setLogo(getLogo(currentUser.nfl_team));
         }
     }, [currentUser]);
-
-    // let team =
-    //     !!currentUser && !!currentUser.nfl_team ? currentUser.nfl_team : null;
-    // const logo = getLogo(team);
 
     const standingsRecords = [
         {
@@ -70,7 +66,7 @@ const NFLHomepage = ({ currentUser }) => {
             </div>
             <div className="row mt-2">
                 <div className="col-md-auto">
-                    <div className="image me-2">
+                    <div className="image landing-image me-2">
                         <img src={logo} alt="Go Cougs" />
                     </div>
                 </div>
