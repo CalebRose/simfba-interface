@@ -1,38 +1,53 @@
 import React, { useEffect } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import firebase from 'firebase';
 import SimBBA_url from '../../../../Constants/SimBBA_url';
 import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
 import BBARequestService from '../../../../_Services/simNBA/BBARequestService';
 import TeamRow from '../../../Admin/ManageTeams/TeamRow';
+import BBAManageTeamRow from './BBAManageTeamRow';
 
 const BBAManageTeams = ({ currentUser }) => {
     // State
-    const user = useSelector((state) => state.user.currentUser);
     const [teams, setTeams] = React.useState([]);
     let teamService = new BBATeamService();
     let requestService = new BBARequestService();
 
     // Use Effects Begin
     useEffect(() => {
-        const getCoachedTeams = async () => {
-            let coachedTeams = await teamService.GetCoachedTeams(SimBBA_url);
-            setTeams(coachedTeams);
-        };
-        if (user) {
-            getCoachedTeams();
-        }
-    }, [user]);
+        getCoachedTeams();
+    }, []);
 
     // Use Effects End
+    const getCoachedTeams = async () => {
+        let coachedTeams = await teamService.GetCoachedTeams(SimBBA_url);
+        setTeams(coachedTeams);
+    };
 
     // Click Functions
     const revokeRequest = async (payload) => {
         // DB Request
         let res = await requestService.RevokeUserFromTeamRequest(
             SimBBA_url,
-            payload
+            payload.reqId
         );
+
+        let firebasePayload = {};
+        if (payload.IsNBA) {
+            firebasePayload = {
+                username: payload.username,
+                nba_team: '',
+                nba_abbr: '',
+                nba_id: null
+            };
+        } else {
+            firebasePayload = {
+                username: payload.username,
+                cbb_team: '',
+                cbb_abbr: '',
+                cbb_id: null
+            };
+        }
 
         if (res.ok) {
             console.log('Revoke Request:', payload.reqId);
@@ -48,19 +63,12 @@ const BBAManageTeams = ({ currentUser }) => {
             .get();
 
         userRef.forEach(async (doc) => {
-            let emptyObj = {
-                username: payload.username,
-                team: '',
-                mascot: '',
-                teamAbbr: '',
-                teamId: null
-            };
-            await doc.ref.update(emptyObj);
+            await doc.ref.update(firebasePayload);
         });
         console.log('Firebase Updated');
 
         // Filter Requests
-        const filterTeams = teams.filter((x) => x.id !== payload.reqId);
+        const filterTeams = teams.filter((x) => x.ID !== payload.reqId);
         setTeams(filterTeams);
     };
 
@@ -87,6 +95,9 @@ const BBAManageTeams = ({ currentUser }) => {
                                             </abbr>
                                         </th>
                                         <th style={{ width: '50px' }}>
+                                            <abbr title="League">League</abbr>
+                                        </th>
+                                        <th style={{ width: '50px' }}>
                                             <abbr title="Revoke Team">
                                                 Revoke
                                             </abbr>
@@ -107,6 +118,9 @@ const BBAManageTeams = ({ currentUser }) => {
                                             </abbr>
                                         </th>
                                         <th style={{ width: '50px' }}>
+                                            <abbr title="League">League</abbr>
+                                        </th>
+                                        <th style={{ width: '50px' }}>
                                             <abbr title="Revoke Team">
                                                 Revoke
                                             </abbr>
@@ -114,15 +128,17 @@ const BBAManageTeams = ({ currentUser }) => {
                                     </tr>
                                 </tfoot>
                                 <tbody>
-                                    {teams.map((x, i) => {
-                                        return (
-                                            <TeamRow
-                                                key={i}
-                                                team={x}
-                                                revoke={revokeRequest}
-                                            />
-                                        );
-                                    })}
+                                    {teams.length > 0
+                                        ? teams.map((x, i) => {
+                                              return (
+                                                  <BBAManageTeamRow
+                                                      key={i}
+                                                      team={x}
+                                                      revoke={revokeRequest}
+                                                  />
+                                              );
+                                          })
+                                        : ''}
                                 </tbody>
                             </table>
                         </div>

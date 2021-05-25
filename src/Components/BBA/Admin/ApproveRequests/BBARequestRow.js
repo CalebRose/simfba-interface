@@ -22,7 +22,7 @@ const BBARequestRow = (props) => {
     };
 
     const reject = () => {
-        return props.reject({ reqId: data.TeamId, id: data.id });
+        return props.reject({ reqId: data.TeamID, id: data.ID });
     };
 
     return (

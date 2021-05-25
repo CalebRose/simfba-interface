@@ -12,10 +12,8 @@ const BBAApproveRequests = ({ currentUser }) => {
     // Use Effects Begin
     // Get Requests
     useEffect(() => {
-        if (currentUser) {
-            getRequests();
-        }
-    }, [currentUser]);
+        getRequests();
+    }, []);
 
     // Use Effects End
     const getRequests = async () => {
@@ -75,7 +73,7 @@ const BBAApproveRequests = ({ currentUser }) => {
 
             // Filter Requests
             const filterRequests = requests.filter(
-                (x) => x.id !== payload.reqId
+                (x) => x.ID !== payload.reqId
             );
             setRequests(filterRequests);
         } catch (err) {
@@ -96,7 +94,7 @@ const BBAApproveRequests = ({ currentUser }) => {
             throw ('HTTP-Error: Approval incomplete', res.status);
         }
         // Filter Requests
-        const filterRequests = requests.filter((x) => x.id !== payload.id);
+        const filterRequests = requests.filter((x) => x.ID !== payload.reqId);
         setRequests(filterRequests);
     };
 
