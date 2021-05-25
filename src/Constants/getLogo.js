@@ -100,7 +100,7 @@ export const getLogo = (team) => {
             return logos.Liberty;
         case 'Louisiana':
             return logos.Louisiana;
-        case 'Louisiana–Monroe':
+        case 'Louisiana Monroe':
             return logos.Louisiana_Monroe;
         case 'Louisiana Tech':
             return logos.Louisiana_Tech;
@@ -292,6 +292,8 @@ export const getLogo = (team) => {
             return logos.Portland;
         case 'Seattle':
             return logos.Seattle;
+        case 'Evansville':
+            return logos.Evansville;
         case 'Seattle Supersonics':
             return logos.SEA_Supersonics;
         case 'Seattle Seahawks':
