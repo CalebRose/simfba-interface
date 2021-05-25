@@ -262,6 +262,36 @@ export const getLogo = (team) => {
             return logos.Wisconsin;
         case 'Wyoming':
             return logos.Wyoming;
+        case 'UMBC':
+            return logos.UMBC;
+        case 'Wichita State':
+            return logos.Wichita_State;
+        case 'San Diego':
+            return logos.San_Diego;
+        case "Saint Mary's":
+            return logos.St_Marys;
+        case 'Virginia Commonwealth':
+            return logos.VCU;
+        case 'Georgetown':
+            return logos.Georgetown;
+        case 'St. Bonaventure':
+            return logos.St_Bonaventure;
+        case 'UC Irvine':
+            return logos.UC_Irvine;
+        case 'South Dakota State':
+            return logos.South_Dakota_State;
+        case 'DePaul':
+            return logos.DePaul;
+        case 'Florida Gulf Coast':
+            return logos.FGCU;
+        case 'Jacksonville':
+            return logos.Jacksonville;
+        case 'Omaha':
+            return logos.Omaha;
+        case 'Portland':
+            return logos.Portland;
+        case 'Seattle':
+            return logos.Seattle;
         case 'Seattle Supersonics':
             return logos.SEA_Supersonics;
         case 'Seattle Seahawks':
@@ -305,7 +335,7 @@ export const getLogo = (team) => {
         case 'Tennessee Titans':
             return logos.TEN_Titans;
         case 'Miami Heat':
-            return logos.MIA_Dolphins;
+            return logos.MIA_Heat;
         case 'Miami Dolphins':
             return logos.MIA_Dolphins;
         case 'Milwaukee Bucks':
