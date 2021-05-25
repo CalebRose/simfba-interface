@@ -125,7 +125,7 @@ const CBBHomePage = ({ currentUser }) => {
                     <div className="row">
                         <h4 className="text-start">Previous Week</h4>
                         {previousMatches.length > 0 ? (
-                            <table class="table jumbotron-shadow rounded-3">
+                            <table className="table jumbotron-shadow rounded-3">
                                 <thead>
                                     <tr>
                                         <th scope="col">Game</th>
@@ -147,7 +147,7 @@ const CBBHomePage = ({ currentUser }) => {
                     <div className="row mt-2">
                         <h4 className="text-start">Current Week</h4>
                         {currentMatches.length > 0 ? (
-                            <table class="table jumbotron-shadow rounded-3">
+                            <table className="table jumbotron-shadow rounded-3">
                                 <thead>
                                     <tr>
                                         <th scope="col">Game</th>
@@ -172,7 +172,7 @@ const CBBHomePage = ({ currentUser }) => {
                                 </tbody>
                             </table>
                         ) : (
-                            <div class="alert alert-light" role="alert">
+                            <div className="alert alert-light" role="alert">
                                 No games played this week.
                             </div>
                         )}
@@ -182,7 +182,7 @@ const CBBHomePage = ({ currentUser }) => {
                             <Link to={routes.CBB_GAMEPLAN}>
                                 <button
                                     type="button"
-                                    class="btn btn-primary btn-md me-2 shadow"
+                                    className="btn btn-primary btn-md me-2 shadow"
                                 >
                                     Gameplan
                                 </button>
@@ -190,7 +190,7 @@ const CBBHomePage = ({ currentUser }) => {
                             <Link to={routes.CBB_RECRUITING_BOARD}>
                                 <button
                                     type="button"
-                                    class="btn btn-primary btn-md me-2 shadow"
+                                    className="btn btn-primary btn-md me-2 shadow"
                                 >
                                     Recruiting
                                 </button>
@@ -198,7 +198,7 @@ const CBBHomePage = ({ currentUser }) => {
                             <Link to={routes.CBB_STATS}>
                                 <button
                                     type="button"
-                                    class="btn btn-primary btn-md shadow"
+                                    className="btn btn-primary btn-md shadow"
                                 >
                                     Stats
                                 </button>
@@ -210,7 +210,7 @@ const CBBHomePage = ({ currentUser }) => {
                     <div className="row justify-content-start">
                         <h3 className="text-start">Standings</h3>
                         {standings.length > 0 ? (
-                            <table class="table jumbotron-shadow rounded-3">
+                            <table className="table jumbotron-shadow rounded-3">
                                 <thead>
                                     <tr>
                                         <th scope="col">Rank</th>
@@ -224,7 +224,7 @@ const CBBHomePage = ({ currentUser }) => {
                                 <tbody>{standingsRow}</tbody>
                             </table>
                         ) : (
-                            <div class="alert alert-light" role="alert">
+                            <div className="alert alert-light" role="alert">
                                 To be implemented soon...
                             </div>
                         )}
