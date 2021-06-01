@@ -28,7 +28,7 @@ const Home = ({ currentUser }) => {
     const [roleId, setRole] = React.useState('');
     const [bbaRoleId, setBBARole] = React.useState('');
     const [CFBTeam, setCFBTeam] = React.useState(0);
-    const [CBBTeam, setCBBTeam] = React.useState(0);
+    const [fdsajfkldav, setCBBTeam] = React.useState(0);
     const [NBATeam, setNBATeam] = React.useState(0);
     const [NFLTeam, setNFLTeam] = React.useState(0);
 
