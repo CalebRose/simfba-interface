@@ -197,7 +197,12 @@ const CBBRecruitingDashboard = ({ currentUser }) => {
     // Secondary Components
 
     return (
-        <div className="row mt-3">
+        <div className="dashboard-row row mt-3">
+            <div className="col-md-2">
+                <div className="row mt-3">
+                    <h3>Side content?</h3>
+                </div>
+            </div>
             <div className="col-md-auto container">
                 <div className="justify-content-start">
                     <h2>College Basketball Recruiting Dashboard</h2>
@@ -350,6 +355,11 @@ const CBBRecruitingDashboard = ({ currentUser }) => {
                                 : ''}
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <div className="col-md-2">
+                <div className="row mt-3">
+                    <h3>Side content?</h3>
                 </div>
             </div>
         </div>
