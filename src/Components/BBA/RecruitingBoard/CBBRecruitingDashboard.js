@@ -73,9 +73,11 @@ const CBBRecruitingDashboard = ({ currentUser }) => {
         let recruits = profile.Recruits;
         let map = {};
         for (let i = 0; i < recruits.length; i++) {
-            map[
-                recruits[i].Recruit.FirstName + recruits[i].Recruit.LastName
-            ] = true;
+            if (recruits[i].Recruit) {
+                map[
+                    recruits[i].Recruit.FirstName + recruits[i].Recruit.LastName
+                ] = true;
+            }
         }
         setCrootMap(map);
         setRecruitingProfile(profile);
@@ -196,11 +198,6 @@ const CBBRecruitingDashboard = ({ currentUser }) => {
 
     return (
         <div className="row mt-3">
-            <div className="col-md-2">
-                <div className="row mt-3">
-                    <h3>Side content?</h3>
-                </div>
-            </div>
             <div className="col-md-auto container">
                 <div className="justify-content-start">
                     <h2>College Basketball Recruiting Dashboard</h2>
@@ -334,7 +331,7 @@ const CBBRecruitingDashboard = ({ currentUser }) => {
                                 <th scope="col">Pot.</th>
                                 <th scope="col">Sta.</th>
                                 <th scope="col">Pt Exp.</th>
-                                <th scope="col">Recruiting Status</th>
+                                <th scope="col">Status</th>
                                 <th scope="col">Leading Teams</th>
                                 <th scope="col">Add</th>
                             </tr>
@@ -353,11 +350,6 @@ const CBBRecruitingDashboard = ({ currentUser }) => {
                                 : ''}
                         </tbody>
                     </table>
-                </div>
-            </div>
-            <div className="col-md-2">
-                <div className="row mt-3">
-                    <h3>Side content?</h3>
                 </div>
             </div>
         </div>
