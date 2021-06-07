@@ -19,8 +19,8 @@ export default {
     CBB_TEAM: '/bba/team/',
     CBB_ROSTER: '/bba/team/roster',
     CBB_GAMEPLAN: '/bba/team/gameplan',
-    CBB_RECRUITING_BOARD: '/bba/team/recruiting',
-    CBB_RECRUITING: '/bba/recruiting',
+    CBB_RECRUITING_BOARD: '/bba/croot/team',
+    CBB_RECRUITING: '/bba/croot/dashboard',
     CBB_STATS: '/bba/stats',
     CBB_HOME: 'cbb/home',
     NBA_HOME: 'nba/home'

@@ -1,6 +1,6 @@
 export default class BBARecruitingService {
     async GetRecruitingProfile(url, teamId) {
-        let response = await fetch(url + '/recruit/profile/' + teamId, {
+        let response = await fetch(url + 'recruit/profile/' + teamId, {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }
@@ -16,7 +16,7 @@ export default class BBARecruitingService {
     }
 
     async GetRecruitsByProfileId(url, profileId) {
-        let response = await fetch(url + '/recruit/croots/' + profileId, {
+        let response = await fetch(url + 'recruit/croots/' + profileId, {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }
@@ -33,7 +33,7 @@ export default class BBARecruitingService {
 
     async CreateRecruitingPointsProfile(url, payload) {
         let response = await fetch(
-            url + '/recruit/croots/' + payload.profileId,
+            url + 'recruit/createRecruitingPointsProfile',
             {
                 headers: {
                     authorization: localStorage.getItem('token'),
@@ -51,7 +51,7 @@ export default class BBARecruitingService {
     }
 
     async AllocateRecruitingPointsForRecruit(url, payload) {
-        let response = await fetch(url + '/recruit/allocatePoints/', {
+        let response = await fetch(url + 'recruit/allocatePoints/', {
             headers: {
                 authorization: localStorage.getItem('token'),
                 'Content-Type': 'application/json'
@@ -70,7 +70,7 @@ export default class BBARecruitingService {
     }
 
     async SendScholarshipToRecruit(url, payload) {
-        let response = await fetch(url + '/recruit/sendScholarshipToRecruit', {
+        let response = await fetch(url + 'recruit/sendScholarshipToRecruit', {
             headers: {
                 authorization: localStorage.getItem('token'),
                 'Content-Type': 'application/json'
@@ -90,7 +90,7 @@ export default class BBARecruitingService {
 
     async RevokeScholarshipToRecruit(url, payload) {
         let response = await fetch(
-            url + '/recruit/revokeScholarshipFromRecruit',
+            url + 'recruit/revokeScholarshipFromRecruit',
             {
                 headers: {
                     authorization: localStorage.getItem('token'),

@@ -21,6 +21,9 @@ import BBAManageSim from './Components/BBA/Admin/ManageSim/BBAManageSim';
 import BBAApproveRequests from './Components/BBA/Admin/ApproveRequests/BBAApproveRequests';
 import BBAManageTeams from './Components/BBA/Admin/ManageTeams/BBAManageTeams';
 import CBBGameplan from './Components/BBA/Gameplan/CBBGameplan';
+import CBBRecruitingDashboard from './Components/BBA/RecruitingBoard/CBBRecruitingDashboard';
+import CBBRecruitingTeamBoard from './Components/BBA/RecruitingBoard/CBBRecruitingTeamBoard';
+
 import BBATeam from './Components/BBA/Team/BBATeam';
 
 const Home = ({ currentUser }) => {
@@ -159,6 +162,28 @@ const Home = ({ currentUser }) => {
                 path={routes.CBB_TEAM}
                 render={() =>
                     CBBTeam > 0 ? <BBATeam /> : <Redirect to={routes.LANDING} />
+                }
+            />
+            <Route
+                exact
+                path={routes.CBB_RECRUITING}
+                render={() =>
+                    CBBTeam > 0 ? (
+                        <CBBRecruitingDashboard />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
+                path={routes.CBB_RECRUITING_BOARD}
+                render={() =>
+                    CBBTeam > 0 ? (
+                        <CBBRecruitingTeamBoard />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
                 }
             />
             <footer class="footer fixed-bottom mt-auto py-3 bg-light">

@@ -350,6 +350,29 @@ td {
   End of CBB gameplan
 */
 
+/*
+    CBB Recruiting Dashboard
+*/
+.dashboard-table-height {
+    max-height: 65vh;
+    overflow: auto;
+}
+
+.dashboard-table-height th {
+    background: white;
+    box-shadow: 0px 1px 0px 0px #000000;
+}
+
+.dashboard-table-height thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+/*
+    End of CBB recruiting dashboard
+*/
+
 @media (max-width: 1024px) {
     .desktop {
         display: none;

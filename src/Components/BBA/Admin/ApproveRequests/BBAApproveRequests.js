@@ -86,7 +86,7 @@ const BBAApproveRequests = ({ currentUser }) => {
 
     const rejectRequest = async (payload) => {
         // DB Request
-        let res = await requestService.RejectRequest(SimBBA_url, payload);
+        let res = await requestService.RejectTeamRequest(SimBBA_url, payload);
 
         if (res.ok) {
             console.log('Rejected Request:', payload.reqId);
@@ -94,7 +94,7 @@ const BBAApproveRequests = ({ currentUser }) => {
             throw ('HTTP-Error: Approval incomplete', res.status);
         }
         // Filter Requests
-        const filterRequests = requests.filter((x) => x.ID !== payload.reqId);
+        const filterRequests = requests.filter((x) => x.ID !== payload.id);
         setRequests(filterRequests);
     };
 

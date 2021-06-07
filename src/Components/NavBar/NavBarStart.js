@@ -92,11 +92,16 @@ const NavBar_Start = ({ currentUser }) => {
                         </Link>
                     </li>
                     <li>
+                        <Link to={routes.CBB_STATS} className="dropdown-item">
+                            Team Statistics
+                        </Link>
+                    </li>
+                    <li>
                         <Link
                             to={routes.CBB_RECRUITING_BOARD}
                             className="dropdown-item"
                         >
-                            Recruiting Board
+                            Team Recruiting Board
                         </Link>
                     </li>
                     <li>
@@ -104,12 +109,7 @@ const NavBar_Start = ({ currentUser }) => {
                             className="dropdown-item"
                             to={routes.CBB_RECRUITING}
                         >
-                            All CBB Recruits
-                        </Link>
-                    </li>
-                    <li>
-                        <Link to={routes.CBB_STATS} className="dropdown-item">
-                            Stats
+                            CBB Recruiting Dashboard
                         </Link>
                     </li>
                 </ul>
