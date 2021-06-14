@@ -63,6 +63,7 @@ const GameplanPlayerRow = (props) => {
                     aria-describedby="gameBMinutes"
                     value={player.MinutesB}
                     onChange={handleChange}
+                    min="0"
                 />
             </td>
             {player.IsNBA ? (
@@ -75,6 +76,7 @@ const GameplanPlayerRow = (props) => {
                         aria-describedby="gameCMinutes"
                         value={player.MinutesC}
                         onChange={handleChange}
+                        min="0"
                     />
                 </td>
             ) : (

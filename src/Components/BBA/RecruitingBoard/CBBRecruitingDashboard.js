@@ -148,25 +148,17 @@ const CBBRecruitingDashboard = ({ currentUser }) => {
         let createRecruitPointsDto = {
             profileId: crootProfile.ID,
             playerId: payload.ID,
-            seasonId: 0
+            seasonId: 0,
+            team: currentUser.cbb_abbr
         };
 
+        console.log(createRecruitPointsDto);
+
         if (crootProfile.Recruits.length <= 10) {
-            let res = await recruitingService.CreateRecruitingPointsProfile(
+            await recruitingService.CreateRecruitingPointsProfile(
                 SimBBA_url,
                 createRecruitPointsDto
             );
-
-            if (res.ok) {
-                console.log(
-                    'Successfully added player to profile:',
-                    payload.ID
-                );
-            } else {
-                throw (
-                    ('HTTP-Error: Could not add player to profile', res.status)
-                );
-            }
 
             // Add to local profile & crootmap
             map[payload.FirstName + payload.LastName] = true;
@@ -174,13 +166,15 @@ const CBBRecruitingDashboard = ({ currentUser }) => {
                 SeasonID: 0,
                 PlayerID: payload.ID,
                 ProfileID: crootProfile.ID,
+                Team: currentUser.cbb_abbr,
                 TotalPointsSpent: 0,
                 CurrentPointsSpent: 0,
                 Scholarship: false,
                 InterestLevel: 'None',
                 InterestLevelThreshold: 0,
                 Signed: false,
-                Recruit: payload
+                Recruit: payload,
+                RemoveFromBoard: false
             });
 
             setCrootMap(map);

@@ -136,7 +136,7 @@ const CBBGameplan = ({ currentUser }) => {
             SimBBA_url,
             gameplanOptionsDto
         );
-        console.log(save);
+
         if (save.ok) {
             const message = `Successfully update Gameplan and Minutes`;
             setServiceMessage(message);

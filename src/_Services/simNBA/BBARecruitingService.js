@@ -43,11 +43,18 @@ export default class BBARecruitingService {
                 body: JSON.stringify({
                     ProfileId: payload.profileId,
                     PlayerId: payload.playerId,
-                    SeasonId: payload.seasonId
+                    SeasonId: payload.seasonId,
+                    Team: payload.team
                 })
             }
         );
-        return response;
+        if (response.ok) {
+            console.log('Successfully added player to profile:', payload.ID);
+        } else {
+            throw (
+                ('HTTP-Error: Could not add player to profile', response.status)
+            );
+        }
     }
 
     async AllocateRecruitingPointsForRecruit(url, payload) {
@@ -66,6 +73,32 @@ export default class BBARecruitingService {
                 RevokeScholarship: payload.revokeScholarship
             })
         });
+        return response;
+    }
+
+    async RemovePlayerFromBoard(url, payload) {
+        let body = {
+            RecruitPointsId: payload.ProfileID,
+            ProfileId: payload.ProfileID,
+            PlayerId: payload.PlayerID,
+            SpentPoints: payload.CurrentPointsSpent,
+            RewardScholarship: false,
+            RevokeScholarship: false
+        };
+        console.log(body);
+        let response = await fetch(url + 'recruit/removeRecruit', {
+            headers: {
+                authorization: localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            },
+            method: 'PUT',
+            body: JSON.stringify(body)
+        });
+        if (response.ok) {
+            //GREAT!
+        } else {
+            alert('HTTP-Error:', response.status);
+        }
         return response;
     }
 
@@ -107,6 +140,21 @@ export default class BBARecruitingService {
                 })
             }
         );
+        return response;
+    }
+
+    async SaveRecruitingBoard(url, payload) {
+        let response = await fetch(url + 'recruit/saveRecruitingBoard', {
+            headers: {
+                authorization: localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            },
+            method: 'PUT',
+            body: JSON.stringify(payload)
+        });
+
+        console.log(response);
+
         return response;
     }
 }

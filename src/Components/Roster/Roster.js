@@ -318,64 +318,80 @@ const Roster = ({ currentUser }) => {
         if (!modalState) return null;
 
         return (
-            <div className="modal is-active">
-                <div className="modal-background" onClick={closeModal}></div>
-                <div className="modal-card">
-                    <header className="modal-card-head">
-                        <p className="modal-card-title">
-                            {player.First_Name + ' ' + player.Last_Name}
-                        </p>
-                        <button
-                            className="delete"
-                            aria-label="close"
-                            onClick={closeModal}
-                        ></button>
-                    </header>
-                    <section className="modal-card-body">
-                        <div className="level">
-                            <div className="level-left">
-                                <div className="title is-4">
-                                    <p>{teamName}</p>
-                                    <p className="gap">
-                                        <strong>Year: </strong>
-                                        {player.Year}
-                                    </p>
+            <div
+                className="modal fade"
+                id="playerModal"
+                tabindex="-1"
+                aria-labelledby="playerModalLabel"
+                aria-hidden="true"
+            >
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <header className="modal-header">
+                            <div className="col">
+                                <h2 className="modal-title">
+                                    {player.First_Name + ' ' + player.Last_Name}
+                                </h2>
+                            </div>
+                            <div className="col"></div>
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                            ></button>
+                        </header>
+                        <section className="modal-body">
+                            <div className="row">
+                                <div className="col">
+                                    <div className="row">
+                                        <h5 className="">{teamName}</h5>
+                                        <p className="gap">
+                                            <strong>Year: </strong>
+                                            {player.Year}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="col">
+                                    <div className="row">
+                                        <p className="">
+                                            <strong>Position: </strong>
+                                            {player.Position}
+                                        </p>
+                                        <p>
+                                            <strong>Archetype:</strong>{' '}
+                                            {player.Archetype}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="level-right">
-                                <div className="title is-4">
-                                    <p className="gap-right">
-                                        <strong>Position: </strong>
-                                        {player.Position}
-                                    </p>
-                                    <p>
-                                        <strong>Archetype:</strong>{' '}
-                                        {player.Archetype}
-                                    </p>
+                            <div className="row mt-1">
+                                <div className="col-md-auto">
+                                    <h4 className="">
+                                        {player.Height} inches, {player.Weight}{' '}
+                                        lbs
+                                    </h4>
+                                </div>
+                                <div className="col-md-auto">
+                                    <h4 className="">
+                                        Overall: {player.Overall}
+                                    </h4>
                                 </div>
                             </div>
-                        </div>
-                        <div className="level">
-                            <div className="level-left">
-                                <p className="title is-4">
-                                    {player.Height} inches, {player.Weight} lbs
-                                </p>
+                            <div className="AttributeTable row mt-1">
+                                {AttributeRows}
                             </div>
-                            <div className="level-right">
-                                <p className="subtitle is-4">
-                                    Overall: {player.Overall}
-                                </p>
-                            </div>
-                        </div>
-                        <div className="AttributeTable tile is-parent">
-                            {AttributeRows}
-                        </div>
-                    </section>
-                    <footer className="modal-card-foot">
-                        <button className="button" onClick={closeModal}>
-                            Cancel
-                        </button>
-                    </footer>
+                        </section>
+                        <footer className="modal-footer">
+                            <button
+                                className="btn btn-light"
+                                onClick={closeModal}
+                                data-bs-dismiss="modal"
+                            >
+                                Cancel
+                            </button>
+                        </footer>
+                    </div>
                 </div>
             </div>
         );

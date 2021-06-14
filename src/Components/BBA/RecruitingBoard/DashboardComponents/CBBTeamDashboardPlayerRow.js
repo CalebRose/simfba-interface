@@ -1,16 +1,11 @@
 import React, { useEffect } from 'react';
 
-const CBBDashboardPlayerRow = (props) => {
-    const [flag, setFlag] = React.useState(false);
+const CBBTeamDashboardPlayerRow = (props) => {
     const data = props.player;
-    const map = props.map;
-    const name = data.FirstName + data.LastName;
+    const recruit = data.Recruit;
 
-    useEffect(() => {
-        if (map) {
-            setFlag(map[name]);
-        }
-    }, [map, name]);
+    useEffect(() => {}, []);
+
     const attributeMapper = (attr) => {
         switch (true) {
             case attr > 16:
@@ -57,11 +52,7 @@ const CBBDashboardPlayerRow = (props) => {
     };
 
     const statusMapper = (data) => {
-        if (
-            data.RecruitingPoints === null ||
-            data.RecruitingPoints.length === 0
-        )
-            return 'Early';
+        if (data.TotalPointsSpent.length === 0) return 'Early';
         // Map through all Recruiting Points
         // If Team passes High Threshold, return 'Ready to Sign'
         // If Team passes Medium Threshold, return 'High',
@@ -71,12 +62,8 @@ const CBBDashboardPlayerRow = (props) => {
     };
 
     const leadingTeamsMapper = (data) => {
-        if (
-            data.RecruitingPoints === null ||
-            data.RecruitingPoints.length === 0
-        )
-            return 'None';
-        let teams = [];
+        if (data.RecruitingPoints.length === 0) return 'None';
+        let teams = data.RecruitingPoints.map((x) => x.Team);
         // Map through All Recruiting Points
         // First option should be leader
         // Iterate through all other teams
@@ -85,19 +72,26 @@ const CBBDashboardPlayerRow = (props) => {
         return teams.join(', ');
     };
 
-    const addToProfile = () => {
-        setFlag(true);
-        return props.add(data);
+    const handleChange = (event) => {
+        return props.changePoints(props.rank - 1, event);
     };
 
-    let shootingGrade = attributeMapper(data.Shooting);
-    let finishingGrade = attributeMapper(data.Finishing);
-    let ballworkGrade = attributeMapper(data.Ballwork);
-    let reboundingGrade = attributeMapper(data.Rebounding);
-    let defenseGrade = attributeMapper(data.Defense);
+    const toggleScholarship = (event) => {
+        return props.toggleScholarship(props.rank - 1, event);
+    };
+
+    const removePlayerFromBoard = () => {
+        return props.remove(props.rank - 1, data);
+    };
+
+    let shootingGrade = attributeMapper(recruit.Shooting);
+    let finishingGrade = attributeMapper(recruit.Finishing);
+    let ballworkGrade = attributeMapper(recruit.Ballwork);
+    let reboundingGrade = attributeMapper(recruit.Rebounding);
+    let defenseGrade = attributeMapper(recruit.Defense);
+    let potentialGrade = getOverall(recruit.PotentialGrade);
     let recruitingStatus = statusMapper(data);
-    let leadingTeams = leadingTeamsMapper(data);
-    let potentialGrade = getOverall(data.PotentialGrade);
+    let leadingTeams = leadingTeamsMapper(recruit);
 
     return (
         <tr>
@@ -105,22 +99,29 @@ const CBBDashboardPlayerRow = (props) => {
                 <h4>{props.rank}</h4>
             </th>
             <td className="align-middle">
-                <h6>{data.Position}</h6>
+                <h6>{data.Scholarship}</h6>
             </td>
             <td className="align-middle">
-                <h6>{data.FirstName + ' ' + data.LastName}</h6>
+                <h6>{recruit.Position}</h6>
             </td>
             <td className="align-middle">
-                <h6>{data.Height}</h6>
+                <h6>{recruit.FirstName + ' ' + recruit.LastName}</h6>
             </td>
             <td className="align-middle">
-                <h6>{data.Year}</h6>
+                <h6>{recruit.Height}</h6>
             </td>
             <td className="align-middle">
-                <h6>{data.State.length > 0 ? data.State : data.Country}</h6>
+                <h6>{recruit.Year}</h6>
             </td>
             <td className="align-middle">
-                <h6>{data.Stars}</h6>
+                <h6>
+                    {recruit.State && recruit.State.length > 0
+                        ? recruit.State
+                        : recruit.Country}
+                </h6>
+            </td>
+            <td className="align-middle">
+                <h6>{recruit.Stars}</h6>
             </td>
             <td className="align-middle">
                 <h6>{shootingGrade}</h6>
@@ -141,29 +142,38 @@ const CBBDashboardPlayerRow = (props) => {
                 <h6>{potentialGrade}</h6>
             </td>
             <td className="align-middle">
-                <h6>{data.Stamina}</h6>
+                <h6>{recruit.Stamina}</h6>
             </td>
             <td className="align-middle">
-                <h6>{data.PlaytimeExpectations}</h6>
+                <h6>{recruit.PlaytimeExpectations}</h6>
             </td>
             <td className="align-middle">{recruitingStatus}</td>
             <td className="align-middle">{leadingTeams}</td>
             <td className="align-middle">
-                {flag ? (
-                    <h2>
-                        <i className="bi bi-check-circle-fill rounded-circle link-secondary"></i>
-                    </h2>
-                ) : (
-                    <h2>
-                        <i
-                            className="bi bi-plus-circle-fill rounded-circle link-success"
-                            onClick={addToProfile}
-                        ></i>
-                    </h2>
-                )}
+                <input
+                    name="CurrentPoints"
+                    type="number"
+                    class="form-control"
+                    id="currentPoints"
+                    aria-describedby="currentPoints"
+                    value={data.CurrentPointsSpent}
+                    onChange={handleChange}
+                    min="0"
+                />
+            </td>
+            <td className="align-middle">
+                <h6>{data.TotalPointsSpent}</h6>
+            </td>
+            <td className="align-middle">
+                <h2>
+                    <i
+                        className="bi bi-x-circle-fill rounded-circle link-danger"
+                        onClick={removePlayerFromBoard}
+                    ></i>
+                </h2>
             </td>
         </tr>
     );
 };
 
-export default CBBDashboardPlayerRow;
+export default CBBTeamDashboardPlayerRow;

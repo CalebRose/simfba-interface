@@ -9,7 +9,7 @@ export default class TeamService {
         if (response.ok) {
             json = await response.json();
         } else {
-            alert('Http-Error', response.status);
+            alert('Http-Error: Individual Team Call', response.status);
         }
         return json[0];
     }
@@ -24,7 +24,7 @@ export default class TeamService {
         if (response.ok) {
             json = await response.json();
         } else {
-            alert('Http-Error', response.status);
+            alert('Http-Error: Get Teams ', response.status);
         }
         return json;
     }
