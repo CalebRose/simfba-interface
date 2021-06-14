@@ -3,8 +3,19 @@ import React from 'react';
 const PlayerRow = (props) => {
     const [showRow, setShowRow] = React.useState(false);
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
-    const [overall, setOverall] = React.useState('');
-    let ovr = props.data.Overall;
+    let data = props.data;
+
+    const getOverall = (ovr) => {
+        if (typeof ovr === 'string') return ovr;
+        if (ovr >= 46) return 'A';
+        else if (ovr > 36) return 'B';
+        else if (ovr > 26) return 'C';
+        else if (ovr > 16) return 'D';
+        else return 'F';
+    };
+
+    let ovr = getOverall(data.Overall);
+
     React.useEffect(() => {
         if (!viewWidth) {
             setViewWidth(window.innerWidth);
@@ -15,28 +26,15 @@ const PlayerRow = (props) => {
         setViewWidth(window.innerWidth);
     };
 
-    React.useEffect(() => {
-        if (ovr) {
-            let letter = '';
-            if (ovr >= 46) letter = 'A';
-            else if (ovr > 36) letter = 'B';
-            else if (ovr > 26) letter = 'C';
-            else if (ovr > 16) letter = 'D';
-            else letter = 'F';
-            setOverall(letter);
-        }
-    }, [overall]);
-
     window.addEventListener('resize', handleResize);
     /* 
     Name, Position, Archtype, Ovr, Yr, Ht, Wt, St,
     HS/JC, Pot, Num
     
     */
-    let data = props.data;
+
     const toggleModal = () => {
-        data.Overall = overall;
-        props.toggle();
+        data.Overall = ovr;
         props.getData(data);
     };
     if (showRow || viewWidth >= 901) {
@@ -50,16 +48,16 @@ const PlayerRow = (props) => {
                 >
                     {props.data.First_Name + ' ' + props.data.Last_Name}
                 </th>
-                <td label="Archtype">{props.data.Archetype}</td>
-                <td label="Position">{props.data.Position}</td>
-                <td label="Overall">{overall}</td>
-                <td label="Year">{props.data.Year}</td>
-                <td label="Height">{props.data.Height}</td>
-                <td label="Weight">{props.data.Weight}</td>
-                <td label="State">{props.data.State}</td>
-                <td label="School">{props.data.School}</td>
-                <td label="Potential">{props.data.Potential}</td>
-                <td label="Number">{props.data.JerseyNum}</td>
+                <td label="Archtype">{data.Archetype}</td>
+                <td label="Position">{data.Position}</td>
+                <td label="Overall">{ovr ? ovr : ''}</td>
+                <td label="Year">{data.Year}</td>
+                <td label="Height">{data.Height}</td>
+                <td label="Weight">{data.Weight}</td>
+                <td label="State">{data.State}</td>
+                <td label="School">{data.School}</td>
+                <td label="Potential">{data.Potential}</td>
+                <td label="Number">{data.JerseyNum}</td>
             </tr>
         );
     } else {

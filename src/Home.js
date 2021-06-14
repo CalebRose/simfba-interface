@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { Redirect, Route, withRouter } from 'react-router-dom';
-import { connect, useSelector } from 'react-redux';
+import { Redirect, Route } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 // Routes & Components
 import routes from './Constants/routes';
