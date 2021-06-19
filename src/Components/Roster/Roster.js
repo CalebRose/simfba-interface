@@ -26,6 +26,9 @@ const Roster = ({ currentUser }) => {
     const [team, setTeam] = React.useState([]); // Redux value as initial value for react hook
     const [teams, setTeams] = React.useState([]);
     const [roster, setRoster] = React.useState([]);
+    const [viewRoster, setViewRoster] = React.useState([]);
+    const [sort, setSort] = React.useState('');
+    const [isAsc, setIsAsc] = React.useState(false);
 
     useEffect(() => {
         if (currentUser) {
@@ -39,6 +42,63 @@ const Roster = ({ currentUser }) => {
             getRoster(team.id);
         }
     }, [team]);
+
+    useEffect(() => {
+        switch (sort) {
+            case 'ovr':
+                setViewRoster((currRoster) =>
+                    currRoster.sort(
+                        (a, b) => (a.Overall - b.Overall) * (isAsc ? 1 : -1)
+                    )
+                );
+                break;
+            case 'name':
+                setViewRoster((currRoster) =>
+                    currRoster.sort(
+                        (a, b) =>
+                            a.Last_Name.localeCompare(b.Last_Name) *
+                            (isAsc ? 1 : -1)
+                    )
+                );
+                break;
+            case 'year':
+                setViewRoster((currRoster) =>
+                    currRoster.sort(
+                        (a, b) => (a.Year - b.Year) * (isAsc ? 1 : -1)
+                    )
+                );
+                break;
+            case 'pos':
+                setViewRoster((currRoster) =>
+                    currRoster.sort(
+                        (a, b) =>
+                            a.Position.localeCompare(b.Position) *
+                            (isAsc ? 1 : -1)
+                    )
+                );
+                break;
+            case 'pot':
+                setViewRoster((currRoster) =>
+                    currRoster.sort(
+                        (a, b) =>
+                            a.Potential.localeCompare(b.Potential) *
+                            (isAsc ? 1 : -1)
+                    )
+                );
+                break;
+            case 'arch':
+                setViewRoster((currRoster) =>
+                    currRoster.sort(
+                        (a, b) =>
+                            a.Archetype.localeCompare(b.Archetype) *
+                            (isAsc ? 1 : -1)
+                    )
+                );
+                break;
+            default:
+                break;
+        }
+    }, [sort, isAsc]);
 
     // Functions
     const selectTeam = (team) => {
@@ -64,7 +124,9 @@ const Roster = ({ currentUser }) => {
     const getRoster = async (id) => {
         if (id !== null || id > 0) {
             let roster = await rosterService.GetRoster(url, id);
+            console.log(roster);
             setRoster(roster);
+            setViewRoster(roster);
         }
     };
 
@@ -313,10 +375,15 @@ const Roster = ({ currentUser }) => {
         : '';
 
     // Rows
-    const PlayerRows = roster.map((player) => (
+    const PlayerRows = viewRoster.map((player) => (
         <PlayerRow key={player.id} data={player} getData={getPlayerData} />
     ));
-    const playerCount = roster.length;
+    const playerCount = viewRoster.length;
+
+    const setSortValues = (value) => {
+        setIsAsc((asc) => (value === sort ? !asc : false));
+        setSort((currValue) => (currValue === value ? currValue : value));
+    };
 
     // Designations
     // Objects inside design. array; designation being QB1, QB2, etc...
@@ -458,20 +525,41 @@ const Roster = ({ currentUser }) => {
                     <table className="table table-hover">
                         <thead>
                             <tr>
-                                <th scope="col">
+                                <th
+                                    scope="col"
+                                    onClick={() => setSortValues('name')}
+                                >
                                     <abbr>Name</abbr>
                                 </th>
                                 <th scope="col">
-                                    <abbr title="Archetype">Archetype</abbr>
+                                    <abbr
+                                        title="Archetype"
+                                        onClick={() => setSortValues('arch')}
+                                    >
+                                        Archetype
+                                    </abbr>
                                 </th>
                                 <th scope="col">
-                                    <abbr title="Position">Pos</abbr>
+                                    <abbr
+                                        title="Position"
+                                        onClick={() => setSortValues('pos')}
+                                    >
+                                        Pos
+                                    </abbr>
                                 </th>
-                                <th scope="col">
+                                <th
+                                    scope="col"
+                                    onClick={() => setSortValues('ovr')}
+                                >
                                     <abbr title="Overall">Ovr</abbr>
                                 </th>
                                 <th scope="col">
-                                    <abbr title="Year">Yr</abbr>
+                                    <abbr
+                                        title="Year"
+                                        onClick={() => setSortValues('year')}
+                                    >
+                                        Yr
+                                    </abbr>
                                 </th>
                                 <th scope="col">
                                     <abbr title="Height">Ht</abbr>
@@ -487,7 +575,10 @@ const Roster = ({ currentUser }) => {
                                         School
                                     </abbr>
                                 </th>
-                                <th scope="col">
+                                <th
+                                    scope="col"
+                                    onClick={() => setSortValues('pot')}
+                                >
                                     <abbr title="Potential">Pot</abbr>
                                 </th>
                                 <th scope="col">

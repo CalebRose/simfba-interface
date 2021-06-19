@@ -2,17 +2,17 @@ import React from 'react';
 import SignUp from './SignUp/SignUpPage';
 import './SignUpLoginBody.style.css';
 
-const body = (props) => {
-  return (
-    <div className='hero-body center'>
-      <div className='container userInterface'>
-        <h2 className='title is-3'>Registration</h2>
-        <div className='registration'>
-          <SignUp />
+const body = () => {
+    return (
+        <div className="container userInterface center">
+            <div className="row">
+                <h2 className="title">Sign Up</h2>
+                <div className="registration">
+                    <SignUp />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default body;

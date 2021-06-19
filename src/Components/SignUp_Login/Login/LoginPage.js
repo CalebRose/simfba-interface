@@ -7,94 +7,116 @@ import { Link } from 'react-router-dom';
 import routes from '../../../Constants/routes';
 
 class LoginPage extends Component {
-  state = {
-    email: '',
-    password: '',
-  };
+    state = {
+        email: '',
+        password: '',
+        hasError: false,
+        isLoading: false,
+        message: ''
+    };
 
-  handleSubmit = async (event) => {
-    event.preventDefault();
-    const { email, password } = this.state;
-    try {
-      await auth.signInWithEmailAndPassword(email, password);
-      this.setState({ email: '', password: '' });
-      console.log('successful login.');
-      this.props.history.push('/user'); // on successful login, change user's location to their home page: /user
-      auth.currentUser
-        .getIdToken(/* forceRefresh */ true)
-        .then(function (idToken) {
-          // Send token to your backend via HTTPS
-          // ...
-          localStorage.setItem('token', idToken);
-        })
-        .catch(function (error) {
-          // Handle error
-        });
-    } catch (error) {
-      console.log(error);
+    handleSubmit = async (event) => {
+        event.preventDefault();
+        const { email, password } = this.state;
+        try {
+            this.setState({
+                isLoading: true,
+                message: 'Attempting Sign In...'
+            });
+            await auth.signInWithEmailAndPassword(email, password);
+            this.setState({
+                email: '',
+                password: '',
+                isLoading: false,
+                message: 'Sign In successful. Please return to Landing Page.'
+            });
+            console.log('successful login.');
+            auth.currentUser
+                .getIdToken(/* forceRefresh */ true)
+                .then(function (idToken) {
+                    // Send token to your backend via HTTPS
+                    // ...
+                    localStorage.setItem('token', idToken);
+                })
+                .catch(function (error) {
+                    console.log('test 1');
+                    console.log(error);
+                    // Handle error
+                });
+            this.setState({ message: '' });
+            this.props.history.push('/user'); // on successful login, change user's location to their home page: /user
+        } catch (error) {
+            console.log('test 2');
+            console.log(error);
+            this.setState({
+                message: error.message,
+                hasError: true,
+                isLoading: false
+            });
+            setTimeout(() => {
+                this.setState({ message: '', hasError: false });
+            }, 5000);
+        }
+    };
+
+    handleChange = (event) => {
+        //
+        const { name, value } = event.target;
+        this.setState({ [name]: value });
+    };
+
+    render() {
+        const { email, password, message, hasError, isLoading } = this.state;
+        return (
+            <div className="LoginPage">
+                <div class="row">
+                    <form>
+                        <FormInput
+                            name="email"
+                            value={email}
+                            label="Email"
+                            type="email"
+                            handleChange={this.handleChange}
+                        />
+                        <FormInput
+                            name="password"
+                            value={password}
+                            label="Password"
+                            type="password"
+                            handleChange={this.handleChange}
+                        />
+                        <div className="row signup-button">
+                            <Link to={routes.LANDING}>
+                                <button
+                                    className="btn btn-primary login-button"
+                                    onClick={this.handleSubmit}
+                                >
+                                    Login
+                                </button>
+                            </Link>
+                        </div>
+                    </form>
+                </div>
+                <div className="row mt-2">
+                    {message.length > 0 && !isLoading && !hasError ? (
+                        <div className="alert alert-success">{message}</div>
+                    ) : (
+                        ''
+                    )}
+                    {message.length > 0 && isLoading && !hasError ? (
+                        <div className="alert alert-secondary">{message}</div>
+                    ) : (
+                        ''
+                    )}
+                    {message.length > 0 && hasError && !isLoading ? (
+                        <div className="alert alert-danger">{message}</div>
+                    ) : (
+                        ''
+                    )}
+                </div>
+            </div>
+        );
     }
-  };
-  // handleGoogle = () => {
-  //   try {
-  //     signInWithGoogle();
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-  /*
-        firebase.auth().currentUser.getIdToken(true).then(function(idToken) {
-      // Send token to your backend via HTTPS
-      // ...
-    }).catch(function(error) {
-      // Handle error
-    });
-  */
-  handleChange = (event) => {
-    //
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  };
-  render() {
-    const { email, password } = this.state;
-    return (
-      <div className='LoginPage'>
-        <h2 className='login-logo'>Login</h2>
-        <form>
-          <FormInput
-            name='email'
-            value={email}
-            label='Email'
-            type='email'
-            handleChange={this.handleChange}
-          />
-          <FormInput
-            name='password'
-            value={password}
-            label='Password'
-            type='password'
-            handleChange={this.handleChange}
-          />
-          <div className='tile signup-button'>
-            <Link to={routes.LANDING}>
-              <button
-                className='button login-button'
-                onClick={this.handleSubmit}
-              >
-                Login
-              </button>
-            </Link>
-
-            {/* <button
-              className="button login-button google"
-              onClick={signInWithGoogle}
-            >
-              Login With Google
-            </button> */}
-          </div>
-        </form>
-      </div>
-    );
-  }
 }
 
 export default LoginPage;

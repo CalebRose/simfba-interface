@@ -2,9 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { auth } from '../../Firebase/firebase';
 import routes from '../../Constants/routes';
+// Redux
+import { connect } from 'react-redux';
+import { setCurrentUser } from '../../Redux/user/user.actions';
 
 const authorizedUser = (props) => {
-    const { user } = props;
+    const { user, setCurrentUser } = props;
     var FBAdmin = () => {
         return (
             <li className="nav-item dropdown">
@@ -93,6 +96,7 @@ const authorizedUser = (props) => {
     const logout = () => {
         auth.signOut();
         localStorage.removeItem('token');
+        setCurrentUser(null);
     };
 
     return (
@@ -115,4 +119,8 @@ const authorizedUser = (props) => {
     );
 };
 
-export default authorizedUser;
+const mapDispatchToProps = (dispatch) => ({
+    setCurrentUser: (user) => dispatch(setCurrentUser(user))
+});
+
+export default connect(null, mapDispatchToProps)(authorizedUser);

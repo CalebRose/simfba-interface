@@ -87,13 +87,13 @@ const LandingPage = ({ currentUser }) => {
                 <div className="col-3"></div>
                 <div className="col-3"></div>
             </div>
-            {sport === constants.CBB ? (
+            {currentUser && sport === constants.CBB ? (
                 <CBBHomePage />
-            ) : sport === constants.NBA ? (
+            ) : currentUser && sport === constants.NBA ? (
                 <NBAHomepage />
-            ) : sport === constants.CFB ? (
+            ) : currentUser && sport === constants.CFB ? (
                 <CFBHomepage />
-            ) : sport === constants.NFL ? (
+            ) : currentUser && sport === constants.NFL ? (
                 <NFLHomepage />
             ) : (
                 'No Team? Click the Available Teams button'
