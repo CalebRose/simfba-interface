@@ -2,21 +2,20 @@ import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import TeamRow from './TeamRow';
 import firebase from 'firebase';
-import url from '../../../Constants/url';
-import TeamService from '../../../_Services/simFBA/TeamService';
-import RequestService from '../../../_Services/simFBA/RequestService';
+import FBATeamService from '../../../_Services/simFBA/FBATeamService';
+import FBARequestService from '../../../_Services/simFBA/FBARequestService';
 
 const ManageTeams = ({ currentUser }) => {
     // State
     const user = useSelector((state) => state.user.currentUser);
     const [teams, setTeams] = React.useState([]);
-    let teamService = new TeamService();
-    let requestService = new RequestService();
+    let teamService = new FBATeamService();
+    let requestService = new FBARequestService();
 
     // Use Effects Begin
     useEffect(() => {
         const getCoachedTeams = async () => {
-            let coachedTeams = await teamService.GetCoachedTeams(url);
+            let coachedTeams = await teamService.GetAllActiveCollegeTeams();
             setTeams(coachedTeams);
         };
         if (user) {
@@ -29,7 +28,7 @@ const ManageTeams = ({ currentUser }) => {
     // Click Functions
     const revokeRequest = async (payload) => {
         // DB Request
-        let res = await requestService.RevokeRequest(url, payload);
+        let res = await requestService.RemoveUserFromTeamRequest(payload.reqId);
 
         if (res.ok) {
             console.log('Revoke Request:', payload.reqId);
@@ -58,6 +57,7 @@ const ManageTeams = ({ currentUser }) => {
 
         // Filter Requests
         const filterTeams = teams.filter((x) => x.id !== payload.reqId);
+
         setTeams(filterTeams);
     };
 

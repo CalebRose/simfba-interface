@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import TeamCard from './TeamCard.js';
 import { getLogo } from '../../Constants/getLogo.js';
 import { connect } from 'react-redux';
-import url from '../../Constants/url.js';
 import SimBBA_url from '../../Constants/SimBBA_url';
-import TeamService from '../../_Services/simFBA/TeamService.js';
-import RequestService from '../../_Services/simFBA/RequestService.js';
+import FBATeamService from '../../_Services/simFBA/FBATeamService.js';
+import FBARequestService from '../../_Services/simFBA/FBARequestService.js';
 import BBATeamService from '../../_Services/simNBA/BBATeamService.js';
 import BBARequestService from '../../_Services/simNBA/BBARequestService.js';
 import constants from '../../Constants/constants.js';
@@ -18,8 +17,8 @@ class AvailableTeams extends Component {
         sentRequest: false,
         selectedSport: 'CFB'
     };
-    CFBTeamService = new TeamService();
-    CFBRequestService = new RequestService();
+    CFBTeamService = new FBATeamService();
+    CFBRequestService = new FBARequestService();
     BBATeamService = new BBATeamService();
     BBARequestService = new BBARequestService();
 
@@ -30,9 +29,10 @@ class AvailableTeams extends Component {
     }
 
     CFBGetAvailableTeams = async () => {
-        let teams = await this.CFBTeamService.GetTeams(url);
-
-        const filterTeams = teams.filter((x) => x.Coach === null);
+        let teams = await this.CFBTeamService.GetAvailableCollegeTeams();
+        const filterTeams = teams.filter(
+            (x) => x.Coach === null || x.Coach === ''
+        );
 
         this.setState({ teams: teams, filterTeams: filterTeams });
     };
@@ -54,13 +54,18 @@ class AvailableTeams extends Component {
     };
 
     sendCFBRequest = async (team) => {
-        let postRequest = await this.CFBRequestService.PostRequest(
-            url,
-            team,
-            this.props.currentUser.username
-        );
+        if (this.state.sentRequest === false) {
+            let postRequest = await this.CFBRequestService.CreateTeamRequest(
+                team,
+                this.props.currentUser.username
+            );
 
-        this.setState({ sentRequest: true });
+            this.setState({ sentRequest: true });
+        } else {
+            alert(
+                "It appears you've already requested a team. Please wait for an admin to approve the request."
+            );
+        }
     };
 
     sendCBBRequest = async (team) => {
@@ -101,12 +106,12 @@ class AvailableTeams extends Component {
             if (this.state.selectedSport === constants.CFB) {
                 return (
                     <TeamCard
-                        key={team.id}
-                        teamId={team.id}
-                        team={team.Team}
-                        mascot={team.Nickname}
-                        conference={team.Current_Conference}
-                        logo={getLogo(team.Team)}
+                        key={team.ID}
+                        teamId={team.ID}
+                        team={team.TeamName}
+                        mascot={team.Mascot}
+                        conference={team.Conference}
+                        logo={getLogo(team.TeamName)}
                         request={this.sendCFBRequest}
                         disable={this.state.sentRequest}
                     />

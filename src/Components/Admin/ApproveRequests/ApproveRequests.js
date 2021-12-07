@@ -2,19 +2,18 @@ import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import RequestRow from './RequestRow';
 import firebase from 'firebase';
-import url from '../../../Constants/url';
-import RequestService from '../../../_Services/simFBA/RequestService';
+import FBARequestService from '../../../_Services/simFBA/FBARequestService';
 
 const ApproveRequests = ({ currentUser }) => {
     // State
     const user = useSelector((state) => state.user.currentUser);
     const [requests, setRequests] = React.useState([]);
-    const requestService = new RequestService();
+    const requestService = new FBARequestService();
     // Use Effects Begin
     // Get Requests
     useEffect(() => {
         const getRequests = async () => {
-            let requests = await requestService.GetRequests(url);
+            let requests = await requestService.GetRequests();
             setRequests(requests);
         };
         if (user) {
@@ -29,7 +28,7 @@ const ApproveRequests = ({ currentUser }) => {
     const approveRequest = async (payload) => {
         try {
             // DB request for Request
-            let res = await requestService.ApproveRequest(url, payload);
+            let res = await requestService.ApproveRequest(payload);
 
             if (res.ok) {
                 console.log(
@@ -40,16 +39,16 @@ const ApproveRequests = ({ currentUser }) => {
                 throw ('HTTP-Error: Approval incomplete', res.status);
             }
 
-            // DB Request for assigning coach to team
-            let assignTeam = await requestService.AssignTeam(url, payload, res);
+            // // DB Request for assigning coach to team
+            // let assignTeam = await requestService.AssignTeam(payload, res);
 
-            if (assignTeam.ok) {
-                console.log(
-                    payload.username + ' is now assigned to ' + payload.team
-                );
-            } else {
-                throw ('HTTP-Error: Approval incomplete', res.status);
-            }
+            // if (assignTeam.ok) {
+            //     console.log(
+            //         payload.username + ' is now assigned to ' + payload.team
+            //     );
+            // } else {
+            //     throw ('HTTP-Error: Approval incomplete', res.status);
+            // }
 
             // Firebase Call
             const firestore = firebase.firestore();
@@ -77,15 +76,15 @@ const ApproveRequests = ({ currentUser }) => {
 
     const rejectRequest = async (payload) => {
         // DB Request
-        let res = await requestService.RejectRequest(url, payload);
+        let res = await requestService.RejectRequest(payload);
 
         if (res.ok) {
-            console.log('Rejected Request:', payload.reqId);
+            console.log('Rejected Request:', payload.ReqID);
         } else {
             throw ('HTTP-Error: Approval incomplete', res.status);
         }
         // Filter Requests
-        const filterRequests = requests.filter((x) => x.id !== payload.id);
+        const filterRequests = requests.filter((x) => x.ID !== payload.ID);
         setRequests(filterRequests);
     };
 
@@ -139,16 +138,18 @@ const ApproveRequests = ({ currentUser }) => {
                                     </tr>
                                 </tfoot>
                                 <tbody>
-                                    {requests.map((x, i) => {
-                                        return (
-                                            <RequestRow
-                                                key={i}
-                                                request={x}
-                                                approve={approveRequest}
-                                                reject={rejectRequest}
-                                            />
-                                        );
-                                    })}
+                                    {requests && requests.length > 0
+                                        ? requests.map((x, i) => {
+                                              return (
+                                                  <RequestRow
+                                                      key={i}
+                                                      request={x}
+                                                      approve={approveRequest}
+                                                      reject={rejectRequest}
+                                                  />
+                                              );
+                                          })
+                                        : ''}
                                 </tbody>
                             </table>
                         </div>

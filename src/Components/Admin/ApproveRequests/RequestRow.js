@@ -6,23 +6,26 @@ const RequestRow = (props) => {
     const approve = () => {
         const payload = {
             username: data.Username,
-            team: data.Team,
-            mascot: data.Nickname,
-            teamAbbr: data.Abbr,
-            teamId: data.TeamId,
-            reqId: data.id
+            team: data.TeamName,
+            teamAbbr: data.TeamAbbr,
+            teamId: data.TeamID,
+            reqId: data.ID
         };
         return props.approve(payload);
     };
 
     const reject = () => {
-        return props.reject({ reqId: data.TeamId, id: data.id });
+        return props.reject({
+            ReqID: data.TeamID,
+            ID: data.ID,
+            Username: data.Username
+        });
     };
 
     return (
         <tr>
-            <td>{data.Team + ' ' + data.Nickname}</td>
-            <td>{data.Current_Conference}</td>
+            <td>{data.TeamName}</td>
+            <td>{data.Conference}</td>
             <td>{data.Username}</td>
             <td>
                 <h2>

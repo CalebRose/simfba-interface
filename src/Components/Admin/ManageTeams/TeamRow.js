@@ -6,19 +6,19 @@ const TeamRow = (props) => {
     const revoke = () => {
         const payload = {
             username: data.Coach,
-            team: data.Team,
-            mascot: data.Nickname,
-            teamAbbr: data.Abbr,
-            reqId: data.id
+            team: data.TeamName,
+            mascot: data.Mascot,
+            teamAbbr: data.TeamAbbr,
+            reqId: data.ID
         };
         return props.revoke(payload);
     };
 
     return (
         <tr>
-            <td>{data.Team + ' ' + data.Nickname}</td>
+            <td>{data.TeamName + ' ' + data.Mascot}</td>
             <td>{data.Coach}</td>
-            <td>{data.Current_Conference}</td>
+            <td>{data.Conference}</td>
             <td>
                 <h2>
                     <i

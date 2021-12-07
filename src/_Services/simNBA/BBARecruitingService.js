@@ -85,7 +85,6 @@ export default class BBARecruitingService {
             RewardScholarship: false,
             RevokeScholarship: false
         };
-        console.log(body);
         let response = await fetch(url + 'recruit/removeRecruit', {
             headers: {
                 authorization: localStorage.getItem('token'),
@@ -152,8 +151,6 @@ export default class BBARecruitingService {
             method: 'PUT',
             body: JSON.stringify(payload)
         });
-
-        console.log(response);
 
         return response;
     }

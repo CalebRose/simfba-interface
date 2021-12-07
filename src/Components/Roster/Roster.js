@@ -4,10 +4,8 @@ import { connect } from 'react-redux';
 import PlayerRow from './PlayerRow';
 import AttributeRow from './AttributeRow';
 import DropdownItem from './DropdownItem';
-import Player from '../../Models/Player';
-import url from '../../Constants/url';
-import RosterService from '../../_Services/simFBA/RosterService';
-import TeamService from '../../_Services/simFBA/TeamService';
+import FBAPlayerService from '../../_Services/simFBA/FBAPlayerService';
+import FBATeamService from '../../_Services/simFBA/FBATeamService';
 // import DepthChartRow from "../DepthChart/DepthChartRow";
 
 const Roster = ({ currentUser }) => {
@@ -15,8 +13,8 @@ const Roster = ({ currentUser }) => {
         API Call to get team data
         Loop through array list to acquire players
     */
-    let rosterService = new RosterService();
-    let teamService = new TeamService();
+    let rosterService = new FBAPlayerService();
+    let teamService = new FBATeamService();
     // React Hooks for Modal
     //
     const [modalState, setModal] = React.useState(false);
@@ -39,7 +37,7 @@ const Roster = ({ currentUser }) => {
 
     useEffect(() => {
         if (team) {
-            getRoster(team.id);
+            getRoster(team.ID);
         }
     }, [team]);
 
@@ -56,7 +54,7 @@ const Roster = ({ currentUser }) => {
                 setViewRoster((currRoster) =>
                     currRoster.sort(
                         (a, b) =>
-                            a.Last_Name.localeCompare(b.Last_Name) *
+                            a.LastName.localeCompare(b.LastName) *
                             (isAsc ? 1 : -1)
                     )
                 );
@@ -109,22 +107,21 @@ const Roster = ({ currentUser }) => {
         selectTeam(userTeam);
     };
 
-    const getTeam = async (id) => {
-        let response = await teamService.GetTeamByTeamId(url, id);
+    const getTeam = async (ID) => {
+        let response = await teamService.GetTeamByTeamId(ID);
         setTeam(response);
         setUserTeam(response);
     };
 
     const getTeams = async () => {
         //
-        let teams = await teamService.GetTeams(url);
+        let teams = await teamService.GetAllCollegeTeams();
         setTeams(teams);
     };
 
-    const getRoster = async (id) => {
-        if (id !== null || id > 0) {
-            let roster = await rosterService.GetRoster(url, id);
-            console.log(roster);
+    const getRoster = async (ID) => {
+        if (ID !== null || ID > 0) {
+            let roster = await rosterService.GetPlayersByTeam(ID);
             setRoster(roster);
             setViewRoster(roster);
         }
@@ -140,12 +137,12 @@ const Roster = ({ currentUser }) => {
                     { Name: 'Strength', Value: data.Strength, Letter: '' },
                     {
                         Name: 'Throw Power',
-                        Value: data.Throw_Power,
+                        Value: data.ThrowPower,
                         Letter: ''
                     },
                     {
                         Name: 'Throw Accuracy',
-                        Value: data.Throw_Accuracy,
+                        Value: data.ThrowAccuracy,
                         Letter: ''
                     }
                 ];
@@ -156,7 +153,7 @@ const Roster = ({ currentUser }) => {
                     { Name: 'Speed', Value: data.Speed, Letter: '' },
                     { Name: 'Carrying', Value: data.Carrying, Letter: '' },
                     { Name: 'Catching', Value: data.Catching, Letter: '' },
-                    { Name: 'Pass Block', Value: data.Pass_Block, Letter: '' },
+                    { Name: 'Pass Block', Value: data.PassBlock, Letter: '' },
                     { Name: 'Strength', Value: data.Strength, Letter: '' }
                 ];
                 break;
@@ -166,8 +163,8 @@ const Roster = ({ currentUser }) => {
                     { Name: 'Speed', Value: data.Speed, Letter: '' },
                     { Name: 'Carrying', Value: data.Carrying, Letter: '' },
                     { Name: 'Catching', Value: data.Catching, Letter: '' },
-                    { Name: 'Pass Block', Value: data.Pass_Block, Letter: '' },
-                    { Name: 'Run Block', Value: data.Run_Block, Letter: '' },
+                    { Name: 'Pass Block', Value: data.PassBlock, Letter: '' },
+                    { Name: 'Run Block', Value: data.RunBlock, Letter: '' },
                     { Name: 'Strength', Value: data.Strength, Letter: '' }
                 ];
                 break;
@@ -179,7 +176,7 @@ const Roster = ({ currentUser }) => {
                     { Name: 'Catching', Value: data.Catching, Letter: '' },
                     {
                         Name: 'Route Running',
-                        Value: data.Route_Running,
+                        Value: data.RouteRunning,
                         Letter: ''
                     },
                     { Name: 'Strength', Value: data.Strength, Letter: '' }
@@ -193,12 +190,12 @@ const Roster = ({ currentUser }) => {
                     { Name: 'Catching', Value: data.Catching, Letter: '' },
                     {
                         Name: 'Route Running',
-                        Value: data.Route_Running,
+                        Value: data.RouteRunning,
                         Letter: ''
                     },
                     { Name: 'Strength', Value: data.Strength, Letter: '' },
-                    { Name: 'Pass Block', Value: data.Pass_Block, Letter: '' },
-                    { Name: 'Run Block', Value: data.Run_Block, Letter: '' }
+                    { Name: 'Pass Block', Value: data.PassBlock, Letter: '' },
+                    { Name: 'Run Block', Value: data.RunBlock, Letter: '' }
                 ];
                 break;
             case 'OT':
@@ -207,8 +204,8 @@ const Roster = ({ currentUser }) => {
                 data.priorityAttributes = [
                     { Name: 'Agility', Value: data.Agility, Letter: '' },
                     { Name: 'Strength', Value: data.Strength, Letter: '' },
-                    { Name: 'Pass Block', Value: data.Pass_Block, Letter: '' },
-                    { Name: 'Run Block', Value: data.Run_Block, Letter: '' }
+                    { Name: 'Pass Block', Value: data.PassBlock, Letter: '' },
+                    { Name: 'Run Block', Value: data.RunBlock, Letter: '' }
                 ];
                 break;
             case 'DE':
@@ -217,8 +214,8 @@ const Roster = ({ currentUser }) => {
                     { Name: 'Speed', Value: data.Speed, Letter: '' },
                     { Name: 'Tackle', Value: data.Tackle, Letter: '' },
                     { Name: 'Strength', Value: data.Strength, Letter: '' },
-                    { Name: 'Pass Rush', Value: data.Pass_Rush, Letter: '' },
-                    { Name: 'Run Defense', Value: data.Run_Defense, Letter: '' }
+                    { Name: 'Pass Rush', Value: data.PassRush, Letter: '' },
+                    { Name: 'Run Defense', Value: data.RunDefense, Letter: '' }
                 ];
                 break;
             case 'DT':
@@ -226,8 +223,8 @@ const Roster = ({ currentUser }) => {
                     { Name: 'Agility', Value: data.Agility, Letter: '' },
                     { Name: 'Tackle', Value: data.Tackle, Letter: '' },
                     { Name: 'Strength', Value: data.Strength, Letter: '' },
-                    { Name: 'Pass Rush', Value: data.Pass_Rush, Letter: '' },
-                    { Name: 'Run Defense', Value: data.Run_Defense, Letter: '' }
+                    { Name: 'Pass Rush', Value: data.PassRush, Letter: '' },
+                    { Name: 'Run Defense', Value: data.RunDefense, Letter: '' }
                 ];
                 break;
             case 'ILB':
@@ -237,20 +234,20 @@ const Roster = ({ currentUser }) => {
                     { Name: 'Speed', Value: data.Speed, Letter: '' },
                     { Name: 'Tackle', Value: data.Tackle, Letter: '' },
                     { Name: 'Strength', Value: data.Strength, Letter: '' },
-                    { Name: 'Pass Rush', Value: data.Pass_Rush, Letter: '' },
+                    { Name: 'Pass Rush', Value: data.PassRush, Letter: '' },
                     {
                         Name: 'Run Defense',
-                        Value: data.Run_Defense,
+                        Value: data.RunDefense,
                         Letter: ''
                     },
                     {
                         Name: 'Zone Coverage',
-                        Value: data.Zone_Coverage,
+                        Value: data.ZoneCoverage,
                         Letter: ''
                     },
                     {
                         Name: 'Man Coverage',
-                        Value: data.Man_Coverage,
+                        Value: data.ManCoverage,
                         Letter: ''
                     }
                 ];
@@ -263,12 +260,12 @@ const Roster = ({ currentUser }) => {
                     { Name: 'Strength', Value: data.Strength, Letter: '' },
                     {
                         Name: 'Zone Coverage',
-                        Value: data.Zone_Coverage,
+                        Value: data.ZoneCoverage,
                         Letter: ''
                     },
                     {
                         Name: 'Man Coverage',
-                        Value: data.Man_Coverage,
+                        Value: data.ManCoverage,
                         Letter: ''
                     },
                     { Name: 'Catching', Value: data.Catching, Letter: '' }
@@ -281,19 +278,19 @@ const Roster = ({ currentUser }) => {
                     { Name: 'Speed', Value: data.Speed, Letter: '' },
                     {
                         Name: 'Run Defense',
-                        Value: data.Run_Defense,
+                        Value: data.RunDefense,
                         Letter: ''
                     },
                     { Name: 'Tackle', Value: data.Tackle, Letter: '' },
                     { Name: 'Strength', Value: data.Strength, Letter: '' },
                     {
                         Name: 'Zone Coverage',
-                        Value: data.Zone_Coverage,
+                        Value: data.ZoneCoverage,
                         Letter: ''
                     },
                     {
                         Name: 'Man Coverage',
-                        Value: data.Man_Coverage,
+                        Value: data.ManCoverage,
                         Letter: ''
                     },
                     { Name: 'Catching', Value: data.Catching, Letter: '' }
@@ -303,20 +300,20 @@ const Roster = ({ currentUser }) => {
                 data.priorityAttributes = [
                     {
                         Name: 'Kick Accuracy',
-                        Value: data.Kick_Accuracy,
+                        Value: data.KickAccuracy,
                         Letter: ''
                     },
-                    { Name: 'Kick Power', Value: data.Kick_Power, Letter: '' }
+                    { Name: 'Kick Power', Value: data.KickPower, Letter: '' }
                 ];
                 break;
             case 'P':
                 data.priorityAttributes = [
                     {
                         Name: 'Punt Accuracy',
-                        Value: data.Punt_Accuracy,
+                        Value: data.PuntAccuracy,
                         Letter: ''
                     },
-                    { Name: 'Punt Power', Value: data.Punt_Power, Letter: '' }
+                    { Name: 'Punt Power', Value: data.PuntPower, Letter: '' }
                 ];
                 break;
             default:
@@ -324,7 +321,7 @@ const Roster = ({ currentUser }) => {
         }
         data.priorityAttributes.push({
             Name: 'Football IQ',
-            Value: data.Football_IQ,
+            Value: data.FootballIQ,
             Letter: ''
         });
         data.priorityAttributes.push({
@@ -344,7 +341,7 @@ const Roster = ({ currentUser }) => {
         }
         data.priorityAttributes.push({
             Name: 'Potential',
-            Letter: data.Potential
+            Letter: data.PotentialGrade
         });
     };
 
@@ -362,23 +359,38 @@ const Roster = ({ currentUser }) => {
     };
     // Priority Queue
 
-    const teamDropDowns = teams
-        ? teams.map((x) => (
-              <DropdownItem
-                  key={x.id}
-                  value={x.Team + ' ' + x.Nickname}
-                  team={x}
-                  id={x.id}
-                  click={selectTeam}
-              />
-          ))
-        : '';
+    const teamDropDowns =
+        teams && teams.length > 0
+            ? teams.map((x) => (
+                  <DropdownItem
+                      key={x.ID}
+                      value={x.TeamName + ' ' + x.Mascot}
+                      team={x}
+                      id={x.ID}
+                      click={selectTeam}
+                  />
+              ))
+            : '';
 
     // Rows
-    const PlayerRows = viewRoster.map((player) => (
-        <PlayerRow key={player.id} data={player} getData={getPlayerData} />
-    ));
-    const playerCount = viewRoster.length;
+    const PlayerRows =
+        viewRoster && viewRoster.length > 0
+            ? viewRoster.map((player) => (
+                  <PlayerRow
+                      key={player.ID}
+                      data={player}
+                      getData={getPlayerData}
+                      school={team.TeamName}
+                  />
+              ))
+            : '';
+    const playerCount = viewRoster ? viewRoster.length : 0;
+
+    let redshirtCount = viewRoster
+        ? viewRoster.filter(
+              (player) => player.IsRedshirting || player.IsRedshirt
+          ).length
+        : 0;
 
     const setSortValues = (value) => {
         setIsAsc((asc) => (value === sort ? !asc : false));
@@ -393,7 +405,7 @@ const Roster = ({ currentUser }) => {
     return (
         <div className="container">
             <div className="row userInterface">
-                <h2 className="">{team ? team.Team : ''} Roster</h2>
+                <h2 className="">{team ? team.TeamName : ''} Roster</h2>
             </div>
             <div className="row">
                 <div className="col-4">
@@ -405,7 +417,7 @@ const Roster = ({ currentUser }) => {
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                         >
-                            <span>{team ? team.Team : ''}</span>
+                            <span>{team ? team.TeamName : ''}</span>
                         </button>
                         <ul className="dropdown-menu dropdown-content">
                             <DropdownItem
@@ -428,7 +440,7 @@ const Roster = ({ currentUser }) => {
                     <h2>Players: {playerCount}</h2>
                 </div>
                 <div className="col-4">
-                    <h2>Redshirts: 0</h2>
+                    <h2>Redshirts: {redshirtCount}</h2>
                 </div>
             </div>
             <div className="row">
@@ -444,9 +456,9 @@ const Roster = ({ currentUser }) => {
                             <div className="modal-content">
                                 <header className="modal-header">
                                     <h2 className="modal-title">
-                                        {player.First_Name +
+                                        {player.FirstName +
                                             ' ' +
-                                            player.Last_Name}
+                                            player.LastName}
                                     </h2>
 
                                     <button
@@ -460,7 +472,7 @@ const Roster = ({ currentUser }) => {
                                     <div className="row">
                                         <div className="col">
                                             <div className="row text-start">
-                                                <h5>{team.Team}</h5>
+                                                <h5>{team.TeamName}</h5>
                                                 <p className="gap">
                                                     <strong>Year: </strong>
                                                     {player.Year}
@@ -580,9 +592,6 @@ const Roster = ({ currentUser }) => {
                                     onClick={() => setSortValues('pot')}
                                 >
                                     <abbr title="Potential">Pot</abbr>
-                                </th>
-                                <th scope="col">
-                                    <abbr title="Jersey Number">Num</abbr>
                                 </th>
                             </tr>
                         </thead>

@@ -47,12 +47,10 @@ class App extends Component {
 
     // Components
     componentDidMount() {
-        const { setCurrentUser } = this.props;
-        const { setCBBTimestamp } = this.props;
+        const { setCurrentUser, setCBBTimestamp } = this.props;
 
         this.unSubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
             if (userAuth !== null) {
-                console.log(userAuth);
                 const userRef = await createUserProfileDocument(userAuth);
                 userRef.onSnapshot((snapShot) => {
                     setCurrentUser({

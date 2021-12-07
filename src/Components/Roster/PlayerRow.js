@@ -4,6 +4,7 @@ const PlayerRow = (props) => {
     const [showRow, setShowRow] = React.useState(false);
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     let data = props.data;
+    let school = props.school;
 
     const getOverall = (ovr) => {
         if (typeof ovr === 'string') return ovr;
@@ -14,7 +15,33 @@ const PlayerRow = (props) => {
         else return 'F';
     };
 
+    const getYear = (data) => {
+        const isRedshirt = data.IsRedshirt;
+        const year = Number(data.Year);
+
+        if (year === 1) {
+            return 'Fr';
+        } else if (year === 2 && isRedshirt) {
+            return '(Fr)';
+        } else if (year === 2 && !isRedshirt) {
+            return 'So';
+        } else if (year === 3 && isRedshirt) {
+            return '(So)';
+        } else if (year === 3 && !isRedshirt) {
+            return 'Jr';
+        } else if (year === 4 && isRedshirt) {
+            return '(Jr)';
+        } else if (year === 4 && !isRedshirt) {
+            return 'Sr';
+        } else if (year === 5 && isRedshirt) {
+            return '(Sr)';
+        } else {
+            return 'Super Sr';
+        }
+    };
+
     let ovr = getOverall(data.Overall);
+    const year = getYear(data);
 
     React.useEffect(() => {
         if (!viewWidth) {
@@ -46,18 +73,17 @@ const PlayerRow = (props) => {
                     data-bs-toggle="modal"
                     data-bs-target="#playerModal"
                 >
-                    {props.data.First_Name + ' ' + props.data.Last_Name}
+                    {props.data.FirstName + ' ' + props.data.LastName}
                 </th>
                 <td label="Archtype">{data.Archetype}</td>
                 <td label="Position">{data.Position}</td>
                 <td label="Overall">{ovr ? ovr : ''}</td>
-                <td label="Year">{data.Year}</td>
+                <td label="Year">{year ? year : ''}</td>
                 <td label="Height">{data.Height}</td>
                 <td label="Weight">{data.Weight}</td>
                 <td label="State">{data.State}</td>
-                <td label="School">{data.School}</td>
-                <td label="Potential">{data.Potential}</td>
-                <td label="Number">{data.JerseyNum}</td>
+                <td label="School">{school}</td>
+                <td label="Potential">{data.PotentialGrade}</td>
             </tr>
         );
     } else {

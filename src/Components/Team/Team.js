@@ -1,44 +1,39 @@
 import React, { useEffect } from 'react';
-import logos from '../../Constants/logos';
-import ImageCard from '../ImageCard/ImageCard';
-import routes from '../../Constants/routes';
-import { useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { getLogo } from '../../Constants/getLogo';
-import url from '../../Constants/url';
+import routes from '../../Constants/routes';
+import FBATeamService from '../../_Services/simFBA/FBATeamService';
 
-const Team = () => {
-    const user = useSelector((state) => state.user.currentUser);
-    let initialTeam = user ? user.team : null; // Initial value from redux state
+const Team = ({ currentUser }) => {
+    let teamService = new FBATeamService();
     const [team, setTeam] = React.useState(null); // Redux value as initial value for react hook
-    const logo = getLogo(initialTeam);
+    const [logo, setLogo] = React.useState([]);
 
     useEffect(() => {
-        const getTeam = async () => {
-            let response = await fetch(url + 'teams/team/' + user.teamId, {
-                headers: {
-                    authorization: 'Bearer ' + localStorage.getItem('token')
-                }
-            });
+        if (currentUser) {
+            const getTeam = async () => {
+                // General Team Data
+                let response = await teamService.GetTeamByTeamId(
+                    currentUser.teamId
+                );
+                console.log(response);
+                setTeam(response);
 
-            let json;
-            if (response.ok) {
-                json = await response.json();
-            } else {
-                alert('HTTP-Error:', response.status);
-            }
-            setTeam(json[0]);
-        };
-        if (user) {
+                // Stats?
+            };
+            setLogo(getLogo(currentUser.team));
             getTeam();
         }
-    }, [user]);
+    }, [currentUser]);
 
     return (
         <div className="container userInterface">
             <div className="row">
                 <div className="col-md-auto">
                     <h2 className="title is-3">
-                        {user.team} {user.mascot}
+                        {currentUser
+                            ? `${currentUser.team} ${currentUser.mascot}`
+                            : ''}
                     </h2>
                 </div>
             </div>
@@ -53,7 +48,8 @@ const Team = () => {
                         <h2>Coach</h2>
                     </div>
                     <p>
-                        <strong>Coach:</strong> {user.username}
+                        <strong>Coach:</strong>{' '}
+                        {currentUser ? currentUser.username : ''}
                     </p>
                     <p>
                         <strong>Overall:</strong> N / A
@@ -72,27 +68,37 @@ const Team = () => {
                     <div className="row">
                         <div className="col-md-auto">
                             <p>
-                                <strong>Location:</strong>
+                                <strong>Location:</strong>{' '}
                                 {team ? team.City : ''},{' '}
                                 {team ? team.State : ''}
                             </p>
                             <p>
-                                <strong>Enrollment:</strong> N / A
+                                <strong>Enrollment:</strong>{' '}
+                                {team
+                                    ? team.Enrollment.toLocaleString()
+                                    : 'N / A'}
                             </p>
                             <p>
-                                <strong>Stadium:</strong> N / A
+                                <strong>Stadium:</strong>{' '}
+                                {team ? team.Stadium : 'N / A'}
                             </p>
                             <p>
-                                <strong>Avg Attendance:</strong> N / A
+                                <strong>Avg Attendance:</strong>{' '}
+                                {team
+                                    ? team.StadiumCapacity.toLocaleString()
+                                    : 'N / A'}
                             </p>
                         </div>
                         <div className="col-md-auto">
                             <p>
                                 <strong>Conference: </strong>
-                                {team ? team.Current_Conference : ''}
+                                {team ? team.Conference : 'N / A'}
                             </p>
                             <p>
-                                <strong>Division:</strong> N / A
+                                <strong>Division:</strong>{' '}
+                                {team && team.DivisionID > 0
+                                    ? team.Division
+                                    : 'N / A'}
                             </p>
                             <p>
                                 <strong>Conference Championships:</strong> N / A
@@ -138,4 +144,9 @@ const Team = () => {
         </div>
     );
 };
-export default Team;
+
+const mapStateToProps = ({ user: { currentUser } }) => ({
+    currentUser
+});
+
+export default connect(mapStateToProps)(Team);

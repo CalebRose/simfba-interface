@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { getLogo } from '../../../../../Constants/getLogo';
-import url from '../../../../../Constants/url';
-import TeamService from '../../../../../_Services/simFBA/TeamService';
+import FBATeamService from '../../../../../_Services/simFBA/FBATeamService';
 import StandingsTableRow from '../standingsTable/standingsTableRow';
 
 const CFBHomepage = ({ currentUser }) => {
-    let teamService = new TeamService();
+    let teamService = new FBATeamService();
     const [team, setTeam] = React.useState('');
     const [logo, setLogo] = React.useState('');
     const [teamData, setTeamData] = React.useState([]);
@@ -64,7 +63,6 @@ const CFBHomepage = ({ currentUser }) => {
         if (currentUser) {
             const getTeam = async () => {
                 let response = await teamService.GetTeamByTeamId(
-                    url,
                     currentUser.teamId
                 );
                 setTeamData(response);
@@ -76,7 +74,7 @@ const CFBHomepage = ({ currentUser }) => {
     }, [currentUser]);
 
     const standingsRow = standingsRecords.map((x, i) => {
-        return <StandingsTableRow key={x.team} record={x} rank={i + 1} />;
+        return <StandingsTableRow key={x.TeamName} record={x} rank={i + 1} />;
     });
 
     return (
@@ -91,8 +89,10 @@ const CFBHomepage = ({ currentUser }) => {
             <div className="row mt-2">
                 <div className="col-md-auto col-sm justify-content-start">
                     <h3>
-                        {teamData ? teamData.Current_Conference : ''}, North
-                        Division
+                        {teamData ? `${teamData.Conference} Conference` : ''},
+                        {teamData && teamData.DivisionID > 0
+                            ? ` ${teamData.Division} Division`
+                            : ''}
                     </h3>
                 </div>
                 <div className="col-md-auto"></div>
