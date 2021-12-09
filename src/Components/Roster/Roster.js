@@ -6,6 +6,7 @@ import AttributeRow from './AttributeRow';
 import DropdownItem from './DropdownItem';
 import FBAPlayerService from '../../_Services/simFBA/FBAPlayerService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
+import { SetPriority, GetDefaultOrder } from '../../_Utility/RosterHelper';
 // import DepthChartRow from "../DepthChart/DepthChartRow";
 
 const Roster = ({ currentUser }) => {
@@ -25,9 +26,9 @@ const Roster = ({ currentUser }) => {
     const [teams, setTeams] = React.useState([]);
     const [roster, setRoster] = React.useState([]);
     const [viewRoster, setViewRoster] = React.useState([]);
-    const [sort, setSort] = React.useState('');
+    const [sort, setSort] = React.useState('ovr');
     const [isAsc, setIsAsc] = React.useState(false);
-
+    const [playerYear, setPlayerYear] = React.useState('');
     useEffect(() => {
         if (currentUser) {
             getTeam(currentUser.teamId);
@@ -41,62 +42,60 @@ const Roster = ({ currentUser }) => {
         }
     }, [team]);
 
-    useEffect(() => {
-        switch (sort) {
-            case 'ovr':
-                setViewRoster((currRoster) =>
-                    currRoster.sort(
-                        (a, b) => (a.Overall - b.Overall) * (isAsc ? 1 : -1)
-                    )
-                );
-                break;
-            case 'name':
-                setViewRoster((currRoster) =>
-                    currRoster.sort(
-                        (a, b) =>
-                            a.LastName.localeCompare(b.LastName) *
-                            (isAsc ? 1 : -1)
-                    )
-                );
-                break;
-            case 'year':
-                setViewRoster((currRoster) =>
-                    currRoster.sort(
-                        (a, b) => (a.Year - b.Year) * (isAsc ? 1 : -1)
-                    )
-                );
-                break;
-            case 'pos':
-                setViewRoster((currRoster) =>
-                    currRoster.sort(
-                        (a, b) =>
-                            a.Position.localeCompare(b.Position) *
-                            (isAsc ? 1 : -1)
-                    )
-                );
-                break;
-            case 'pot':
-                setViewRoster((currRoster) =>
-                    currRoster.sort(
-                        (a, b) =>
-                            a.Potential.localeCompare(b.Potential) *
-                            (isAsc ? 1 : -1)
-                    )
-                );
-                break;
-            case 'arch':
-                setViewRoster((currRoster) =>
-                    currRoster.sort(
-                        (a, b) =>
-                            a.Archetype.localeCompare(b.Archetype) *
-                            (isAsc ? 1 : -1)
-                    )
-                );
-                break;
-            default:
-                break;
-        }
-    }, [sort, isAsc]);
+    // useEffect(() => {
+    //     switch (sort) {
+    //         case 'ovr':
+    //             setViewRoster((currRoster) =>
+    //                 roster.sort(
+    //                     (a, b) => (a.Overall - b.Overall) * (isAsc ? 1 : -1)
+    //                 )
+    //             );
+    //             break;
+    //         case 'name':
+    //             setViewRoster((currRoster) =>
+    //                 roster.sort(
+    //                     (a, b) =>
+    //                         a.LastName.localeCompare(b.LastName) *
+    //                         (isAsc ? 1 : -1)
+    //                 )
+    //             );
+    //             break;
+    //         case 'year':
+    //             setViewRoster((currRoster) =>
+    //                 roster.sort((a, b) => (a.Year - b.Year) * (isAsc ? 1 : -1))
+    //             );
+    //             break;
+    //         case 'pos':
+    //             setViewRoster((currRoster) =>
+    //                 roster.sort(
+    //                     (a, b) =>
+    //                         a.Position.localeCompare(b.Position) *
+    //                         (isAsc ? 1 : -1)
+    //                 )
+    //             );
+    //             break;
+    //         case 'pot':
+    //             setViewRoster((currRoster) =>
+    //                 roster.sort(
+    //                     (a, b) =>
+    //                         a.Potential.localeCompare(b.Potential) *
+    //                         (isAsc ? 1 : -1)
+    //                 )
+    //             );
+    //             break;
+    //         case 'arch':
+    //             setViewRoster((currRoster) =>
+    //                 roster.sort(
+    //                     (a, b) =>
+    //                         a.Archetype.localeCompare(b.Archetype) *
+    //                         (isAsc ? 1 : -1)
+    //                 )
+    //             );
+    //             break;
+    //         default:
+    //             break;
+    //     }
+    // }, [sort, isAsc]);
 
     // Functions
     const selectTeam = (team) => {
@@ -128,232 +127,16 @@ const Roster = ({ currentUser }) => {
     };
 
     // Call Back Function
-    const setPriority = (data) => {
-        switch (data.Position) {
-            case 'QB':
-                data.priorityAttributes = [
-                    { Name: 'Agility', Value: data.Agility, Letter: '' },
-                    { Name: 'Speed', Value: data.Speed, Letter: '' },
-                    { Name: 'Strength', Value: data.Strength, Letter: '' },
-                    {
-                        Name: 'Throw Power',
-                        Value: data.ThrowPower,
-                        Letter: ''
-                    },
-                    {
-                        Name: 'Throw Accuracy',
-                        Value: data.ThrowAccuracy,
-                        Letter: ''
-                    }
-                ];
-                break;
-            case 'RB':
-                data.priorityAttributes = [
-                    { Name: 'Agility', Value: data.Agility, Letter: '' },
-                    { Name: 'Speed', Value: data.Speed, Letter: '' },
-                    { Name: 'Carrying', Value: data.Carrying, Letter: '' },
-                    { Name: 'Catching', Value: data.Catching, Letter: '' },
-                    { Name: 'Pass Block', Value: data.PassBlock, Letter: '' },
-                    { Name: 'Strength', Value: data.Strength, Letter: '' }
-                ];
-                break;
-            case 'FB':
-                data.priorityAttributes = [
-                    { Name: 'Agility', Value: data.Agility, Letter: '' },
-                    { Name: 'Speed', Value: data.Speed, Letter: '' },
-                    { Name: 'Carrying', Value: data.Carrying, Letter: '' },
-                    { Name: 'Catching', Value: data.Catching, Letter: '' },
-                    { Name: 'Pass Block', Value: data.PassBlock, Letter: '' },
-                    { Name: 'Run Block', Value: data.RunBlock, Letter: '' },
-                    { Name: 'Strength', Value: data.Strength, Letter: '' }
-                ];
-                break;
-            case 'WR':
-                data.priorityAttributes = [
-                    { Name: 'Agility', Value: data.Agility, Letter: '' },
-                    { Name: 'Speed', Value: data.Speed, Letter: '' },
-                    { Name: 'Carrying', Value: data.Carrying, Letter: '' },
-                    { Name: 'Catching', Value: data.Catching, Letter: '' },
-                    {
-                        Name: 'Route Running',
-                        Value: data.RouteRunning,
-                        Letter: ''
-                    },
-                    { Name: 'Strength', Value: data.Strength, Letter: '' }
-                ];
-                break;
-            case 'TE':
-                data.priorityAttributes = [
-                    { Name: 'Agility', Value: data.Agility, Letter: '' },
-                    { Name: 'Speed', Value: data.Speed, Letter: '' },
-                    { Name: 'Carrying', Value: data.Carrying, Letter: '' },
-                    { Name: 'Catching', Value: data.Catching, Letter: '' },
-                    {
-                        Name: 'Route Running',
-                        Value: data.RouteRunning,
-                        Letter: ''
-                    },
-                    { Name: 'Strength', Value: data.Strength, Letter: '' },
-                    { Name: 'Pass Block', Value: data.PassBlock, Letter: '' },
-                    { Name: 'Run Block', Value: data.RunBlock, Letter: '' }
-                ];
-                break;
-            case 'OT':
-            case 'OG':
-            case 'C':
-                data.priorityAttributes = [
-                    { Name: 'Agility', Value: data.Agility, Letter: '' },
-                    { Name: 'Strength', Value: data.Strength, Letter: '' },
-                    { Name: 'Pass Block', Value: data.PassBlock, Letter: '' },
-                    { Name: 'Run Block', Value: data.RunBlock, Letter: '' }
-                ];
-                break;
-            case 'DE':
-                data.priorityAttributes = [
-                    { Name: 'Agility', Value: data.Agility, Letter: '' },
-                    { Name: 'Speed', Value: data.Speed, Letter: '' },
-                    { Name: 'Tackle', Value: data.Tackle, Letter: '' },
-                    { Name: 'Strength', Value: data.Strength, Letter: '' },
-                    { Name: 'Pass Rush', Value: data.PassRush, Letter: '' },
-                    { Name: 'Run Defense', Value: data.RunDefense, Letter: '' }
-                ];
-                break;
-            case 'DT':
-                data.priorityAttributes = [
-                    { Name: 'Agility', Value: data.Agility, Letter: '' },
-                    { Name: 'Tackle', Value: data.Tackle, Letter: '' },
-                    { Name: 'Strength', Value: data.Strength, Letter: '' },
-                    { Name: 'Pass Rush', Value: data.PassRush, Letter: '' },
-                    { Name: 'Run Defense', Value: data.RunDefense, Letter: '' }
-                ];
-                break;
-            case 'ILB':
-            case 'OLB':
-                data.priorityAttributes = [
-                    { Name: 'Agility', Value: data.Agility, Letter: '' },
-                    { Name: 'Speed', Value: data.Speed, Letter: '' },
-                    { Name: 'Tackle', Value: data.Tackle, Letter: '' },
-                    { Name: 'Strength', Value: data.Strength, Letter: '' },
-                    { Name: 'Pass Rush', Value: data.PassRush, Letter: '' },
-                    {
-                        Name: 'Run Defense',
-                        Value: data.RunDefense,
-                        Letter: ''
-                    },
-                    {
-                        Name: 'Zone Coverage',
-                        Value: data.ZoneCoverage,
-                        Letter: ''
-                    },
-                    {
-                        Name: 'Man Coverage',
-                        Value: data.ManCoverage,
-                        Letter: ''
-                    }
-                ];
-                break;
-            case 'CB':
-                data.priorityAttributes = [
-                    { Name: 'Agility', Value: data.Agility, Letter: '' },
-                    { Name: 'Speed', Value: data.Speed, Letter: '' },
-                    { Name: 'Tackle', Value: data.Tackle, Letter: '' },
-                    { Name: 'Strength', Value: data.Strength, Letter: '' },
-                    {
-                        Name: 'Zone Coverage',
-                        Value: data.ZoneCoverage,
-                        Letter: ''
-                    },
-                    {
-                        Name: 'Man Coverage',
-                        Value: data.ManCoverage,
-                        Letter: ''
-                    },
-                    { Name: 'Catching', Value: data.Catching, Letter: '' }
-                ];
-                break;
-            case 'FS':
-            case 'SS':
-                data.priorityAttributes = [
-                    { Name: 'Agility', Value: data.Agility, Letter: '' },
-                    { Name: 'Speed', Value: data.Speed, Letter: '' },
-                    {
-                        Name: 'Run Defense',
-                        Value: data.RunDefense,
-                        Letter: ''
-                    },
-                    { Name: 'Tackle', Value: data.Tackle, Letter: '' },
-                    { Name: 'Strength', Value: data.Strength, Letter: '' },
-                    {
-                        Name: 'Zone Coverage',
-                        Value: data.ZoneCoverage,
-                        Letter: ''
-                    },
-                    {
-                        Name: 'Man Coverage',
-                        Value: data.ManCoverage,
-                        Letter: ''
-                    },
-                    { Name: 'Catching', Value: data.Catching, Letter: '' }
-                ];
-                break;
-            case 'K':
-                data.priorityAttributes = [
-                    {
-                        Name: 'Kick Accuracy',
-                        Value: data.KickAccuracy,
-                        Letter: ''
-                    },
-                    { Name: 'Kick Power', Value: data.KickPower, Letter: '' }
-                ];
-                break;
-            case 'P':
-                data.priorityAttributes = [
-                    {
-                        Name: 'Punt Accuracy',
-                        Value: data.PuntAccuracy,
-                        Letter: ''
-                    },
-                    { Name: 'Punt Power', Value: data.PuntPower, Letter: '' }
-                ];
-                break;
-            default:
-                break;
-        }
-        data.priorityAttributes.push({
-            Name: 'Football IQ',
-            Value: data.FootballIQ,
-            Letter: ''
-        });
-        data.priorityAttributes.push({
-            Name: 'Stamina',
-            Value: data.Stamina,
-            Letter: ''
-        });
-        for (let i = 0; i < data.priorityAttributes.length; i++) {
-            const attribute = data.priorityAttributes[i];
-            // Algorithm to provide letter value to attribute
-            // NOTE: Move this outside of the if statement for implementation to see all attributes
-            if (attribute.Value < 15) attribute.Letter = 'F';
-            else if (attribute.Value < 25) attribute.Letter = 'D';
-            else if (attribute.Value < 35) attribute.Letter = 'C';
-            else if (attribute.Value < 45) attribute.Letter = 'B';
-            else if (attribute.Value >= 45) attribute.Letter = 'A';
-        }
-        data.priorityAttributes.push({
-            Name: 'Potential',
-            Letter: data.PotentialGrade
-        });
-    };
-
-    const getPlayerData = (data) => {
+    const getPlayerData = (data, year) => {
         if (data) {
             let toggle = !modalState;
             setModal(toggle);
 
             let playerRecord = data;
             playerRecord['priorityAttributes'] = [];
-            setPriority(playerRecord);
+            SetPriority(playerRecord);
             setPlayer(playerRecord);
+            setPlayerYear(year);
             setAttributes(playerRecord.priorityAttributes);
         }
     };
@@ -373,17 +156,6 @@ const Roster = ({ currentUser }) => {
             : '';
 
     // Rows
-    const PlayerRows =
-        viewRoster && viewRoster.length > 0
-            ? viewRoster.map((player) => (
-                  <PlayerRow
-                      key={player.ID}
-                      data={player}
-                      getData={getPlayerData}
-                      school={team.TeamName}
-                  />
-              ))
-            : '';
     const playerCount = viewRoster ? viewRoster.length : 0;
 
     let redshirtCount = viewRoster
@@ -393,8 +165,69 @@ const Roster = ({ currentUser }) => {
         : 0;
 
     const setSortValues = (value) => {
-        setIsAsc((asc) => (value === sort ? !asc : false));
-        setSort((currValue) => (currValue === value ? currValue : value));
+        const newSort = value;
+
+        // determine default sort by attribute selected
+        const isAscending = GetDefaultOrder(newSort, sort, isAsc);
+
+        switch (newSort) {
+            case 'ovr':
+                setViewRoster((currRoster) =>
+                    [...roster].sort(
+                        (a, b) =>
+                            (a.Overall - b.Overall) * (isAscending ? 1 : -1)
+                    )
+                );
+                break;
+            case 'name':
+                setViewRoster((currRoster) =>
+                    [...roster].sort(
+                        (a, b) =>
+                            a.LastName.localeCompare(b.LastName) *
+                            (isAscending ? 1 : -1)
+                    )
+                );
+                break;
+            case 'year':
+                setViewRoster((currRoster) =>
+                    [...roster].sort(
+                        (a, b) => (a.Year - b.Year) * (isAscending ? 1 : -1)
+                    )
+                );
+                break;
+            case 'pos':
+                setViewRoster((currRoster) =>
+                    [...roster].sort(
+                        (a, b) =>
+                            a.Position.localeCompare(b.Position) *
+                            (isAscending ? 1 : -1)
+                    )
+                );
+                break;
+            case 'pot':
+                setViewRoster((currRoster) =>
+                    [...roster].sort(
+                        (a, b) =>
+                            a.PotentialGrade.localeCompare(b.PotentialGrade) *
+                            (isAscending ? 1 : -1)
+                    )
+                );
+                break;
+            case 'arch':
+                setViewRoster((currRoster) =>
+                    [...roster].sort(
+                        (a, b) =>
+                            a.Archetype.localeCompare(b.Archetype) *
+                            (isAscending ? 1 : -1)
+                    )
+                );
+                break;
+            default:
+                break;
+        }
+
+        setSort((currValue) => newSort);
+        setIsAsc((asc) => isAscending);
     };
 
     // Designations
@@ -475,7 +308,9 @@ const Roster = ({ currentUser }) => {
                                                 <h5>{team.TeamName}</h5>
                                                 <p className="gap">
                                                     <strong>Year: </strong>
-                                                    {player.Year}
+                                                    {playerYear
+                                                        ? playerYear
+                                                        : ''}
                                                 </p>
                                             </div>
                                         </div>
@@ -595,7 +430,18 @@ const Roster = ({ currentUser }) => {
                                 </th>
                             </tr>
                         </thead>
-                        <tbody>{PlayerRows}</tbody>
+                        <tbody>
+                            {viewRoster && viewRoster.length > 0
+                                ? viewRoster.map((player) => (
+                                      <PlayerRow
+                                          key={player.ID}
+                                          data={player}
+                                          getData={getPlayerData}
+                                          school={team.TeamName}
+                                      />
+                                  ))
+                                : ''}
+                        </tbody>
                     </table>
                 </div>
             </div>

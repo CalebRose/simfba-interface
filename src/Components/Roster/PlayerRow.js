@@ -1,4 +1,5 @@
 import React from 'react';
+import { GetYear } from '../../_Utility/RosterHelper';
 
 const PlayerRow = (props) => {
     const [showRow, setShowRow] = React.useState(false);
@@ -8,40 +9,15 @@ const PlayerRow = (props) => {
 
     const getOverall = (ovr) => {
         if (typeof ovr === 'string') return ovr;
-        if (ovr >= 46) return 'A';
-        else if (ovr > 36) return 'B';
-        else if (ovr > 26) return 'C';
-        else if (ovr > 16) return 'D';
+        if (ovr > 44) return 'A';
+        else if (ovr > 34) return 'B';
+        else if (ovr > 24) return 'C';
+        else if (ovr > 14) return 'D';
         else return 'F';
     };
 
-    const getYear = (data) => {
-        const isRedshirt = data.IsRedshirt;
-        const year = Number(data.Year);
-
-        if (year === 1) {
-            return 'Fr';
-        } else if (year === 2 && isRedshirt) {
-            return '(Fr)';
-        } else if (year === 2 && !isRedshirt) {
-            return 'So';
-        } else if (year === 3 && isRedshirt) {
-            return '(So)';
-        } else if (year === 3 && !isRedshirt) {
-            return 'Jr';
-        } else if (year === 4 && isRedshirt) {
-            return '(Jr)';
-        } else if (year === 4 && !isRedshirt) {
-            return 'Sr';
-        } else if (year === 5 && isRedshirt) {
-            return '(Sr)';
-        } else {
-            return 'Super Sr';
-        }
-    };
-
     let ovr = getOverall(data.Overall);
-    const year = getYear(data);
+    const year = GetYear(data);
 
     React.useEffect(() => {
         if (!viewWidth) {
@@ -62,7 +38,7 @@ const PlayerRow = (props) => {
 
     const toggleModal = () => {
         data.Overall = ovr;
-        props.getData(data);
+        props.getData(data, year);
     };
     if (showRow || viewWidth >= 901) {
         return (
