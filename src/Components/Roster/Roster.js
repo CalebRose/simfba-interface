@@ -29,6 +29,21 @@ const Roster = ({ currentUser }) => {
     const [sort, setSort] = React.useState('ovr');
     const [isAsc, setIsAsc] = React.useState(false);
     const [playerYear, setPlayerYear] = React.useState('');
+    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+
+    // For mobile
+    React.useEffect(() => {
+        if (!viewWidth) {
+            setViewWidth(window.innerWidth);
+        }
+    }, [viewWidth]);
+
+    const handleResize = () => {
+        setViewWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
     useEffect(() => {
         if (currentUser) {
             getTeam(currentUser.teamId);
@@ -41,61 +56,6 @@ const Roster = ({ currentUser }) => {
             getRoster(team.ID);
         }
     }, [team]);
-
-    // useEffect(() => {
-    //     switch (sort) {
-    //         case 'ovr':
-    //             setViewRoster((currRoster) =>
-    //                 roster.sort(
-    //                     (a, b) => (a.Overall - b.Overall) * (isAsc ? 1 : -1)
-    //                 )
-    //             );
-    //             break;
-    //         case 'name':
-    //             setViewRoster((currRoster) =>
-    //                 roster.sort(
-    //                     (a, b) =>
-    //                         a.LastName.localeCompare(b.LastName) *
-    //                         (isAsc ? 1 : -1)
-    //                 )
-    //             );
-    //             break;
-    //         case 'year':
-    //             setViewRoster((currRoster) =>
-    //                 roster.sort((a, b) => (a.Year - b.Year) * (isAsc ? 1 : -1))
-    //             );
-    //             break;
-    //         case 'pos':
-    //             setViewRoster((currRoster) =>
-    //                 roster.sort(
-    //                     (a, b) =>
-    //                         a.Position.localeCompare(b.Position) *
-    //                         (isAsc ? 1 : -1)
-    //                 )
-    //             );
-    //             break;
-    //         case 'pot':
-    //             setViewRoster((currRoster) =>
-    //                 roster.sort(
-    //                     (a, b) =>
-    //                         a.Potential.localeCompare(b.Potential) *
-    //                         (isAsc ? 1 : -1)
-    //                 )
-    //             );
-    //             break;
-    //         case 'arch':
-    //             setViewRoster((currRoster) =>
-    //                 roster.sort(
-    //                     (a, b) =>
-    //                         a.Archetype.localeCompare(b.Archetype) *
-    //                         (isAsc ? 1 : -1)
-    //                 )
-    //             );
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    // }, [sort, isAsc]);
 
     // Functions
     const selectTeam = (team) => {
@@ -133,8 +93,7 @@ const Roster = ({ currentUser }) => {
             setModal(toggle);
 
             let playerRecord = data;
-            playerRecord['priorityAttributes'] = [];
-            SetPriority(playerRecord);
+            playerRecord['priorityAttributes'] = SetPriority(playerRecord);
             setPlayer(playerRecord);
             setPlayerYear(year);
             setAttributes(playerRecord.priorityAttributes);
@@ -369,7 +328,13 @@ const Roster = ({ currentUser }) => {
                     ''
                 )}
                 <div className="table-wrapper table-height">
-                    <table className="table table-hover">
+                    <table
+                        className={
+                            viewWidth >= 901
+                                ? 'table table-hover'
+                                : 'table table-sm'
+                        }
+                    >
                         <thead>
                             <tr>
                                 <th
@@ -438,6 +403,7 @@ const Roster = ({ currentUser }) => {
                                           data={player}
                                           getData={getPlayerData}
                                           school={team.TeamName}
+                                          width={viewWidth}
                                       />
                                   ))
                                 : ''}

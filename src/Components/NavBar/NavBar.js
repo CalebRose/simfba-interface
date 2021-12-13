@@ -34,10 +34,7 @@ const NavBar = ({ currentUser }) => {
                 >
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div
-                    className="collapse navbar-collapse"
-                    id="navbarNavDropdown"
-                >
+                <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         {user ? <NavBarStart user={user} /> : null}
                     </ul>

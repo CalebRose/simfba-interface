@@ -2,9 +2,21 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import routes from '../../Constants/routes';
 import { connect } from 'react-redux';
+import { useMediaQuery } from 'react-responsive';
 
 const NavBar_Start = ({ currentUser }) => {
     const user = currentUser;
+    const isMobile = useMediaQuery({ query: `(max-width:760px)` });
+    const DesktopBarrier = () => {
+        console.log(isMobile);
+        return !isMobile ? (
+            <li className="nav-item">
+                <span className="nav-link">|</span>
+            </li>
+        ) : (
+            ''
+        );
+    };
 
     var CFBTeam = () => {
         return (
@@ -140,15 +152,11 @@ const NavBar_Start = ({ currentUser }) => {
                     )}
                     {/* <TeamTab user={user} username={user.username} teamAbbr={user.teamAbbr} /> */}
                 </li>
-                <li className="nav-item">
-                    <span className="nav-link">|</span>
-                </li>
+                <DesktopBarrier />
                 <li className="nav-item">
                     <span className="nav-link">NFL (Soon)</span>
                 </li>
-                <li className="nav-item">
-                    <span className="nav-link">|</span>
-                </li>
+                <DesktopBarrier />
                 <li className="nav-item">
                     {currentUser.cbb_team !== null &&
                     currentUser.cbb_team !== '' ? (
@@ -159,15 +167,11 @@ const NavBar_Start = ({ currentUser }) => {
                         </li>
                     )}
                 </li>
-                <li className="nav-item">
-                    <span className="nav-link">|</span>
-                </li>
+                <DesktopBarrier />
                 <li className="nav-item">
                     <span className="nav-link">NBA (Soon)</span>
                 </li>
-                <li className="nav-item">
-                    <span className="nav-link">|</span>
-                </li>
+                <DesktopBarrier />
                 {currentUser.teamId === null ||
                 currentUser.nfl_id === null ||
                 currentUser.cbb_teamId === null ||

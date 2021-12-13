@@ -2,9 +2,10 @@ import AttributeAverages from '../Constants/AttributeAverages';
 
 // Roster Helper -- helper methods related to displaying player data on the roster page
 export const SetPriority = (data) => {
+    let priorityAttributes = [];
     switch (data.Position) {
         case 'QB':
-            data.priorityAttributes = [
+            priorityAttributes = [
                 {
                     Name: 'Agility',
                     Value: data.Agility,
@@ -56,7 +57,7 @@ export const SetPriority = (data) => {
             ];
             break;
         case 'RB':
-            data.priorityAttributes = [
+            priorityAttributes = [
                 {
                     Name: 'Agility',
                     Value: data.Agility,
@@ -108,7 +109,7 @@ export const SetPriority = (data) => {
             ];
             break;
         case 'FB':
-            data.priorityAttributes = [
+            priorityAttributes = [
                 {
                     Name: 'Agility',
                     Value: data.Agility,
@@ -168,7 +169,7 @@ export const SetPriority = (data) => {
             ];
             break;
         case 'WR':
-            data.priorityAttributes = [
+            priorityAttributes = [
                 {
                     Name: 'Agility',
                     Value: data.Agility,
@@ -220,7 +221,7 @@ export const SetPriority = (data) => {
             ];
             break;
         case 'TE':
-            data.priorityAttributes = [
+            priorityAttributes = [
                 {
                     Name: 'Agility',
                     Value: data.Agility,
@@ -290,7 +291,7 @@ export const SetPriority = (data) => {
         case 'OT':
         case 'OG':
         case 'C':
-            data.priorityAttributes = [
+            priorityAttributes = [
                 {
                     Name: 'Agility',
                     Value: data.Agility,
@@ -326,7 +327,7 @@ export const SetPriority = (data) => {
             ];
             break;
         case 'DE':
-            data.priorityAttributes = [
+            priorityAttributes = [
                 {
                     Name: 'Agility',
                     Value: data.Agility,
@@ -378,7 +379,7 @@ export const SetPriority = (data) => {
             ];
             break;
         case 'DT':
-            data.priorityAttributes = [
+            priorityAttributes = [
                 {
                     Name: 'Agility',
                     Value: data.Agility,
@@ -423,7 +424,7 @@ export const SetPriority = (data) => {
             break;
         case 'ILB':
         case 'OLB':
-            data.priorityAttributes = [
+            priorityAttributes = [
                 {
                     Name: 'Agility',
                     Value: data.Agility,
@@ -491,7 +492,7 @@ export const SetPriority = (data) => {
             ];
             break;
         case 'CB':
-            data.priorityAttributes = [
+            priorityAttributes = [
                 {
                     Name: 'Agility',
                     Value: data.Agility,
@@ -552,7 +553,7 @@ export const SetPriority = (data) => {
             break;
         case 'FS':
         case 'SS':
-            data.priorityAttributes = [
+            priorityAttributes = [
                 {
                     Name: 'Agility',
                     Value: data.Agility,
@@ -620,7 +621,7 @@ export const SetPriority = (data) => {
             ];
             break;
         case 'K':
-            data.priorityAttributes = [
+            priorityAttributes = [
                 {
                     Name: 'Kick Accuracy',
                     Value: data.KickAccuracy,
@@ -640,7 +641,7 @@ export const SetPriority = (data) => {
             ];
             break;
         case 'P':
-            data.priorityAttributes = [
+            priorityAttributes = [
                 {
                     Name: 'Punt Accuracy',
                     Value: data.PuntAccuracy,
@@ -662,7 +663,7 @@ export const SetPriority = (data) => {
         default:
             break;
     }
-    data.priorityAttributes.push({
+    priorityAttributes.push({
         Name: 'Football IQ',
         Value: data.FootballIQ,
         Letter: GetLetterGrade(
@@ -670,7 +671,7 @@ export const SetPriority = (data) => {
             data.FootballIQ
         )
     });
-    data.priorityAttributes.push({
+    priorityAttributes.push({
         Name: 'Stamina',
         Value: data.Stamina,
         Letter: GetLetterGrade(
@@ -678,10 +679,12 @@ export const SetPriority = (data) => {
             data.Stamina
         )
     });
-    data.priorityAttributes.push({
+    priorityAttributes.push({
         Name: 'Potential',
         Letter: data.PotentialGrade
     });
+
+    return priorityAttributes;
 };
 
 export const GetDefaultOrder = (newSortValue, sort, isAsc) => {

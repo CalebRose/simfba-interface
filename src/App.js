@@ -28,7 +28,7 @@ class App extends Component {
             teamId: ''
         },
         cbbTimeStamp: {
-            id: null,
+            ID: null,
             SeasonID: null,
             CollegeWeekID: null,
             NBAWeekID: null,
@@ -40,6 +40,21 @@ class App extends Component {
             RecruitingSynced: false,
             GMActionsComplete: false,
             IsOffSeason: false
+        },
+        cfbTimeStamp: {
+            ID: null,
+            CollegeWeekID: null,
+            CollegeWeek: null,
+            CollegeSeasonID: null,
+            CollegeSeason: null,
+            ThursdayGames: false,
+            FridayGames: false,
+            SaturdayMorning: false,
+            SaturdayNoon: false,
+            SaturdayEvening: false,
+            SaturdayNight: false,
+            RecruitingSynced: false,
+            IsOffSeason: false
         }
     };
     // Global Variables
@@ -47,7 +62,7 @@ class App extends Component {
 
     // Components
     componentDidMount() {
-        const { setCurrentUser, setCBBTimestamp } = this.props;
+        const { setCurrentUser, setCBBTimestamp, setCFBTimestamp } = this.props;
 
         this.unSubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
             if (userAuth !== null) {
@@ -70,17 +85,7 @@ class App extends Component {
                         // Handle error
                     });
             }
-            // setCurrentUser(userAuth);
         });
-
-        // auth.currentUser
-        //   .getIdToken(true)
-        //   .then(function (idToken) {
-        //     localStorage.setItem('token', idToken);
-        //   })
-        //   .catch(function (error) {
-        //     console.log(error);
-        //   });
     }
 
     componentWillUnmount() {

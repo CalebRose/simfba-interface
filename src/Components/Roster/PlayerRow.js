@@ -1,9 +1,10 @@
 import React from 'react';
-import { GetYear } from '../../_Utility/RosterHelper';
+import { GetYear, SetPriority } from '../../_Utility/RosterHelper';
 
 const PlayerRow = (props) => {
     const [showRow, setShowRow] = React.useState(false);
-    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const [attributes, setAttributes] = React.useState([]);
+    let viewWidth = props.width;
     let data = props.data;
     let school = props.school;
 
@@ -19,17 +20,6 @@ const PlayerRow = (props) => {
     let ovr = getOverall(data.Overall);
     const year = GetYear(data);
 
-    React.useEffect(() => {
-        if (!viewWidth) {
-            setViewWidth(window.innerWidth);
-        }
-    }, [viewWidth]);
-
-    const handleResize = () => {
-        setViewWidth(window.innerWidth);
-    };
-
-    window.addEventListener('resize', handleResize);
     /* 
     Name, Position, Archtype, Ovr, Yr, Ht, Wt, St,
     HS/JC, Pot, Num
@@ -37,10 +27,14 @@ const PlayerRow = (props) => {
     */
 
     const toggleModal = () => {
-        data.Overall = ovr;
-        props.getData(data, year);
+        if (showRow) {
+            setShowRow(!showRow);
+        } else {
+            data.Overall = ovr;
+            props.getData(data, year);
+        }
     };
-    if (showRow || viewWidth >= 901) {
+    if (viewWidth >= 901) {
         return (
             <tr>
                 <th
@@ -70,11 +64,30 @@ const PlayerRow = (props) => {
                         e.preventDefault();
                     }
                     setShowRow(!showRow);
+                    setAttributes(SetPriority(data));
                 }}
             >
-                <th className="clickable" onClick={toggleModal}>
-                    {props.data.name}
+                <th className="clickable">
+                    {props.data.FirstName + ' ' + props.data.LastName}
                 </th>
+                {showRow ? (
+                    <>
+                        <td label="Archtype">{data.Archetype}</td>
+                        <td label="Position">{data.Position}</td>
+                        <td label="Overall">{ovr ? ovr : ''}</td>
+                        <td label="Year">{year ? year : ''}</td>
+                        <td label="Potential">{data.PotentialGrade}</td>
+                        {attributes && attributes.length > 0
+                            ? attributes.map((attr) => {
+                                  return (
+                                      <td label={attr.Name}>{attr.Letter}</td>
+                                  );
+                              })
+                            : ''}
+                    </>
+                ) : (
+                    ''
+                )}
             </tr>
         );
     }

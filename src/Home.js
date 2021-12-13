@@ -23,8 +23,8 @@ import BBAManageTeams from './Components/BBA/Admin/ManageTeams/BBAManageTeams';
 import CBBGameplan from './Components/BBA/Gameplan/CBBGameplan';
 import CBBRecruitingDashboard from './Components/BBA/RecruitingBoard/CBBRecruitingDashboard';
 import CBBRecruitingTeamBoard from './Components/BBA/RecruitingBoard/CBBRecruitingTeamBoard';
-
 import BBATeam from './Components/BBA/Team/BBATeam';
+import { useMediaQuery } from 'react-responsive';
 
 const Home = ({ currentUser }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -34,6 +34,7 @@ const Home = ({ currentUser }) => {
     const [CBBTeam, setCBBTeam] = React.useState(0);
     const [NBATeam, setNBATeam] = React.useState(0);
     const [NFLTeam, setNFLTeam] = React.useState(0);
+    const isMobile = useMediaQuery({ query: `(max-width:760px)` });
 
     useEffect(() => {
         if (user) {
@@ -186,9 +187,15 @@ const Home = ({ currentUser }) => {
                     )
                 }
             />
-            <footer class="footer fixed-bottom mt-auto py-3 bg-light">
-                <div class="container">
-                    <span class="text-muted">Simfba, 2021</span>
+            <footer
+                className={
+                    !isMobile
+                        ? 'footer fixed-bottom mt-auto py-3 bg-light'
+                        : 'footer mt-auto py-3 bg-light'
+                }
+            >
+                <div className="container">
+                    <span className="text-muted">Simfba, 2021</span>
                 </div>
             </footer>
         </div>
