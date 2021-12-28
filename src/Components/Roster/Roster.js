@@ -189,6 +189,17 @@ const Roster = ({ currentUser }) => {
         setIsAsc((asc) => isAscending);
     };
 
+    const exportRoster = async () => {
+        if (team.ID === currentUser.teamId) {
+            let response = rosterService.ExportRoster(team.ID, team.TeamName);
+            if (response) {
+                //
+            }
+        } else {
+            alert("Nice try... this isn't your team.");
+        }
+    };
+
     // Designations
     // Objects inside design. array; designation being QB1, QB2, etc...
     // Position being the position related to the designation
@@ -201,31 +212,50 @@ const Roster = ({ currentUser }) => {
             </div>
             <div className="row">
                 <div className="col-4">
-                    <div className="drop-start">
-                        <button
-                            name="team"
-                            className="btn btn-secondary dropdown-toggle"
-                            id="dropdownMenuButton1"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                        >
-                            <span>{team ? team.TeamName : ''}</span>
-                        </button>
-                        <ul className="dropdown-menu dropdown-content">
-                            <DropdownItem
-                                value={
-                                    currentUser
-                                        ? currentUser.team +
-                                          ' ' +
-                                          currentUser.mascot
-                                        : null
-                                }
-                                click={selectUserTeam}
-                                id={currentUser ? currentUser.teamId : null}
-                            />
-                            <hr className="dropdown-divider"></hr>
-                            {teamDropDowns}
-                        </ul>
+                    <div className="btn-group btn-dropdown-width-auto">
+                        <div className="drop-start btn-dropdown-width-auto">
+                            <button
+                                name="team"
+                                className="btn btn-secondary dropdown-toggle btn-dropdown-width-auto"
+                                id="dropdownMenuButton1"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                <span>{team ? team.TeamName : ''}</span>
+                            </button>
+                            <ul className="dropdown-menu dropdown-content">
+                                <DropdownItem
+                                    value={
+                                        currentUser
+                                            ? currentUser.team +
+                                              ' ' +
+                                              currentUser.mascot
+                                            : null
+                                    }
+                                    click={selectUserTeam}
+                                    id={currentUser ? currentUser.teamId : null}
+                                />
+                                <hr className="dropdown-divider"></hr>
+                                {teamDropDowns}
+                            </ul>
+                        </div>
+                        <div className="export ms-2">
+                            {team && team.ID === currentUser.teamId ? (
+                                <button
+                                    className="btn btn-primary export-btn"
+                                    onClick={exportRoster}
+                                >
+                                    Export
+                                </button>
+                            ) : (
+                                <button
+                                    className="btn btn-secondary export-btn"
+                                    disabled
+                                >
+                                    Export
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
                 <div className="col-4">

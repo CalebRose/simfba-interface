@@ -160,6 +160,10 @@
 /* End of Image Icons on User Profile Page */
 
 /* For  Roster Page */
+.btn-dropdown-width-auto {
+    width: 100% !important;
+}
+
 .table-height {
     height: 60vh;
     overflow: auto;

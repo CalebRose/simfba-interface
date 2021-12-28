@@ -407,7 +407,7 @@ export default {
         FB: { mean: 50, stddev: 15 },
         FS: { mean: 50, stddev: 15 },
         ILB: { mean: 50, stddev: 15 },
-        K: { mean: 50, stddev: 5.15 },
+        K: { mean: 50, stddev: 15 },
         OG: { mean: 50, stddev: 15 },
         OLB: { mean: 50, stddev: 15 },
         OT: { mean: 50, stddev: 15 },
