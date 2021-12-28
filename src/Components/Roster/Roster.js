@@ -190,13 +190,10 @@ const Roster = ({ currentUser }) => {
     };
 
     const exportRoster = async () => {
-        if (team.ID === currentUser.teamId) {
-            let response = rosterService.ExportRoster(team.ID, team.TeamName);
-            if (response) {
-                //
-            }
-        } else {
-            alert("Nice try... this isn't your team.");
+        // Removing if-check on if team is the user's...
+        let response = rosterService.ExportRoster(team.ID, team.TeamName);
+        if (response) {
+            //
         }
     };
 
@@ -240,21 +237,12 @@ const Roster = ({ currentUser }) => {
                             </ul>
                         </div>
                         <div className="export ms-2">
-                            {team && team.ID === currentUser.teamId ? (
-                                <button
-                                    className="btn btn-primary export-btn"
-                                    onClick={exportRoster}
-                                >
-                                    Export
-                                </button>
-                            ) : (
-                                <button
-                                    className="btn btn-secondary export-btn"
-                                    disabled
-                                >
-                                    Export
-                                </button>
-                            )}
+                            <button
+                                className="btn btn-primary export-btn"
+                                onClick={exportRoster}
+                            >
+                                Export
+                            </button>
                         </div>
                     </div>
                 </div>
