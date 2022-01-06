@@ -63,7 +63,7 @@ const ApproveRequests = ({ currentUser }) => {
             console.log('Firebase Updated');
             // Filter Requests
             const filterRequests = requests.filter(
-                (x) => x.id !== payload.reqId
+                (x) => x.ID !== payload.reqId
             );
             setRequests(filterRequests);
         } catch (err) {

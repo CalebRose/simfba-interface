@@ -107,12 +107,13 @@ const Home = ({ currentUser }) => {
             <Route
                 exact
                 path={routes.MANAGE_SIM}
-                render={() => () =>
+                render={() =>
                     roleId === Constants.ADMIN ? (
                         <ManageSim />
                     ) : (
                         <Redirect to={routes.LANDING} />
-                    )}
+                    )
+                }
             />
             <Route
                 exact

@@ -4,6 +4,7 @@ import TeamRow from './TeamRow';
 import firebase from 'firebase';
 import FBATeamService from '../../../_Services/simFBA/FBATeamService';
 import FBARequestService from '../../../_Services/simFBA/FBARequestService';
+import constants from '../../../Constants/constants';
 
 const ManageTeams = ({ currentUser }) => {
     // State
@@ -142,7 +143,11 @@ const ManageTeams = ({ currentUser }) => {
     };
 
     // Return
-    return currentUser.roleID !== 'Admin' ? <InvalidUser /> : <AdminUI />;
+    return currentUser.roleID !== constants.ADMIN ? (
+        <InvalidUser />
+    ) : (
+        <AdminUI />
+    );
 };
 
 const mapStateToProps = ({ user: { currentUser } }) => ({

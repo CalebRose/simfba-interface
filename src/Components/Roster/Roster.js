@@ -7,6 +7,8 @@ import DropdownItem from './DropdownItem';
 import FBAPlayerService from '../../_Services/simFBA/FBAPlayerService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import { SetPriority, GetDefaultOrder } from '../../_Utility/RosterHelper';
+import { useMediaQuery } from 'react-responsive';
+
 // import DepthChartRow from "../DepthChart/DepthChartRow";
 
 const Roster = ({ currentUser }) => {
@@ -30,6 +32,7 @@ const Roster = ({ currentUser }) => {
     const [isAsc, setIsAsc] = React.useState(false);
     const [playerYear, setPlayerYear] = React.useState('');
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const isMobile = useMediaQuery({ query: `(max-width:760px)` });
 
     // For mobile
     React.useEffect(() => {
@@ -236,14 +239,18 @@ const Roster = ({ currentUser }) => {
                                 {teamDropDowns}
                             </ul>
                         </div>
-                        <div className="export ms-2">
-                            <button
-                                className="btn btn-primary export-btn"
-                                onClick={exportRoster}
-                            >
-                                Export
-                            </button>
-                        </div>
+                        {!isMobile ? (
+                            <div className="export ms-2">
+                                <button
+                                    className="btn btn-primary export-btn"
+                                    onClick={exportRoster}
+                                >
+                                    Export
+                                </button>
+                            </div>
+                        ) : (
+                            ''
+                        )}
                     </div>
                 </div>
                 <div className="col-4">
