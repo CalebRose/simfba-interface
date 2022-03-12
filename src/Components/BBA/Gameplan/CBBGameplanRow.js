@@ -20,7 +20,7 @@ const CBBGameplanRow = (props) => {
                 <input
                     name="Pace"
                     type="number"
-                    class="form-control"
+                    className="form-control"
                     id={paceLabel}
                     aria-describedby={paceLabel}
                     onChange={handleChange}
@@ -33,7 +33,7 @@ const CBBGameplanRow = (props) => {
                 <input
                     name="ThreePointProportion"
                     type="number"
-                    class="form-control"
+                    className="form-control"
                     id={threePointLabel}
                     aria-describedby={threePointLabel}
                     onChange={handleChange}
@@ -46,7 +46,7 @@ const CBBGameplanRow = (props) => {
                 <input
                     name="JumperProportion"
                     type="number"
-                    class="form-control"
+                    className="form-control"
                     id={jumperLabel}
                     aria-describedby={jumperLabel}
                     onChange={handleChange}
@@ -59,7 +59,7 @@ const CBBGameplanRow = (props) => {
                 <input
                     name="PaintProportion"
                     type="number"
-                    class="form-control"
+                    className="form-control"
                     id={paintLabel}
                     aria-describedby={paintLabel}
                     onChange={handleChange}

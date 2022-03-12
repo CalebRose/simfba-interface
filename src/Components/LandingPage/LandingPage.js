@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import constants from '../../Constants/constants';
+import constants from '../../Constants/acronyms';
 import CBBHomePage from './Jumbotron/jumbotronComponents/cbb/CBBHomepage';
 import CFBHomepage from './Jumbotron/jumbotronComponents/cfb/CFBHomepage';
 import NBAHomepage from './Jumbotron/jumbotronComponents/nba/NBAHomepage';

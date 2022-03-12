@@ -8,7 +8,6 @@ const NavBar_Start = ({ currentUser }) => {
     const user = currentUser;
     const isMobile = useMediaQuery({ query: `(max-width:760px)` });
     const DesktopBarrier = () => {
-        console.log(isMobile);
         return !isMobile ? (
             <li className="nav-item">
                 <span className="nav-link">|</span>
@@ -43,6 +42,14 @@ const NavBar_Start = ({ currentUser }) => {
                     <li>
                         <Link to={routes.ROSTER} className="dropdown-item">
                             Roster
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
+                            to={routes.CFB_GAMEPLAN}
+                            className="dropdown-item"
+                        >
+                            Gameplan
                         </Link>
                     </li>
                     <li>

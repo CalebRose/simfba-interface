@@ -16,7 +16,6 @@ const Team = ({ currentUser }) => {
                 let response = await teamService.GetTeamByTeamId(
                     currentUser.teamId
                 );
-                console.log(response);
                 setTeam(response);
 
                 // Stats?

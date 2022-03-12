@@ -7,7 +7,7 @@ import FBATeamService from '../../_Services/simFBA/FBATeamService.js';
 import FBARequestService from '../../_Services/simFBA/FBARequestService.js';
 import BBATeamService from '../../_Services/simNBA/BBATeamService.js';
 import BBARequestService from '../../_Services/simNBA/BBARequestService.js';
-import constants from '../../Constants/constants.js';
+import constants from '../../Constants/acronyms.js';
 import BBATeamCard from '../BBA/TeamCard/BBATeamCard.js';
 
 class AvailableTeams extends Component {

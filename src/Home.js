@@ -16,7 +16,7 @@ import DepthChart from './Components/DepthChart/DepthChart';
 import ApproveRequests from './Components/Admin/ApproveRequests/ApproveRequests';
 import ManageTeams from './Components/Admin/ManageTeams/ManageTeams';
 import ManageSim from './Components/Admin/ManageSim/ManageSim';
-import Constants from './Constants/Constants';
+import Constants from './Constants/acronyms';
 import BBAManageSim from './Components/BBA/Admin/ManageSim/BBAManageSim';
 import BBAApproveRequests from './Components/BBA/Admin/ApproveRequests/BBAApproveRequests';
 import BBAManageTeams from './Components/BBA/Admin/ManageTeams/BBAManageTeams';
@@ -25,6 +25,7 @@ import CBBRecruitingDashboard from './Components/BBA/RecruitingBoard/CBBRecruiti
 import CBBRecruitingTeamBoard from './Components/BBA/RecruitingBoard/CBBRecruitingTeamBoard';
 import BBATeam from './Components/BBA/Team/BBATeam';
 import { useMediaQuery } from 'react-responsive';
+import CFBGameplan from './Components/Gameplan/CFBGameplan';
 
 const Home = ({ currentUser }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -73,6 +74,17 @@ const Home = ({ currentUser }) => {
                 path={routes.ROSTER}
                 render={() =>
                     CFBTeam > 0 ? <Roster /> : <Redirect to={routes.LANDING} />
+                }
+            />
+            <Route
+                exact
+                path={routes.CFB_GAMEPLAN}
+                render={() =>
+                    CFBTeam > 0 ? (
+                        <CFBGameplan />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
                 }
             />
             <Route

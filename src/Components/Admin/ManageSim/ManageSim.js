@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import constants from '../../../Constants/constants';
+import constants from '../../../Constants/acronyms';
 
 const ManageSim = ({ currentUser }) => {
     const [timestamp, setTimestamp] = React.useState([]);

@@ -4,7 +4,7 @@ import TeamRow from './TeamRow';
 import firebase from 'firebase';
 import FBATeamService from '../../../_Services/simFBA/FBATeamService';
 import FBARequestService from '../../../_Services/simFBA/FBARequestService';
-import constants from '../../../Constants/constants';
+import constants from '../../../Constants/acronyms';
 
 const ManageTeams = ({ currentUser }) => {
     // State

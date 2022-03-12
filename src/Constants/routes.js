@@ -11,6 +11,8 @@ export default {
     AVAILABLE_TEAMS: '/availableteams',
     RECRUITING: '/recruiting',
     DEPTHCHART: '/depthchart',
+    CFB_GAMEPLAN: '/cfb/team/gameplan',
+    NFL_GAMEPLAN: '/nfl/team/gameplan',
     LOGIN: '/login',
     SIGNUP: '/signup',
     BBA_ADMIN: '/admin-bba',

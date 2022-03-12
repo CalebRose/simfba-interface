@@ -316,6 +316,29 @@ td {
 */
 
 /*
+    CFB Gameplan Page
+*/
+.cfb-gameplan-container {
+    margin-bottom: 5rem;
+}
+
+.cfb-gameplan-btn {
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+    transform: translateY(-5px);
+}
+
+.scheme {
+    transform: translateY(-3px) !important;
+}
+
+.blitz-ratio {
+    transform: translateY(-11px) !important;
+}
+
+/* End of CFB Gameplan Page */
+
+/*
   Admin Pages
 */
 .request-icon {
