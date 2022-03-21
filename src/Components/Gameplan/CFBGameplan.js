@@ -34,12 +34,13 @@ import {
     ValidateRunPlayDistribution
 } from './GameplanHelper';
 
-const CFBGameplan = ({ currentUser }) => {
+const CFBGameplan = ({ currentUser, cfbTeam }) => {
     // GameplanService
     let gameplanService = new FBAGameplanService();
-    let teamService = new FBATeamService();
 
     const [team, setTeam] = React.useState(''); // Redux value as initial value for react hook
+    const [teamColors, setTeamColors] = React.useState('');
+    const [initialGameplan, setInitialGameplan] = React.useState(null);
     const [gameplan, setGameplan] = React.useState(null);
     const [offenseFormationLabels, setOffenseFormationLabels] = React.useState(
         []
@@ -75,10 +76,23 @@ const CFBGameplan = ({ currentUser }) => {
     // On init
     useEffect(() => {
         if (currentUser) {
-            GetTeam(currentUser.teamId);
             GetGameplan(currentUser.teamId);
         }
     }, [currentUser]);
+
+    useEffect(() => {
+        if (cfbTeam) {
+            setTeam(cfbTeam);
+            const colors = {
+                color: '#fff',
+                backgroundColor:
+                    cfbTeam && cfbTeam.ColorOne ? cfbTeam.ColorOne : '#6c757d',
+                borderColor:
+                    cfbTeam && cfbTeam.ColorOne ? cfbTeam.ColorOne : '#6c757d'
+            };
+            setTeamColors(colors);
+        }
+    }, [cfbTeam]);
 
     useEffect(() => {
         if (gameplan) {
@@ -88,7 +102,7 @@ const CFBGameplan = ({ currentUser }) => {
 
     // Function Handlers
     const CheckValidation = () => {
-        const gp = gameplan;
+        const gp = { ...gameplan };
         const totalDistribution = 100;
         let currentDistribution = 0;
         let message = '';
@@ -266,16 +280,12 @@ const CFBGameplan = ({ currentUser }) => {
         setErrorMessage(message);
     };
 
-    const GetTeam = async (ID) => {
-        let response = await teamService.GetTeamByTeamId(ID);
-        setTeam(response);
-    };
-
     const GetGameplan = async (ID) => {
         let response = await gameplanService.GetGameplanByTeamID(ID);
         SetFormationNames(response.OffensiveScheme);
         SetFormationNames(response.DefensiveScheme);
-        setGameplan(response);
+        setInitialGameplan({ ...response });
+        setGameplan({ ...response });
     };
 
     const SetFormationNames = (name) => {
@@ -387,6 +397,13 @@ const CFBGameplan = ({ currentUser }) => {
         // Response
     };
 
+    const ResetGameplan = () => {
+        const originalGameplan = { ...initialGameplan };
+        SetFormationNames(originalGameplan.OffensiveScheme);
+        SetFormationNames(originalGameplan.DefensiveScheme);
+        setGameplan((x) => originalGameplan);
+    };
+
     // Child Component References
 
     // Return
@@ -397,16 +414,22 @@ const CFBGameplan = ({ currentUser }) => {
                     <h2>{team ? team.TeamName : ''} Gameplan</h2>
                 </div>
                 <div className="col-md-auto ms-auto">
+                    <button
+                        className="btn btn-danger me-2"
+                        onClick={ResetGameplan}
+                    >
+                        Reset Gameplan
+                    </button>
                     {isValid ? (
                         <button
                             className="btn btn-primary"
                             onClick={SaveGameplanOptions}
                         >
-                            Save
+                            Save Gameplan
                         </button>
                     ) : (
                         <button className="btn btn-secondary" disabled>
-                            Save
+                            Save Gameplan
                         </button>
                     )}
                 </div>
@@ -433,6 +456,7 @@ const CFBGameplan = ({ currentUser }) => {
                                     id="dropdownMenuButton1"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
+                                    style={teamColors ? teamColors : {}}
                                 >
                                     {gameplan
                                         ? gameplan.OffensiveScheme
@@ -645,6 +669,7 @@ const CFBGameplan = ({ currentUser }) => {
                                     id="dropdownMenuButton1"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
+                                    style={teamColors ? teamColors : {}}
                                 >
                                     {gameplan
                                         ? gameplan.DefensiveScheme
@@ -727,6 +752,7 @@ const CFBGameplan = ({ currentUser }) => {
                                     id="dropdownMenuButton1"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
+                                    style={teamColors ? teamColors : {}}
                                 >
                                     {gameplan
                                         ? gameplan.BlitzAggressiveness
@@ -756,6 +782,7 @@ const CFBGameplan = ({ currentUser }) => {
                                     id="dropdownMenuButton1"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
+                                    style={teamColors ? teamColors : {}}
                                 >
                                     {gameplan
                                         ? gameplan.BlitzSafeties
@@ -787,6 +814,7 @@ const CFBGameplan = ({ currentUser }) => {
                                     id="dropdownMenuButton1"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
+                                    style={teamColors ? teamColors : {}}
                                 >
                                     {gameplan
                                         ? gameplan.BlitzCorners
@@ -820,6 +848,7 @@ const CFBGameplan = ({ currentUser }) => {
                                     id="dropdownMenuButton1"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
+                                    style={teamColors ? teamColors : {}}
                                 >
                                     {gameplan
                                         ? gameplan.LinebackerCoverage
@@ -849,6 +878,7 @@ const CFBGameplan = ({ currentUser }) => {
                                     id="dropdownMenuButton1"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
+                                    style={teamColors ? teamColors : {}}
                                 >
                                     {gameplan
                                         ? gameplan.CornersCoverage
@@ -878,6 +908,7 @@ const CFBGameplan = ({ currentUser }) => {
                                     id="dropdownMenuButton1"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
+                                    style={teamColors ? teamColors : {}}
                                 >
                                     {gameplan
                                         ? gameplan.SafetiesCoverage
@@ -946,8 +977,9 @@ const CFBGameplan = ({ currentUser }) => {
     );
 };
 
-const mapStateToProps = ({ user: { currentUser } }) => ({
-    currentUser
+const mapStateToProps = ({ user: { currentUser }, cfbTeam: { cfbTeam } }) => ({
+    currentUser,
+    cfbTeam
 });
 
 export default connect(mapStateToProps)(CFBGameplan);

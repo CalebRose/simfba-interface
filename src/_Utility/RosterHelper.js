@@ -732,8 +732,17 @@ export const GetYear = (data) => {
     }
 };
 
+export const GetOverall = (ovr) => {
+    if (typeof ovr === 'string') return ovr;
+    if (ovr > 44) return 'A';
+    else if (ovr > 34) return 'B';
+    else if (ovr > 24) return 'C';
+    else if (ovr > 14) return 'D';
+    else return 'F';
+};
+
 // Private methods related to Position
-const GetLetterGrade = (attr, value) => {
+export const GetLetterGrade = (attr, value) => {
     const { mean, stddev } = attr;
     let dev = stddev * 2;
     if (value > mean + dev) {

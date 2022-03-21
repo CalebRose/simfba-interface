@@ -12,7 +12,7 @@ import Roster from './Components/Roster/Roster';
 import Team from './Components/Team/Team';
 import Login from './Components/SignUp_Login/LoginBody';
 import SignUp from './Components/SignUp_Login/SignUpBody';
-import DepthChart from './Components/DepthChart/DepthChart';
+import CFBDepthChart from './Components/DepthChart/CFBDepthChart';
 import ApproveRequests from './Components/Admin/ApproveRequests/ApproveRequests';
 import ManageTeams from './Components/Admin/ManageTeams/ManageTeams';
 import ManageSim from './Components/Admin/ManageSim/ManageSim';
@@ -92,7 +92,7 @@ const Home = ({ currentUser }) => {
                 path={routes.DEPTHCHART}
                 render={() =>
                     CFBTeam > 0 ? (
-                        <DepthChart />
+                        <CFBDepthChart />
                     ) : (
                         <Redirect to={routes.LANDING} />
                     )

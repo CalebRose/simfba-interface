@@ -11,7 +11,7 @@ import { useMediaQuery } from 'react-responsive';
 
 // import DepthChartRow from "../DepthChart/DepthChartRow";
 
-const Roster = ({ currentUser }) => {
+const Roster = ({ currentUser, cfbTeam }) => {
     /* 
         API Call to get team data
         Loop through array list to acquire players
@@ -49,10 +49,16 @@ const Roster = ({ currentUser }) => {
 
     useEffect(() => {
         if (currentUser) {
-            getTeam(currentUser.teamId);
             getTeams();
         }
     }, [currentUser]);
+
+    useEffect(() => {
+        if (cfbTeam) {
+            setTeam(cfbTeam);
+            setUserTeam(cfbTeam);
+        }
+    }, [cfbTeam]);
 
     useEffect(() => {
         if (team) {
@@ -67,12 +73,6 @@ const Roster = ({ currentUser }) => {
 
     const selectUserTeam = () => {
         selectTeam(userTeam);
-    };
-
-    const getTeam = async (ID) => {
-        let response = await teamService.GetTeamByTeamId(ID);
-        setTeam(response);
-        setUserTeam(response);
     };
 
     const getTeams = async () => {
@@ -440,8 +440,9 @@ const Roster = ({ currentUser }) => {
     );
 };
 
-const mapStateToProps = ({ user: { currentUser } }) => ({
-    currentUser
+const mapStateToProps = ({ user: { currentUser }, cfbTeam: { cfbTeam } }) => ({
+    currentUser,
+    cfbTeam
 });
 
 export default connect(mapStateToProps)(Roster);

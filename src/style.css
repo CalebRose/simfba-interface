@@ -311,6 +311,14 @@ td {
     overflow-y: scroll;
 }
 
+.btn-dropdown-width-team {
+    width: 18rem !important;
+}
+
+.btn-dropdown-width-dc {
+    width: 15rem !important;
+}
+
 /* 
   End of Depth Chart Page
 */

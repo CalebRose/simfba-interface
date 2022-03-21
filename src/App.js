@@ -5,6 +5,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { setCurrentUser } from './Redux/user/user.actions';
 import { setCBBTimestamp } from './Redux/timestamp/timestamp.actions';
+import { setCFBTimestamp } from './Redux/timestamp/timestamp.actions';
 
 // Firebase
 import { auth, createUserProfileDocument } from './Firebase/firebase';
@@ -102,7 +103,8 @@ class App extends Component {
 
 const mapDispatchToProps = (dispatch) => ({
     setCurrentUser: (user) => dispatch(setCurrentUser(user)),
-    setCBBTimestamp: (cbbTimestamp) => dispatch(setCBBTimestamp(cbbTimestamp))
+    setCBBTimestamp: (cbbTimestamp) => dispatch(setCBBTimestamp(cbbTimestamp)),
+    setCFBTimestamp: (cfbTimestamp) => dispatch(setCFBTimestamp(cfbTimestamp))
 });
 
 export default withRouter(connect(null, mapDispatchToProps)(App));

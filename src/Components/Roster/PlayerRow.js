@@ -1,5 +1,5 @@
 import React from 'react';
-import { GetYear, SetPriority } from '../../_Utility/RosterHelper';
+import { GetOverall, GetYear, SetPriority } from '../../_Utility/RosterHelper';
 
 const PlayerRow = (props) => {
     const [showRow, setShowRow] = React.useState(false);
@@ -8,16 +8,7 @@ const PlayerRow = (props) => {
     let data = props.data;
     let school = props.school;
 
-    const getOverall = (ovr) => {
-        if (typeof ovr === 'string') return ovr;
-        if (ovr > 44) return 'A';
-        else if (ovr > 34) return 'B';
-        else if (ovr > 24) return 'C';
-        else if (ovr > 14) return 'D';
-        else return 'F';
-    };
-
-    let ovr = getOverall(data.Overall);
+    let ovr = GetOverall(data.Overall);
     const year = GetYear(data);
 
     /* 

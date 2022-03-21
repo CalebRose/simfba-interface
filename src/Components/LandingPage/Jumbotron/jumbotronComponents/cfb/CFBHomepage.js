@@ -1,14 +1,20 @@
 import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { getLogo } from '../../../../../Constants/getLogo';
+import routes from '../../../../../Constants/routes';
+import { setCFBTeam } from '../../../../../Redux/cfbTeam/cfbTeam.actions';
 import FBATeamService from '../../../../../_Services/simFBA/FBATeamService';
 import StandingsTableRow from '../standingsTable/standingsTableRow';
 
-const CFBHomepage = ({ currentUser }) => {
+const CFBHomepage = ({ currentUser, cfbTeam }) => {
     let teamService = new FBATeamService();
+    const dispatch = useDispatch();
     const [team, setTeam] = React.useState('');
     const [logo, setLogo] = React.useState('');
-    const [teamData, setTeamData] = React.useState([]);
+    const [teamData, setTeamData] = React.useState(null);
+    const [teamColors, setTeamColors] = React.useState('');
     const [previousMatches, setPreviousMatches] = React.useState([]);
     const [currentMatches, setCurrentMatches] = React.useState([]);
     const [standings, setStandings] = React.useState([]);
@@ -61,17 +67,38 @@ const CFBHomepage = ({ currentUser }) => {
     // Get Team call
     useEffect(() => {
         if (currentUser) {
-            const getTeam = async () => {
-                let response = await teamService.GetTeamByTeamId(
-                    currentUser.teamId
-                );
-                setTeamData(response);
-            };
             setTeam(currentUser.team);
             setLogo(getLogo(currentUser.team));
-            getTeam();
         }
-    }, [currentUser]);
+        if (!cfbTeam) {
+            getTeam();
+        } else {
+            setTeamData(cfbTeam);
+        }
+    }, [currentUser, cfbTeam]);
+
+    useEffect(() => {
+        if (teamData) {
+            const colors = {
+                color: '#fff',
+                backgroundColor:
+                    teamData && teamData.ColorOne
+                        ? teamData.ColorOne
+                        : '#6c757d',
+                borderColor:
+                    teamData && teamData.ColorOne
+                        ? teamData.ColorOne
+                        : '#6c757d'
+            };
+            setTeamColors(colors);
+        }
+    }, [teamData]);
+
+    const getTeam = async () => {
+        let response = await teamService.GetTeamByTeamId(currentUser.teamId);
+        setTeamData(response);
+        dispatch(setCFBTeam(response));
+    };
 
     const standingsRow = standingsRecords.map((x, i) => {
         return <StandingsTableRow key={x.TeamName} record={x} rank={i + 1} />;
@@ -169,27 +196,34 @@ const CFBHomepage = ({ currentUser }) => {
                     </div>
                     <div className="row mt-3">
                         <div className="btn-group">
-                            <button
-                                type="button"
-                                className="btn btn-primary btn-md me-2 shadow"
+                            <Link
+                                to={routes.CFB_GAMEPLAN}
+                                role="button"
+                                class="btn btn-primary btn-md me-2 shadow"
+                                style={teamColors ? teamColors : {}}
                             >
                                 Gameplan
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-primary btn-md me-2 shadow"
+                            </Link>
+
+                            <Link
+                                to={routes.DEPTHCHART}
+                                role="button"
+                                class="btn btn-primary btn-md me-2 shadow"
+                                style={teamColors ? teamColors : {}}
                             >
                                 Depth Chart
-                            </button>
+                            </Link>
                             <button
                                 type="button"
                                 className="btn btn-primary btn-md me-2 shadow"
+                                style={teamColors ? teamColors : {}}
                             >
                                 Recruiting
                             </button>
                             <button
                                 type="button"
                                 className="btn btn-primary btn-md shadow"
+                                style={teamColors ? teamColors : {}}
                             >
                                 Stats
                             </button>
@@ -225,8 +259,9 @@ const CFBHomepage = ({ currentUser }) => {
     );
 };
 
-const mapStateToProps = ({ user: { currentUser } }) => ({
-    currentUser
+const mapStateToProps = ({ user: { currentUser }, cfbTeam: { cfbTeam } }) => ({
+    currentUser,
+    cfbTeam
 });
 
 export default connect(mapStateToProps)(CFBHomepage);

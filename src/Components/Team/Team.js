@@ -1,29 +1,34 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { getLogo } from '../../Constants/getLogo';
 import routes from '../../Constants/routes';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 
-const Team = ({ currentUser }) => {
-    let teamService = new FBATeamService();
+const Team = ({ currentUser, cfbTeam }) => {
     const [team, setTeam] = React.useState(null); // Redux value as initial value for react hook
+    const [teamColors, setTeamColors] = React.useState('');
     const [logo, setLogo] = React.useState([]);
 
     useEffect(() => {
         if (currentUser) {
-            const getTeam = async () => {
-                // General Team Data
-                let response = await teamService.GetTeamByTeamId(
-                    currentUser.teamId
-                );
-                setTeam(response);
-
-                // Stats?
-            };
             setLogo(getLogo(currentUser.team));
-            getTeam();
         }
     }, [currentUser]);
+
+    useEffect(() => {
+        if (cfbTeam) {
+            setTeam(cfbTeam);
+            const colors = {
+                color: '#fff',
+                backgroundColor:
+                    cfbTeam && cfbTeam.ColorOne ? cfbTeam.ColorOne : '#6c757d',
+                borderColor:
+                    cfbTeam && cfbTeam.ColorOne ? cfbTeam.ColorOne : '#6c757d'
+            };
+            setTeamColors(colors);
+        }
+    }, [cfbTeam]);
 
     return (
         <div className="container userInterface">
@@ -111,31 +116,42 @@ const Team = ({ currentUser }) => {
             </div>
             <div className="row mt-4">
                 <div className="btn-group">
-                    <button
-                        type="button"
+                    <Link
+                        to={routes.CFB_GAMEPLAN}
+                        role="button"
                         class="btn btn-primary btn-md me-2 shadow"
+                        style={teamColors ? teamColors : {}}
                     >
                         Gameplan
-                    </button>
-                    <button
-                        type="button"
+                    </Link>
+
+                    <Link
+                        to={routes.DEPTHCHART}
+                        role="button"
                         class="btn btn-primary btn-md me-2 shadow"
+                        style={teamColors ? teamColors : {}}
                     >
                         Depth Chart
-                    </button>
+                    </Link>
                     <button
                         type="button"
                         class="btn btn-primary btn-md me-2 shadow"
+                        style={teamColors ? teamColors : {}}
                     >
                         Recruiting Board
                     </button>
                     <button
                         type="button"
                         class="btn btn-primary btn-md me-2 shadow"
+                        style={teamColors ? teamColors : {}}
                     >
                         Stats
                     </button>
-                    <button type="button" class="btn btn-primary btn-md shadow">
+                    <button
+                        type="button"
+                        class="btn btn-primary btn-md shadow"
+                        style={teamColors ? teamColors : {}}
+                    >
                         Schedule
                     </button>
                 </div>
@@ -144,8 +160,9 @@ const Team = ({ currentUser }) => {
     );
 };
 
-const mapStateToProps = ({ user: { currentUser } }) => ({
-    currentUser
+const mapStateToProps = ({ user: { currentUser }, cfbTeam: { cfbTeam } }) => ({
+    currentUser,
+    cfbTeam
 });
 
 export default connect(mapStateToProps)(Team);
