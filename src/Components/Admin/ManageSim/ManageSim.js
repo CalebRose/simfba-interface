@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import constants from '../../../Constants/acronyms';
+import FBARecruitingService from '../../../_Services/simFBA/FBARecruitingService';
+import CreateCrootModal from './CreateCrootModal';
 
 const ManageSim = ({ currentUser }) => {
     const [timestamp, setTimestamp] = React.useState([]);
     const [SyncComplete, setCompletion] = React.useState(false);
     const [ActionsRemaining, setRemainingActionsCount] = React.useState(3);
+    let _recruitingService = new FBARecruitingService();
 
     useEffect(() => {
         const testTimestamp = {
@@ -35,6 +38,23 @@ const ManageSim = ({ currentUser }) => {
         setRemainingActionsCount(count);
         setTimestamp(testTimestamp);
     }, []);
+
+    const SyncAction = () => {};
+
+    const SaveRecruit = async (croot) => {
+        const RecruitDTO = { ...croot };
+
+        // Set Service Message?
+
+        const save = await _recruitingService.CreateRecruit(RecruitDTO);
+
+        if (save.ok) {
+            // Set Service Message?
+        } else {
+            alert('HTTP-Error:', save.status);
+        }
+    };
+
     const AdminUI = () => {
         return (
             <div className="container">
@@ -433,10 +453,12 @@ const ManageSim = ({ currentUser }) => {
                                     <button
                                         type="button"
                                         className={
-                                            SyncComplete
+                                            !SyncComplete
                                                 ? 'btn btn-primary btn-sm'
                                                 : 'btn btn-secondary btn-sm'
                                         }
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop"
                                     >
                                         Create
                                     </button>
@@ -445,6 +467,7 @@ const ManageSim = ({ currentUser }) => {
                         </tbody>
                     </table>
                 </div>
+                <CreateCrootModal handleChange={SaveRecruit} />
             </div>
         );
     };

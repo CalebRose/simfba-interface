@@ -303,6 +303,13 @@ td {
     text-overflow: ellipsis;
 }
 
+/* Service Banner*/
+
+.service-banner {
+    width: 20vw;
+    padding-bottom: 3rem !important;
+}
+
 /* 
   Depth Chart Page
 */
@@ -345,6 +352,16 @@ td {
 }
 
 /* End of CFB Gameplan Page */
+
+/* CFB Recruiting */
+.z-index {
+    z-index: 10;
+}
+
+.dashboard-sidebar {
+    box-shadow: inset -1px 0 0 rgb(0 0 0 / 10%);
+}
+/* End of CFB Recruiting */
 
 /*
   Admin Pages

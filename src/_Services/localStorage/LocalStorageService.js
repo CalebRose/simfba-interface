@@ -1,9 +1,9 @@
 export default class LocalStorageService {
-    getRecruitingProfile() {
+    getCBBRecruitingProfile() {
         return JSON.parse(sessionStorage.getItem('croots'));
     }
 
-    setRecruitingProfile(payload) {
+    setCBBRecruitingProfile(payload) {
         sessionStorage.setItem('croots', JSON.stringify(payload));
     }
 

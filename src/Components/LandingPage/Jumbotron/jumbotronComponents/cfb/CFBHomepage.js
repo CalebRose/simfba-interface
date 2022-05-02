@@ -73,7 +73,9 @@ const CFBHomepage = ({ currentUser, cfbTeam }) => {
         if (!cfbTeam) {
             getTeam();
         } else {
-            setTeamData(cfbTeam);
+            if (!teamData) {
+                setTeamData(cfbTeam);
+            }
         }
     }, [currentUser, cfbTeam]);
 

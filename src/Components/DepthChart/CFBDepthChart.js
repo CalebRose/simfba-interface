@@ -131,7 +131,6 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
             DepthChartID: dc[0].DepthChartID,
             UpdatedPlayerPositions: dc
         };
-        console.log(UpdateDepthChartDTO);
 
         // Save Call
         setServiceMessage(SavingMessage);

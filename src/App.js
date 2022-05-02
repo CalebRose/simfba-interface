@@ -16,6 +16,7 @@ import './style.css';
 
 // Routes and Pages
 import Home from './Home';
+import AdminService from './_Services/simFBA/AdminService';
 
 class App extends Component {
     state = {
@@ -48,16 +49,29 @@ class App extends Component {
             CollegeWeek: null,
             CollegeSeasonID: null,
             CollegeSeason: null,
+            NFLSeasonID: null,
+            NFLSeason: null,
             ThursdayGames: false,
             FridayGames: false,
             SaturdayMorning: false,
             SaturdayNoon: false,
             SaturdayEvening: false,
             SaturdayNight: false,
+            NFLThursdayEvening: false,
+            NFLSundayNoon: false,
+            NFLSundayAfternoon: false,
+            NFLSundayEvening: false,
+            NFLMondayEvening: false,
+            NFLTradingAllowed: false,
+            NFLPreseason: false,
             RecruitingSynced: false,
+            GMActionsCompleted: false,
             IsOffSeason: false
         }
     };
+
+    _adminService = new AdminService();
+
     // Global Variables
     unSubscribeFromAuth = null;
 
@@ -74,6 +88,13 @@ class App extends Component {
                         ...snapShot.data()
                     });
                 });
+
+                const cfb_Timestamp =
+                    await this._adminService.GetCurrentTimestamp();
+
+                console.log(cfb_Timestamp);
+
+                setCFBTimestamp({ ...cfb_Timestamp });
 
                 userAuth
                     .getIdToken(true)

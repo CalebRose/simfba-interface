@@ -134,20 +134,6 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         }
 
         // Check Running Distribution
-        currentDistribution =
-            gp.RunnerDistributionBK1 +
-            gp.RunnerDistributionBK2 +
-            gp.RunnerDistributionBK3 +
-            gp.RunnerDistributionQB;
-
-        if (currentDistribution !== totalDistribution) {
-            message = `Total Runner Distribution is set to ${currentDistribution}. Please make sure your allocation equals 100.`;
-            valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
-            return;
-        }
-
         // Check Max Values on Distribution
         if (gp.RunnerDistributionQB > distributionMaxQB) {
             message = `QB Run Distribution set to ${gp.RunnerDistributionQB}. Please lower the distribution to keep within the valid range of the ${gp.OffensiveScheme} scheme.`;
@@ -184,7 +170,32 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             return;
         }
 
+        currentDistribution =
+            gp.RunnerDistributionBK1 +
+            gp.RunnerDistributionBK2 +
+            gp.RunnerDistributionBK3 +
+            gp.RunnerDistributionQB;
+
+        if (currentDistribution !== totalDistribution) {
+            message = `Total Runner Distribution is set to ${currentDistribution}. Please make sure your allocation equals 100.`;
+            valid = false;
+            setValidation(valid);
+            setErrorMessage(message);
+            return;
+        }
+
         // Check Run Play Distribution
+        // Do max value checks on Run Plays
+        const validRunPlays = ValidateRunPlayDistribution(gp);
+
+        if (!validRunPlays) {
+            message =
+                'Run Play Distribution is out of range. Please change ranges for all inside, outside, and power plays (50 max) and all draw plays (15 max)';
+            setValidation(validRunPlays);
+            setErrorMessage(message);
+            return;
+        }
+
         currentDistribution =
             gp.RunOutsideLeft +
             gp.RunOutsideRight +
@@ -203,18 +214,16 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             return;
         }
 
-        // Do max value checks on Run Plays
-        const validRunPlays = ValidateRunPlayDistribution(gp);
+        // Check Pass Play Distribution
+        const validPassPlays = ValidatePassPlayDistribution(gp);
 
-        if (!validRunPlays) {
-            message =
-                'Run Play Distribution is out of range. Please change ranges for all inside, outside, and power plays (50 max) and all draw plays (15 max)';
-            setValidation(validRunPlays);
+        if (!validPassPlays) {
+            message = `Please modify the pass play distribution for all plays for the current scheme: ${gp.OffensiveScheme}`;
+            setValidation(validPassPlays);
             setErrorMessage(message);
             return;
         }
 
-        // Check Pass Play Distribution
         currentDistribution =
             gp.PassQuick +
             gp.PassShort +
@@ -231,18 +240,95 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             return;
         }
 
-        // Do Max Value Checks on Pass Values
-
-        const validPassPlays = ValidatePassPlayDistribution(gp);
-
-        if (!validPassPlays) {
-            message = `Please modify the pass play distribution for all plays for the current scheme: ${gp.OffensiveScheme}`;
-            setValidation(validPassPlays);
+        // Check Targeting Distribution
+        if (gp.TargetingWR1 > 60) {
+            message = `TargetingWR1 Distribution is set to ${gp.TargetingWR1}. Please set it to below 60.`;
+            valid = false;
+            setValidation(valid);
             setErrorMessage(message);
             return;
         }
 
-        // Check Targeting Distribution
+        if (gp.TargetingWR2 > 60) {
+            message = `TargetingWR2 Distribution is set to ${gp.TargetingWR2}. Please set it to below 60.`;
+            valid = false;
+            setValidation(valid);
+            setErrorMessage(message);
+            return;
+        }
+
+        if (gp.TargetingWR3 > 60) {
+            message = `TargetingWR3 Distribution is set to ${gp.TargetingWR3}. Please set it to below 60.`;
+            valid = false;
+            setValidation(valid);
+            setErrorMessage(message);
+            return;
+        }
+
+        if (gp.TargetingWR4 > 60) {
+            message = `TargetingWR4 Distribution is set to ${gp.TargetingWR4}. Please set it to below 60.`;
+            valid = false;
+            setValidation(valid);
+            setErrorMessage(message);
+            return;
+        }
+
+        if (gp.TargetingWR5 > 60) {
+            message = `TargetingWR5 Distribution is set to ${gp.TargetingWR5}. Please set it to below 60.`;
+            valid = false;
+            setValidation(valid);
+            setErrorMessage(message);
+            return;
+        }
+
+        if (gp.TargetingRB1 > 60) {
+            message = `TargetingRB1 Distribution is set to ${gp.TargetingRB1}. Please set it to below 60.`;
+            valid = false;
+            setValidation(valid);
+            setErrorMessage(message);
+            return;
+        }
+
+        if (gp.TargetingRB2 > 60) {
+            message = `TargetingRB2 Distribution is set to ${gp.TargetingRB2}. Please set it to below 60.`;
+            valid = false;
+            setValidation(valid);
+            setErrorMessage(message);
+            return;
+        }
+
+        if (gp.TargetingRB3 > 60) {
+            message = `TargetingRB3 Distribution is set to ${gp.TargetingRB3}. Please set it to below 60.`;
+            valid = false;
+            setValidation(valid);
+            setErrorMessage(message);
+            return;
+        }
+
+        if (gp.TargetingTE1 > 60) {
+            message = `TargetingTE1 Distribution is set to ${gp.TargetingTE1}. Please set it to below 60.`;
+            valid = false;
+            setValidation(valid);
+            setErrorMessage(message);
+            return;
+        }
+
+        if (gp.TargetingTE2 > 60) {
+            message = `TargetingTE2 Distribution is set to ${gp.TargetingTE2}. Please set it to below 60.`;
+            valid = false;
+            setValidation(valid);
+            setErrorMessage(message);
+            return;
+        }
+
+        if (gp.TargetingTE3 > 0) {
+            message = `TargetingTE3 is not ready for use. Please leave this input as 0.`;
+            valid = false;
+            setValidation(valid);
+            setErrorMessage(message);
+            return;
+        }
+
         currentDistribution =
             gp.TargetingWR1 +
             gp.TargetingWR2 +
@@ -366,7 +452,8 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         let gp = { ...gameplan };
         let { name, value, min, max } = event.target;
         // If Value IS a Number
-        gp[name] = Math.max(Number(min), Math.min(Number(max), Number(value)));
+        // gp[name] = Math.max(Number(min), Math.min(Number(max), Number(value)));
+        gp[name] = Number(value);
 
         // If Value IS NOT a Number...
         setGameplan((x) => gp);
@@ -395,6 +482,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         }
 
         // Response
+        setInitialGameplan({ ...gameplan });
     };
 
     const ResetGameplan = () => {

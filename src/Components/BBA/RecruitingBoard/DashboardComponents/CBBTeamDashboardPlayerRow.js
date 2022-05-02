@@ -4,8 +4,6 @@ const CBBTeamDashboardPlayerRow = (props) => {
     const data = props.player;
     const recruit = data.Recruit;
 
-    useEffect(() => {}, []);
-
     const attributeMapper = (attr) => {
         switch (true) {
             case attr > 16:

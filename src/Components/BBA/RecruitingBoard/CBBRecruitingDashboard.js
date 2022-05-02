@@ -61,13 +61,13 @@ const CBBRecruitingDashboard = ({ currentUser }) => {
     }, [selectedState, selectedCountry, selectedPosition]);
 
     const getProfile = async () => {
-        let profile = localStorageService.getRecruitingProfile();
+        let profile = localStorageService.getCBBRecruitingProfile();
         if (profile === null || profile === undefined) {
             profile = await recruitingService.GetRecruitingProfile(
                 SimBBA_url,
                 currentUser.cbb_id
             );
-            localStorageService.setRecruitingProfile(profile);
+            localStorageService.setCBBRecruitingProfile(profile);
         }
         // Get Map
         let recruits = profile.Recruits;
@@ -152,8 +152,6 @@ const CBBRecruitingDashboard = ({ currentUser }) => {
             team: currentUser.cbb_abbr
         };
 
-        console.log(createRecruitPointsDto);
-
         if (crootProfile.Recruits.length <= 10) {
             await recruitingService.CreateRecruitingPointsProfile(
                 SimBBA_url,
@@ -179,7 +177,7 @@ const CBBRecruitingDashboard = ({ currentUser }) => {
 
             setCrootMap(map);
             setRecruitingProfile(crootProfile);
-            localStorageService.setRecruitingProfile(crootProfile);
+            localStorageService.setCBBRecruitingProfile(crootProfile);
             setFilteredRecruits(filteredRecruits);
         } else {
             console.log(

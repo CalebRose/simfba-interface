@@ -26,6 +26,8 @@ import CBBRecruitingTeamBoard from './Components/BBA/RecruitingBoard/CBBRecruiti
 import BBATeam from './Components/BBA/Team/BBATeam';
 import { useMediaQuery } from 'react-responsive';
 import CFBGameplan from './Components/Gameplan/CFBGameplan';
+import CFBRecruitingDashboard from './Components/RecruitingDashboard/CFBRecruitingDashboard';
+import CFBTeamRecruitingBoard from './Components/TeamRecruitingBoard/CFBTeamRecruitingBoard';
 
 const Home = ({ currentUser }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -132,7 +134,28 @@ const Home = ({ currentUser }) => {
                 path={routes.AVAILABLE_TEAMS}
                 component={AvailableTeams}
             />
-            <Route exact path={routes.RECRUITING} component={LandingPage} />
+            <Route
+                exact
+                path={routes.CFB_RECRUITING}
+                render={() =>
+                    CFBTeam > 0 && roleId === Constants.ADMIN ? (
+                        <CFBRecruitingDashboard />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
+                path={routes.CFB_TEAM_RECRUITING_BOARD}
+                render={() =>
+                    CFBTeam > 0 && roleId === Constants.ADMIN ? (
+                        <CFBTeamRecruitingBoard />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
             <Route exact path={routes.SIGNUP} component={SignUp} />
             <Route exact path={routes.LOGIN} component={Login} />
             <Route
