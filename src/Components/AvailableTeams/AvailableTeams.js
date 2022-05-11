@@ -31,7 +31,7 @@ class AvailableTeams extends Component {
     CFBGetAvailableTeams = async () => {
         let teams = await this.CFBTeamService.GetAvailableCollegeTeams();
         const filterTeams = teams.filter(
-            (x) => x.Coach === null || x.Coach === ''
+            (x) => x.Coach === null || x.Coach === '' || x.Coach === 'AI'
         );
 
         this.setState({ teams: teams, filterTeams: filterTeams });

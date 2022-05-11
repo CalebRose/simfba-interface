@@ -59,7 +59,6 @@ const BBATeam = ({ currentUser }) => {
     };
 
     const selectUserTeam = () => {
-        console.log(userTeam);
         selectTeam(userTeam);
     };
 

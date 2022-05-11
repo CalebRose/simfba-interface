@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
@@ -11,30 +11,28 @@ import {
     StatesList
 } from '../../Constants/CommonConstants';
 import FBARecruitingService from '../../_Services/simFBA/FBARecruitingService';
-import DCPositionItem from '../DepthChart/DC_PositionItem';
-import DropdownDoubleItem from '../_Common/DropdownDoubleItem';
-import DropdownSingularItem from '../_Common/DropdownSingularItem';
 import CFBDashboardPlayerRow from './CFBDashboardComponents/CFBDashboardPlayerRow';
 import CrootModal from './CFBDashboardComponents/CFBDashboardCrootModal';
-import { MapOptions } from '../../_Utility/filterHelper';
+import { MapObjOptions, MapOptions } from '../../_Utility/filterHelper';
 import {
     ValidateAffinity,
     ValidateCloseToHome
 } from '../../_Utility/CFBRecruitingHelper';
 import CFBDashboardSidebar from './CFBDashboardComponents/CFBDashboardSidebar';
+import EasterEggService from '../../_Services/simFBA/EasterEggService';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { hidden, white } from 'colorette';
 
-const CFBRecruitingDashboard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
+const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     // Services
     let _recruitingService = new FBARecruitingService();
+    let _easterEggService = new EasterEggService();
 
     // Hooks
-    const positions = [{ name: 'All', abbr: '' }, ...PositionList];
-    const [selectedPosition, setSelectedPosition] = React.useState({
-        name: 'All',
-        abbr: ''
-    });
-    const states = ['All', ...StatesList];
-    const [selectedState, setSelectedState] = React.useState('All');
+    const positions = MapObjOptions(PositionList);
+    const [selectedPositions, setSelectedPositions] = React.useState('');
+    const states = MapOptions(StatesList);
+    const [selectedStates, setSelectedStates] = React.useState('');
     const affinities = MapOptions(AffinitiesList);
     const letterGrades = MapOptions(LetterGradesList);
     const overallLetterGrades = MapOptions(SimpleLetterGrades);
@@ -45,6 +43,8 @@ const CFBRecruitingDashboard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const [selectedAffinities, setSelectedAffinities] = React.useState('');
     const [recruits, setRecruits] = React.useState([]);
     const [filteredRecruits, setFilteredRecruits] = React.useState([]);
+    const [viewableRecruits, setViewableRecruits] = React.useState([]);
+    const [count, SetCount] = React.useState(100);
     const [recruitingProfile, setRecruitingProfile] = React.useState({});
     const [recruitingNeeds, setRecruitingNeeds] = React.useState(null);
     const [crootMap, setCrootMap] = React.useState({});
@@ -52,7 +52,9 @@ const CFBRecruitingDashboard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const [errorMessage, setErrorMessage] = React.useState('');
     const [serviceMessage, setServiceMessage] = React.useState('');
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const [showCollusionButton, setShowCollusionButton] = React.useState(true);
 
+    let luckyTeam = Math.floor(Math.random() * (130 - 1) + 1);
     // Setup Modals?
 
     // For mobile
@@ -93,10 +95,12 @@ const CFBRecruitingDashboard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     }, [cfbTeam]);
 
     useEffect(() => {
-        FilterCroots(recruits);
+        const fc = FilterCroots(recruits);
+        setFilteredRecruits((x) => fc);
+        setViewableRecruits((x) => fc.slice(0, count));
     }, [
-        selectedState,
-        selectedPosition,
+        selectedStates,
+        selectedPositions,
         selectedAffinities,
         selectedPotentialLetterGrades,
         selectedOverallLetterGrades
@@ -106,7 +110,9 @@ const CFBRecruitingDashboard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const GetCroots = async () => {
         let croots = await _recruitingService.GetRecruits();
         setRecruits([...croots]);
-        FilterCroots(croots);
+        const fc = FilterCroots(croots);
+        setFilteredRecruits((x) => [...fc]);
+        setViewableRecruits((x) => [...fc].slice(0, count));
     };
 
     const GetProfile = async (id) => {
@@ -133,17 +139,12 @@ const CFBRecruitingDashboard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         let fr = [...croots];
 
         if (fr.length > 0) {
-            if (selectedState !== 'All' && selectedState !== '') {
-                fr = fr.filter((x) => x.State.includes(selectedState));
+            if (selectedStates.length > 0) {
+                fr = fr.filter((x) => selectedStates.includes(x.State));
             }
 
-            if (
-                selectedPosition.name !== 'All' ||
-                selectedPosition.abbr !== ''
-            ) {
-                fr = fr.filter((x) =>
-                    x.Position.includes(selectedPosition.abbr)
-                );
+            if (selectedPositions.length > 0) {
+                fr = fr.filter((x) => selectedPositions.includes(x.Position));
             }
 
             if (selectedAffinities.length > 0) {
@@ -167,17 +168,19 @@ const CFBRecruitingDashboard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             }
         }
 
-        setFilteredRecruits((x) => fr);
+        return fr;
     };
 
     // OnClick Events
 
-    const SelectPosition = (pos) => {
-        setSelectedPosition(pos);
+    const ChangePositions = (options) => {
+        const opts = [...options.map((x) => x.value)];
+        setSelectedPositions(opts);
     };
 
-    const SelectState = (state) => {
-        setSelectedState(state);
+    const ChangeStates = (options) => {
+        const opts = [...options.map((x) => x.value)];
+        setSelectedStates((x) => opts);
     };
 
     const ChangeAffinities = (affinityOptions) => {
@@ -213,7 +216,7 @@ const CFBRecruitingDashboard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             const affinityTwoValid =
                 recruit.AffinityTwo === CloseToHome
                     ? ValidateCloseToHome(recruit, cfbTeam.TeamAbbr)
-                    : ValidateAffinity(recruit.AffinityOne, crootProfile);
+                    : ValidateAffinity(recruit.AffinityTwo, crootProfile);
 
             const CreateRecruitProfileDto = {
                 PlayerID: recruit.ID,
@@ -249,18 +252,34 @@ const CFBRecruitingDashboard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         }
     };
 
-    const ClearFilters = () => {
-        setSelectedPosition({ name: 'All', abbr: '' });
-        SelectState('All');
-        setSelectedOverallLetterGrades('');
-        setSelectedPotentialLetterGrades('');
-        setSelectedAffinities('');
+    const CollusionButton = async () => {
+        const dto = {
+            username: cfbTeam.Coach,
+            Team: cfbTeam.TeamName,
+            Mascot: cfbTeam.Mascot
+        };
+        setShowCollusionButton(false);
+        await _easterEggService.CollusionCall(dto);
+    };
+
+    const loadRecords = () => {
+        const currentRecruits = [...viewableRecruits];
+
+        const newCount = [...currentRecruits].concat(
+            [...filteredRecruits].slice(count, count + 100)
+        );
+        setViewableRecruits((x) => newCount);
+        SetCount((x) => x + 100);
+    };
+
+    const loadMoreRecords = () => {
+        setTimeout(() => loadRecords(), 500);
     };
 
     return (
         <div className="container-fluid">
             <div className="justify-content-start">
-                <h2>College Football Recruiting Dashboard</h2>
+                <h2>College Football Recruiting Overview</h2>
             </div>
             <div className="row">
                 <div className="col-md-2 dashboard-sidebar">
@@ -287,84 +306,24 @@ const CFBRecruitingDashboard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             <h5 className="text-start align-middle">
                                 Position
                             </h5>
-                            <div className="drop-start btn-dropdown-width-team">
-                                <button
-                                    name="position"
-                                    className="btn dropdown-toggle btn-dropdown-width-team"
-                                    id="dropdownMenuButton2"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                    style={teamColors ? teamColors : {}}
-                                >
-                                    <span>
-                                        {selectedPosition
-                                            ? selectedPosition.name +
-                                              ' | ' +
-                                              selectedPosition.abbr
-                                            : ''}
-                                    </span>
-                                </button>
-                                <ul className="dropdown-menu dropdown-content">
-                                    <DropdownDoubleItem
-                                        item={
-                                            selectedPosition
-                                                ? selectedPosition
-                                                : ''
-                                        }
-                                        id={0}
-                                        click={SelectPosition}
-                                    />
-                                    <hr className="dropdown-divider"></hr>
-                                    {positions && positions.length > 0
-                                        ? positions.map((x, idx) => (
-                                              <DropdownDoubleItem
-                                                  key={idx}
-                                                  item={x}
-                                                  id={idx}
-                                                  click={SelectPosition}
-                                              />
-                                          ))
-                                        : ''}
-                                </ul>
-                            </div>
+                            <Select
+                                options={positions}
+                                isMulti={true}
+                                className="basic-multi-select btn-dropdown-width-team z-index-2"
+                                classNamePrefix="select"
+                                onChange={ChangePositions}
+                            />
                         </div>
 
                         <div className="col-md-auto">
                             <h5 className="text-start align-middle">States</h5>
-                            <div className="drop-start btn-dropdown-width-team">
-                                <button
-                                    name="state"
-                                    className="btn dropdown-toggle btn-dropdown-width-team"
-                                    id="dropdownMenuButton2"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                    style={teamColors ? teamColors : {}}
-                                >
-                                    <span>
-                                        {selectedState ? selectedState : 'All'}
-                                    </span>
-                                </button>
-                                <ul className="dropdown-menu dropdown-content">
-                                    <DropdownSingularItem
-                                        value={
-                                            selectedState ? selectedState : ''
-                                        }
-                                        id={0}
-                                        click={SelectState}
-                                    />
-                                    <hr className="dropdown-divider"></hr>
-                                    {states && states.length > 0
-                                        ? states.map((x, idx) => (
-                                              <DropdownSingularItem
-                                                  key={idx}
-                                                  value={x}
-                                                  id={idx}
-                                                  click={SelectState}
-                                              />
-                                          ))
-                                        : ''}
-                                </ul>
-                            </div>
+                            <Select
+                                options={states}
+                                isMulti={true}
+                                className="basic-multi-select btn-dropdown-width-team z-index"
+                                classNamePrefix="select"
+                                onChange={ChangeStates}
+                            />
                         </div>
                         <div className="col-md-auto">
                             <h5 className="text-start align-middle">
@@ -404,54 +363,98 @@ const CFBRecruitingDashboard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                 onChange={ChangeOverallLetterGrades}
                             />
                         </div>
-                        {/* <div className="col-md-auto align-self-end ms-auto">
+                        {cfbTeam &&
+                        cfbTeam.ID === luckyTeam &&
+                        showCollusionButton ? (
+                            <div className="col-md-auto">
+                                <h5 className="text-start align-middle">
+                                    Collude?
+                                </h5>
                                 <button
                                     type="button"
-                                    className="btn btn-warning"
-                                    onClick={ClearFilters}
+                                    className="btn btn-danger"
+                                    onClick={CollusionButton}
                                 >
-                                    Clear Filters
+                                    You Know You Want To
                                 </button>
-                            </div> 
-                        */}
+                            </div>
+                        ) : (
+                            ''
+                        )}
                     </div>
-                    <div className="row mt-3 mb-4 dashboard-table-height">
-                        <table className="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Rank</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Position</th>
-                                    <th scope="col">Archetype</th>
-                                    <th scope="col">High School</th>
-                                    <th scope="col">City</th>
-                                    <th scope="col">State</th>
-                                    <th scope="col">Stars</th>
-                                    <th scope="col">Overall</th>
-                                    <th scope="col">Potential</th>
-                                    <th scope="col">Affinities</th>
-                                    <th scope="col">Leading Schools</th>
-                                    <th scope="col">Add</th>
-                                </tr>
-                            </thead>
+                    <div className="row mt-3 mb-3 dashboard-table-height">
+                        <InfiniteScroll
+                            dataLength={viewableRecruits.length}
+                            next={loadMoreRecords}
+                            hasMore={true}
+                            height={570}
+                            scrollThreshold={0.8}
+                            loader={
+                                <div className="row justify-content-center">
+                                    Loading More Croots...
+                                </div>
+                            }
+                            endMessage={
+                                <div className="row justify-content-center">
+                                    <h4>...that's all the croots we have.</h4>
+                                </div>
+                            }
+                        >
+                            <table className="table table-hover">
+                                <thead
+                                    style={{
+                                        position: 'sticky',
+                                        top: 0,
+                                        backgroundColor: 'white',
+                                        zIndex: 3
+                                    }}
+                                >
+                                    <tr>
+                                        <th scope="col">Rank</th>
+                                        <th scope="col" style={{ width: 175 }}>
+                                            Name
+                                        </th>
+                                        <th scope="col">Position</th>
+                                        <th scope="col" style={{ width: 175 }}>
+                                            Archetype
+                                        </th>
+                                        <th scope="col" style={{ width: 175 }}>
+                                            High School
+                                        </th>
+                                        <th scope="col" style={{ width: 175 }}>
+                                            City
+                                        </th>
+                                        <th scope="col">State</th>
+                                        <th scope="col">Stars</th>
+                                        <th scope="col">Overall</th>
+                                        <th scope="col">Potential</th>
+                                        <th scope="col">Affinities</th>
+                                        <th scope="col">Leading Schools</th>
+                                        <th scope="col">Add</th>
+                                    </tr>
+                                </thead>
 
-                            <tbody className="overflow-auto">
-                                {filteredRecruits.length > 0
-                                    ? filteredRecruits.map((x, idx) => (
-                                          <>
-                                              <CrootModal crt={x} idx={idx} />
-                                              <CFBDashboardPlayerRow
-                                                  key={x.ID}
-                                                  croot={x}
-                                                  idx={idx}
-                                                  add={AddRecruitToBoard}
-                                                  map={crootMap}
-                                              />
-                                          </>
-                                      ))
-                                    : ''}
-                            </tbody>
-                        </table>
+                                <tbody className="overflow-auto">
+                                    {viewableRecruits.length > 0
+                                        ? viewableRecruits.map((x, idx) => (
+                                              <>
+                                                  <CrootModal
+                                                      crt={x}
+                                                      idx={idx}
+                                                  />
+                                                  <CFBDashboardPlayerRow
+                                                      key={x.ID}
+                                                      croot={x}
+                                                      idx={idx}
+                                                      add={AddRecruitToBoard}
+                                                      map={crootMap}
+                                                  />
+                                              </>
+                                          ))
+                                        : ''}
+                                </tbody>
+                            </table>
+                        </InfiniteScroll>
                     </div>
                 </div>
             </div>
@@ -469,4 +472,4 @@ const mapStateToProps = ({
     cfb_Timestamp
 });
 
-export default connect(mapStateToProps)(CFBRecruitingDashboard);
+export default connect(mapStateToProps)(CFBRecruitingOverview);

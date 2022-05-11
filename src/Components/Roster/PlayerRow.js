@@ -1,5 +1,6 @@
 import React from 'react';
 import { GetOverall, GetYear, SetPriority } from '../../_Utility/RosterHelper';
+import { HeightToFeetAndInches } from '../../_Utility/utilHelper';
 
 const PlayerRow = (props) => {
     const [showRow, setShowRow] = React.useState(false);
@@ -10,6 +11,7 @@ const PlayerRow = (props) => {
 
     let ovr = GetOverall(data.Overall);
     const year = GetYear(data);
+    const heightObj = HeightToFeetAndInches(data.Height);
 
     /* 
     Name, Position, Archtype, Ovr, Yr, Ht, Wt, St,
@@ -40,7 +42,9 @@ const PlayerRow = (props) => {
                 <td label="Position">{data.Position}</td>
                 <td label="Overall">{ovr ? ovr : ''}</td>
                 <td label="Year">{year ? year : ''}</td>
-                <td label="Height">{data.Height}</td>
+                <td label="Height">
+                    {heightObj.feet}' {heightObj.inches}"
+                </td>
                 <td label="Weight">{data.Weight}</td>
                 <td label="State">{data.State}</td>
                 <td label="School">{school}</td>

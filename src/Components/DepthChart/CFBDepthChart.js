@@ -310,18 +310,42 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
 
                 if (!validStatus) {
                     setValidation(validStatus);
-                    if (isLinemenPosition)
+                    let isLinemenPosition =
+                        pos === 'LT' ||
+                        pos === 'LG' ||
+                        pos === 'C' ||
+                        pos === 'RG' ||
+                        pos === 'RT';
+
+                    if (isLinemenPosition) {
                         setErrorMessage(
                             `You have an offensive linemen set at First String for two OLine Positions. Please resolve this issue`
                         );
-                    if (isDlinePosition)
+                        return;
+                    }
+                    let isDlinePosition =
+                        pos === 'DT' || pos === 'LE' || pos === 'RE';
+
+                    if (isDlinePosition) {
                         setErrorMessage(
                             `You have a defensive linemen set at First String for two DLine Positions. Please resolve this issue`
                         );
-                    if (isLinebackerPosition)
+                        return;
+                    }
+
+                    let isLinebackerPosition =
+                        pos === 'LOLB' || pos === 'OLB' || pos === 'MLB';
+
+                    if (isLinebackerPosition) {
                         setErrorMessage(
                             `You have a linebacker set at First String for Linebacker positions. Please resolve this issue`
                         );
+                        return;
+                    }
+
+                    let isSecondaryPosition =
+                        pos === 'CB' || pos === 'FS' || pos === 'SS';
+
                     if (isSecondaryPosition)
                         setErrorMessage(
                             `You have a defensive back set at First String for two DB Positions. Please resolve this issue`

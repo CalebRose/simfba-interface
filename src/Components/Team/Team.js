@@ -133,13 +133,14 @@ const Team = ({ currentUser, cfbTeam }) => {
                     >
                         Depth Chart
                     </Link>
-                    <button
+                    <Link
+                        to={routes.CFB_TEAM_RECRUITING_BOARD}
                         type="button"
                         class="btn btn-primary btn-md me-2 shadow"
                         style={teamColors ? teamColors : {}}
                     >
                         Recruiting Board
-                    </button>
+                    </Link>
                     <button
                         type="button"
                         class="btn btn-primary btn-md me-2 shadow"

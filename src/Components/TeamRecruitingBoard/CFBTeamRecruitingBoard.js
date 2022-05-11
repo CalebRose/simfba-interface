@@ -88,8 +88,6 @@ const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         croots[idx].Scholarship = scholarshipVal;
         croots[idx].ScholarshipRevoked = revokedVal;
 
-        console.log(recruitProfile);
-
         const UpdateRecruitDto = {
             RecruitID: recruitProfile.RecruitID,
             ProfileID: recruitingProfile.ID,
@@ -135,15 +133,25 @@ const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
 
         for (let i = 0; i < croots.length; i++) {
             let croot = croots[i];
+            if (croot.CurrentWeeksPoints < 0 || croot.CurrentWeeksPoints > 20) {
+                validationCheck = false;
+                setErrorMessage(
+                    `ERROR! Recruit ${croot.Recruit.FirstName} ${croot.Recruit.LastName} must have a point allocation between 0 and 20.`
+                );
+                break;
+            }
             pointCount += Number(croot.CurrentWeeksPoints);
         }
-        if (pointCount > 50) {
+        if (pointCount > 50 && validationCheck) {
             validationCheck = false;
         }
         let teamProfile = { ...recruitingProfile };
         teamProfile.SpentPoints = pointCount;
         setRecruitingProfile(teamProfile);
         setValidation(validationCheck);
+        if (validationCheck) {
+            setErrorMessage('');
+        }
     };
 
     const SavePointAllocations = async () => {

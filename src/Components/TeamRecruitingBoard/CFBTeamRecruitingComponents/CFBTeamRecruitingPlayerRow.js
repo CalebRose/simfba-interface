@@ -1,5 +1,6 @@
 import React from 'react';
 import { GetOverall } from '../../../_Utility/RosterHelper';
+import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
 import ConfirmRemovePlayerFromBoardModal from './CFBTeamRemovePlayerModal';
 import ConfirmRevokeModal from './CFBTeamRevokeScholarshipModal';
 
@@ -8,6 +9,7 @@ const CFBTeamDashboardPlayerRow = (props) => {
     const { Recruit } = recruitProfile;
     const revokeModalTarget = '#revokeModal' + idx;
     const removeModalTarget = '#removeModal' + idx;
+    const heightObj = HeightToFeetAndInches(Recruit.Height);
 
     const leadingTeamsMapper = (croot) => {
         // Show list of leading teams
@@ -56,7 +58,8 @@ const CFBTeamDashboardPlayerRow = (props) => {
             />
             <tr>
                 <th scope="row">
-                    {recruitProfile.ScholarshipRevoked ? (
+                    {recruitProfile.ScholarshipRevoked ||
+                    recruitProfile.CaughtCheating ? (
                         <h2>
                             <i className="bi bi-heartbreak-fill link-danger" />
                         </h2>
@@ -99,7 +102,9 @@ const CFBTeamDashboardPlayerRow = (props) => {
                     <h6>{Recruit.State}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{Recruit.Height}</h6>
+                    <h6>
+                        {heightObj.feet}' {heightObj.inches}"
+                    </h6>
                 </td>
                 <td className="align-middle">
                     <h6>{Recruit.Weight}</h6>
@@ -114,26 +119,56 @@ const CFBTeamDashboardPlayerRow = (props) => {
                     <h6>{Recruit.PotentialGrade}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{Recruit.AffinityOne}</h6>
+                    <h6
+                        className={
+                            recruitProfile.AffinityOneEligible
+                                ? 'text-success'
+                                : ''
+                        }
+                    >
+                        {Recruit.AffinityOne}
+                    </h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{Recruit.AffinityTwo}</h6>
+                    <h6
+                        className={
+                            recruitProfile.AffinityTwoEligible
+                                ? 'text-success'
+                                : ''
+                        }
+                    >
+                        {Recruit.AffinityTwo}
+                    </h6>
                 </td>
                 <td className="align-middle">
                     <h6>{leadingTeams}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>
-                        <input
-                            name="CurrentPoints"
-                            type="number"
-                            className="form-control"
-                            id="currentPoints"
-                            aria-describedby="currentPoints"
-                            value={recruitProfile.CurrentWeeksPoints}
-                            onChange={handleChange}
-                        />
-                    </h6>
+                    {Recruit.IsSigned || recruitProfile.CaughtCheating ? (
+                        <h6>
+                            <input
+                                name="CurrentPoints"
+                                type="number"
+                                className="form-control"
+                                id="currentPoints"
+                                aria-describedby="currentPoints"
+                                value={recruitProfile.CurrentWeeksPoints}
+                                disabled
+                            />
+                        </h6>
+                    ) : (
+                        <h6>
+                            <input
+                                name="CurrentPoints"
+                                type="number"
+                                className="form-control"
+                                id="currentPoints"
+                                aria-describedby="currentPoints"
+                                value={recruitProfile.CurrentWeeksPoints}
+                                onChange={handleChange}
+                            />
+                        </h6>
+                    )}
                 </td>
                 <td className="align-middle">
                     <h6>{recruitProfile.TotalPoints}</h6>

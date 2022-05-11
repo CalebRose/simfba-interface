@@ -140,7 +140,6 @@ const CBBGameplan = ({ currentUser }) => {
         if (save.ok) {
             const message = `Successfully update Gameplan and Minutes`;
             setServiceMessage(message);
-            console.log(message);
             setTimeout(() => setServiceMessage(''), 5000);
         } else {
             alert('HTTP-Error:', save.status);

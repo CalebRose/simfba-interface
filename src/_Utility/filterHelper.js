@@ -5,3 +5,11 @@ export const MapOptions = (arr) => {
         })
     ];
 };
+
+export const MapObjOptions = (arr) => {
+    return [
+        ...arr.map((x) => {
+            return { label: x.name, value: x.abbr };
+        })
+    ];
+};

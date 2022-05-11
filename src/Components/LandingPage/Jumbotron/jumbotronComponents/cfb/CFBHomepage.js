@@ -116,13 +116,26 @@ const CFBHomepage = ({ currentUser, cfbTeam }) => {
                 <div className="col-3"></div>
             </div>
             <div className="row mt-2">
-                <div className="col-md-auto col-sm justify-content-start">
-                    <h3>
-                        {teamData ? `${teamData.Conference} Conference` : ''},
-                        {teamData && teamData.DivisionID > 0
-                            ? ` ${teamData.Division} Division`
-                            : ''}
-                    </h3>
+                <div
+                    className={
+                        teamData
+                            ? 'col-md-auto col-sm justify-content-start'
+                            : 'col-md-12 justify-content-center'
+                    }
+                >
+                    {teamData ? (
+                        <h3>
+                            {`${teamData.Conference} Conference, ${
+                                teamData.Division > 0 ? teamData.Division : ''
+                            } Division`}
+                        </h3>
+                    ) : (
+                        <div className="alert alert-secondary" role="alert">
+                            <h3>
+                                <i>Loading...</i>
+                            </h3>
+                        </div>
+                    )}
                 </div>
                 <div className="col-md-auto"></div>
                 <div className="col-3"></div>
@@ -215,13 +228,14 @@ const CFBHomepage = ({ currentUser, cfbTeam }) => {
                             >
                                 Depth Chart
                             </Link>
-                            <button
+                            <Link
+                                to={routes.CFB_RECRUITING}
                                 type="button"
                                 className="btn btn-primary btn-md me-2 shadow"
                                 style={teamColors ? teamColors : {}}
                             >
                                 Recruiting
-                            </button>
+                            </Link>
                             <button
                                 type="button"
                                 className="btn btn-primary btn-md shadow"

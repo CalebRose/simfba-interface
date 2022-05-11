@@ -19,16 +19,17 @@ const CFBDashboardPlayerRow = (props) => {
         }
     }, [map, mapKey]);
 
-    const leadingTeamsMapper = (data) => {
-        if (
-            data.RecruitPlayerProfiles === null ||
-            data.RecruitPlayerProfiles.length === 0
-        )
+    const leadingTeamsMapper = (croot) => {
+        // Show list of leading teams
+        if (croot.LeadingTeams == null || croot.LeadingTeams.length === 0)
             return 'None';
 
-        let teams = data.map((x) => x.TeamAbbreviation);
-        return teams.join(', ');
+        const competingTeams = croot.LeadingTeams.filter((x, idx) => idx <= 2);
+
+        return competingTeams.join(', ');
     };
+
+    const leadingTeams = leadingTeamsMapper(croot);
 
     const AddPlayerToBoard = () => {
         setFlag(true);
@@ -36,7 +37,7 @@ const CFBDashboardPlayerRow = (props) => {
     };
 
     return (
-        <tr>
+        <tr style={{ backgroundColor: 'white', zIndex: -1 }}>
             <th scope="row">
                 <h4>{rank}</h4>
                 <button
@@ -48,19 +49,19 @@ const CFBDashboardPlayerRow = (props) => {
                     <i className="bi bi-info-circle" />
                 </button>
             </th>
-            <td className="align-middle">
+            <td className="align-middle" style={{ width: 175 }}>
                 <h6>{name}</h6>
             </td>
             <td className="align-middle">
                 <h6>{croot.Position}</h6>
             </td>
-            <td className="align-middle">
+            <td className="align-middle" style={{ width: 175 }}>
                 <h6>{croot.Archetype}</h6>
             </td>
-            <td className="align-middle">
+            <td className="align-middle" style={{ width: 175 }}>
                 <h6>{croot.HighSchool}</h6>
             </td>
-            <td className="align-middle">
+            <td className="align-middle" style={{ width: 175 }}>
                 <h6>{croot.City}</h6>
             </td>
             <td className="align-middle">
@@ -79,7 +80,11 @@ const CFBDashboardPlayerRow = (props) => {
                 <h6>{affinities}</h6>
             </td>
             <td className="align-middle">
-                <h6></h6>
+                {!croot.IsSigned ? (
+                    <h6>{leadingTeams}</h6>
+                ) : (
+                    <h6 className="text-success">{croot.College}</h6>
+                )}
             </td>
             <td className="align-middle">
                 {croot.IsSigned ? (
@@ -98,7 +103,6 @@ const CFBDashboardPlayerRow = (props) => {
                         ></i>
                     </h2>
                 )}
-                {}
             </td>
         </tr>
     );

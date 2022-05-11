@@ -17,8 +17,6 @@ export default class FBARequestService {
     }
 
     async ApproveRequest(payload) {
-        console.log('PAYLOAD');
-        console.log(payload);
         let res = await fetch(url + 'requests/approve/', {
             headers: {
                 authorization: localStorage.getItem('token'),

@@ -62,7 +62,7 @@ const NavBar_Start = ({ currentUser }) => {
                             className="dropdown-item"
                             to={routes.CFB_RECRUITING}
                         >
-                            Recruiting Dashboard
+                            Recruiting Overview
                         </Link>
                     </li>
                     <li>
@@ -70,7 +70,7 @@ const NavBar_Start = ({ currentUser }) => {
                             to={routes.CFB_TEAM_RECRUITING_BOARD}
                             className="dropdown-item"
                         >
-                            Team Recruiting Board
+                            {user.team} Recruiting Board
                         </Link>
                     </li>
                     <li>

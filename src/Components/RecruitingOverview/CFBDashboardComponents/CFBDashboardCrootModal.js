@@ -1,8 +1,10 @@
 import React from 'react';
+import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
 
 const CrootModal = (props) => {
     const { crt, idx } = props;
     const modalId = 'crootModal' + idx;
+    const heightObj = HeightToFeetAndInches(crt.Height);
     return (
         <div
             className="modal fade"
@@ -51,7 +53,8 @@ const CrootModal = (props) => {
                                 <h5>Potential:</h5> {crt.PotentialGrade}
                             </div>
                             <div className="col">
-                                <h5>Height:</h5> {crt.Height}
+                                <h5>Height:</h5> {heightObj.feet}'{' '}
+                                {heightObj.inches}"
                             </div>
                             <div className="col">
                                 <h5>Weight:</h5> {crt.Weight}
@@ -84,6 +87,18 @@ const CrootModal = (props) => {
                             <div className="col">
                                 <h5>Recruiting Preferences</h5>
                                 <p>{crt.RecruitingBias}</p>
+                            </div>
+                        </div>
+                        <div className="row g-2 mb-2">
+                            <div className="col">
+                                <h5>Work Ethic</h5>
+                                <p>{crt.WorkEthic}</p>
+                            </div>
+                        </div>
+                        <div className="row g-2 mb-2">
+                            <div className="col">
+                                <h5>Academic Bias</h5>
+                                <p>{crt.AcademicBias}</p>
                             </div>
                         </div>
                         <div className="row g-2 mb-2">

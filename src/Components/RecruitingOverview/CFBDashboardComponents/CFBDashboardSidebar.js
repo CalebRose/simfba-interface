@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import routes from '../../../Constants/routes';
 
 const CFBDashboardSidebar = (props) => {
     const { cfbTeam, teamNeeds, recruitingProfile } = props;
@@ -18,6 +20,13 @@ const CFBDashboardSidebar = (props) => {
     };
 
     const applicableAffinities = hasApplicableAffinities(affinityList);
+
+    const colors = {
+        color: '#fff',
+        backgroundColor:
+            cfbTeam && cfbTeam.ColorOne ? cfbTeam.ColorOne : '#6c757d',
+        borderColor: cfbTeam && cfbTeam.ColorOne ? cfbTeam.ColorOne : '#6c757d'
+    };
 
     const QBNeeds =
         teamNeeds && teamNeeds['QB'] !== undefined ? teamNeeds['QB'] : 0;
@@ -56,18 +65,26 @@ const CFBDashboardSidebar = (props) => {
 
     return (
         <>
-            <div className="row mt-3">
+            <div className="row gx-1 mt-3">
                 <div className="justify-content-start">
                     <h4>{cfbTeam ? cfbTeam.TeamName : 'Team'} Profile</h4>
+                    <Link
+                        to={routes.CFB_TEAM_RECRUITING_BOARD}
+                        type="button"
+                        className="btn btn-primary btn-md me-2 shadow"
+                        style={colors ? colors : {}}
+                    >
+                        Recruiting Board
+                    </Link>
                 </div>
             </div>
-            <div className="row mt-3">
+            <div className="row gx-1 mt-3">
                 <div className="justify-content-center">
                     <h5>Home State</h5>
                     {cfbTeam.State}
                 </div>
             </div>
-            <div className="row mt-3 justify-content-center">
+            <div className="row gx-1 mt-3 justify-content-center">
                 <h5>Active Affinities</h5>
                 {applicableAffinities &&
                 affinityList &&
@@ -82,29 +99,31 @@ const CFBDashboardSidebar = (props) => {
                         );
                     })
                 ) : (
-                    <div className="row mt-1 justify-content-center">None</div>
+                    <div className="row gx-1 mt-1 justify-content-center">
+                        None
+                    </div>
                 )}
             </div>
-            <div className="row mt-3 justify-content-center">
+            <div className="row gx-1 mt-3 justify-content-center">
                 <h5>Weekly Points Remaining</h5>
                 {recruitingProfile
                     ? recruitingProfile.WeeklyPoints -
                       recruitingProfile.SpentPoints
                     : 'N/A'}
             </div>
-            <div className="row mt-3 justify-content-center">
+            <div className="row gx-1 mt-3 justify-content-center">
                 <h5>Scholarships Available</h5>
                 {recruitingProfile
                     ? 25 - recruitingProfile.TotalCommitments
                     : 'N/A'}
             </div>
-            <div className="row mt-3 justify-content-center">
+            <div className="row gx-1 mt-3 justify-content-center">
                 <h5>Scholarship Offers Available</h5>
                 {recruitingProfile
                     ? recruitingProfile.ScholarshipsAvailable
                     : 'N/A'}
             </div>
-            <div className="row mt-3 justify-content-center">
+            <div className="row gx-0 mt-3 justify-content-center">
                 <h5>Graduating Players By Position</h5>
                 <div className="row">
                     <div className="col-md-4">
@@ -117,42 +136,42 @@ const CFBDashboardSidebar = (props) => {
                         <strong>ST.</strong>
                     </div>
                 </div>
-                <div className="row">
+                <div className="row gx-0">
                     <div className="col-md-4">QB: {QBNeeds}</div>
                     <div className="col-md-4">DT: {DTNeeds}</div>
                     <div className="col-md-4">K: {KNeeds}</div>
                 </div>
-                <div className="row">
+                <div className="row gx-0">
                     <div className="col-md-4">RB: {RBNeeds}</div>
                     <div className="col-md-4">DE: {DENeeds}</div>
                     <div className="col-md-4">P: {PNeeds}</div>
                 </div>
-                <div className="row">
+                <div className="row gx-0">
                     <div className="col-md-4">FB: {FBNeeds}</div>
                     <div className="col-md-4">ILB: {ILBNeeds}</div>
                     <div className="col-md-4"></div>
                 </div>
-                <div className="row">
+                <div className="row gx-0">
                     <div className="col-md-4">WR: {WRNeeds}</div>
                     <div className="col-md-4">OLB: {OLBNeeds}</div>
                     <div className="col-md-4"></div>
                 </div>
-                <div className="row">
+                <div className="row gx-0">
                     <div className="col-md-4">TE: {TENeeds}</div>
                     <div className="col-md-4">CB: {CBNeeds}</div>
                     <div className="col-md-4"></div>
                 </div>
-                <div className="row">
+                <div className="row gx-0">
                     <div className="col-md-4">OT: {OTNeeds}</div>
                     <div className="col-md-4">FS: {FSNeeds}</div>
                     <div className="col-md-4"></div>
                 </div>
-                <div className="row">
+                <div className="row gx-0">
                     <div className="col-md-4">OG: {OGNeeds}</div>
                     <div className="col-md-4">SS: {SSNeeds}</div>
                     <div className="col-md-4"></div>
                 </div>
-                <div className="row">
+                <div className="row gx-0">
                     <div className="col-md-4">C: {CNeeds}</div>
                     <div className="col-md-4"></div>
                     <div className="col-md-4"></div>

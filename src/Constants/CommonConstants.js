@@ -256,12 +256,12 @@ export const PersonalitiesList = [
 ];
 
 export const CloseToHome = 'Close to Home';
-export const Academics = 'Close to Home';
-export const Service = 'Close to Home';
-export const Religion = 'Close to Home';
-export const LargeCrowds = 'Close to Home';
-export const SmallSchool = 'Close to Home';
-export const Frontrunner = 'Close to Home';
+export const Academics = 'Academics';
+export const Service = 'Service';
+export const Religion = 'Religion';
+export const LargeCrowds = 'Large Crowds';
+export const SmallSchool = 'Small School';
+export const Frontrunner = 'Frontrunner';
 
 export const AffinitiesList = [
     CloseToHome,

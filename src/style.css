@@ -358,6 +358,10 @@ td {
     z-index: 10;
 }
 
+.z-index-2 {
+    z-index: 20;
+}
+
 .dashboard-sidebar {
     box-shadow: inset -1px 0 0 rgb(0 0 0 / 10%);
 }
@@ -411,7 +415,7 @@ td {
 
 .dashboard-table-height {
     max-height: 65vh;
-    overflow: auto;
+    overflow-y: auto;
 }
 
 .dashboard-table-height th {

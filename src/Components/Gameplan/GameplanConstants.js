@@ -11,8 +11,8 @@ export const DoubleWingFormations = [
 ];
 export const ProFormations = [
     'I Formation',
-    'Singleback 2 TEs',
-    'Singleback 3WR'
+    'Singleback Two TEs',
+    'Singleback Three WRs'
 ];
 export const SpreadOptionFormations = [
     'Pistol 3WR',

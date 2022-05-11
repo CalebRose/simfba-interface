@@ -57,7 +57,9 @@ const ManageTeams = ({ currentUser }) => {
         console.log('Firebase Updated');
 
         // Filter Requests
-        const filterTeams = teams.filter((x) => x.id !== payload.reqId);
+        const filterTeams = [...teams].filter(
+            (x) => x.Coach !== payload.username
+        );
 
         setTeams(filterTeams);
     };

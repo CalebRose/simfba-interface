@@ -37,7 +37,6 @@ const CBBRecruitingTeamBoard = ({ currentUser }) => {
         }
 
         let recruits = profile.Recruits.length > 0 ? profile.Recruits : [];
-        console.log(recruits);
         setRecruitingProfile(profile);
         setRecruits(recruits);
     };

@@ -115,6 +115,8 @@ const CreateCrootModal = (props) => {
         croot.PotentialGrade = GetPotentialGrade(croot.Progression);
         let emptyForm = {};
         setRecruit((x) => emptyForm);
+        const aL = [...initialAffinitiesList];
+        setCurrentAffinitiesList((x) => aL);
 
         return handleChange(croot);
     };

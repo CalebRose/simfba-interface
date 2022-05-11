@@ -92,8 +92,6 @@ class App extends Component {
                 const cfb_Timestamp =
                     await this._adminService.GetCurrentTimestamp();
 
-                console.log(cfb_Timestamp);
-
                 setCFBTimestamp({ ...cfb_Timestamp });
 
                 userAuth

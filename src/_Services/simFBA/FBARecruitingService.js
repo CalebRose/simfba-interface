@@ -151,14 +151,17 @@ export default class FBARecruitingService {
     }
 
     async SaveRecruitingBoard(dto) {
-        let response = await fetch(url + 'recruiting/saverecruitingprofile/', {
+        let response = await fetch(url + 'recruiting/savecrootboard/', {
             headers: {
                 authorization: localStorage.getItem('token'),
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
             },
-            method: 'PUT',
-            body: JSON.stringify(dto)
+            method: 'POST',
+            body: JSON.stringify(dto),
+            mode: 'cors'
         });
+
         if (response.ok) {
             console.log('Successfully saved recruiting board!');
         } else {

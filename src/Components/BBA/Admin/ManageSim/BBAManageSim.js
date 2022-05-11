@@ -108,7 +108,6 @@ const BBAManageSim = ({ currentUser }) => {
     };
 
     const syncToNextWeek = () => {
-        console.log(timestamp);
         if (!timestamp.GMActionsComplete) {
             return;
         }
@@ -124,9 +123,7 @@ const BBAManageSim = ({ currentUser }) => {
         newTimestamp.GamesCRan = false;
         newTimestamp.RecruitingSynced = false;
         newTimestamp.GMActionsComplete = false;
-        console.log(newTimestamp);
         setTimestamp({ ...timestamp, ...newTimestamp });
-        console.log(timestamp);
         setCompletion(IsWeekComplete());
         setRemainingActionsCount(newTimestamp.IsOffSeason ? 2 : 5);
     };

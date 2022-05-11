@@ -5,7 +5,7 @@ const ServiceMessageBanner = ({ serMessage, errMessage }) => {
     return (
         <>
             {serMessage.length > 0 || errMessage.length > 0 ? (
-                <div className="service-banner position-absolute bottom-0 end-0 p-3">
+                <div className="service-banner position-absolute top-0 end-0 p-3">
                     {serMessage.length > 0 && serMessage !== SavingMessage ? (
                         <div className="alert alert-success">{serMessage}</div>
                     ) : (
