@@ -197,7 +197,9 @@ export const GetAvailablePlayers = (pos, players) => {
             );
             break;
         case 'FG':
-            availablePlayers = players.filter((x) => x.Position === 'QB');
+            availablePlayers = players.filter(
+                (x) => x.Position === 'K' || x.Position === 'QB'
+            );
             break;
         case 'STU':
             availablePlayers = players.filter(

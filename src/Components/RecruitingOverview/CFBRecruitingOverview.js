@@ -262,6 +262,10 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         await _easterEggService.CollusionCall(dto);
     };
 
+    const Export = async () => {
+        await _recruitingService.ExportCroots();
+    };
+
     const loadRecords = () => {
         const currentRecruits = [...viewableRecruits];
 
@@ -362,6 +366,18 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                 classNamePrefix="select"
                                 onChange={ChangeOverallLetterGrades}
                             />
+                        </div>
+                        <div className="col-md-auto">
+                            <h5 className="text-start align-middle">
+                                Export Croots
+                            </h5>
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={Export}
+                            >
+                                Export
+                            </button>
                         </div>
                         {cfbTeam &&
                         cfbTeam.ID === luckyTeam &&

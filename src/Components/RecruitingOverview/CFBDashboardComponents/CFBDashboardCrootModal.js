@@ -5,6 +5,32 @@ const CrootModal = (props) => {
     const { crt, idx } = props;
     const modalId = 'crootModal' + idx;
     const heightObj = HeightToFeetAndInches(crt.Height);
+    // const leadingTeams = crt.LeadingTeams;
+
+    const LeadingTeam = (props) => {
+        const { lt } = props;
+        const { TeamAbbr, Odds } = lt;
+        const displayOdds = Math.round(Odds * 100);
+        let displayStatus = '';
+        if (displayOdds > 60) {
+            displayStatus = 'Strong Favorite';
+        } else if (displayOdds > 15) {
+            displayStatus = 'In Contention';
+        } else {
+            displayStatus = 'Unlikely';
+        }
+        return (
+            <div className="row">
+                <div className="col">
+                    <h6>{TeamAbbr}</h6>
+                </div>
+                <div className="col">
+                    <h6>{displayStatus}</h6>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div
             className="modal fade"
@@ -83,6 +109,18 @@ const CrootModal = (props) => {
                                 {crt.AffinityTwo}
                             </div>
                         </div>
+                        {crt &&
+                        crt.LeadingTeams !== null &&
+                        crt.LeadingTeams.length > 0 ? (
+                            <div className="row g-1 mb-3">
+                                <h5>Prediction</h5>
+                                {crt.LeadingTeams.map((lt) => {
+                                    return <LeadingTeam lt={lt} />;
+                                })}
+                            </div>
+                        ) : (
+                            ''
+                        )}
                         <div className="row g-2 mb-2">
                             <div className="col">
                                 <h5>Recruiting Preferences</h5>

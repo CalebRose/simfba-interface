@@ -26,7 +26,9 @@ const CFBDashboardPlayerRow = (props) => {
 
         const competingTeams = croot.LeadingTeams.filter((x, idx) => idx <= 2);
 
-        return competingTeams.join(', ');
+        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+
+        return competingAbbrs.join(', ');
     };
 
     const leadingTeams = leadingTeamsMapper(croot);

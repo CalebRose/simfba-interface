@@ -172,4 +172,24 @@ export default class FBARecruitingService {
         }
         return response;
     }
+
+    async ExportCroots() {
+        let fullURL = url + 'recruits/export/all/';
+        let response = await fetch(fullURL, {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'text/csv'
+            },
+            responseType: 'blob'
+        })
+            .then((res) => res.blob())
+            .then((blob) => saveAs(blob, `tsweezyscroots.csv`));
+
+        if (response.ok) {
+            // let blob = response.blob();
+            // saveAs(blob, 'export.csv');
+        } else {
+            alert('HTTP-Error:', response.status);
+        }
+    }
 }
