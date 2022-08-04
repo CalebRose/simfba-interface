@@ -33,12 +33,15 @@ import {
     ValidatePassPlayDistribution,
     ValidateRunPlayDistribution
 } from './GameplanHelper';
+import DropdownItem from '../Roster/DropdownItem';
 
 const CFBGameplan = ({ currentUser, cfbTeam }) => {
     // GameplanService
     let gameplanService = new FBAGameplanService();
-
+    let _teamService = new FBATeamService();
+    const [userTeam, setUserTeam] = React.useState('');
     const [team, setTeam] = React.useState(''); // Redux value as initial value for react hook
+    const [aiTeams, setAITeams] = React.useState(null);
     const [teamColors, setTeamColors] = React.useState('');
     const [initialGameplan, setInitialGameplan] = React.useState(null);
     const [gameplan, setGameplan] = React.useState(null);
@@ -76,7 +79,9 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
     // On init
     useEffect(() => {
         if (currentUser) {
-            GetGameplan(currentUser.teamId);
+            // GetGameplan(currentUser.teamId);
+            setUserTeam(cfbTeam);
+            GetAvailableTeams();
         }
     }, [currentUser]);
 
@@ -93,6 +98,12 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             setTeamColors(colors);
         }
     }, [cfbTeam]);
+
+    useEffect(() => {
+        if (team) {
+            GetGameplan(team.ID);
+        }
+    }, [team]);
 
     useEffect(() => {
         if (gameplan) {
@@ -366,12 +377,26 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         setErrorMessage(message);
     };
 
+    const SelectUserTeam = () => {
+        SelectTeam(userTeam);
+    };
+
+    const SelectTeam = (selectedTeam) => {
+        setTeam(selectedTeam);
+    };
+
     const GetGameplan = async (ID) => {
         let response = await gameplanService.GetGameplanByTeamID(ID);
         SetFormationNames(response.OffensiveScheme);
         SetFormationNames(response.DefensiveScheme);
         setInitialGameplan({ ...response });
         setGameplan({ ...response });
+    };
+
+    const GetAvailableTeams = async () => {
+        let res = await _teamService.GetAvailableCollegeTeams();
+
+        setAITeams(res);
     };
 
     const SetFormationNames = (name) => {
@@ -464,7 +489,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         if (!isValid) return;
 
         const UpdateGameplanDTO = {
-            GameplanID: currentUser.teamId.toString(),
+            GameplanID: gameplan.ID.toString(),
             UpdatedGameplan: gameplan
         };
 
@@ -526,7 +551,53 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                 serMessage={serviceMessage}
                 errMessage={errorMessage}
             />
-
+            {currentUser && currentUser.roleID === 'Admin' ? (
+                <div className="row mt-3">
+                    <div className="col-md-auto">
+                        <div className="drop-start btn-dropdown-width-team">
+                            <button
+                                name="team"
+                                className="btn dropdown-toggle btn-dropdown-width-team"
+                                id="dropdownMenuButton1"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                style={teamColors ? teamColors : {}}
+                            >
+                                <span>{team ? team.TeamName : ''}</span>
+                            </button>
+                            <ul className="dropdown-menu dropdown-content">
+                                <DropdownItem
+                                    value={
+                                        currentUser
+                                            ? currentUser.team +
+                                              ' ' +
+                                              currentUser.mascot
+                                            : null
+                                    }
+                                    click={SelectUserTeam}
+                                    id={currentUser ? currentUser.teamId : null}
+                                />
+                                <hr className="dropdown-divider"></hr>
+                                {aiTeams && aiTeams.length > 0
+                                    ? aiTeams.map((x) => (
+                                          <DropdownItem
+                                              key={x.ID}
+                                              value={
+                                                  x.TeamName + ' ' + x.Mascot
+                                              }
+                                              team={x}
+                                              id={x.ID}
+                                              click={SelectTeam}
+                                          />
+                                      ))
+                                    : ''}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                ''
+            )}
             <div className="row mt-3">
                 <div className="col-md-auto justify-content-start">
                     <h2>Offense</h2>

@@ -8,10 +8,11 @@ import FBAPlayerService from '../../_Services/simFBA/FBAPlayerService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import { SetPriority, GetDefaultOrder } from '../../_Utility/RosterHelper';
 import { useMediaQuery } from 'react-responsive';
+import ConfirmRedshirtModal from './RedshirtModal';
 
 // import DepthChartRow from "../DepthChart/DepthChartRow";
 
-const Roster = ({ currentUser, cfbTeam }) => {
+const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     /* 
         API Call to get team data
         Loop through array list to acquire players
@@ -24,6 +25,7 @@ const Roster = ({ currentUser, cfbTeam }) => {
     const [player, setPlayer] = React.useState(null);
     const [attributes, setAttributes] = React.useState([]);
     const [userTeam, setUserTeam] = React.useState([]);
+    const [viewingUserTeam, setViewingUserTeam] = React.useState(true);
     const [team, setTeam] = React.useState([]); // Redux value as initial value for react hook
     const [teams, setTeams] = React.useState([]);
     const [roster, setRoster] = React.useState([]);
@@ -86,6 +88,12 @@ const Roster = ({ currentUser, cfbTeam }) => {
             let roster = await rosterService.GetPlayersByTeam(ID);
             setRoster(roster);
             setViewRoster(roster);
+
+            if (ID !== userTeam.ID) {
+                setViewingUserTeam((x) => false);
+            } else {
+                setViewingUserTeam((x) => true);
+            }
         }
     };
 
@@ -121,9 +129,7 @@ const Roster = ({ currentUser, cfbTeam }) => {
     const playerCount = viewRoster ? viewRoster.length : 0;
 
     let redshirtCount = viewRoster
-        ? viewRoster.filter(
-              (player) => player.IsRedshirting || player.IsRedshirt
-          ).length
+        ? viewRoster.filter((player) => player.IsRedshirting).length
         : 0;
 
     const setSortValues = (value) => {
@@ -134,7 +140,7 @@ const Roster = ({ currentUser, cfbTeam }) => {
 
         switch (newSort) {
             case 'ovr':
-                setViewRoster((currRoster) =>
+                setViewRoster(() =>
                     [...roster].sort(
                         (a, b) =>
                             (a.Overall - b.Overall) * (isAscending ? 1 : -1)
@@ -142,7 +148,7 @@ const Roster = ({ currentUser, cfbTeam }) => {
                 );
                 break;
             case 'name':
-                setViewRoster((currRoster) =>
+                setViewRoster(() =>
                     [...roster].sort(
                         (a, b) =>
                             a.LastName.localeCompare(b.LastName) *
@@ -151,14 +157,14 @@ const Roster = ({ currentUser, cfbTeam }) => {
                 );
                 break;
             case 'year':
-                setViewRoster((currRoster) =>
+                setViewRoster(() =>
                     [...roster].sort(
                         (a, b) => (a.Year - b.Year) * (isAscending ? 1 : -1)
                     )
                 );
                 break;
             case 'pos':
-                setViewRoster((currRoster) =>
+                setViewRoster(() =>
                     [...roster].sort(
                         (a, b) =>
                             a.Position.localeCompare(b.Position) *
@@ -167,7 +173,7 @@ const Roster = ({ currentUser, cfbTeam }) => {
                 );
                 break;
             case 'pot':
-                setViewRoster((currRoster) =>
+                setViewRoster(() =>
                     [...roster].sort(
                         (a, b) =>
                             a.PotentialGrade.localeCompare(b.PotentialGrade) *
@@ -176,7 +182,7 @@ const Roster = ({ currentUser, cfbTeam }) => {
                 );
                 break;
             case 'arch':
-                setViewRoster((currRoster) =>
+                setViewRoster(() =>
                     [...roster].sort(
                         (a, b) =>
                             a.Archetype.localeCompare(b.Archetype) *
@@ -198,6 +204,29 @@ const Roster = ({ currentUser, cfbTeam }) => {
         if (response) {
             //
         }
+    };
+
+    const setRedshirtStatus = async (player) => {
+        const PlayerID = player.ID;
+        const playerRoster = [...viewRoster];
+        const originalRoster = [...roster];
+        const playerIDX = playerRoster.findIndex((x) => x.ID === PlayerID);
+        const originalIDX = originalRoster.findIndex((x) => x.ID === PlayerID);
+        playerRoster[playerIDX].IsRedshirting = true;
+        originalRoster[originalIDX].IsRedshirting = true;
+
+        const dto = {
+            PlayerID: PlayerID,
+            RedshirtStatus: true
+        };
+
+        const response = await rosterService.AssignRedshirt(dto);
+        if (!response) {
+            return;
+        }
+
+        setRoster((x) => originalRoster);
+        setViewRoster((x) => playerRoster);
     };
 
     // Designations
@@ -280,7 +309,7 @@ const Roster = ({ currentUser, cfbTeam }) => {
 
                                     <button
                                         type="button"
-                                        class="btn-close"
+                                        className="btn-close"
                                         data-bs-dismiss="modal"
                                         aria-label="Close"
                                     ></button>
@@ -408,8 +437,8 @@ const Roster = ({ currentUser, cfbTeam }) => {
                                     <abbr title="State">St</abbr>
                                 </th>
                                 <th scope="col">
-                                    <abbr title="High School / JUCO">
-                                        School
+                                    <abbr title="Redshirt">
+                                        Redshirt Status
                                     </abbr>
                                 </th>
                                 <th
@@ -422,14 +451,26 @@ const Roster = ({ currentUser, cfbTeam }) => {
                         </thead>
                         <tbody>
                             {viewRoster && viewRoster.length > 0
-                                ? viewRoster.map((player) => (
-                                      <PlayerRow
-                                          key={player.ID}
-                                          data={player}
-                                          getData={getPlayerData}
-                                          school={team.TeamName}
-                                          width={viewWidth}
-                                      />
+                                ? viewRoster.map((player, idx) => (
+                                      <>
+                                          <ConfirmRedshirtModal
+                                              idx={idx}
+                                              setRedshirtStatus={
+                                                  setRedshirtStatus
+                                              }
+                                              player={player}
+                                          />
+                                          <PlayerRow
+                                              key={player.ID}
+                                              idx={idx}
+                                              data={player}
+                                              getData={getPlayerData}
+                                              width={viewWidth}
+                                              redshirtCount={redshirtCount}
+                                              view={viewingUserTeam}
+                                              ts={cfb_Timestamp}
+                                          />
+                                      </>
                                   ))
                                 : ''}
                         </tbody>
@@ -440,9 +481,14 @@ const Roster = ({ currentUser, cfbTeam }) => {
     );
 };
 
-const mapStateToProps = ({ user: { currentUser }, cfbTeam: { cfbTeam } }) => ({
+const mapStateToProps = ({
+    user: { currentUser },
+    cfbTeam: { cfbTeam },
+    timestamp: { cfb_Timestamp }
+}) => ({
     currentUser,
-    cfbTeam
+    cfbTeam,
+    cfb_Timestamp
 });
 
 export default connect(mapStateToProps)(Roster);

@@ -57,6 +57,25 @@ export default class FBARecruitingService {
         return json;
     }
 
+    async GetAllTeamProfiles() {
+        let json;
+        let response = await fetch(url + 'recruiting/profile/all/', {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert(
+                'Recruiting Profiles Could Not be Acquired.\nHTTP-Error:',
+                response.status
+            );
+        }
+        return json;
+    }
+
     async GetRecruits() {
         let json;
         let response = await fetch(url + 'recruits/all/', {
@@ -113,10 +132,12 @@ export default class FBARecruitingService {
         let response = await fetch(url + 'recruiting/toggleScholarship/', {
             headers: {
                 authorization: localStorage.getItem('token'),
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
             },
-            method: 'PUT',
-            body: JSON.stringify(dto)
+            method: 'POST',
+            body: JSON.stringify(dto),
+            mode: 'cors'
         });
 
         if (response.ok) {

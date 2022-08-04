@@ -24,7 +24,7 @@ const Profile = ({ currentUser, cfbTeam }) => {
         !!currentUser && !!currentUser.username ? currentUser.username : '';
     let teamAbbr =
         !!currentUser && !!currentUser.teamAbbr ? currentUser.teamAbbr : '';
-    const logo = getLogo(team);
+    const logo = getLogo(teamAbbr);
     const [teamColors, setTeamColors] = React.useState('');
 
     useEffect(() => {

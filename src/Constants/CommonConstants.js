@@ -290,3 +290,4 @@ export const LetterGradesList = [
 ];
 
 export const SimpleLetterGrades = ['A', 'B', 'C', 'D', 'F'];
+export const StarsList = [1, 2, 3, 4, 5];

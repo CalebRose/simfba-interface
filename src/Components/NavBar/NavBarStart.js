@@ -6,7 +6,7 @@ import { useMediaQuery } from 'react-responsive';
 
 const NavBar_Start = ({ currentUser }) => {
     const user = currentUser;
-    const isMobile = useMediaQuery({ query: `(max-width:760px)` });
+    const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     const DesktopBarrier = () => {
         return !isMobile ? (
             <li className="nav-item">
@@ -167,7 +167,7 @@ const NavBar_Start = ({ currentUser }) => {
                     <span className="nav-link">NFL (Soon)</span>
                 </li>
                 <DesktopBarrier />
-                <li className="nav-item">
+                {/* <li className="nav-item">
                     {currentUser.cbb_team !== null &&
                     currentUser.cbb_team !== '' ? (
                         <CBBTeam />
@@ -180,8 +180,8 @@ const NavBar_Start = ({ currentUser }) => {
                 <DesktopBarrier />
                 <li className="nav-item">
                     <span className="nav-link">NBA (Soon)</span>
-                </li>
-                <DesktopBarrier />
+                </li> */}
+                {/* <DesktopBarrier /> */}
                 {currentUser.teamId === null ||
                 currentUser.nfl_id === null ||
                 currentUser.cbb_teamId === null ||

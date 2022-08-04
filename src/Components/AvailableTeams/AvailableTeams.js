@@ -111,7 +111,7 @@ class AvailableTeams extends Component {
                         team={team.TeamName}
                         mascot={team.Mascot}
                         conference={team.Conference}
-                        logo={getLogo(team.TeamName)}
+                        logo={getLogo(team.TeamAbbr)}
                         request={this.sendCFBRequest}
                         disable={this.state.sentRequest}
                     />
@@ -150,15 +150,15 @@ class AvailableTeams extends Component {
             <div className="container mt-2">
                 <h2 className="subtitle is-3">Available Teams</h2>
                 <div className="btn-group mb-2">
-                    <button
+                    {/* <button
                         type="button"
                         class="btn btn-primary btn-sm me-2"
                         value="CFB"
                         onClick={this.selectSport}
                     >
                         CFB Team
-                    </button>
-                    <button
+                    </button> */}
+                    {/* <button
                         type="button"
                         class="btn btn-primary btn-sm me-2"
                         value="NFL"
@@ -181,7 +181,7 @@ class AvailableTeams extends Component {
                         onClick={this.selectSport}
                     >
                         NBA Team
-                    </button>
+                    </button> */}
                 </div>
                 <div className="availableScrollbar available-ui-height availableTeams">
                     <div className="row  row-cols-1 row-cols-md-3 g-4">

@@ -37,6 +37,6 @@ export default class AdminService {
                 response.status)
             );
         }
-        return response;
+        return await response.json();
     }
 }

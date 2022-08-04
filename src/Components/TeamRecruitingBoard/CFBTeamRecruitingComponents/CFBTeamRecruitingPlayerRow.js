@@ -1,35 +1,42 @@
 import React from 'react';
 import { GetOverall } from '../../../_Utility/RosterHelper';
 import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
+import { CalculateAdjustedPoints } from '../../../_Utility/CFBRecruitingHelper';
+import CrootModal from '../../RecruitingOverview/CFBDashboardComponents/CFBDashboardCrootModal';
 import ConfirmRemovePlayerFromBoardModal from './CFBTeamRemovePlayerModal';
 import ConfirmRevokeModal from './CFBTeamRevokeScholarshipModal';
+import { getLogo } from '../../../Constants/getLogo';
 
 const CFBTeamDashboardPlayerRow = (props) => {
     const { recruitProfile, idx } = props;
     const { Recruit } = recruitProfile;
+    const logo =
+        Recruit && Recruit.College.length > 0 ? getLogo(Recruit.College) : '';
+    const crootModalTarget = '#crootModal' + idx;
     const revokeModalTarget = '#revokeModal' + idx;
     const removeModalTarget = '#removeModal' + idx;
     const heightObj = HeightToFeetAndInches(Recruit.Height);
 
+    const totalPoints = Math.round(recruitProfile.TotalPoints * 100) / 100;
+
     const leadingTeamsMapper = (croot) => {
         // Show list of leading teams
-        if (
-            croot.RecruitPlayerProfiles == null ||
-            croot.RecruitPlayerProfiles.length === 0
-        )
+        if (croot.LeadingTeams == null || croot.LeadingTeams.length === 0)
             return 'None';
 
-        const competingTeams = croot.RecruitPlayerProfiles.filter(
-            (x, idx) => x.TotalPoints > 0 && idx <= 2
-        );
-        const teamAbbrs = competingTeams.map((x) => x.TeamAbbreviation);
-        return teamAbbrs.join(', ');
+        const competingTeams = croot.LeadingTeams.filter((x, idx) => idx <= 2);
+
+        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+
+        return competingAbbrs.join(', ');
     };
 
     const leadingTeams = leadingTeamsMapper(Recruit);
 
     const name = Recruit.FirstName + ' ' + Recruit.LastName;
-    const CrootOverall = GetOverall(Recruit.Overall);
+    const CrootOverall = GetOverall(Recruit.OverallGrade);
+
+    const adjustedPoints = CalculateAdjustedPoints(recruitProfile);
 
     // LeadingTeamsMapper
 
@@ -48,6 +55,7 @@ const CFBTeamDashboardPlayerRow = (props) => {
 
     return (
         <>
+            <CrootModal crt={Recruit} idx={idx} />
             <ConfirmRevokeModal
                 idx={idx}
                 toggleScholarship={toggleScholarship}
@@ -74,6 +82,14 @@ const CFBTeamDashboardPlayerRow = (props) => {
                                 <i className="bi bi-mortarboard-fill link-success" />
                             </h2>
                         </button>
+                    ) : recruitProfile.IsSigned ? (
+                        <h2>
+                            <i className="bi bi-plus-circle-fill" />
+                        </h2>
+                    ) : recruitProfile.IsLocked ? (
+                        <h2>
+                            <i class="bi bi-file-lock-fill"></i>
+                        </h2>
                     ) : (
                         <h2>
                             <i
@@ -83,8 +99,16 @@ const CFBTeamDashboardPlayerRow = (props) => {
                         </h2>
                     )}
                 </th>
-                <td className="align-middle">
+                <td className="align-middle" style={{ width: 175 }}>
                     <h6>{name}</h6>
+                    <button
+                        type="button"
+                        className="btn btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target={crootModalTarget}
+                    >
+                        <i className="bi bi-info-circle" />
+                    </button>
                 </td>
                 <td className="align-middle">
                     <h6>{Recruit.Position}</h6>
@@ -93,21 +117,10 @@ const CFBTeamDashboardPlayerRow = (props) => {
                     <h6>{Recruit.Archetype}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{Recruit.HighSchool}</h6>
-                </td>
-                <td className="align-middle">
                     <h6>{Recruit.City}</h6>
                 </td>
                 <td className="align-middle">
                     <h6>{Recruit.State}</h6>
-                </td>
-                <td className="align-middle">
-                    <h6>
-                        {heightObj.feet}' {heightObj.inches}"
-                    </h6>
-                </td>
-                <td className="align-middle">
-                    <h6>{Recruit.Weight}</h6>
                 </td>
                 <td className="align-middle">
                     <h6>{Recruit.Stars}</h6>
@@ -141,9 +154,17 @@ const CFBTeamDashboardPlayerRow = (props) => {
                     </h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{leadingTeams}</h6>
+                    {Recruit.IsSigned ? (
+                        <img
+                            className="image-recruit-logo"
+                            src={logo}
+                            alt="WinningTeam"
+                        />
+                    ) : (
+                        <h6>{leadingTeams}</h6>
+                    )}
                 </td>
-                <td className="align-middle">
+                <td className="align-middle" style={{ width: 125 }}>
                     {Recruit.IsSigned || recruitProfile.CaughtCheating ? (
                         <h6>
                             <input
@@ -171,7 +192,10 @@ const CFBTeamDashboardPlayerRow = (props) => {
                     )}
                 </td>
                 <td className="align-middle">
-                    <h6>{recruitProfile.TotalPoints}</h6>
+                    <h6>{adjustedPoints}</h6>
+                </td>
+                <td className="align-middle">
+                    <h6>{totalPoints}</h6>
                 </td>
                 <td className="align-middle">
                     <button

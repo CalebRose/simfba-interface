@@ -64,4 +64,25 @@ export default class FBAPlayerService {
         }
         return json;
     }
+
+    async AssignRedshirt(dto) {
+        let response = await fetch(url + 'collegeplayers/assign/redshirt/', {
+            headers: {
+                authorization: localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(dto)
+        });
+
+        if (response.ok) {
+            console.log('Successfully added redshirt to player', dto.PlayerID);
+        } else {
+            throw (
+                ('HTTP-Error: Could not add redshirt to player',
+                response.status)
+            );
+        }
+        return true;
+    }
 }

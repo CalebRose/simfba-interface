@@ -7,6 +7,7 @@ import AdminService from '../../../_Services/simFBA/AdminService';
 import FBARecruitingService from '../../../_Services/simFBA/FBARecruitingService';
 import ConfirmRecruitSyncModal from './ConfirmRecruitSyncModal';
 import ConfirmRESSyncModal from './ConfirmRESModal';
+import ConfirmWeekSyncModal from './ConfirmWeekSyncModal';
 import CreateCrootModal from './CreateCrootModal';
 
 const ManageSim = ({ currentUser, cfb_Timestamp }) => {
@@ -19,9 +20,17 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
 
     useEffect(() => {
         console.log('Timestamp Syncing!');
+        ValidateSyncToNextWeek();
     }, [timestamp]);
 
-    const SyncAction = () => {};
+    const ValidateSyncToNextWeek = () => {
+        let valid = true;
+        const ts = { ...timestamp };
+        if (!ts.RecruitingEfficiencySynced || !ts.RecruitingSynced)
+            valid = false;
+        setCompletion(valid);
+    };
+
     const SyncRES = async () => {
         const ts = { ...timestamp };
 
@@ -45,26 +54,27 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
 
         let res = await _adminService.SyncTimestamp(UpdateTimestampDTO);
 
-        if (!res.ok) {
+        if (!res) {
             alert('RES Could not be Synced!');
         } else {
-            setTimestamp((x) => ts);
-            dispatch(setCFBTimestamp(ts));
+            const newTs = { ...res };
+            setTimestamp((x) => newTs);
+            dispatch(setCFBTimestamp(newTs));
         }
     };
 
     const SyncRecruiting = async () => {
         const ts = { ...timestamp };
 
-        if (!ts.RecruitingEfficiencySynced) {
+        if (!ts.RecruitingEfficiencySynced && !ts.IsRecruitingLocked) {
             alert(
-                'You must sync Recruiting Efficiency first before conducting the Recruiting sync.'
+                'You must sync Recruiting Efficiency first and lock recruiting before conducting the Recruiting sync.'
             );
             return;
         }
 
         ts.RecruitingSynced = true;
-
+        ts.IsRecruitingLocked = false;
         const UpdateTimestampDTO = {
             MoveUpCollegeWeek: false,
             MoveUpCollegeSeason: false,
@@ -78,16 +88,18 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             SaturdayNight: false,
             RESSynced: false,
             RecruitingSynced: true,
-            GMActionsCompleted: false
+            GMActionsCompleted: false,
+            IsRecruitingLocked: false
         };
 
         let res = await _adminService.SyncTimestamp(UpdateTimestampDTO);
 
-        if (!res.ok) {
-            alert('RES Could not be Synced!');
+        if (!res) {
+            alert('Could not complete recruiting sync!');
         } else {
-            setTimestamp((x) => ts);
-            dispatch(setCFBTimestamp(ts));
+            const newTs = { ...res };
+            setTimestamp((x) => newTs);
+            dispatch(setCFBTimestamp(newTs));
         }
     };
 
@@ -101,6 +113,77 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             // Set Service Message?
         } else {
             alert('HTTP-Error:', save.status);
+        }
+    };
+
+    const LockRecruiting = async () => {
+        const ts = { ...timestamp };
+
+        ts.IsRecruitingLocked = !ts.IsRecruitingLocked;
+
+        const UpdateTimestampDTO = {
+            MoveUpCollegeWeek: false,
+            MoveUpCollegeSeason: false,
+            MoveUpNFLWeek: false,
+            MoveUpNFLSeason: false,
+            ThursdayGames: false,
+            FridayGames: false,
+            SaturdayMorning: false,
+            SaturdayNoon: false,
+            SaturdayEvening: false,
+            SaturdayNight: false,
+            RESSynced: false,
+            RecruitingSynced: false,
+            ToggleRecruitingLock: true,
+            GMActionsCompleted: false
+        };
+
+        let res = await _adminService.SyncTimestamp(UpdateTimestampDTO);
+
+        if (!res) {
+            alert('Could not lock recruiting!');
+        } else {
+            const newTs = { ...res };
+            setTimestamp((x) => newTs);
+            dispatch(setCFBTimestamp(newTs));
+        }
+    };
+
+    const SyncToNextWeek = async () => {
+        const ts = { ...timestamp };
+
+        if (!ts.RecruitingEfficiencySynced && !ts.IsRecruitingLocked) {
+            alert(
+                'You must sync Recruiting Efficiency first and lock recruiting before conducting the Recruiting sync.'
+            );
+            return;
+        }
+
+        const UpdateTimestampDTO = {
+            MoveUpCollegeWeek: true,
+            MoveUpCollegeSeason: false,
+            MoveUpNFLWeek: false,
+            MoveUpNFLSeason: false,
+            ThursdayGames: false,
+            FridayGames: false,
+            SaturdayMorning: false,
+            SaturdayNoon: false,
+            SaturdayEvening: false,
+            SaturdayNight: false,
+            RESSynced: false,
+            RecruitingSynced: false,
+            GMActionsCompleted: false,
+            IsRecruitingLocked: false
+        };
+
+        let res = await _adminService.SyncTimestamp(UpdateTimestampDTO);
+
+        if (!res) {
+            alert('Could not sync to next week!');
+        } else {
+            const newTs = { ...res };
+            setTimestamp((x) => newTs);
+            dispatch(setCFBTimestamp(newTs));
         }
     };
 
@@ -120,7 +203,12 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                         </h3>
                     </div>
                     <div className="col col-md-3">
-                        <h3>CFB Week: </h3>
+                        <h3>
+                            CFB Week:{' '}
+                            {timestamp && timestamp.CollegeWeek
+                                ? timestamp.CollegeWeek
+                                : 'Loading...'}
+                        </h3>
                     </div>
                     <div className="col col-md-3">
                         <h3>NFL Week: </h3>
@@ -131,6 +219,7 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                 </div>
                 <ConfirmRecruitSyncModal save={SyncRecruiting} />
                 <ConfirmRESSyncModal save={SyncRES} />
+                <ConfirmWeekSyncModal save={SyncToNextWeek} />
                 <div className="row mt-3 mb-5">
                     <table className="table">
                         <thead>
@@ -141,7 +230,7 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            {/* <tr>
                                 <th scope="row">
                                     <h5>Thursday Games</h5>
                                 </th>
@@ -300,7 +389,7 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                                             : 'Incomplete'}
                                     </h5>
                                 </td>
-                            </tr>
+                            </tr> */}
                             {/* <tr>
                                 <th scope="row">
                                     <h5>NFL Thursday Games</h5>
@@ -464,6 +553,27 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                             </tr>
                             <tr>
                                 <th scope="row">
+                                    <h5>Lock Recruiting</h5>
+                                </th>
+                                <td>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary btn-sm"
+                                        onClick={LockRecruiting}
+                                    >
+                                        Sync
+                                    </button>
+                                </td>
+                                <td>
+                                    <h5>
+                                        {timestamp.IsRecruitingLocked
+                                            ? 'Locked'
+                                            : 'Unlocked'}
+                                    </h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
                                     <h5>Recruiting Actions</h5>
                                 </th>
                                 <td>
@@ -495,7 +605,7 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                                     </h5>
                                 </td>
                             </tr>
-                            <tr>
+                            {/* <tr>
                                 <th scope="row">
                                     <h5>GM Actions</h5>
                                 </th>
@@ -518,22 +628,29 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                                             : 'Incomplete'}
                                     </h5>
                                 </td>
-                            </tr>
+                            </tr> */}
                             <tr>
                                 <th scope="row">
                                     <h5>Sync to Next Week</h5>
                                 </th>
                                 <td>
-                                    <button
-                                        type="button"
-                                        className={
-                                            SyncComplete
-                                                ? 'btn btn-primary btn-sm'
-                                                : 'btn btn-secondary btn-sm'
-                                        }
-                                    >
-                                        Sync
-                                    </button>
+                                    {SyncComplete ? (
+                                        <button
+                                            type="button"
+                                            className="btn btn-primary btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#syncWeekModal"
+                                        >
+                                            Sync
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            className="btn btn-secondary btn-sm"
+                                        >
+                                            Sync
+                                        </button>
+                                    )}
                                 </td>
                             </tr>
                             <tr>

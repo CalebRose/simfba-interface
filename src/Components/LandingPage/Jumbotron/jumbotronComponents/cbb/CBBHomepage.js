@@ -26,7 +26,7 @@ const CBBHomePage = ({ currentUser }) => {
                 setTeam(response);
             };
             setTeamName(currentUser.cbb_team);
-            setLogo(getLogo(currentUser.cbb_team));
+            setLogo(getLogo(currentUser.cbb_abbr));
             getTeamRecord();
         }
     }, [currentUser]);

@@ -2,221 +2,221 @@ import logos from './logos';
 
 export const getLogo = (team) => {
     switch (team) {
-        case 'Air Force':
+        case 'USAF':
             return logos.Air_Force;
-        case 'Akron':
+        case 'AKRN':
             return logos.Akron_Zips;
-        case 'Alabama':
+        case 'BAMA':
             return logos.Alabama;
-        case 'Appalachian State':
+        case 'APST':
             return logos.App_State;
-        case 'Arizona':
+        case 'ZONA':
             return logos.Arizona;
-        case 'Arizona State':
+        case 'AZST':
             return logos.Arizona_State;
-        case 'Arkansas':
+        case 'ARK':
             return logos.Arkansas;
-        case 'Arkansas State':
+        case 'ARST':
             return logos.Arkansas_State;
-        case 'Army':
+        case 'ARMY':
             return logos.Army;
-        case 'Auburn':
+        case 'AUB':
             return logos.Auburn;
-        case 'Ball State':
+        case 'BALL':
             return logos.Ball_State;
-        case 'Baylor':
+        case 'BAYL':
             return logos.Baylor;
-        case 'Boise State':
+        case 'BOIS':
             return logos.Boise_State;
-        case 'Boston College':
+        case 'BC':
             return logos.Boston_College;
-        case 'Bowling Green':
+        case 'BGSU':
             return logos.Bowling_Green;
-        case 'Buffalo':
+        case 'BUFF':
             return logos.Buffalo;
         case 'BYU':
             return logos.BYU;
-        case 'California':
+        case 'CAL':
             return logos.California;
-        case 'Central Michigan':
+        case 'CMU':
             return logos.Central_Michigan;
-        case 'Charlotte':
+        case 'CHAR':
             return logos.Charlotte;
-        case 'Cincinnati':
+        case 'CINC':
             return logos.Cincinnati;
-        case 'Clemson':
+        case 'CLEM':
             return logos.Clemson;
-        case 'Coastal Carolina':
+        case 'CCU':
             return logos.Coastal_Carolina;
-        case 'Colorado':
+        case 'COLO':
             return logos.Colorado;
-        case 'Colorado State':
+        case 'CSU':
             return logos.Colorado_State;
-        case 'Duke':
+        case 'DUKE':
             return logos.Duke;
-        case 'East Carolina':
+        case 'ECU':
             return logos.East_Carolina;
-        case 'Eastern Michigan':
+        case 'EMU':
             return logos.Eastern_Michigan;
         case 'FIU':
             return logos.FIU;
-        case 'Florida':
+        case 'FLA':
             return logos.Florida;
-        case 'Florida Atlantic':
+        case 'FAU':
             return logos.Florida_Atlantic;
-        case 'Florida State':
+        case 'FSU':
             return logos.Florida_State;
-        case 'Fresno State':
+        case 'FRES':
             return logos.Fresno_State;
-        case 'Georgia':
+        case 'UGA':
             return logos.Georgia;
-        case 'Georgia Southern':
+        case 'GASO':
             return logos.Georgia_Southern;
-        case 'Georgia State':
+        case 'GAST':
             return logos.Georgia_State;
-        case 'Georgia Tech':
+        case 'GT':
             return logos.Georgia_Tech;
-        case 'Hawaii':
+        case 'HAWI':
             return logos.Hawaii;
-        case 'Houston':
+        case 'UHOU':
             return logos.Houston;
-        case 'Illinois':
+        case 'ILLI':
             return logos.Illinois;
-        case 'Indiana':
+        case 'IND':
             return logos.Indiana;
-        case 'Iowa':
+        case 'IOWA':
             return logos.Iowa;
-        case 'Iowa State':
+        case 'IAST':
             return logos.Iowa_State;
-        case 'Kansas':
+        case 'KANS':
             return logos.Kansas;
-        case 'Kansas State':
+        case 'KSST':
             return logos.Kansas_State;
-        case 'Kent State':
+        case 'KENT':
             return logos.Kent_State;
-        case 'Kentucky':
+        case 'UKEN':
             return logos.Kentucky;
-        case 'Liberty':
+        case 'LU':
             return logos.Liberty;
-        case 'Louisiana':
+        case 'ULL':
             return logos.Louisiana;
-        case 'Louisiana Monroe':
+        case 'ULM':
             return logos.Louisiana_Monroe;
-        case 'Louisiana Tech':
+        case 'LT':
             return logos.Louisiana_Tech;
-        case 'Louisville':
+        case 'LOU':
             return logos.Louisville;
         case 'LSU':
             return logos.LSU;
-        case 'Marshall':
+        case 'MRSH':
             return logos.Marshall;
-        case 'Maryland':
+        case 'UMD':
             return logos.Maryland;
-        case 'Memphis':
+        case 'MEMP':
             return logos.Memphis;
-        case 'Miami (FL)':
+        case 'MIAF':
             return logos.Miami;
-        case 'Miami (OH)':
+        case 'MIAO':
             return logos.Miami_OH;
-        case 'Michigan':
+        case 'MICH':
             return logos.Michigan;
-        case 'Michigan State':
+        case 'MIST':
             return logos.Michigan_State;
-        case 'Middle Tennessee':
+        case 'MTSU':
             return logos.Middle_Tennessee;
-        case 'Minnesota':
+        case 'MINN':
             return logos.Minnesota;
-        case 'Mississippi State':
+        case 'MSST':
             return logos.Mississippi_State;
-        case 'Missouri':
+        case 'MIZZ':
             return logos.Missouri;
-        case 'Navy':
+        case 'NAVY':
             return logos.Navy;
-        case 'NC State':
+        case 'NCST':
             return logos.NC_State;
-        case 'Nebraska':
+        case 'NEB':
             return logos.Nebraska;
-        case 'Nevada':
+        case 'NEV':
             return logos.Nevada;
-        case 'New Mexico':
+        case 'UNM':
             return logos.New_Mexico;
-        case 'New Mexico State':
+        case 'NMSU':
             return logos.New_Mexico_State;
-        case 'North Carolina':
+        case 'UNC':
             return logos.North_Carolina;
-        case 'North Texas':
+        case 'UNT':
             return logos.North_Texas;
-        case 'Northern Illinois':
+        case 'NIU':
             return logos.NIU;
-        case 'Northwestern':
+        case 'NW':
             return logos.Northwestern;
-        case 'Notre Dame':
+        case 'ND':
             return logos.Notre_Dame;
-        case 'Ohio':
+        case 'OHIO':
             return logos.Ohio;
-        case 'Ohio State':
+        case 'OHST':
             return logos.Ohio_State;
-        case 'Oklahoma':
+        case 'OKLA':
             return logos.Oklahoma;
-        case 'Oklahoma State':
+        case 'OKST':
             return logos.Oklahoma_State;
-        case 'Old Dominion':
+        case 'ODU':
             return logos.Old_Dominion;
-        case 'Ole Miss':
+        case 'MISS':
             return logos.Ole_Miss;
-        case 'Oregon':
+        case 'OREG':
             return logos.Oregon;
-        case 'Oregon State':
+        case 'ORST':
             return logos.Oregon_State;
-        case 'Penn State':
+        case 'PNST':
             return logos.Penn_State;
-        case 'Pittsburgh':
+        case 'PITT':
             return logos.Pitt;
-        case 'Purdue':
+        case 'PURD':
             return logos.Purdue;
-        case 'Rice':
+        case 'RICE':
             return logos.Rice;
-        case 'Rutgers':
+        case 'RUTG':
             return logos.Rutgers;
-        case 'San Diego State':
+        case 'SDSU':
             return logos.San_Diego;
-        case 'San Jose State':
+        case 'SJSU':
             return logos.San_Jose;
         case 'SMU':
             return logos.SMU;
-        case 'South Alabama':
+        case 'USA':
             return logos.South_Alabama;
-        case 'South Carolina':
+        case 'SOCA':
             return logos.South_Carolina;
-        case 'South Florida':
+        case 'USF':
             return logos.South_Florida;
-        case 'Southern Miss':
+        case 'USM':
             return logos.Southern_Miss;
-        case 'Stanford':
+        case 'STAN':
             return logos.Stanford;
-        case 'Syracuse':
+        case 'CUSE':
             return logos.Syracuse;
         case 'TCU':
             return logos.TCU;
-        case 'Temple':
+        case 'TEMP':
             return logos.Temple;
-        case 'Tennessee':
+        case 'TENN':
             return logos.Tennessee;
-        case 'Texas':
+        case 'TEX':
             return logos.Texas;
-        case 'Texas A&M':
+        case 'TAMU':
             return logos.TAMU;
-        case 'Texas State':
+        case 'TXST':
             return logos.Texas_State;
-        case 'Texas Tech':
+        case 'TTU':
             return logos.Texas_Tech;
-        case 'Toledo':
+        case 'TLDO':
             return logos.Toledo;
-        case 'Troy':
+        case 'TROY':
             return logos.Troy;
-        case 'Tulane':
+        case 'TLNE':
             return logos.Tulane;
-        case 'Tulsa':
+        case 'TULS':
             return logos.Tulsa;
         case 'UAB':
             return logos.UAB;
@@ -224,9 +224,9 @@ export const getLogo = (team) => {
             return logos.UCF;
         case 'UCLA':
             return logos.UCLA;
-        case 'UConn':
+        case 'CONN':
             return logos.Connecticut;
-        case 'UMass':
+        case 'MASS':
             return logos.UMASS;
         case 'UNLV':
             return logos.UNLV;
@@ -236,63 +236,63 @@ export const getLogo = (team) => {
             return logos.UTEP;
         case 'UTSA':
             return logos.UTSA;
-        case 'Utah':
+        case 'UTAH':
             return logos.Utah;
-        case 'Utah State':
+        case 'UTST':
             return logos.Utah_State;
-        case 'Vanderbilt':
+        case 'VAND':
             return logos.Vanderbilt;
-        case 'Virginia':
+        case 'UVA':
             return logos.Virginia;
-        case 'Virginia Tech':
+        case 'VT':
             return logos.Virginia_Tech;
-        case 'Wake Forest':
+        case 'WAKE':
             return logos.Wake_Forest;
-        case 'Washington':
+        case 'WASH':
             return logos.Washington;
-        case 'Washington State':
+        case 'WAST':
             return logos.Washington_State;
-        case 'West Virginia':
+        case 'WVU':
             return logos.West_Virginia;
-        case 'Western Kentucky':
+        case 'WKU':
             return logos.Western_Kentucky;
-        case 'Western Michigan':
+        case 'WMU':
             return logos.Western_Michigan;
-        case 'Wisconsin':
+        case 'WISC':
             return logos.Wisconsin;
-        case 'Wyoming':
+        case 'WYOM':
             return logos.Wyoming;
         case 'UMBC':
             return logos.UMBC;
-        case 'Wichita State':
+        case 'WIST':
             return logos.Wichita_State;
-        case 'San Diego':
+        case 'USD':
             return logos.San_Diego;
-        case "Saint Mary's":
+        case 'SMCC':
             return logos.St_Marys;
-        case 'Virginia Commonwealth':
+        case 'VCU':
             return logos.VCU;
-        case 'Georgetown':
+        case 'GEOT':
             return logos.Georgetown;
-        case 'St. Bonaventure':
+        case 'STB':
             return logos.St_Bonaventure;
-        case 'UC Irvine':
+        case 'UCIR':
             return logos.UC_Irvine;
-        case 'South Dakota State':
+        case 'SODS':
             return logos.South_Dakota_State;
-        case 'DePaul':
+        case 'DePA':
             return logos.DePaul;
-        case 'Florida Gulf Coast':
+        case 'FGCU':
             return logos.FGCU;
-        case 'Jacksonville':
+        case 'JKSV':
             return logos.Jacksonville;
-        case 'Omaha':
+        case 'UNOM':
             return logos.Omaha;
-        case 'Portland':
+        case 'PORT':
             return logos.Portland;
-        case 'Seattle':
+        case 'SEAU':
             return logos.Seattle;
-        case 'Evansville':
+        case 'EVAN':
             return logos.Evansville;
         case 'Seattle Supersonics':
             return logos.SEA_Supersonics;

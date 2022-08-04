@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
+import { getLogo } from '../../../Constants/getLogo';
 import { GetOverall } from '../../../_Utility/RosterHelper';
 
 const CFBDashboardPlayerRow = (props) => {
     const [flag, setFlag] = React.useState(false);
-    const { croot, idx, map } = props;
+    const { croot, idx, map, timestamp } = props;
     const rank = idx + 1;
     const name = croot.FirstName + ' ' + croot.LastName;
     const affinities = croot.AffinityTwo.length
@@ -12,6 +13,8 @@ const CFBDashboardPlayerRow = (props) => {
     const CrootOverall = GetOverall(croot.OverallGrade);
     const modalTarget = '#crootModal' + idx;
     const mapKey = croot.FirstName + croot.LastName + croot.HighSchool;
+    const logo =
+        croot && croot.College.length > 0 ? getLogo(croot.College) : '';
 
     useEffect(() => {
         if (map) {
@@ -85,11 +88,16 @@ const CFBDashboardPlayerRow = (props) => {
                 {!croot.IsSigned ? (
                     <h6>{leadingTeams}</h6>
                 ) : (
-                    <h6 className="text-success">{croot.College}</h6>
+                    <img
+                        className="image-recruit-logo"
+                        src={logo}
+                        alt="WinningTeam"
+                    />
+                    // <h6 className="text-success">{croot.College}</h6>
                 )}
             </td>
             <td className="align-middle">
-                {croot.IsSigned ? (
+                {croot.IsSigned || timestamp.CollegeWeek === 21 ? (
                     <h2>
                         <i class="bi bi-file-lock-fill"></i>
                     </h2>

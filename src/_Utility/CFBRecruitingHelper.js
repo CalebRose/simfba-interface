@@ -45,3 +45,19 @@ export const ValidateCloseToHome = (croot, abbr) => {
 
     return closeToHomeSchools.includes(abbr);
 };
+
+export const CalculateAdjustedPoints = (recruitProfile) => {
+    let am1 = recruitProfile.AffinityOneEligible;
+    let am2 = recruitProfile.AffinityTwoEligible;
+    let res = recruitProfile.RecruitingEfficiencyScore;
+    let points = recruitProfile.CurrentWeeksPoints;
+
+    if (am1) {
+        res = res + 0.1;
+    }
+    if (am2) {
+        res = res + 0.1;
+    }
+
+    return Math.round(points * res * 100) / 100;
+};

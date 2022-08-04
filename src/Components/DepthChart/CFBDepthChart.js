@@ -16,6 +16,7 @@ import { DepthChartPositionList } from './DepthChartConstants';
 import DepthChartHeader from './DepthChartHeader';
 import { GetAvailablePlayers, GetPositionAttributes } from './DepthChartHelper';
 import DepthChartPlayerRow from './DepthChartPlayerRow';
+import DepthChartMobilePlayerRow from './DepthChartMobilePlayerRow';
 
 const CFBDepthChart = ({ currentUser, cfbTeam }) => {
     // Services
@@ -42,7 +43,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
     const [errorMessage, setErrorMessage] = React.useState('');
     const [serviceMessage, setServiceMessage] = React.useState('');
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
-    const isMobile = useMediaQuery({ query: `(max-width:760px)` });
+    const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     const AttributeWarning =
         "Attribute ratings are based on the player's original position.";
 
@@ -76,7 +77,9 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
 
     useEffect(() => {
         if (team) {
-            setCanModify(team.ID === currentUser.teamId);
+            setCanModify(
+                team.ID === currentUser.teamId || currentUser.roleID === 'Admin'
+            );
             GetRoster(team.ID);
             GetDepthChart(team.ID);
             const colors = {
@@ -185,7 +188,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
 
     const GetRoster = async (ID) => {
         if (ID !== null || ID > 0) {
-            let roster = await rosterService.GetPlayersByTeam(ID);
+            let roster = await rosterService.GetPlayersByTeamNoRedshirts(ID);
             setRoster(roster);
         }
     };
@@ -283,6 +286,13 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
             let row = dc[i];
             const pos = row.Position;
             let NameKey = row.FirstName + row.LastName + row.PlayerID;
+            if (row.CollegePlayer.IsRedshirting) {
+                setValidation(false);
+                setErrorMessage(
+                    `${row.FirstName} ${row.LastName} is currently a redshirt player. Please swap them from their ${row.Position} position level.`
+                );
+                return;
+            }
             let isSpecialTeamsPosition =
                 pos === 'P' ||
                 pos === 'K' ||
@@ -389,14 +399,18 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
                         </button>
                     )}
                 </div>
-                <ServiceMessageBanner
-                    serMessage={serviceMessage}
-                    errMessage={errorMessage}
-                />
+                {!isMobile ? (
+                    <ServiceMessageBanner
+                        serMessage={serviceMessage}
+                        errMessage={errorMessage}
+                    />
+                ) : (
+                    ''
+                )}
             </div>
             <div className="row">
                 <div className="col-md-auto">
-                    <div className="drop-start btn-dropdown-width-team">
+                    <div className="drop-start btn-dropdown-width-team mt-1 mb-1">
                         <button
                             name="team"
                             className="btn dropdown-toggle btn-dropdown-width-team"
@@ -435,7 +449,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
                     </div>
                 </div>
                 <div className="col-md-auto">
-                    <div className="drop-start btn-dropdown-width-team">
+                    <div className="drop-start btn-dropdown-width-team mt-1 mb-1">
                         <button
                             name="position"
                             className="btn dropdown-toggle btn-dropdown-width-team"
@@ -475,31 +489,14 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
                     </div>
                 </div>
             </div>
-            <div className="row depth-chart-table mb-5">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            {positionAttributes &&
-                                positionAttributes.length > 0 &&
-                                positionAttributes.map((x, idx) => {
-                                    return (
-                                        <DepthChartHeader
-                                            key={idx}
-                                            idx={idx}
-                                            label={x.label}
-                                            abbr={x.abbr}
-                                            isMobile={isMobile}
-                                        />
-                                    );
-                                })}
-                        </tr>
-                    </thead>
-                    <tbody>
+            <div className="row depth-chart-table mt-1 mb-5">
+                {isMobile ? (
+                    <>
                         {currentDepthChartPositions &&
                             currentDepthChartPositions.length > 0 &&
                             currentDepthChartPositions.map((x, idx) => {
                                 return (
-                                    <DepthChartPlayerRow
+                                    <DepthChartMobilePlayerRow
                                         canModify={canModify}
                                         key={idx}
                                         player={x}
@@ -509,8 +506,46 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
                                     />
                                 );
                             })}
-                    </tbody>
-                </table>
+                    </>
+                ) : (
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                {positionAttributes &&
+                                    positionAttributes.length > 0 &&
+                                    positionAttributes.map((x, idx) => {
+                                        return (
+                                            <DepthChartHeader
+                                                key={idx}
+                                                idx={idx}
+                                                label={x.label}
+                                                abbr={x.abbr}
+                                                isMobile={isMobile}
+                                            />
+                                        );
+                                    })}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {currentDepthChartPositions &&
+                                currentDepthChartPositions.length > 0 &&
+                                currentDepthChartPositions.map((x, idx) => {
+                                    return (
+                                        <DepthChartPlayerRow
+                                            canModify={canModify}
+                                            key={idx}
+                                            player={x}
+                                            availablePlayers={availablePlayers}
+                                            positionAttributes={
+                                                positionAttributes
+                                            }
+                                            swapPlayer={SwapPlayer}
+                                        />
+                                    );
+                                })}
+                        </tbody>
+                    </table>
+                )}
             </div>
         </div>
     );

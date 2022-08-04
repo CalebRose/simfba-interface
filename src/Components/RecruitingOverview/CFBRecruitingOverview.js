@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense } from 'react';
+import React, { useEffect } from 'react';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
@@ -8,6 +8,7 @@ import {
     LetterGradesList,
     PositionList,
     SimpleLetterGrades,
+    StarsList,
     StatesList
 } from '../../Constants/CommonConstants';
 import FBARecruitingService from '../../_Services/simFBA/FBARecruitingService';
@@ -21,7 +22,9 @@ import {
 import CFBDashboardSidebar from './CFBDashboardComponents/CFBDashboardSidebar';
 import EasterEggService from '../../_Services/simFBA/EasterEggService';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { hidden, white } from 'colorette';
+import CFBDashboardRankingsModal from './CFBDashboardComponents/CFBDashboardRankingsModal';
+import { GetCollusionStatements } from '../../Constants/CollusionStatements';
+import CFBDashboardMobilePlayerRow from './CFBDashboardComponents/CFBDashboardMobilePlayerRow';
 
 const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     // Services
@@ -35,17 +38,20 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const [selectedStates, setSelectedStates] = React.useState('');
     const affinities = MapOptions(AffinitiesList);
     const letterGrades = MapOptions(LetterGradesList);
+    const stars = MapOptions(StarsList);
     const overallLetterGrades = MapOptions(SimpleLetterGrades);
     const [selectedPotentialLetterGrades, setSelectedPotentialLetterGrades] =
         React.useState('');
     const [selectedOverallLetterGrades, setSelectedOverallLetterGrades] =
         React.useState('');
     const [selectedAffinities, setSelectedAffinities] = React.useState('');
+    const [selectedStars, setSelectedStars] = React.useState('');
     const [recruits, setRecruits] = React.useState([]);
     const [filteredRecruits, setFilteredRecruits] = React.useState([]);
     const [viewableRecruits, setViewableRecruits] = React.useState([]);
     const [count, SetCount] = React.useState(100);
     const [recruitingProfile, setRecruitingProfile] = React.useState({});
+    const [teamProfiles, setTeamProfiles] = React.useState([]);
     const [recruitingNeeds, setRecruitingNeeds] = React.useState(null);
     const [crootMap, setCrootMap] = React.useState({});
     const [teamColors, setTeamColors] = React.useState('');
@@ -64,7 +70,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         }
     }, [viewWidth]);
 
-    const isMobile = useMediaQuery({ query: `(max-width:760px)` });
+    const isMobile = useMediaQuery({ query: `(max-width:844px)` });
 
     const handleResize = () => {
         setViewWidth(window.innerWidth);
@@ -91,6 +97,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                     cfbTeam && cfbTeam.ColorOne ? cfbTeam.ColorOne : '#6c757d'
             };
             setTeamColors(colors);
+            GetTeamProfiles();
         }
     }, [cfbTeam]);
 
@@ -103,7 +110,8 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         selectedPositions,
         selectedAffinities,
         selectedPotentialLetterGrades,
-        selectedOverallLetterGrades
+        selectedOverallLetterGrades,
+        selectedStars
     ]);
 
     //
@@ -133,6 +141,12 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         }
 
         setCrootMap(map);
+    };
+
+    const GetTeamProfiles = async () => {
+        let response = await _recruitingService.GetAllTeamProfiles();
+
+        setTeamProfiles(response);
     };
 
     const FilterCroots = (croots) => {
@@ -166,6 +180,10 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                     selectedOverallLetterGrades.includes(x.OverallGrade)
                 );
             }
+
+            if (selectedStars.length > 0) {
+                fr = fr.filter((x) => selectedStars.includes(x.Stars));
+            }
         }
 
         return fr;
@@ -198,6 +216,11 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         setSelectedOverallLetterGrades((x) => opts);
     };
 
+    const ChangeStars = (options) => {
+        const opts = [...options.map((x) => x.value)];
+        setSelectedStars((x) => opts);
+    };
+
     const AddRecruitToBoard = async (recruit) => {
         if (recruitingProfile.TotalCommitments <= 25) {
             let map = { ...crootMap };
@@ -226,7 +249,8 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                 Team: cfbTeam.TeamAbbr,
                 AffinityOneEligible: affinityOneValid,
                 AffinityTwoEligible: affinityTwoValid,
-                PlayerRecruit: recruit
+                PlayerRecruit: recruit,
+                RES: recruitingProfile.RecruitingEfficiencyScore
             };
 
             let newProfile =
@@ -253,11 +277,13 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     };
 
     const CollusionButton = async () => {
+        const message = GetCollusionStatements(currentUser, cfbTeam);
         const dto = {
-            username: cfbTeam.Coach,
-            Team: cfbTeam.TeamName,
-            Mascot: cfbTeam.Mascot
+            WeekID: cfb_Timestamp.CollegeWeekID,
+            SeasonID: cfb_Timestamp.CollegeSeasonID,
+            Message: message
         };
+        console.log(dto);
         setShowCollusionButton(false);
         await _easterEggService.CollusionCall(dto);
     };
@@ -272,7 +298,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         const newCount = [...currentRecruits].concat(
             [...filteredRecruits].slice(count, count + 100)
         );
-        setViewableRecruits((x) => newCount);
+        setViewableRecruits(() => newCount);
         SetCount((x) => x + 100);
     };
 
@@ -300,9 +326,16 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                     )}
                 </div>
                 <div className="col-md-10 px-md-4">
-                    <div className="row mt-3">
-                        <div className="col-md-auto justify-content-start">
+                    <div className="row mt-3 justify-content-between">
+                        <div className="col-md-auto">
                             <h4 className="text-start align-middle">Filters</h4>
+                        </div>
+                        <div className="col-md-auto">
+                            <h4 className="text-start align-middle me-2">
+                                {cfb_Timestamp
+                                    ? `Current Week ${cfb_Timestamp.CollegeWeek}`
+                                    : ''}
+                            </h4>
                         </div>
                     </div>
                     <div className="row">
@@ -313,7 +346,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             <Select
                                 options={positions}
                                 isMulti={true}
-                                className="basic-multi-select btn-dropdown-width-team z-index-2"
+                                className="basic-multi-select btn-dropdown-width-team z-index-6"
                                 classNamePrefix="select"
                                 onChange={ChangePositions}
                             />
@@ -324,7 +357,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             <Select
                                 options={states}
                                 isMulti={true}
-                                className="basic-multi-select btn-dropdown-width-team z-index"
+                                className="basic-multi-select btn-dropdown-width-team z-index-5"
                                 classNamePrefix="select"
                                 onChange={ChangeStates}
                             />
@@ -336,7 +369,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             <Select
                                 options={affinities}
                                 isMulti={true}
-                                className="basic-multi-select btn-dropdown-width-team z-index"
+                                className="basic-multi-select btn-dropdown-width-team z-index-4"
                                 classNamePrefix="select"
                                 onChange={ChangeAffinities}
                             />
@@ -348,7 +381,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             <Select
                                 options={letterGrades}
                                 isMulti={true}
-                                className="basic-multi-select btn-dropdown-width-team z-index"
+                                className="basic-multi-select btn-dropdown-width-team z-index-3"
                                 classNamePrefix="select"
                                 onChange={ChangePotentialLetterGrades}
                             />
@@ -362,11 +395,40 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             <Select
                                 options={overallLetterGrades}
                                 isMulti={true}
-                                className="basic-multi-select btn-dropdown-width-team z-index"
+                                className="basic-multi-select btn-dropdown-width-team z-index-2"
                                 classNamePrefix="select"
                                 onChange={ChangeOverallLetterGrades}
                             />
                         </div>
+                        <div className="col-md-auto">
+                            <h5 className="text-start align-middle">Stars</h5>
+                            <Select
+                                options={stars}
+                                isMulti={true}
+                                className="basic-multi-select btn-dropdown-width-team z-index-1"
+                                classNamePrefix="select"
+                                onChange={ChangeStars}
+                            />
+                        </div>
+                        {cfb_Timestamp && cfb_Timestamp.CollegeWeek > 5 ? (
+                            <div className="col-md-auto">
+                                <h5 className="text-start align-middle">
+                                    Team Rankings
+                                </h5>
+                                <button
+                                    type="button"
+                                    className="btn"
+                                    style={teamColors ? teamColors : {}}
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#rankingsModal"
+                                >
+                                    Recruiting Rankings
+                                </button>
+                            </div>
+                        ) : (
+                            ''
+                        )}
+
                         <div className="col-md-auto">
                             <h5 className="text-start align-middle">
                                 Export Croots
@@ -398,79 +460,139 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             ''
                         )}
                     </div>
-                    <div className="row mt-3 mb-3 dashboard-table-height">
-                        <InfiniteScroll
-                            dataLength={viewableRecruits.length}
-                            next={loadMoreRecords}
-                            hasMore={true}
-                            height={570}
-                            scrollThreshold={0.8}
-                            loader={
-                                <div className="row justify-content-center">
-                                    Loading More Croots...
-                                </div>
-                            }
-                            endMessage={
-                                <div className="row justify-content-center">
-                                    <h4>...that's all the croots we have.</h4>
-                                </div>
-                            }
-                        >
-                            <table className="table table-hover">
-                                <thead
-                                    style={{
-                                        position: 'sticky',
-                                        top: 0,
-                                        backgroundColor: 'white',
-                                        zIndex: 3
-                                    }}
-                                >
-                                    <tr>
-                                        <th scope="col">Rank</th>
-                                        <th scope="col" style={{ width: 175 }}>
-                                            Name
-                                        </th>
-                                        <th scope="col">Position</th>
-                                        <th scope="col" style={{ width: 175 }}>
-                                            Archetype
-                                        </th>
-                                        <th scope="col" style={{ width: 175 }}>
-                                            High School
-                                        </th>
-                                        <th scope="col" style={{ width: 175 }}>
-                                            City
-                                        </th>
-                                        <th scope="col">State</th>
-                                        <th scope="col">Stars</th>
-                                        <th scope="col">Overall</th>
-                                        <th scope="col">Potential</th>
-                                        <th scope="col">Affinities</th>
-                                        <th scope="col">Leading Schools</th>
-                                        <th scope="col">Add</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody className="overflow-auto">
-                                    {viewableRecruits.length > 0
-                                        ? viewableRecruits.map((x, idx) => (
-                                              <>
-                                                  <CrootModal
-                                                      crt={x}
-                                                      idx={idx}
-                                                  />
-                                                  <CFBDashboardPlayerRow
+                    <CFBDashboardRankingsModal teamProfiles={teamProfiles} />
+                    <div className="row mt-3 mb-5 dashboard-table-height">
+                        {cfb_Timestamp && !cfb_Timestamp.IsRecruitingLocked ? (
+                            <InfiniteScroll
+                                dataLength={viewableRecruits.length}
+                                next={loadMoreRecords}
+                                hasMore={true}
+                                height={570}
+                                scrollThreshold={0.8}
+                                loader={
+                                    <div className="row justify-content-center">
+                                        Loading More Croots...
+                                    </div>
+                                }
+                                endMessage={
+                                    <div className="row justify-content-center">
+                                        <h4>
+                                            ...that's all the croots we have.
+                                        </h4>
+                                    </div>
+                                }
+                            >
+                                {isMobile ? (
+                                    <>
+                                        {viewableRecruits.length > 0
+                                            ? viewableRecruits.map((x, idx) => (
+                                                  <CFBDashboardMobilePlayerRow
                                                       key={x.ID}
                                                       croot={x}
                                                       idx={idx}
                                                       add={AddRecruitToBoard}
                                                       map={crootMap}
+                                                      timestamp={cfb_Timestamp}
                                                   />
-                                              </>
-                                          ))
-                                        : ''}
-                                </tbody>
-                            </table>
-                        </InfiniteScroll>
+                                              ))
+                                            : ''}
+                                    </>
+                                ) : (
+                                    <table className="table table-hover">
+                                        <thead
+                                            style={{
+                                                position: 'sticky',
+                                                top: 0,
+                                                backgroundColor: 'white',
+                                                zIndex: 3
+                                            }}
+                                        >
+                                            <tr>
+                                                <th scope="col">Rank</th>
+                                                <th
+                                                    scope="col"
+                                                    style={{ width: 175 }}
+                                                >
+                                                    Name
+                                                </th>
+                                                <th scope="col">Position</th>
+                                                <th
+                                                    scope="col"
+                                                    style={{ width: 175 }}
+                                                >
+                                                    Archetype
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    style={{ width: 175 }}
+                                                >
+                                                    High School
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    style={{ width: 175 }}
+                                                >
+                                                    City
+                                                </th>
+                                                <th scope="col">State</th>
+                                                <th scope="col">Stars</th>
+                                                <th scope="col">Overall</th>
+                                                <th scope="col">Potential</th>
+                                                <th scope="col">Affinities</th>
+                                                <th scope="col">
+                                                    Leading Schools
+                                                </th>
+                                                <th scope="col">Add</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody className="overflow-auto">
+                                            {viewableRecruits.length > 0
+                                                ? viewableRecruits.map(
+                                                      (x, idx) => (
+                                                          <>
+                                                              <CrootModal
+                                                                  crt={x}
+                                                                  idx={idx}
+                                                              />
+                                                              <CFBDashboardPlayerRow
+                                                                  key={x.ID}
+                                                                  croot={x}
+                                                                  idx={idx}
+                                                                  add={
+                                                                      AddRecruitToBoard
+                                                                  }
+                                                                  map={crootMap}
+                                                                  timestamp={
+                                                                      cfb_Timestamp
+                                                                  }
+                                                              />
+                                                          </>
+                                                      )
+                                                  )
+                                                : ''}
+                                        </tbody>
+                                    </table>
+                                )}
+                            </InfiniteScroll>
+                        ) : (
+                            <>
+                                <div className="row justify-content-center mt-3 mb-2">
+                                    My dude, recruiting is currently in-sync.
+                                    Please wait until it's finished. Until then,
+                                    make some tea and enjoy the next few
+                                    minutes. Please check Discord for news on
+                                    the completion of this week's recruiting
+                                    sync.
+                                </div>
+
+                                <div className="row justify-content-center pt-2 mt-4 mb-2">
+                                    <div class="spinner-border" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

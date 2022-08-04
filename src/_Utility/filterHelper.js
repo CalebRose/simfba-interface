@@ -13,3 +13,19 @@ export const MapObjOptions = (arr) => {
         })
     ];
 };
+
+export const MapTeamOptions = (arr) => {
+    return [
+        ...arr.map((x) => {
+            return { label: x.TeamName, value: x.ID };
+        })
+    ];
+};
+
+export const MapConferenceOptions = (arr) => {
+    return [
+        ...arr.map((x) => {
+            return { label: x.ConferenceName, value: x.ID };
+        })
+    ];
+};

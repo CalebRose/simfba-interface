@@ -10,6 +10,7 @@ export default {
     CFB_TEAM_RECRUITING_BOARD: '/team/recruits',
     AVAILABLE_TEAMS: '/availableteams',
     CFB_RECRUITING: '/recruiting',
+    CFB_STATS: '/cfb/statistics',
     DEPTHCHART: '/depthchart',
     CFB_GAMEPLAN: '/cfb/team/gameplan',
     NFL_GAMEPLAN: '/nfl/team/gameplan',

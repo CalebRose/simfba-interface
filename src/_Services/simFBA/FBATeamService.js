@@ -97,4 +97,40 @@ export default class FBATeamService {
         }
         return json;
     }
+
+    async GetTeamStandingsByConference(conferenceID, seasonID) {
+        let response = await fetch(
+            url + `standings/cfb/${conferenceID}/${seasonID}/`,
+            {
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            }
+        );
+        let json;
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert('Http-Error', response.status);
+        }
+        return json;
+    }
+
+    async GetHistoricalTeamStandingsByTeamID(teamID) {
+        let response = await fetch(
+            url + `standings/cfb/history/team/${teamID}/`,
+            {
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            }
+        );
+        let json;
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert('Http-Error', response.status);
+        }
+        return json;
+    }
 }

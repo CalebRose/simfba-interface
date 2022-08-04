@@ -5,19 +5,20 @@ import { HeightToFeetAndInches } from '../../_Utility/utilHelper';
 const PlayerRow = (props) => {
     const [showRow, setShowRow] = React.useState(false);
     const [attributes, setAttributes] = React.useState([]);
+    const { idx, redshirtCount, ts, view } = props;
     let viewWidth = props.width;
     let data = props.data;
-    let school = props.school;
+    let modalTarget = '#redshirtModal' + idx;
 
     let ovr = GetOverall(data.Overall);
     const year = GetYear(data);
     const heightObj = HeightToFeetAndInches(data.Height);
-
-    /* 
-    Name, Position, Archtype, Ovr, Yr, Ht, Wt, St,
-    HS/JC, Pot, Num
-    
-    */
+    let redshirtLabel = '';
+    if (data.IsRedshirting) {
+        redshirtLabel = 'Current Redshirt';
+    } else {
+        redshirtLabel = 'Active Player';
+    }
 
     const toggleModal = () => {
         if (showRow) {
@@ -27,6 +28,11 @@ const PlayerRow = (props) => {
             props.getData(data, year);
         }
     };
+
+    const toggleRedshirtStatus = () => {
+        // props.RedshirtStatus
+    };
+
     if (viewWidth >= 901) {
         return (
             <tr>
@@ -47,7 +53,25 @@ const PlayerRow = (props) => {
                 </td>
                 <td label="Weight">{data.Weight}</td>
                 <td label="State">{data.State}</td>
-                <td label="School">{school}</td>
+                <td label="School">
+                    {data.IsRedshirting ? (
+                        <i className="bi bi-check-circle-fill rounded-circle link-danger"></i>
+                    ) : redshirtCount < 15 &&
+                      !data.IsRedshirt &&
+                      ts.CollegeWeek < 1 &&
+                      view ? (
+                        <button
+                            type="button"
+                            className="btn btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target={modalTarget}
+                        >
+                            <i className="bi bi-plus-circle-fill rounded-circle link-success"></i>
+                        </button>
+                    ) : (
+                        redshirtLabel
+                    )}
+                </td>
                 <td label="Potential">{data.PotentialGrade}</td>
             </tr>
         );

@@ -12,20 +12,45 @@ const CrootModal = (props) => {
         const { TeamAbbr, Odds } = lt;
         const displayOdds = Math.round(Odds * 100);
         let displayStatus = '';
-        if (displayOdds > 60) {
+        if (displayOdds > 50) {
             displayStatus = 'Strong Favorite';
-        } else if (displayOdds > 15) {
+        } else if (displayOdds > 25) {
             displayStatus = 'In Contention';
         } else {
             displayStatus = 'Unlikely';
         }
-        return (
+        return crt && crt.College === TeamAbbr ? (
+            <div className="row">
+                <div className="col">
+                    <h6 className="text-success">{TeamAbbr}</h6>
+                </div>
+                <div className="col">
+                    <h6>Committed!</h6>
+                </div>
+                <div className="col">
+                    <h6>Odds: {displayOdds}%</h6>
+                </div>
+            </div>
+        ) : (
             <div className="row">
                 <div className="col">
                     <h6>{TeamAbbr}</h6>
                 </div>
+                {crt && crt.College.length > 0 && crt.College !== TeamAbbr ? (
+                    <div className="col">
+                        <h6>Unlikely</h6>
+                    </div>
+                ) : (
+                    ''
+                )}
                 <div className="col">
-                    <h6>{displayStatus}</h6>
+                    <h6>
+                        {crt &&
+                        crt.College.length > 0 &&
+                        crt.College !== TeamAbbr
+                            ? 'Odds: ' + displayOdds + '%'
+                            : displayStatus}
+                    </h6>
                 </div>
             </div>
         );
@@ -109,18 +134,20 @@ const CrootModal = (props) => {
                                 {crt.AffinityTwo}
                             </div>
                         </div>
-                        {crt &&
-                        crt.LeadingTeams !== null &&
-                        crt.LeadingTeams.length > 0 ? (
-                            <div className="row g-1 mb-3">
+                        <div className="row g-1 mb-3">
+                            {crt && crt.College.length > 0 ? (
+                                <h5>Results</h5>
+                            ) : (
                                 <h5>Prediction</h5>
-                                {crt.LeadingTeams.map((lt) => {
+                            )}
+
+                            {crt &&
+                                crt.LeadingTeams !== null &&
+                                crt.LeadingTeams.length > 0 &&
+                                crt.LeadingTeams.map((lt) => {
                                     return <LeadingTeam lt={lt} />;
                                 })}
-                            </div>
-                        ) : (
-                            ''
-                        )}
+                        </div>
                         <div className="row g-2 mb-2">
                             <div className="col">
                                 <h5>Recruiting Preferences</h5>

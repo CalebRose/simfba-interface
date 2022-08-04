@@ -1,74 +1,50 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { connect } from 'react-redux';
+import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
 import { getLogo } from '../../../../../Constants/getLogo';
 import routes from '../../../../../Constants/routes';
 import { setCFBTeam } from '../../../../../Redux/cfbTeam/cfbTeam.actions';
+import FBALandingPageService from '../../../../../_Services/simFBA/FBALandingPageService';
+import FBAScheduleService from '../../../../../_Services/simFBA/FBAScheduleService';
 import FBATeamService from '../../../../../_Services/simFBA/FBATeamService';
+import StandingsMobileRow from '../standingsTable/StandingsMobileRow';
 import StandingsTableRow from '../standingsTable/standingsTableRow';
+import CFBMatchCard from './CFBMatchCard';
+import CFBNewsModal from './CFBNewsModal';
 
-const CFBHomepage = ({ currentUser, cfbTeam }) => {
+const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     let teamService = new FBATeamService();
+    let _landingService = new FBALandingPageService();
+    let _scheduleService = new FBAScheduleService();
     const dispatch = useDispatch();
     const [team, setTeam] = React.useState('');
     const [logo, setLogo] = React.useState('');
     const [teamData, setTeamData] = React.useState(null);
     const [teamColors, setTeamColors] = React.useState('');
-    const [previousMatches, setPreviousMatches] = React.useState([]);
-    const [currentMatches, setCurrentMatches] = React.useState([]);
+    const [previousMatch, setPreviousMatch] = React.useState(null);
+    const [currentMatch, setCurrentMatch] = React.useState(null);
+    const [nextMatch, setNextMatch] = React.useState(null);
+    const [games, setGames] = React.useState([]);
     const [standings, setStandings] = React.useState([]);
-
-    const standingsRecords = [
-        {
-            team: 'Washington State',
-            conferenceWins: 9,
-            conferenceLosses: 0,
-            totalWins: 13,
-            totalLosses: 0
-        },
-        {
-            team: 'Oregon',
-            conferenceWins: 7,
-            conferenceLosses: 2,
-            totalWins: 10,
-            totalLosses: 2
-        },
-        {
-            team: 'California',
-            conferenceWins: 6,
-            conferenceLosses: 3,
-            totalWins: 9,
-            totalLosses: 3
-        },
-        {
-            team: 'Stanford',
-            conferenceWins: 5,
-            conferenceLosses: 4,
-            totalWins: 8,
-            totalLosses: 4
-        },
-        {
-            team: 'Oregon State',
-            conferenceWins: 4,
-            conferenceLosses: 5,
-            totalWins: 7,
-            totalLosses: 5
-        },
-        {
-            team: 'Washington',
-            conferenceWins: 0,
-            conferenceLosses: 9,
-            totalWins: 0,
-            totalLosses: 12
+    const [secondStandings, setSecondStandings] = React.useState(null);
+    const [newsLogs, setNewsLogs] = React.useState(null);
+    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const isMobile = useMediaQuery({ query: `(max-width:845px)` });
+    const [previousMatchLabel, setPreviousMatchLabel] = React.useState('');
+    // For mobile
+    React.useEffect(() => {
+        if (!viewWidth) {
+            setViewWidth(window.innerWidth);
         }
-    ];
+    }, [viewWidth]);
 
     // Get Team call
     useEffect(() => {
         if (currentUser) {
             setTeam(currentUser.team);
-            setLogo(getLogo(currentUser.team));
+            setLogo(getLogo(currentUser.teamAbbr));
         }
         if (!cfbTeam) {
             getTeam();
@@ -77,7 +53,54 @@ const CFBHomepage = ({ currentUser, cfbTeam }) => {
                 setTeamData(cfbTeam);
             }
         }
-    }, [currentUser, cfbTeam]);
+        if (cfb_Timestamp !== null) {
+            let prevLabel = '';
+            if (cfb_Timestamp.CollegeWeek - 1 === -1) {
+                prevLabel = 'Off Season';
+            } else {
+                prevLabel = `Week ${cfb_Timestamp.CollegeWeek - 1}: Bye Week`;
+            }
+            setPreviousMatchLabel(prevLabel);
+            GetNewsLogs();
+        }
+        if (cfb_Timestamp && cfbTeam) {
+            GetConferenceStandings();
+            GetGames();
+        }
+    }, [currentUser, cfbTeam, cfb_Timestamp]);
+
+    useEffect(() => {
+        if (
+            cfb_Timestamp &&
+            cfb_Timestamp.CollegeWeek > -1 &&
+            games &&
+            games.length > 0
+        ) {
+            const currentWeek = cfb_Timestamp.CollegeWeek;
+            const prevWeek = currentWeek - 1;
+            const nextWeek = currentWeek + 1;
+            let prevGame = null;
+            let currGame = null;
+            let nextGame = null;
+            if (prevWeek > -1) {
+                let prevIdx = games.findIndex((x) => x.Week === prevWeek);
+                if (prevIdx > -1) {
+                    prevGame = games[prevIdx];
+                }
+            }
+            let currIdx = games.findIndex((x) => x.Week === currentWeek);
+            if (currIdx > -1) {
+                currGame = games[currIdx];
+            }
+            let nextIdx = games.findIndex((x) => x.Week === nextWeek);
+            if (nextIdx > -1) {
+                nextGame = games[nextIdx];
+            }
+            setPreviousMatch((x) => prevGame);
+            setCurrentMatch((x) => currGame);
+            setNextMatch((x) => nextGame);
+        }
+    }, [cfb_Timestamp, games]);
 
     useEffect(() => {
         if (teamData) {
@@ -102,128 +125,182 @@ const CFBHomepage = ({ currentUser, cfbTeam }) => {
         dispatch(setCFBTeam(response));
     };
 
-    const standingsRow = standingsRecords.map((x, i) => {
-        return <StandingsTableRow key={x.TeamName} record={x} rank={i + 1} />;
-    });
+    const GetNewsLogs = async () => {
+        const res = await _landingService.GetNewsLogs(
+            cfb_Timestamp.CollegeWeekID,
+            cfb_Timestamp.CollegeSeasonID
+        );
+
+        setNewsLogs(res);
+    };
+
+    const GetConferenceStandings = async () => {
+        const res = await teamService.GetTeamStandingsByConference(
+            cfbTeam.ConferenceID,
+            cfb_Timestamp.CollegeSeasonID
+        );
+
+        if (cfbTeam.DivisionID === 0) {
+            setStandings(res);
+        } else {
+            const division1Standings = res.filter(
+                (x) => x.DivisionID === cfbTeam.DivisionID
+            );
+            const division2Standings = res.filter(
+                (x) => x.DivisionID !== cfbTeam.DivisionID
+            );
+            setStandings((x) => division1Standings);
+            setSecondStandings((x) => division2Standings);
+        }
+    };
+
+    const GetGames = async () => {
+        const res = await _scheduleService.GetCollegeGamesByTeamAndSeason(
+            cfbTeam.ID,
+            cfb_Timestamp.CollegeSeasonID
+        );
+
+        setGames(res);
+    };
 
     return (
-        <div>
+        <>
             <div className="row mt-2">
                 <div className="col-md-auto justify-content-start">
                     <h2>{team}</h2>
                 </div>
-                <div className="col-3"></div>
-                <div className="col-3"></div>
-            </div>
-            <div className="row mt-2">
-                <div
-                    className={
-                        teamData
-                            ? 'col-md-auto col-sm justify-content-start'
-                            : 'col-md-12 justify-content-center'
-                    }
-                >
+                <div className="col-md-4">
+                    <h3 className="text-start">
+                        {cfb_Timestamp ? cfb_Timestamp.Season : ''}, Week{' '}
+                        {cfb_Timestamp !== null &&
+                        cfb_Timestamp.CollegeWeek !== null
+                            ? cfb_Timestamp.CollegeWeek
+                            : ''}
+                    </h3>
+                </div>
+                <div className="col-md-auto justify-content-start">
                     {teamData ? (
-                        <h3>
-                            {`${teamData.Conference} Conference, ${
-                                teamData.Division > 0 ? teamData.Division : ''
-                            } Division`}
-                        </h3>
+                        <h2 className="">
+                            {`${teamData.Conference} Conference ${
+                                teamData.Division.length > 0
+                                    ? `, ${teamData.Division} Division`
+                                    : ''
+                            }`}
+                        </h2>
                     ) : (
-                        <div className="alert alert-secondary" role="alert">
-                            <h3>
-                                <i>Loading...</i>
-                            </h3>
+                        <div className="row justify-content-center pt-2 mt-4 mb-2">
+                            <div className="spinner-border" role="status">
+                                <span className="sr-only">Loading...</span>
+                            </div>
                         </div>
                     )}
                 </div>
-                <div className="col-md-auto"></div>
-                <div className="col-3"></div>
             </div>
             <div className="row mt-2">
-                <div className="col-md-auto">
+                <div className="col-md-2">
                     <div className="image me-2">
-                        <img src={logo} alt="Go Cougs" />
+                        <img
+                            className={
+                                cfbTeam && cfbTeam.ID === 86
+                                    ? 'landing-image-purdue'
+                                    : ''
+                            }
+                            src={logo}
+                            alt="Go Cougs"
+                        />
                     </div>
                 </div>
-                <div className="col-md-auto">
-                    <div className="row justify-content-start">
-                        <h3 className="text-start">2021, Bowl Season</h3>
+                <div className="col-md-4">
+                    <div className="row justify-content-between">
+                        <div className="col-md-auto"></div>
+                        <div className="col-md-2"></div>
                     </div>
-                    <div className="row">
-                        <h4 className="text-start">Previous Week</h4>
-                        {previousMatches.length > 0 ? (
-                            <table class="table jumbotron-shadow rounded-3">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Game</th>
-                                        <th scope="col">Home Team</th>
-                                        <th scope="col">Home Points</th>
-                                        <th scope="col">Away Points</th>
-                                        <th scope="col">Away Team</th>
-                                        <th scope="col">Result</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr className="table-danger">
-                                        <th scope="row">A</th>
-                                        <td>Washington State</td>
-                                        <td>41</td>
-                                        <td>42</td>
-                                        <td>Michigan</td>
-                                        <td>L</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        ) : (
-                            <div className="alert alert-light" role="alert">
-                                No games played last week.
-                            </div>
-                        )}
-                    </div>
-                    <div className="row mt-2">
-                        <h4 className="text-start">Current Week</h4>
+                    <CFBNewsModal
+                        timestamp={cfb_Timestamp}
+                        newsLogs={newsLogs}
+                    />
 
-                        {currentMatches.length > 0 ? (
-                            <table className="table jumbotron-shadow rounded-3">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Game</th>
-                                        <th scope="col">Home Team</th>
-                                        <th scope="col"></th>
-                                        <th scope="col">Away Team</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">A</th>
-                                        <td>Alabama</td>
-                                        <td>vs</td>
-                                        <td>Washington State</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        ) : (
-                            <div className="alert alert-light" role="alert">
-                                No games played this week.
+                    {cfb_Timestamp !== null && previousMatch !== null ? (
+                        <div className="row">
+                            <CFBMatchCard
+                                game={previousMatch}
+                                team={cfbTeam}
+                                currentWeek={cfb_Timestamp.CollegeWeek}
+                            />
+                        </div>
+                    ) : (
+                        <div className="row">
+                            <div className="card text-dark bg-light mb-3">
+                                <div className="card-body">
+                                    <h5 className="card-title">
+                                        {previousMatchLabel}
+                                    </h5>
+                                </div>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
+                    {cfb_Timestamp !== null && currentMatch !== null ? (
+                        <div className="row mt-2">
+                            <CFBMatchCard
+                                game={currentMatch}
+                                team={cfbTeam}
+                                currentWeek={cfb_Timestamp.CollegeWeek}
+                            />
+                        </div>
+                    ) : (
+                        <div className="row">
+                            <div className="card text-dark bg-light mb-3">
+                                <div className="card-body">
+                                    <h5 className="card-title">
+                                        {cfb_Timestamp &&
+                                        cfb_Timestamp.CollegeWeek > -1
+                                            ? `Week ${cfb_Timestamp.CollegeWeek}: Bye Week`
+                                            : 'Bye Week'}
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {cfb_Timestamp !== null && nextMatch !== null ? (
+                        <div className="row mt-2">
+                            <CFBMatchCard
+                                game={nextMatch}
+                                team={cfbTeam}
+                                currentWeek={cfb_Timestamp.CollegeWeek}
+                            />
+                        </div>
+                    ) : (
+                        <div className="row">
+                            <div className="card text-dark bg-light mb-3">
+                                <div className="card-body">
+                                    <h5 className="card-title">
+                                        {cfb_Timestamp &&
+                                        cfb_Timestamp.CollegeWeek + 1 === 21
+                                            ? 'Off Season'
+                                            : `Week ${
+                                                  cfb_Timestamp &&
+                                                  cfb_Timestamp.CollegeWeek + 1
+                                              }: Bye Week`}
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="row mt-3">
-                        <div className="btn-group">
+                        <div className="btn-group-sm d-flex">
                             <Link
                                 to={routes.CFB_GAMEPLAN}
                                 role="button"
-                                class="btn btn-primary btn-md me-2 shadow"
+                                className="btn btn-primary btn-md me-2 shadow"
                                 style={teamColors ? teamColors : {}}
                             >
                                 Gameplan
                             </Link>
-
                             <Link
                                 to={routes.DEPTHCHART}
                                 role="button"
-                                class="btn btn-primary btn-md me-2 shadow"
+                                className="btn btn-primary btn-md me-2 shadow"
                                 style={teamColors ? teamColors : {}}
                             >
                                 Depth Chart
@@ -236,48 +313,134 @@ const CFBHomepage = ({ currentUser, cfbTeam }) => {
                             >
                                 Recruiting
                             </Link>
-                            <button
+                        </div>
+                    </div>
+                    <div className="row mt-2">
+                        <div className="btn-group-sm d-flex">
+                            <Link
+                                to={routes.CFB_STATS}
                                 type="button"
-                                className="btn btn-primary btn-md shadow"
+                                className="btn btn-primary btn-md me-2 shadow"
                                 style={teamColors ? teamColors : {}}
                             >
-                                Stats
+                                Statistics
+                            </Link>
+                            <button
+                                type="button"
+                                className="btn btn-primary btn-md me-2 shadow"
+                                style={teamColors ? teamColors : {}}
+                                data-bs-toggle="modal"
+                                data-bs-target="#newsModal"
+                            >
+                                News
                             </button>
                         </div>
                     </div>
                 </div>
-                <div className="col-md-auto ms-md-auto">
-                    <div className="row justify-content-start">
-                        <h3 className="text-start">Standings</h3>
-                        {standings.length > 0 ? (
-                            <table className="table jumbotron-shadow rounded-3">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Rank</th>
-                                        <th scope="col">Team</th>
-                                        <th scope="col">Conf Wins</th>
-                                        <th scope="col">Conf Losses</th>
-                                        <th scope="col">Total Wins</th>
-                                        <th scope="col me-2">Total Losses</th>
-                                    </tr>
-                                </thead>
-                                <tbody>{standingsRow}</tbody>
-                            </table>
+                <div className="col-md-6">
+                    <div
+                        className={
+                            isMobile
+                                ? 'row justify-content-start mt-2 ms-1'
+                                : 'row justify-content-start ms-1'
+                        }
+                    >
+                        <h3 className="text-start">Conference Standings</h3>
+
+                        {standings && standings.length > 0 ? (
+                            <>
+                                {isMobile ? (
+                                    <div className="mobile-card-viewer">
+                                        {standings.map((x, i) => {
+                                            return (
+                                                <StandingsMobileRow
+                                                    key={x.TeamName}
+                                                    record={x}
+                                                    rank={i + 1}
+                                                    secondDivision={false}
+                                                />
+                                            );
+                                        })}
+                                        {secondStandings &&
+                                            secondStandings.map((x, i) => {
+                                                return (
+                                                    <StandingsMobileRow
+                                                        key={x.TeamName}
+                                                        record={x}
+                                                        rank={i + 1}
+                                                        secondDivision={true}
+                                                    />
+                                                );
+                                            })}
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="row">
+                                            <div className="col-sm-1">
+                                                <h6>Rank</h6>
+                                            </div>
+                                            <div className="col-sm-3">
+                                                <h6>Team</h6>
+                                            </div>
+                                            <div className="col-sm-2">
+                                                <h6>Conf Wins</h6>
+                                            </div>
+                                            <div className="col-sm-2">
+                                                <h6>Conf Losses</h6>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                <h6>Total Wins</h6>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                <h6>Total Losses</h6>
+                                            </div>
+                                        </div>
+                                        {standings.map((x, i) => {
+                                            return (
+                                                <StandingsTableRow
+                                                    key={x.TeamName}
+                                                    record={x}
+                                                    rank={i + 1}
+                                                    secondDivision={false}
+                                                />
+                                            );
+                                        })}
+                                        {secondStandings &&
+                                            secondStandings.map((x, i) => {
+                                                return (
+                                                    <StandingsTableRow
+                                                        key={x.TeamName}
+                                                        record={x}
+                                                        rank={i + 1}
+                                                        secondDivision={true}
+                                                    />
+                                                );
+                                            })}
+                                    </>
+                                )}
+                            </>
                         ) : (
-                            <div className="alert alert-light" role="alert">
-                                To be implemented soon...
+                            <div className="row justify-content-center pt-2 mt-4 mb-2">
+                                <div className="spinner-border" role="status">
+                                    <span className="sr-only">Loading...</span>
+                                </div>
                             </div>
                         )}
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
-const mapStateToProps = ({ user: { currentUser }, cfbTeam: { cfbTeam } }) => ({
+const mapStateToProps = ({
+    user: { currentUser },
+    cfbTeam: { cfbTeam },
+    timestamp: { cfb_Timestamp }
+}) => ({
     currentUser,
-    cfbTeam
+    cfbTeam,
+    cfb_Timestamp
 });
 
 export default connect(mapStateToProps)(CFBHomepage);

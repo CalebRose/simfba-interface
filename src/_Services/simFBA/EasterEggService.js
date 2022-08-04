@@ -30,34 +30,16 @@ export default class EasterEggService {
     }
 
     async CollusionCall(dto) {
-        // const body = this.encodeParams(params);
-        // const response = await fetch(
-        //     'https://cors-anywhere.herokuapp.com/https://www.simfba.com/index.php?api/threads/',
-        //     {
-        //         headers: {
-        //             'Content-Type': 'application/x-www-form-urlencoded',
-        //             'XF-Api-Key': config.simFBAKey,
-        //             'XF-Api-User': config.simFBAUser
-        //         },
-        //         method: 'POST',
-        //         body: body,
-        //     }
-        // );
         let postRequest = await fetch(url + 'easter/egg/collude/', {
             headers: {
                 authorization: localStorage.getItem('token'),
                 'Content-Type': 'application/json'
             },
             method: 'POST',
-            body: JSON.stringify({
-                user: dto.username.toUpperCase(),
-                team: dto.Team,
-                mascot: dto.Mascot
-            })
+            body: JSON.stringify(dto)
         });
 
-        return postRequest;
-        if (response.ok) {
+        if (postRequest.ok) {
             console.log('Check the site you cheat!');
         } else {
             alert('Nice try :(');

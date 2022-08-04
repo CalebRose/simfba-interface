@@ -28,6 +28,7 @@ import { useMediaQuery } from 'react-responsive';
 import CFBGameplan from './Components/Gameplan/CFBGameplan';
 import CFBRecruitingOverview from './Components/RecruitingOverview/CFBRecruitingOverview';
 import CFBTeamRecruitingBoard from './Components/TeamRecruitingBoard/CFBTeamRecruitingBoard';
+import CFBStatisticsPage from './Components/Statistics/CFBStatisticsPage';
 
 const Home = ({ currentUser }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -151,6 +152,17 @@ const Home = ({ currentUser }) => {
                 render={() =>
                     CFBTeam > 0 ? (
                         <CFBTeamRecruitingBoard />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
+                path={routes.CFB_STATS}
+                render={() =>
+                    CFBTeam > 0 ? (
+                        <CFBStatisticsPage />
                     ) : (
                         <Redirect to={routes.LANDING} />
                     )
