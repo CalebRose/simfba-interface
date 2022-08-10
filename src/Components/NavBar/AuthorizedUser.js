@@ -2,56 +2,125 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { auth } from '../../Firebase/firebase';
 import routes from '../../Constants/routes';
+// Redux
+import { connect } from 'react-redux';
+import { setCurrentUser } from '../../Redux/user/user.actions';
 
 const authorizedUser = (props) => {
-  const { user } = props;
-  var RoleList = (props) => {
-    if (props.user.roleID === 1) {
-      return (
-        <div className='navbar-item has-dropdown'>
-          <a
-            href='#'
-            className='navbar-link'
-            data-toggle='dropdown'
-            role='button'
-            aria-expanded='false'
-          >
-            <span className='glyphicon glyphicon-info-sign'></span>
-            Administration <span className='caret'></span>
-          </a>
-          <div className='navbar-dropdown'>
-            <a className='navbar-item' href='/admin/teams/all'>
-              All Teams
-            </a>
-            <hr className='navbar-divider'></hr>
-            <a href='/admin/teams/assign'>Assign Team</a>
-          </div>
-        </div>
-      );
-    } else return null;
-  };
+    const { user, setCurrentUser } = props;
+    var FBAdmin = () => {
+        return (
+            <li className="nav-item dropdown">
+                <a
+                    class="nav-link dropdown-toggle"
+                    id="navbarDropdownMenuLink"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                >
+                    <span className="glyphicon glyphicon-info-sign"></span>
+                    Football Admin <span className="caret"></span>
+                </a>
+                <ul
+                    className="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton"
+                >
+                    <li className="dropdown-item">
+                        <Link to={routes.MANAGE_SIM} className="dropdown-item">
+                            Manage Sim <span className="caret"></span>
+                        </Link>
+                    </li>
+                    <li>
+                        <hr className="navbar-divider"></hr>
+                    </li>
+                    <li className="dropdown-item">
+                        <Link
+                            to={routes.MANAGE_USERS}
+                            className="dropdown-item"
+                        >
+                            Manage Teams <span className="caret"></span>
+                        </Link>
+                    </li>
+                    <li className="dropdown-item">
+                        <Link to={routes.APPROVE} className="dropdown-item">
+                            Approve Requests <span className="caret"></span>
+                        </Link>
+                    </li>
+                </ul>
+            </li>
+        );
+    };
 
-  const logout = () => {
-    auth.signOut();
-    localStorage.removeItem('token');
-  };
+    const BBAdmin = () => {
+        return (
+            <li className="nav-item dropdown">
+                <a
+                    class="nav-link dropdown-toggle"
+                    href="#"
+                    id="navbarDropdownMenuLink"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                >
+                    <span className="glyphicon glyphicon-info-sign"></span>
+                    Basketball Admin <span className="caret"></span>
+                </a>
+                <ul
+                    className="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton"
+                >
+                    <li className="dropdown-item">
+                        <Link to={routes.BBA_ADMIN} className="dropdown-item">
+                            Manage Sim <span className="caret"></span>
+                        </Link>
+                    </li>
+                    <li>
+                        <hr className="navbar-divider"></hr>
+                    </li>
+                    <li className="dropdown-item">
+                        <Link to={routes.BBA_USERS} className="dropdown-item">
+                            Manage Teams <span className="caret"></span>
+                        </Link>
+                    </li>
+                    <li className="dropdown-item">
+                        <Link to={routes.BBA_APPROVE} className="dropdown-item">
+                            Approve Requests <span className="caret"></span>
+                        </Link>
+                    </li>
+                </ul>
+            </li>
+        );
+    };
 
-  return (
-    <div className='navbar-end'>
-      <div className='navbar-item'>
-        <Link to={routes.USER}>
-          <span className='glyphicon glyphicon-user'></span>
-          {user.username}
-        </Link>
-      </div>
-      <div className='navbar-item'>
-        <Link to={routes.LANDING} onClick={logout}>
-          <span className='fas fa-sign-out-alt'></span> log out
-        </Link>
-      </div>
-      <RoleList user={user} />
-    </div>
-  );
+    const logout = () => {
+        auth.signOut();
+        localStorage.removeItem('token');
+        setCurrentUser(null);
+    };
+
+    return (
+        <ul className="navbar-nav justify-content-end">
+            {/* {user && user.bba_roleID === 'Admin' ? <BBAdmin /> : ''} */}
+            {user && user.roleID === 'Admin' ? <FBAdmin /> : ''}
+            <li className="nav-item">
+                <Link className="nav-link" to={routes.USER}>
+                    <span className="glyphicon glyphicon-user"></span>
+                    {user.username}
+                </Link>
+            </li>
+            <li className="nav-item">
+                <Link className="nav-link" to={routes.LANDING} onClick={logout}>
+                    <span className="primary fas fa-sign-out-alt"></span> Log
+                    Out
+                </Link>
+            </li>
+        </ul>
+    );
 };
 
-export default authorizedUser;
+const mapDispatchToProps = (dispatch) => ({
+    setCurrentUser: (user) => dispatch(setCurrentUser(user))
+});
+
+export default connect(null, mapDispatchToProps)(authorizedUser);

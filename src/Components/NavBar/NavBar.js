@@ -7,50 +7,51 @@ import NavBarStart from './NavBarStart';
 import { connect } from 'react-redux';
 
 const NavBar = ({ currentUser }) => {
-  /*
+    /*
     Will Need to setup some kind of Modal
   */
-  const user = currentUser;
-  return (
-    <nav
-      className='navbar is-transparent is-marginless heading has-text-weight-bold'
-      role='navigation'
-      aria-label='main navigation'
-    >
-      <div className='navbar-brand'>
-        <Link to={routes.LANDING} className='navbar-item'>
-          {/* Switch image to a home icon */}
-          {/* <img
-              src="https://bulma.io/images/bulma-logo.png"
-              alt="Bulma: Free, open source, & modern CSS framework based on Flexbox"
-              width="112"
-              height="28"
-            /> */}
-          <span className='glyphicon glyphicon-home'></span> Interface
-        </Link>
-        <p
-          role='button'
-          className='navbar-burger'
-          aria-label='menu'
-          aria-expanded='false'
+    const user = currentUser;
+    return (
+        <nav
+            className="navbar navbar-expand-lg navbar-light bg-light"
+            role="navigation"
+            aria-label="main navigation"
         >
-          <span aria-hidden='true'></span>
-          <span aria-hidden='true'></span>
-          <span aria-hidden='true'></span>
-        </p>
-      </div>
-      <div className='navbar-menu'>
-        {/* Probably create a component for navbar-start*/}
-        {user ? <NavBarStart user={user} /> : null}
-        {user ? <AuthorizedUser user={user} /> : <UnauthorizedUser />}
-      </div>
-    </nav>
-  );
-  // Return
+            <div className="container-fluid">
+                <Link to={routes.LANDING} className="navbar-brand">
+                    <span className="glyphicon glyphicon-home"></span>
+                    Interface
+                </Link>
+
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div className="collapse navbar-collapse" id="navbarNav">
+                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                        {user ? <NavBarStart user={user} /> : null}
+                    </ul>
+                    {user ? (
+                        <AuthorizedUser user={user} />
+                    ) : (
+                        <UnauthorizedUser />
+                    )}
+                </div>
+            </div>
+        </nav>
+    );
+    // Return
 };
 
 const mapStateToProps = ({ user: { currentUser } }) => ({
-  currentUser
+    currentUser
 });
 
 export default connect(mapStateToProps)(NavBar);

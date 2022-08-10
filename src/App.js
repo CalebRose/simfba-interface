@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { Route } from 'react-router-dom';
 
 // Redux
 import { connect } from 'react-redux';
 import { setCurrentUser } from './Redux/user/user.actions';
+import { setCBBTimestamp } from './Redux/timestamp/timestamp.actions';
+import { setCFBTimestamp } from './Redux/timestamp/timestamp.actions';
 
 // Firebase
 import { auth, createUserProfileDocument } from './Firebase/firebase';
@@ -14,85 +15,105 @@ import './App.css';
 import './style.css';
 
 // Routes and Pages
-import routes from './Constants/routes';
-import NavBar from './Components/NavBar/NavBar';
-import LandingPage from './Components/LandingPage/LandingPage';
-import AvailableTeams from './Components/AvailableTeams/AvailableTeams';
-import Profile from './Components/Profile/Profile';
-import Roster from './Components/Roster/Roster';
-import Team from './Components/Team/Team';
-import Login from './Components/SignUp_Login/LoginBody';
-import SignUp from './Components/SignUp_Login/SignUpBody';
-import DepthChart from './Components/DepthChart/DepthChart';
+import Home from './Home';
+import AdminService from './_Services/simFBA/AdminService';
 
 class App extends Component {
-  state = {
-    user: {
-      id: null,
-      username: '',
-      team: '',
-      teamAbbr: '',
-      mascot: '',
-      roleID: null,
-      teamId: '',
-    },
-  };
-  // Global Variables
-  unSubscribeFromAuth = null;
+    state = {
+        user: {
+            id: null,
+            username: '',
+            team: '',
+            teamAbbr: '',
+            mascot: '',
+            roleID: null,
+            teamId: ''
+        },
+        cbbTimeStamp: {
+            ID: null,
+            SeasonID: null,
+            CollegeWeekID: null,
+            NBAWeekID: null,
+            CollegeWeek: null,
+            NBAWeek: null,
+            GamesARan: false,
+            GamesBRan: false,
+            GamesCRan: false,
+            RecruitingSynced: false,
+            GMActionsComplete: false,
+            IsOffSeason: false
+        },
+        cfbTimeStamp: {
+            ID: null,
+            CollegeWeekID: null,
+            CollegeWeek: null,
+            CollegeSeasonID: null,
+            CollegeSeason: null,
+            NFLSeasonID: null,
+            NFLSeason: null,
+            ThursdayGames: false,
+            FridayGames: false,
+            SaturdayMorning: false,
+            SaturdayNoon: false,
+            SaturdayEvening: false,
+            SaturdayNight: false,
+            NFLThursdayEvening: false,
+            NFLSundayNoon: false,
+            NFLSundayAfternoon: false,
+            NFLSundayEvening: false,
+            NFLMondayEvening: false,
+            NFLTradingAllowed: false,
+            NFLPreseason: false,
+            RecruitingSynced: false,
+            GMActionsCompleted: false,
+            IsOffSeason: false
+        }
+    };
 
-  // Components
-  componentDidMount() {
-    const { setCurrentUser } = this.props;
+    _adminService = new AdminService();
 
-    this.unSubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
-      if (userAuth !== null) {
-        const userRef = await createUserProfileDocument(userAuth);
-        userRef.onSnapshot((snapShot) => {
-          setCurrentUser({
-            id: snapShot.id,
-            ...snapShot.data(),
-          });
+    // Global Variables
+    unSubscribeFromAuth = null;
+
+    // Components
+    componentDidMount() {
+        const { setCurrentUser, setCBBTimestamp, setCFBTimestamp } = this.props;
+
+        this.unSubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+            if (userAuth !== null) {
+                const userRef = await createUserProfileDocument(userAuth);
+                userRef.onSnapshot((snapShot) => {
+                    setCurrentUser({
+                        id: snapShot.id,
+                        ...snapShot.data()
+                    });
+                });
+
+                const cfb_Timestamp =
+                    await this._adminService.GetCurrentTimestamp();
+
+                setCFBTimestamp({ ...cfb_Timestamp });
+
+                userAuth
+                    .getIdToken(true)
+                    .then(function (idToken) {
+                        // Send token to your backend via HTTPS
+                        // ...
+                        localStorage.setItem('token', idToken);
+                    })
+                    .catch(function (error) {
+                        // Handle error
+                    });
+            }
         });
-      }
-      setCurrentUser(userAuth);
-    });
-  }
+    }
 
-  componentWillUnmount() {
-    this.unSubscribeFromAuth();
-  }
-  render() {
-    return (
-      <div className='App hero is-fullheight'>
-        <NavBar />
-        <Route exact path={routes.LANDING} component={LandingPage} />
-        <Route
-          exact
-          path={routes.USER}
-          render={() => <Profile data={this.state.user} />}
-        />
-        <Route
-          exact
-          path={routes.TEAM}
-          render={() => <Team data={this.state.user} />}
-        />
-        <Route
-          exact
-          path={routes.ROSTER}
-          render={() => <Roster data={this.state.user} />}
-        />
-        <Route
-          exact
-          path={routes.DEPTHCHART}
-          render={() => <DepthChart data={this.state.user} />}
-        />
-        <Route exact path={routes.AVAILABLE_TEAMS} component={AvailableTeams} />
-        <Route exact path={routes.RECRUITING} component={LandingPage} />
-        <Route exact path={routes.SIGNUP} component={SignUp} />
-        <Route exact path={routes.LOGIN} component={Login} />
-      </div>
-    );
-  }
+    componentWillUnmount() {
+        this.unSubscribeFromAuth();
+    }
+    render() {
+        return <Home />;
+    }
 }
 
 // const mapStateToProps = ({ user }) => ({ // commenting out, not used
@@ -100,7 +121,9 @@ class App extends Component {
 // });
 
 const mapDispatchToProps = (dispatch) => ({
-  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+    setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+    setCBBTimestamp: (cbbTimestamp) => dispatch(setCBBTimestamp(cbbTimestamp)),
+    setCFBTimestamp: (cfbTimestamp) => dispatch(setCFBTimestamp(cfbTimestamp))
 });
 
 export default withRouter(connect(null, mapDispatchToProps)(App));

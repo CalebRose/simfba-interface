@@ -1,85 +1,115 @@
 import React from 'react';
+import { GetOverall, GetYear, SetPriority } from '../../_Utility/RosterHelper';
+import { HeightToFeetAndInches } from '../../_Utility/utilHelper';
 
 const PlayerRow = (props) => {
-  console.log(props);
-  const [showRow, setShowRow] = React.useState(false);
-  const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
-  const [overall, setOverall] = React.useState('');
-  let ovr = props.data.Overall;
-  React.useEffect(() => {
-    if (!viewWidth) {
-      setViewWidth(window.innerWidth);
+    const [showRow, setShowRow] = React.useState(false);
+    const [attributes, setAttributes] = React.useState([]);
+    const { idx, redshirtCount, ts, view } = props;
+    let viewWidth = props.width;
+    let data = props.data;
+    let modalTarget = '#redshirtModal' + idx;
+
+    let ovr = GetOverall(data.Overall);
+    const year = GetYear(data);
+    const heightObj = HeightToFeetAndInches(data.Height);
+    let redshirtLabel = '';
+    if (data.IsRedshirting) {
+        redshirtLabel = 'Current Redshirt';
+    } else {
+        redshirtLabel = 'Active Player';
     }
-  }, [viewWidth]);
 
-  const handleResize = () => {
-    setViewWidth(window.innerWidth);
-  };
+    const toggleModal = () => {
+        if (showRow) {
+            setShowRow(!showRow);
+        } else {
+            data.Overall = ovr;
+            props.getData(data, year);
+        }
+    };
 
-  React.useEffect(() => {
-    if (ovr) {
-      let letter = '';
-      if (ovr >= 46) letter = 'A';
-      else if (ovr > 36) letter = 'B';
-      else if (ovr > 26) letter = 'C';
-      else if (ovr > 16) letter = 'D';
-      else letter = 'F';
-      setOverall(letter);
+    const toggleRedshirtStatus = () => {
+        // props.RedshirtStatus
+    };
+
+    if (viewWidth >= 901) {
+        return (
+            <tr>
+                <th
+                    className="clickable"
+                    onClick={toggleModal}
+                    data-bs-toggle="modal"
+                    data-bs-target="#playerModal"
+                >
+                    {props.data.FirstName + ' ' + props.data.LastName}
+                </th>
+                <td label="Archtype">{data.Archetype}</td>
+                <td label="Position">{data.Position}</td>
+                <td label="Overall">{ovr ? ovr : ''}</td>
+                <td label="Year">{year ? year : ''}</td>
+                <td label="Height">
+                    {heightObj.feet}' {heightObj.inches}"
+                </td>
+                <td label="Weight">{data.Weight}</td>
+                <td label="State">{data.State}</td>
+                <td label="School">
+                    {data.IsRedshirting ? (
+                        <i className="bi bi-check-circle-fill rounded-circle link-danger"></i>
+                    ) : redshirtCount < 15 &&
+                      !data.IsRedshirt &&
+                      ts.CollegeWeek < 1 &&
+                      view ? (
+                        <button
+                            type="button"
+                            className="btn btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target={modalTarget}
+                        >
+                            <i className="bi bi-plus-circle-fill rounded-circle link-success"></i>
+                        </button>
+                    ) : (
+                        redshirtLabel
+                    )}
+                </td>
+                <td label="Potential">{data.PotentialGrade}</td>
+            </tr>
+        );
+    } else {
+        return (
+            <tr
+                onTouchEnd={(e) => {
+                    if (e.cancelable) {
+                        e.preventDefault();
+                    }
+                    setShowRow(!showRow);
+                    setAttributes(SetPriority(data));
+                }}
+            >
+                <th className="clickable">
+                    {props.data.FirstName + ' ' + props.data.LastName}
+                </th>
+                {showRow ? (
+                    <>
+                        <td label="Archtype">{data.Archetype}</td>
+                        <td label="Position">{data.Position}</td>
+                        <td label="Overall">{ovr ? ovr : ''}</td>
+                        <td label="Year">{year ? year : ''}</td>
+                        <td label="Potential">{data.PotentialGrade}</td>
+                        {attributes && attributes.length > 0
+                            ? attributes.map((attr) => {
+                                  return (
+                                      <td label={attr.Name}>{attr.Letter}</td>
+                                  );
+                              })
+                            : ''}
+                    </>
+                ) : (
+                    ''
+                )}
+            </tr>
+        );
     }
-  }, [overall]);
-
-  window.addEventListener('resize', handleResize);
-  /* 
-    Name, Position, Archtype, Ovr, Yr, Ht, Wt, St,
-    HS/JC, Pot, Num
-    
-    */
-  let data = props.data;
-  const toggleModal = () => {
-    props.toggle();
-    props.getData(data);
-  };
-  if (showRow || viewWidth >= 901) {
-    return (
-      <tr
-        onTouchEnd={(e) => {
-          if (e.cancelable) {
-            e.preventDefault();
-          }
-          setShowRow(!showRow);
-        }}
-      >
-        <th className='clickable' onClick={toggleModal}>
-          {props.data.First_Name + ' ' + props.data.Last_Name}
-        </th>
-        <td label='Archtype'>{props.data.Archetype}</td>
-        <td label='Position'>{props.data.Position}</td>
-        <td label='Overall'>{overall}</td>
-        <td label='Year'>{props.data.Year}</td>
-        <td label='Height'>{props.data.Height}</td>
-        <td label='Weight'>{props.data.Weight}</td>
-        <td label='State'>{props.data.State}</td>
-        <td label='School'>{props.data.School}</td>
-        <td label='Potential'>{props.data.Potential}</td>
-        <td label='Number'>{props.data.JerseyNum}</td>
-      </tr>
-    );
-  } else {
-    return (
-      <tr
-        onTouchEnd={(e) => {
-          if (e.cancelable) {
-            e.preventDefault();
-          }
-          setShowRow(!showRow);
-        }}
-      >
-        <th className='clickable' onClick={toggleModal}>
-          {props.data.name}
-        </th>
-      </tr>
-    );
-  }
 };
 
 export default PlayerRow;

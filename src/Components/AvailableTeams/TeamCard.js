@@ -1,30 +1,58 @@
-import React from "react";
+import React from 'react';
 
-const TeamCard = props => {
-  return (
-    <div className="tile is-parent">
-      <div className="card team">
-        <div className="media">
-          <div className="media-left">
-            <figure className="image is-128x128">
-              <img src={props.logo} alt="logo" />
-            </figure>
-          </div>
-          <div className="">
-            <p className="title is-4">{props.team}</p>
-            <p className="subtitle is-6">{props.mascot}</p>
-            <p className="Conference">{props.conference}</p>
-            <p>
-              <strong>Head Coach:</strong> <i>None</i>
-            </p>
-          </div>
+const TeamCard = (props) => {
+    const team = { team: props.team, id: props.teamId };
+    const [requested, setRequested] = React.useState(false);
+
+    const sendRequest = () => {
+        if (props.disable === false) {
+            props.request(team);
+            setRequested(true);
+        }
+    };
+
+    return (
+        <div className="col">
+            <div className="card text-center team h-100">
+                <img
+                    className="card-img-top imageSize mx-auto"
+                    src={props.logo}
+                    alt="logo"
+                />
+                <div className="card-content card-body"></div>
+                <ul className="list-group list-group-flush">
+                    <li className="list-group-item card-text">
+                        <h5 className="card-title ">{props.team}</h5>
+                    </li>
+                    <li className="list-group-item card-text">
+                        <h6 className="card-subtitle">{props.mascot}</h6>
+                    </li>
+                    <li className="list-group-item card-text Conference">
+                        {props.conference}
+                    </li>
+                    <li className="list-group-item card-text">
+                        <strong>Head Coach:</strong> <i>None</i>
+                    </li>
+                </ul>
+                <footer
+                    onClick={sendRequest}
+                    className={
+                        props.disable ? 'card-footer disabled' : 'card-footer'
+                    }
+                >
+                    <p
+                        className={
+                            props.disable && !requested
+                                ? 'card-footer-item card-footer-item-disabled'
+                                : 'card-footer-item card-footer-item-active'
+                        }
+                    >
+                        {!requested ? 'Request' : 'Request Sent!'}
+                    </p>
+                </footer>
+            </div>
         </div>
-        <footer className="card-footer">
-          <p className="card-footer-item">Request</p>
-        </footer>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default TeamCard;
