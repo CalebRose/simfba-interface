@@ -46,7 +46,6 @@ const Team = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
 
     useEffect(() => {
         if (records !== null) {
-            console.log(records);
             setOverallWins(() => records.OverallWins);
             setOverallLosses(() => records.OverallLosses);
             setCurrentSeasonWins(() => records.CurrentSeasonWins);

@@ -7,12 +7,10 @@ export const PlayerStatRow = ({ statType, idx, player }) => {
     const games = player.PlayerStats ? player.PlayerStats.length : 0;
 
     const PassingRow = () => {
-        const completionPercentage =
-            seasonStats.PassAttempts > 0
-                ? seasonStats.PassCompletions / seasonStats.PassAttempts
-                : 0;
         const percentLabel =
-            parseFloat(completionPercentage * 100).toFixed(2) + '%';
+            parseFloat(seasonStats.Completion * 100).toFixed(2) + '%';
+
+        const passAvg = parseFloat(seasonStats.PassingAvg).toFixed(2);
 
         const qbr = parseFloat(seasonStats.QBRating).toFixed(2);
 
@@ -28,7 +26,8 @@ export const PlayerStatRow = ({ statType, idx, player }) => {
                     {seasonStats.PassCompletions}
                 </td>
                 <td label="PassingAttempts">{seasonStats.PassAttempts}</td>
-                <td label="PassingAvg">{percentLabel}</td>
+                <td label="Completion">{percentLabel}</td>
+                <td label="PassingAvg">{passAvg}</td>
                 <td label="PassingTDs">{seasonStats.PassingTDs}</td>
                 <td label="Interceptions">{seasonStats.Interceptions}</td>
                 <td label="Sacks">{seasonStats.Sacks}</td>
@@ -39,9 +38,7 @@ export const PlayerStatRow = ({ statType, idx, player }) => {
     };
 
     const RushingRow = () => {
-        const rushingAvg = parseFloat(
-            seasonStats.RushingYards / seasonStats.RushAttempts
-        ).toFixed(2);
+        const rushingAvg = parseFloat(seasonStats.RushingAvg).toFixed(2);
         return (
             <tr>
                 <th className="">{games}</th>
@@ -60,9 +57,7 @@ export const PlayerStatRow = ({ statType, idx, player }) => {
     };
 
     const ReceivingRow = () => {
-        const receivingAvg = parseFloat(
-            seasonStats.ReceivingYards / seasonStats.Catches
-        ).toFixed(2);
+        const receivingAvg = parseFloat(seasonStats.ReceivingAvg).toFixed(2);
         return (
             <tr>
                 <th className="">{games}</th>

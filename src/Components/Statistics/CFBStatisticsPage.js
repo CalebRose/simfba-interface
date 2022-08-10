@@ -19,7 +19,8 @@ import {
     ConductSort,
     GetDefaultStatsOrder,
     MapSeasonalPlayerData,
-    MapSeasonalTeamData
+    MapSeasonalTeamData,
+    uniq_fast
 } from '../../_Utility/utilHelper';
 import TeamOverallHeaders from './CFBStatsComponents/TeamOverallHeaders';
 import TeamOffenseHeaders from './CFBStatsComponents/TeamOffenseHeaders';
@@ -63,10 +64,7 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         }
     }, [currentUser]);
 
-    useEffect(() => {
-        console.log('Viewable Stats:', viewableStats);
-        console.log('Current View:', currentView);
-    }, [viewableStats, currentView, heismanList]);
+    useEffect(() => {}, [viewableStats, currentView]);
 
     useEffect(() => {
         if (collegePlayers.length > 0 && collegeTeams.length > 0) {
@@ -101,16 +99,69 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const FilterStatsData = (dataSet) => {
         // Player VS Team View
         if (dataSet.length > 0) {
-            if (currentView === 'TEAM' && selectedConferences.length > 0) {
-                dataSet = dataSet.filter((x) =>
-                    selectedConferences.includes(x.ConferenceID)
-                );
+            if (currentView === 'TEAM') {
+                if (selectedConferences.length > 0) {
+                    dataSet = dataSet.filter((x) =>
+                        selectedConferences.includes(x.ConferenceID)
+                    );
+                }
             }
 
-            if (currentView === 'PLAYER' && selectedTeams.length > 0) {
-                dataSet = dataSet.filter((x) =>
-                    selectedTeams.includes(x.TeamID)
-                );
+            if (currentView === 'PLAYER') {
+                let teamList = [];
+
+                if (selectedConferences.length > 0) {
+                    const teamSet = [...collegeTeams].filter((x) =>
+                        selectedConferences.includes(x.ConferenceID)
+                    );
+                    teamList = teamList.concat([...teamSet]);
+                    teamList = teamList.map((x) => x.ID);
+                }
+
+                if (selectedTeams.length > 0) {
+                    teamList = teamList.concat([...selectedTeams]);
+                    teamList = uniq_fast(teamList);
+                }
+                // filter out duplicates
+                if (teamList.length > 0) {
+                    dataSet = dataSet.filter((x) =>
+                        teamList.includes(x.TeamID)
+                    );
+                }
+
+                switch (statType) {
+                    case 'Passing':
+                        dataSet = dataSet.filter(
+                            (x) => x.SeasonStats.PassAttempts > 0
+                        );
+                        break;
+                    case 'Rushing':
+                        dataSet = dataSet.filter(
+                            (x) => x.SeasonStats.RushAttempts > 0
+                        );
+                        break;
+                    case 'Receiving':
+                        dataSet = dataSet.filter(
+                            (x) => x.SeasonStats.Targets > 0
+                        );
+                        break;
+                    case 'Defense':
+                        dataSet = dataSet.filter((x) =>
+                            [
+                                'ILB',
+                                'OLB',
+                                'DT',
+                                'DE',
+                                'CB',
+                                'FS',
+                                'SS'
+                            ].includes(x.Position)
+                        );
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
 
@@ -205,11 +256,9 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const LoadMoreRecords = () => {
         if (currentView === 'PLAYER') {
             const currentDataSet = [...viewableStats];
-            console.log(currentDataSet);
             let newCount = [...currentDataSet].concat(
                 [...filteredView].slice(count, count + 100)
             );
-            console.log(newCount);
 
             setCount((x) => x + 100);
             setViewableStats(() => newCount);
@@ -482,22 +531,18 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                         ) : (
                             ''
                         )}
-                        {currentView === 'TEAM' ? (
-                            <div className="col-md-auto">
-                                <h5 className="text-start align-middle">
-                                    Conferences
-                                </h5>
-                                <Select
-                                    options={conferenceOptions}
-                                    isMulti={true}
-                                    className="basic-multi-select btn-dropdown-width-team z-index-6"
-                                    classNamePrefix="select"
-                                    onChange={ChangeConferenceSelections}
-                                />
-                            </div>
-                        ) : (
-                            ''
-                        )}
+                        <div className="col-md-auto">
+                            <h5 className="text-start align-middle">
+                                Conferences
+                            </h5>
+                            <Select
+                                options={conferenceOptions}
+                                isMulti={true}
+                                className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                classNamePrefix="select"
+                                onChange={ChangeConferenceSelections}
+                            />
+                        </div>
                     </div>
                     <div className="row mt-2">
                         <div className="col-md-auto"></div>

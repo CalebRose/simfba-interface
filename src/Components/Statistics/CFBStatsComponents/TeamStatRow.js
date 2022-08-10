@@ -29,7 +29,6 @@ export const TeamStatRow = ({ statType, idx, team }) => {
 
     const OffenseRow = () => {
         const qbr = parseFloat(seasonStats.QBRating).toFixed(2);
-
         return (
             <tr>
                 <th className="">{games}</th>

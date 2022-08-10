@@ -17,7 +17,9 @@ const RushingHeaders = ({ sortFunc, cv }) => {
             <th scope="col" onClick={() => returnSort('RushAttempts', cv)}>
                 Rush Attempts
             </th>
-            <th scope="col">Rush Avg.</th>
+            <th scope="col" onClick={() => returnSort('RushingAvg', cv)}>
+                Rush Avg.
+            </th>
             <th scope="col" onClick={() => returnSort('RushingTDs', cv)}>
                 Rushing TDs
             </th>

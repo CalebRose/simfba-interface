@@ -4,7 +4,6 @@ const BBATeamDropdownItem = (props) => {
     let team = props.team;
 
     const handleChange = (event) => {
-        console.log(event);
         return props.selectTeam(team);
     };
     return (

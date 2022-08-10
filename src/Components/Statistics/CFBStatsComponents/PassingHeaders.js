@@ -20,7 +20,12 @@ const PassingHeaders = ({ sortFunc, cv }) => {
             <th scope="col" onClick={() => returnSort('PassAttempts', cv)}>
                 Passing Attempts
             </th>
-            <th scope="col">Percentage</th>
+            <th scope="col" onClick={() => returnSort('Completion', cv)}>
+                Percentage
+            </th>{' '}
+            <th scope="col" onClick={() => returnSort('PassingAvg', cv)}>
+                Passing Avg
+            </th>
             <th scope="col" onClick={() => returnSort('PassingTDs', cv)}>
                 Passing TDs
             </th>

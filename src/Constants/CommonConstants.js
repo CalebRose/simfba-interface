@@ -262,6 +262,7 @@ export const Religion = 'Religion';
 export const LargeCrowds = 'Large Crowds';
 export const SmallSchool = 'Small School';
 export const Frontrunner = 'Frontrunner';
+export const NoAffinity = '';
 
 export const AffinitiesList = [
     CloseToHome,
@@ -270,7 +271,8 @@ export const AffinitiesList = [
     Religion,
     LargeCrowds,
     SmallSchool,
-    Frontrunner
+    Frontrunner,
+    NoAffinity
 ];
 
 export const LetterGradesList = [

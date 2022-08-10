@@ -283,7 +283,6 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             SeasonID: cfb_Timestamp.CollegeSeasonID,
             Message: message
         };
-        console.log(dto);
         setShowCollusionButton(false);
         await _easterEggService.CollusionCall(dto);
     };
@@ -410,7 +409,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                 onChange={ChangeStars}
                             />
                         </div>
-                        {cfb_Timestamp && cfb_Timestamp.CollegeWeek > 5 ? (
+                        {cfb_Timestamp && cfb_Timestamp.CollegeWeek > 4 ? (
                             <div className="col-md-auto">
                                 <h5 className="text-start align-middle">
                                     Team Rankings

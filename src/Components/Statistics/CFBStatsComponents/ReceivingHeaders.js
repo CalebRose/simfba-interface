@@ -21,7 +21,9 @@ const ReceivingHeaders = ({ sortFunc, cv }) => {
             <th scope="col" onClick={() => returnSort('ReceivingYards', cv)}>
                 Receiving Yards
             </th>
-            <th scope="col">Receiving Avg.</th>
+            <th scope="col" onClick={() => returnSort('ReceivingAvg', cv)}>
+                Receiving Avg.
+            </th>
             <th scope="col" onClick={() => returnSort('ReceivingTDs', cv)}>
                 Receiving TDs
             </th>
