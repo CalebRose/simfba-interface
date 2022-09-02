@@ -110,6 +110,15 @@ const authorizedUser = (props) => {
                 </Link>
             </li>
             <li className="nav-item">
+                <a
+                    className="nav-link"
+                    href="https://www.simfba.com"
+                    target="_blank"
+                >
+                    SimFBA Site
+                </a>
+            </li>
+            <li className="nav-item">
                 <Link className="nav-link" to={routes.LANDING} onClick={logout}>
                     <span className="primary fas fa-sign-out-alt"></span> Log
                     Out

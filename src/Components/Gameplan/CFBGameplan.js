@@ -34,6 +34,7 @@ import {
     ValidateRunPlayDistribution
 } from './GameplanHelper';
 import DropdownItem from '../Roster/DropdownItem';
+import SchemeModal from './SchemeModal';
 
 const CFBGameplan = ({ currentUser, cfbTeam }) => {
     // GameplanService
@@ -490,7 +491,9 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
 
         const UpdateGameplanDTO = {
             GameplanID: gameplan.ID.toString(),
-            UpdatedGameplan: gameplan
+            UpdatedGameplan: gameplan,
+            Username: currentUser.username,
+            TeamName: cfbTeam.TeamName
         };
 
         // Set the Service Message
@@ -603,11 +606,22 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                     <h2>Offense</h2>
                 </div>
             </div>
+            <SchemeModal />
             <div className="row mt-1">
                 <div className="container offense-options">
                     <div className="row mb-1">
                         <div className="col-md-auto d-flex">
-                            <h4>Offensive Scheme:</h4>
+                            <h4>
+                                Offensive Scheme:
+                                <button
+                                    type="button"
+                                    className="btn btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#schemeModal"
+                                >
+                                    <i className="bi bi-info-circle" />
+                                </button>
+                            </h4>
                             <div className="dropdown">
                                 <button
                                     className="btn btn-secondary dropdown-toggle cfb-gameplan-btn scheme"

@@ -125,7 +125,8 @@ const CFBDashboardSidebar = (props) => {
                 <div className="row gx-1 mt-3 justify-content-center">
                     <h6>Scholarships Available</h6>
                     {recruitingProfile
-                        ? 25 - recruitingProfile.TotalCommitments
+                        ? recruitingProfile.RecruitClassSize -
+                          recruitingProfile.TotalCommitments
                         : 'N/A'}
                 </div>
                 <div className="row gx-1 mt-3 justify-content-center">

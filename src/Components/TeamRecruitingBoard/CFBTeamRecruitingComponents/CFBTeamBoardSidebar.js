@@ -109,7 +109,8 @@ const CFBTeamBoardSidebar = (props) => {
                 <div className="row mt-3 justify-content-center">
                     <h5>Scholarships Available</h5>
                     {recruitingProfile
-                        ? 25 - recruitingProfile.TotalCommitments
+                        ? recruitingProfile.RecruitClassSize -
+                          recruitingProfile.TotalCommitments
                         : 'N/A'}
                 </div>
                 <div className="row mt-3 justify-content-center">

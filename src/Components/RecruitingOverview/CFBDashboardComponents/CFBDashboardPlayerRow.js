@@ -27,7 +27,9 @@ const CFBDashboardPlayerRow = (props) => {
         if (croot.LeadingTeams == null || croot.LeadingTeams.length === 0)
             return 'None';
 
-        const competingTeams = croot.LeadingTeams.filter((x, idx) => idx <= 2);
+        const competingTeams = croot.LeadingTeams.filter(
+            (x, idx) => idx <= 2 && x.Odds > 0
+        );
 
         const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
 

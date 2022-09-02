@@ -43,9 +43,6 @@ export const TeamStatRow = ({ statType, idx, team }) => {
                 <td label="">{seasonStats.PassingInterceptions}</td>
                 <td label="">{seasonStats.RushingYards}</td>
                 <td label="RushingTDs">{seasonStats.RushingTouchdowns}</td>
-                <td label="">{seasonStats.ReceivingYards}</td>
-                <td label="RushingTDs">{seasonStats.ReceivingTouchdowns}</td>
-                <td label="Fumbles">{seasonStats.Fumbles}</td>
             </tr>
         );
     };

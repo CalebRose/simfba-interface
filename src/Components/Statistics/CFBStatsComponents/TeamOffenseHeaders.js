@@ -51,18 +51,6 @@ const TeamOffenseHeaders = ({ sortFunc, cv }) => {
             <th scope="col" onClick={() => returnSort('RushingTouchdowns', cv)}>
                 <abbr title="Rushing TDs">Ru TDs</abbr>
             </th>
-            <th scope="col" onClick={() => returnSort('ReceivingYards', cv)}>
-                <abbr title="Receiving Yards">Rec Yds</abbr>
-            </th>
-            <th
-                scope="col"
-                onClick={() => returnSort('ReceivingTouchdowns', cv)}
-            >
-                <abbr title="Receiving TDs">Rec TDs</abbr>
-            </th>
-            <th scope="col" onClick={() => returnSort('Fumbles', cv)}>
-                Fumbles
-            </th>
         </tr>
     );
 };
