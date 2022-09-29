@@ -6,17 +6,14 @@ import { Link } from 'react-router-dom';
 import { getLogo } from '../../../../../Constants/getLogo';
 import routes from '../../../../../Constants/routes';
 import { setCFBTeam } from '../../../../../Redux/cfbTeam/cfbTeam.actions';
-import FBALandingPageService from '../../../../../_Services/simFBA/FBALandingPageService';
 import FBAScheduleService from '../../../../../_Services/simFBA/FBAScheduleService';
 import FBATeamService from '../../../../../_Services/simFBA/FBATeamService';
 import StandingsMobileRow from '../standingsTable/StandingsMobileRow';
 import StandingsTableRow from '../standingsTable/standingsTableRow';
 import CFBMatchCard from './CFBMatchCard';
-import CFBNewsModal from './CFBNewsModal';
 
 const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     let teamService = new FBATeamService();
-    let _landingService = new FBALandingPageService();
     let _scheduleService = new FBAScheduleService();
     const dispatch = useDispatch();
     const [team, setTeam] = React.useState('');
@@ -29,7 +26,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const [games, setGames] = React.useState([]);
     const [standings, setStandings] = React.useState([]);
     const [secondStandings, setSecondStandings] = React.useState(null);
-    const [newsLogs, setNewsLogs] = React.useState(null);
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:845px)` });
     const [previousMatchLabel, setPreviousMatchLabel] = React.useState('');
@@ -61,7 +57,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                 prevLabel = `Week ${cfb_Timestamp.CollegeWeek - 1}: Bye Week`;
             }
             setPreviousMatchLabel(prevLabel);
-            GetNewsLogs();
+            // GetNewsLogs();
         }
         if (cfb_Timestamp && cfbTeam) {
             GetConferenceStandings();
@@ -123,15 +119,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         let response = await teamService.GetTeamByTeamId(currentUser.teamId);
         setTeamData(response);
         dispatch(setCFBTeam(response));
-    };
-
-    const GetNewsLogs = async () => {
-        const res = await _landingService.GetNewsLogs(
-            cfb_Timestamp.CollegeWeekID,
-            cfb_Timestamp.CollegeSeasonID
-        );
-
-        setNewsLogs(res);
     };
 
     const GetConferenceStandings = async () => {
@@ -245,21 +232,24 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             >
                                 Statistics
                             </Link>
-                            <button
+                            <Link
+                                to={routes.CFB_SCHEDULE}
                                 type="button"
                                 className="btn btn-primary btn-md me-2 shadow"
                                 style={teamColors ? teamColors : {}}
-                                data-bs-toggle="modal"
-                                data-bs-target="#newsModal"
+                            >
+                                Schedule
+                            </Link>
+                            <Link
+                                to={routes.NEWS}
+                                type="button"
+                                className="btn btn-primary btn-md me-2 shadow"
+                                style={teamColors ? teamColors : {}}
                             >
                                 News
-                            </button>
+                            </Link>
                         </div>
                     </div>
-                    <CFBNewsModal
-                        timestamp={cfb_Timestamp}
-                        newsLogs={newsLogs}
-                    />
 
                     {cfb_Timestamp !== null && previousMatch !== null ? (
                         <div className="row">

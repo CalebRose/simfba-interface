@@ -79,7 +79,10 @@ const NavBar_Start = ({ currentUser }) => {
                         </Link>
                     </li>
                     <li>
-                        <Link to={routes.SCHEDULING} className="dropdown-item">
+                        <Link
+                            to={routes.CFB_SCHEDULE}
+                            className="dropdown-item"
+                        >
                             Scheduling
                         </Link>
                     </li>

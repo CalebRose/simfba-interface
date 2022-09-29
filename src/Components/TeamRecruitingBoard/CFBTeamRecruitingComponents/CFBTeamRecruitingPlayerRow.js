@@ -68,8 +68,12 @@ const CFBTeamDashboardPlayerRow = (props) => {
             />
             <tr>
                 <th scope="row">
-                    {recruitProfile.ScholarshipRevoked ||
-                    recruitProfile.CaughtCheating ? (
+                    {recruitProfile.IsLocked ? (
+                        <h2>
+                            <i class="bi bi-file-lock-fill"></i>
+                        </h2>
+                    ) : recruitProfile.ScholarshipRevoked ||
+                      recruitProfile.CaughtCheating ? (
                         <h2>
                             <i className="bi bi-heartbreak-fill link-danger" />
                         </h2>
@@ -87,10 +91,6 @@ const CFBTeamDashboardPlayerRow = (props) => {
                     ) : recruitProfile.IsSigned ? (
                         <h2>
                             <i className="bi bi-plus-circle-fill" />
-                        </h2>
-                    ) : recruitProfile.IsLocked ? (
-                        <h2>
-                            <i class="bi bi-file-lock-fill"></i>
                         </h2>
                     ) : (
                         <h2>

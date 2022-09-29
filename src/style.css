@@ -16,6 +16,11 @@
     max-width: 100px;
 }
 
+.img-match-schedule {
+    max-height: 125px;
+    max-width: 125px;
+}
+
 /* logo */
 .logo {
     height: 36vh;

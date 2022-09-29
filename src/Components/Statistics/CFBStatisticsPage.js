@@ -26,6 +26,7 @@ import TeamOverallHeaders from './CFBStatsComponents/TeamOverallHeaders';
 import TeamOffenseHeaders from './CFBStatsComponents/TeamOffenseHeaders';
 import TeamDefensiveHeaders from './CFBStatsComponents/TeamDefenseHeaders';
 import HeismanModal from './CFBStatsComponents/HeismanModal';
+import OLineHeaders from './CFBStatsComponents/OLineStats';
 
 const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     // Services
@@ -158,6 +159,13 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             ].includes(x.Position)
                         );
                         break;
+                    case 'OLine':
+                        dataSet = dataSet.filter(
+                            (x) =>
+                                x.SeasonStats.Pancakes > 0 ||
+                                x.SeasonStats.SacksAllowed > 0
+                        );
+                        break;
 
                     default:
                         break;
@@ -217,6 +225,9 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                 } else {
                     ChangeSort('PointsAgainst', currentView);
                 }
+                break;
+            case 'OLine':
+                ChangeSort('Pancakes', currentView);
                 break;
             case 'Kicking':
                 ChangeSort('FGMade', currentView);
@@ -296,6 +307,8 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                 return (
                     <KickingHeaders sortFunc={ChangeSort} cv={currentView} />
                 );
+            if (statType === 'OLine')
+                return <OLineHeaders sortFunc={ChangeSort} cv={currentView} />;
         } else if (currentView === 'TEAM') {
             if (statType === 'Overall')
                 return (
@@ -434,6 +447,18 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                             value="Kicking"
                                         >
                                             Kicking
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={
+                                                statType === 'OLine'
+                                                    ? 'btn btn-primary'
+                                                    : 'btn btn-secondary'
+                                            }
+                                            onClick={SelectStatType}
+                                            value="OLine"
+                                        >
+                                            Offensive Line
                                         </button>
                                     </>
                                 ) : (

@@ -293,3 +293,9 @@ export const LetterGradesList = [
 
 export const SimpleLetterGrades = ['A', 'B', 'C', 'D', 'F'];
 export const StarsList = [1, 2, 3, 4, 5];
+export const NewsTypeList = [
+    { name: 'Collusion', abbr: 'Collusion' },
+    { name: 'Coaching Job', abbr: 'CoachJob' },
+    { name: 'Recruiting', abbr: 'Recruiting' },
+    { name: 'Commitment', abbr: 'Commitment' }
+];

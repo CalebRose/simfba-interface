@@ -31,6 +31,7 @@ export const GetDefaultStatsOrder = (newSortValue, sort, isAsc, newView) => {
         case 'PassingInterceptions':
         case 'QBSacks':
         case 'Fumbles':
+        case 'SacksAllowed':
             return true;
         default:
             return false;

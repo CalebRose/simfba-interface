@@ -325,6 +325,10 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                                         ? playerYear
                                                         : ''}
                                                 </p>
+                                                <p className="gap">
+                                                    <strong>Stars: </strong>
+                                                    {player.Stars}
+                                                </p>
                                             </div>
                                         </div>
                                         <div className="col">
@@ -435,6 +439,9 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                 </th>
                                 <th scope="col">
                                     <abbr title="State">St</abbr>
+                                </th>{' '}
+                                <th scope="col">
+                                    <abbr title="Stars">Sr</abbr>
                                 </th>
                                 <th scope="col">
                                     <abbr title="Redshirt">

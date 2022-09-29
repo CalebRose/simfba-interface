@@ -21,6 +21,13 @@ export const GetCollusionStatements = (user, team) => {
     const MessageTwenty = `Fans of the ${team.TeamName} ${team.Mascot} were reportedly pooling together money for a "Feed Developer" button as a means of improving their schools chances in the recruit sync. (It may work.)`;
     const MessageTwentyOne = `A recent anonymous tip suggests that high school recruits were offered emotional-support monkeys if they were to verbally commit to ${team.TeamName}.`;
     const MessageTwentyTwo = `A ${team.TeamName} booster has verbally denounced conference opponents claiming they were offering recruits more money than what they had on hand.`;
+    const MessageTwentyThree = `A high school athlete's family living in ${team.City}, ${team.State} reported to authorities of a sketchy-looking van with 'free scholarship 2 ${team.TeamName}' painted on the side.`;
+    const MessageTwentyFour = `This is your friendly reminder to not tweet at croots. Looking at you, ${team.TeamName} fans.`;
+    const MessageTwentyFive = `A high school athlete was berated by inebriated ${team.TeamName} fans after attending their last game on an official visit.`;
+    const MessageTwentySix = `An ESPN Executive was reportedly persuading croots to attend his alma-mater after negotiating a controversial tv deal between ESPN and ${team.TeamName}`;
+    const MessageTwentySeven = `Police uncovered an illegal NIL-ring consisting of ${team.TeamName} alumni attempting to take money promised from recruits attending other schools.`;
+    const MessageTwentyEight = `A high school recruit reported to authorities a false NIL deal from ${team.TeamName} where recruits would be compensated in university-bucks, as opposed to USD, if they attended the university.`;
+    const MessageTwentyNine = `After playing a game against ${team.TeamName} earlier in the season, a visiting collegiate athlete told local news that a well-reknowned ${team.TeamName} booster was DM-ing him monetary offers in exchange for transferring to ${team.TeamName}.`;
 
     const arr = [
         MessageOne,
@@ -44,7 +51,14 @@ export const GetCollusionStatements = (user, team) => {
         MessageNineteen,
         MessageTwenty,
         MessageTwentyOne,
-        MessageTwentyTwo
+        MessageTwentyTwo,
+        MessageTwentyThree,
+        MessageTwentyFour,
+        MessageTwentyFive,
+        MessageTwentySix,
+        MessageTwentySeven,
+        MessageTwentyEight,
+        MessageTwentyNine
     ];
 
     let pick = arr[Math.floor(Math.random() * arr.length)];

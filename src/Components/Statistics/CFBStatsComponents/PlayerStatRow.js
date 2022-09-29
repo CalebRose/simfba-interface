@@ -118,10 +118,25 @@ export const PlayerStatRow = ({ statType, idx, player }) => {
         );
     };
 
+    const OLineRow = () => {
+        return (
+            <tr>
+                <th className="">{games}</th>
+                <th className="">{name}</th>
+                <td label="team">{player.TeamAbbr}</td>
+                <td label="Position">{player.Position}</td>
+                <td label="Archetype">{player.Archetype}</td>
+                <td label="Pancakes">{seasonStats.Pancakes}</td>
+                <td label="SacksAllowed">{seasonStats.SacksAllowed}</td>
+            </tr>
+        );
+    };
+
     if (statType === 'Passing') return <PassingRow />;
     if (statType === 'Rushing') return <RushingRow />;
     if (statType === 'Receiving') return <ReceivingRow />;
     if (statType === 'Defense') return <DefensiveRow />;
     if (statType === 'Kicking') return <KickingRow />;
+    if (statType === 'OLine') return <OLineRow />;
     return '';
 };

@@ -29,6 +29,8 @@ import CFBGameplan from './Components/Gameplan/CFBGameplan';
 import CFBRecruitingOverview from './Components/RecruitingOverview/CFBRecruitingOverview';
 import CFBTeamRecruitingBoard from './Components/TeamRecruitingBoard/CFBTeamRecruitingBoard';
 import CFBStatisticsPage from './Components/Statistics/CFBStatisticsPage';
+import NewsPage from './Components/NewsPage/NewsPage';
+import CFBSchedulePage from './Components/Schedule/CFBSchedulePage';
 
 const Home = ({ currentUser }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -101,6 +103,17 @@ const Home = ({ currentUser }) => {
                     )
                 }
             />
+            <Route
+                exact
+                path={routes.CFB_SCHEDULE}
+                render={() =>
+                    CFBTeam > 0 ? (
+                        <CFBSchedulePage />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
             <Route exact path={routes.APPROVE}>
                 {roleId === Constants.ADMIN ? (
                     <ApproveRequests />
@@ -163,6 +176,17 @@ const Home = ({ currentUser }) => {
                 render={() =>
                     CFBTeam > 0 ? (
                         <CFBStatisticsPage />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
+                path={routes.NEWS}
+                render={() =>
+                    CFBTeam > 0 ? (
+                        <NewsPage />
                     ) : (
                         <Redirect to={routes.LANDING} />
                     )

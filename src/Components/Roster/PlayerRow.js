@@ -53,6 +53,7 @@ const PlayerRow = (props) => {
                 </td>
                 <td label="Weight">{data.Weight}</td>
                 <td label="State">{data.State}</td>
+                <td label="Stars">{data.Stars}</td>
                 <td label="School">
                     {data.IsRedshirting ? (
                         <i className="bi bi-check-circle-fill rounded-circle link-danger"></i>
