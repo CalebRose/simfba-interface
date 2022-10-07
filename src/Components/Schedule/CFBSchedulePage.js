@@ -72,6 +72,8 @@ const SchedulePage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             })
         ];
 
+        weekOptionsForm.unshift({ label: 0, value: 0 });
+
         setWeekOptions(() => weekOptionsForm);
     };
 

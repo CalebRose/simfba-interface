@@ -122,7 +122,7 @@ const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             teamProfile.ScholarshipsAvailable = !revokedVal
                 ? ScholarshipsAvailable + 1
                 : ScholarshipsAvailable - 1;
-            setRecruitingProfile(teamProfile);
+            setRecruitingProfile(() => teamProfile);
         }
     };
 

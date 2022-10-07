@@ -51,6 +51,7 @@ const GameRow = (props) => {
                             Home Team Coach: {homeTeam.Coach} | Away Team Coach:{' '}
                             {awayTeam.Coach}
                         </h6>
+                        <p className="card-text">{detailsLabel}</p>
                         {game.GameComplete && game.Week < currentWeek ? (
                             <p className="card-text">
                                 <span
@@ -74,7 +75,7 @@ const GameRow = (props) => {
                                 </span>
                             </p>
                         ) : (
-                            <p className="card-text">{detailsLabel}</p>
+                            ''
                         )}
                         <small className="card-text">
                             Location: {game.Stadium} in {game.City},{' '}
