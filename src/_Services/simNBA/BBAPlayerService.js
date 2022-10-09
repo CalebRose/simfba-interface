@@ -1,5 +1,6 @@
+import url from '../../Constants/SimBBA_url';
 export default class BBAPlayerService {
-    async GetPlayerByPlayerId(url, playerId) {
+    async GetPlayerByPlayerId(playerId) {
         let response = await fetch(url + 'GetPlayer/' + playerId, {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
@@ -15,7 +16,7 @@ export default class BBAPlayerService {
         return json;
     }
 
-    async GetPlayersByTeam(url, teamId) {
+    async GetPlayersByTeam(teamId) {
         let json;
         if (teamId > 0) {
             let response = await fetch(url + 'players/' + teamId, {
@@ -33,7 +34,7 @@ export default class BBAPlayerService {
         return json;
     }
 
-    async GetAllCollegePlayers(url) {
+    async GetAllCollegePlayers() {
         let response = await fetch(url + 'players/college', {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
@@ -49,7 +50,7 @@ export default class BBAPlayerService {
         return json;
     }
 
-    async GetRecruits(url) {
+    async GetRecruits() {
         let response = await fetch(url + 'players/college/recruits', {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
@@ -65,7 +66,7 @@ export default class BBAPlayerService {
         return json;
     }
 
-    async GetAllNBAPlayers(url) {
+    async GetAllNBAPlayers() {
         let response = await fetch(url + 'players/nba', {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
@@ -81,7 +82,7 @@ export default class BBAPlayerService {
         return json;
     }
 
-    async GetAllNBAFreeAgents(url) {
+    async GetAllNBAFreeAgents() {
         let response = await fetch(url + 'players/nba/freeAgents', {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')

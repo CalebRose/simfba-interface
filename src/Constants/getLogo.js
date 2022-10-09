@@ -36,6 +36,8 @@ export const getLogo = (team) => {
             return logos.Buffalo;
         case 'BYU':
             return logos.BYU;
+        case 'BUTL':
+            return logos.Butler;
         case 'CAL':
             return logos.California;
         case 'CMU':
@@ -52,8 +54,16 @@ export const getLogo = (team) => {
             return logos.Colorado;
         case 'CSU':
             return logos.Colorado_State;
+        case 'CREI':
+            return logos.Creighton;
+        case 'DNC':
+            return logos.Davidson;
+        case 'DAY':
+            return logos.Dayton;
         case 'DUKE':
             return logos.Duke;
+        case 'DUQU':
+            return logos.Duquesne;
         case 'ECU':
             return logos.East_Carolina;
         case 'EMU':
@@ -66,8 +76,14 @@ export const getLogo = (team) => {
             return logos.Florida_Atlantic;
         case 'FSU':
             return logos.Florida_State;
+        case 'FORD':
+            return logos.Fordham;
         case 'FRES':
             return logos.Fresno_State;
+        case 'GMU':
+            return logos.GeorgeMason;
+        case 'GWU':
+            return logos.GeorgeWashington;
         case 'UGA':
             return logos.Georgia;
         case 'GASO':
@@ -76,6 +92,8 @@ export const getLogo = (team) => {
             return logos.Georgia_State;
         case 'GT':
             return logos.Georgia_Tech;
+        case 'GONZ':
+            return logos.Gonzaga;
         case 'HAWI':
             return logos.Hawaii;
         case 'UHOU':
@@ -88,6 +106,8 @@ export const getLogo = (team) => {
             return logos.Iowa;
         case 'IAST':
             return logos.Iowa_State;
+        case 'JMU':
+            return logos.JMU;
         case 'KANS':
             return logos.Kansas;
         case 'KSST':
@@ -96,6 +116,8 @@ export const getLogo = (team) => {
             return logos.Kent_State;
         case 'UKEN':
             return logos.Kentucky;
+        case 'LASA':
+            return logos.LaSalle;
         case 'LU':
             return logos.Liberty;
         case 'ULL':
@@ -106,8 +128,14 @@ export const getLogo = (team) => {
             return logos.Louisiana_Tech;
         case 'LOU':
             return logos.Louisville;
+        case 'LOYO':
+            return logos.LoyolaC;
+        case 'LOYM':
+            return logos.LoyolaM;
         case 'LSU':
             return logos.LSU;
+        case 'MARQ':
+            return logos.Marquette;
         case 'MRSH':
             return logos.Marshall;
         case 'UMD':
@@ -168,20 +196,40 @@ export const getLogo = (team) => {
             return logos.Oregon;
         case 'ORST':
             return logos.Oregon_State;
+        case 'PAC':
+            return logos.Pacific;
         case 'PNST':
             return logos.Penn_State;
+        case 'PEPP':
+            return logos.Pepperdine;
         case 'PITT':
             return logos.Pitt;
+        case 'PROV':
+            return logos.Providence;
         case 'PURD':
             return logos.Purdue;
+        case 'RHO':
+            return logos.RhodeIsland;
         case 'RICE':
             return logos.Rice;
+        case 'RICH':
+            return logos.Richmond;
         case 'RUTG':
             return logos.Rutgers;
+        case 'SJH':
+            return logos.SaintJosephs;
+        case 'SLB':
+            return logos.SaintLouis;
         case 'SDSU':
-            return logos.San_Diego;
+            return logos.San_Diego_State;
+        case 'SFD':
+            return logos.SFDons;
         case 'SJSU':
             return logos.San_Jose;
+        case 'SCB':
+            return logos.SantaClara;
+        case 'SHU':
+            return logos.SetonHall;
         case 'SMU':
             return logos.SMU;
         case 'USA':
@@ -192,6 +240,8 @@ export const getLogo = (team) => {
             return logos.South_Florida;
         case 'USM':
             return logos.Southern_Miss;
+        case 'SJRS':
+            return logos.StJohns;
         case 'STAN':
             return logos.Stanford;
         case 'CUSE':
@@ -242,6 +292,8 @@ export const getLogo = (team) => {
             return logos.Utah_State;
         case 'VAND':
             return logos.Vanderbilt;
+        case 'VILL':
+            return logos.Villanova;
         case 'UVA':
             return logos.Virginia;
         case 'VT':
@@ -262,12 +314,14 @@ export const getLogo = (team) => {
             return logos.Wisconsin;
         case 'WYOM':
             return logos.Wyoming;
+        case 'XAV':
+            return logos.Xavier;
         case 'UMBC':
             return logos.UMBC;
         case 'WIST':
             return logos.Wichita_State;
         case 'USD':
-            return logos.San_Diego;
+            return logos.UC_San_Diego;
         case 'SMCC':
             return logos.St_Marys;
         case 'VCU':
@@ -278,7 +332,7 @@ export const getLogo = (team) => {
             return logos.St_Bonaventure;
         case 'UCIR':
             return logos.UC_Irvine;
-        case 'SODS':
+        case 'SDST':
             return logos.South_Dakota_State;
         case 'DePA':
             return logos.DePaul;

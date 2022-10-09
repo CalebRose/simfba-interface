@@ -1,7 +1,7 @@
 import React from 'react';
 
 const BBATeamCard = (props) => {
-    const team = { team: props.team, id: props.teamId };
+    const { ovr, off, def, team, mascot, logo, conference } = props;
     const [requested, setRequested] = React.useState(false);
 
     const sendRequest = () => {
@@ -16,23 +16,26 @@ const BBATeamCard = (props) => {
             <div className="card text-center team h-100">
                 <img
                     className="card-img-top imageSize mx-auto"
-                    src={props.logo}
+                    src={logo}
                     alt="logo"
                 />
-                <div className="card-content card-body">
+                <div className="card-body">
+                    <h5 className="card-title ">
+                        {team} {mascot}
+                    </h5>
+                    <h6 className="card-subtitle mb-1 text-muted">
+                        {conference} Conference
+                    </h6>
                 </div>
                 <ul className="list-group list-group-flush">
-                <li className="list-group-item card-text">
-                <h5 className="card-title ">{props.team}</h5>
+                    <li className="list-group-item card-text">
+                        <strong>Overall:</strong> {ovr}
                     </li>
                     <li className="list-group-item card-text">
-                        <h6 className="card-subtitle">{props.mascot}</h6>
-                    </li>
-                    <li className="list-group-item card-text Conference">
-                        {props.conference}
+                        <strong>Offense:</strong> {off}
                     </li>
                     <li className="list-group-item card-text">
-                        <strong>Head Coach:</strong> <i>None</i>
+                        <strong>Defense:</strong> {def}
                     </li>
                 </ul>
                 <footer

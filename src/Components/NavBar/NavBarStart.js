@@ -170,12 +170,14 @@ const NavBar_Start = ({ currentUser }) => {
                     )}
                     {/* <TeamTab user={user} username={user.username} teamAbbr={user.teamAbbr} /> */}
                 </li>
+                <>
+                    <DesktopBarrier />
+                    <li className="nav-item">
+                        <span className="nav-link">NFL (Soon)</span>
+                    </li>
+                </>
                 <DesktopBarrier />
                 <li className="nav-item">
-                    <span className="nav-link">NFL (Soon)</span>
-                </li>
-                <DesktopBarrier />
-                {/* <li className="nav-item">
                     {currentUser.cbb_team !== null &&
                     currentUser.cbb_team !== '' ? (
                         <CBBTeam />
@@ -185,7 +187,7 @@ const NavBar_Start = ({ currentUser }) => {
                         </li>
                     )}
                 </li>
-                <DesktopBarrier />
+                {/* <DesktopBarrier />
                 <li className="nav-item">
                     <span className="nav-link">NBA (Soon)</span>
                 </li> */}
@@ -194,9 +196,15 @@ const NavBar_Start = ({ currentUser }) => {
                 currentUser.nfl_id === null ||
                 currentUser.cbb_teamId === null ||
                 currentUser.nba_teamID === null ? (
-                    <AvailableTeams />
+                    <>
+                        <DesktopBarrier />
+                        <AvailableTeams />
+                    </>
                 ) : (
-                    <AvailableTeams />
+                    <>
+                        <DesktopBarrier />
+                        <AvailableTeams />
+                    </>
                 )}
             </ul>
         </div>

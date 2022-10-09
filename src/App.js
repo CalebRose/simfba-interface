@@ -17,6 +17,7 @@ import './style.css';
 // Routes and Pages
 import Home from './Home';
 import AdminService from './_Services/simFBA/AdminService';
+import BBAAdminService from './_Services/simNBA/BBAAdminService';
 
 class App extends Component {
     state = {
@@ -71,6 +72,7 @@ class App extends Component {
     };
 
     _adminService = new AdminService();
+    _bbaAdminService = new BBAAdminService();
 
     // Global Variables
     unSubscribeFromAuth = null;
@@ -93,6 +95,11 @@ class App extends Component {
                     await this._adminService.GetCurrentTimestamp();
 
                 setCFBTimestamp({ ...cfb_Timestamp });
+
+                const cbb_Timestamp =
+                    await this._bbaAdminService.GetCurrentTimestamp();
+
+                setCBBTimestamp({ ...cbb_Timestamp });
 
                 userAuth
                     .getIdToken(true)

@@ -1,7 +1,7 @@
 import React from 'react';
 
 const BBATeamPlayerRow = (props) => {
-    let player = props.player;
+    const { player } = props;
 
     // Row Functions
     const getYear = (player) => {
@@ -20,39 +20,19 @@ const BBATeamPlayerRow = (props) => {
         }
     };
 
-    const getOverall = (attribute) => {
-        if (attribute > 98) {
-            return 'A+';
-        } else if (attribute > 92) {
-            return 'A';
-        } else if (attribute > 89) {
-            return 'A-';
-        } else if (attribute > 87) {
-            return 'B+';
-        } else if (attribute > 82) {
-            return 'B';
-        } else if (attribute > 79) {
-            return 'B-';
-        } else if (attribute > 77) {
-            return 'C+';
-        } else if (attribute > 72) {
-            return 'C';
-        } else if (attribute > 69) {
-            return 'C-';
-        } else if (attribute > 67) {
-            return 'D+';
-        } else if (attribute > 62) {
-            return 'D';
-        } else if (attribute > 59) {
-            return 'D-';
+    const GetRedshirtStatus = (p) => {
+        if (p.IsRedshirt) {
+            return 'Former Redshirt';
+        } else if (p.IsRedshirting) {
+            return 'Redshirting';
         } else {
-            return 'F';
+            return 'Available';
         }
     };
 
     // Row Variables
     let year = getYear(player);
-    let potential = getOverall(player.Potential);
+    let redshirtStatus = GetRedshirtStatus(player);
 
     return (
         <tr>
@@ -65,18 +45,17 @@ const BBATeamPlayerRow = (props) => {
             <td className="align-middle">{player.Position}</td>
             <td className="align-middle">{year}</td>
             <td className="align-middle">{player.Stars}</td>
-            <td className="align-middle">{player.Overall}</td>
-            <td className="align-middle">{player.Shooting}</td>
-            <td className="align-middle">{player.Finishing}</td>
-            <td className="align-middle">{player.Ballwork}</td>
-            <td className="align-middle">{player.Rebounding}</td>
-            <td className="align-middle">{player.Defense}</td>
+            <td className="align-middle">{player.OverallGrade}</td>
+            <td className="align-middle">{player.Shooting2Grade}</td>
+            <td className="align-middle">{player.Shooting3Grade}</td>
+            <td className="align-middle">{player.FinishingGrade}</td>
+            <td className="align-middle">{player.BallworkGrade}</td>
+            <td className="align-middle">{player.ReboundingGrade}</td>
+            <td className="align-middle">{player.DefenseGrade}</td>
             <td className="align-middle">{player.Stamina}</td>
-            <td className="align-middle">{potential}</td>
+            <td className="align-middle">{player.PotentialGrade}</td>
             <td className="align-middle">{player.PlaytimeExpectations}</td>
-            <td className="align-middle">
-                {player.IsRedshirting ? 'Redshirting' : ''}
-            </td>
+            <td className="align-middle">{redshirtStatus}</td>
         </tr>
     );
 };

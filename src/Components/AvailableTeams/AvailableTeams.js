@@ -40,7 +40,7 @@ class AvailableTeams extends Component {
     CBBGetAvailableTeams = async () => {
         let teams = await this.BBATeamService.GetCollegeTeams(SimBBA_url);
         const filterTeams = teams.filter(
-            (x) => x.Coach === null || x.Coach === ''
+            (x) => x.Coach === null || x.Coach === '' || x.Coach === 'AI'
         );
         this.setState({ teams: teams, filterTeams: filterTeams });
     };
@@ -124,9 +124,12 @@ class AvailableTeams extends Component {
                         team={team.Team}
                         mascot={team.Nickname}
                         conference={team.Conference}
-                        logo={getLogo(team.Team)}
+                        logo={getLogo(team.Abbr)}
                         request={this.sendCBBRequest}
                         disable={this.state.sentRequest}
+                        ovr={team.OverallGrade}
+                        off={team.OffenseGrade}
+                        def={team.DefenseGrade}
                     />
                 );
             } else if (this.state.selectedSport === constants.NBA) {
@@ -147,45 +150,53 @@ class AvailableTeams extends Component {
         });
 
         return (
-            <div className="container mt-2">
-                <h2 className="subtitle is-3">Available Teams</h2>
-                <div className="btn-group mb-2">
-                    {/* <button
-                        type="button"
-                        class="btn btn-primary btn-sm me-2"
-                        value="CFB"
-                        onClick={this.selectSport}
-                    >
-                        CFB Team
-                    </button> */}
-                    {/* <button
-                        type="button"
-                        class="btn btn-primary btn-sm me-2"
-                        value="NFL"
-                        onClick={this.selectSport}
-                    >
-                        NFL Team
-                    </button>
-                    <button
-                        type="button"
-                        class="btn btn-primary btn-sm me-2"
-                        value="CBB"
-                        onClick={this.selectSport}
-                    >
-                        CBB Team
-                    </button>
-                    <button
-                        type="button"
-                        class="btn btn-primary btn-sm"
-                        value="NBA"
-                        onClick={this.selectSport}
-                    >
-                        NBA Team
-                    </button> */}
+            <div className="container-fluid mt-3">
+                <div className="justify-content-start">
+                    <h2 className="subtitle is-3">Available Teams</h2>
                 </div>
-                <div className="availableScrollbar available-ui-height availableTeams">
-                    <div className="row  row-cols-1 row-cols-md-3 g-4">
-                        {teamCards}
+                <div className="row">
+                    <div className="col-md-2">
+                        <div className="btn-group mb-2">
+                            <button
+                                type="button"
+                                class="btn btn-primary btn-sm me-2"
+                                value="CFB"
+                                onClick={this.selectSport}
+                            >
+                                CFB Team
+                            </button>
+                            {/* <button
+                                type="button"
+                                class="btn btn-primary btn-sm me-2"
+                                value="NFL"
+                                onClick={this.selectSport}
+                            >
+                                NFL Team
+                            </button> */}
+                            <button
+                                type="button"
+                                class="btn btn-primary btn-sm me-2"
+                                value="CBB"
+                                onClick={this.selectSport}
+                            >
+                                CBB Team
+                            </button>
+                            {/* <button
+                                type="button"
+                                class="btn btn-primary btn-sm"
+                                value="NBA"
+                                onClick={this.selectSport}
+                            >
+                                NBA Team
+                            </button> */}
+                        </div>
+                    </div>
+                    <div className="col-md-10">
+                        <div className="availableScrollbar available-ui-height availableTeams">
+                            <div className="row  row-cols-1 row-cols-md-3 g-4">
+                                {teamCards}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

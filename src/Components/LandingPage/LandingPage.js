@@ -46,56 +46,56 @@ const LandingPage = ({ currentUser }) => {
                     ''
                 ) : (
                     <div className="col-2">
-                        {/* <div className="btn-group-sm btn-group-vertical d-flex">
-                        {currentUser && currentUser.teamId ? (
-                            <button
-                                type="button"
-                                className="btn btn-primary btn-sm mb-2"
-                                value="CFB"
-                                onClick={selectSport}
-                            >
-                                CFB Team
-                            </button>
-                        ) : (
-                            ''
-                        )}
-                        {currentUser && currentUser.nfl_id ? (
-                            <button
-                                type="button"
-                                className="btn btn-primary btn-sm mb-2"
-                                value="NFL"
-                                onClick={selectSport}
-                            >
-                                NFL Team
-                            </button>
-                        ) : (
-                            ''
-                        )}
-                        {currentUser && currentUser.cbb_id ? (
-                            <button
-                                type="button"
-                                className="btn btn-primary btn-sm mb-2"
-                                value="CBB"
-                                onClick={selectSport}
-                            >
-                                CBB Team
-                            </button>
-                        ) : (
-                            ''
-                        )}
-                        {currentUser && currentUser.nba_id ? (
-                            <button
-                                type="button"
-                                className="btn btn-primary btn-sm"
-                                value="NBA"
-                                onClick={selectSport}
-                            >
-                                NBA Team
-                            </button>
-                        ) : (
-                            ''
-                        )}
-                    </div> */}
+                        <div className="btn-group-sm btn-group-vertical d-flex">
+                            {currentUser && currentUser.teamId ? (
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mb-2"
+                                    value="CFB"
+                                    onClick={selectSport}
+                                >
+                                    CFB Team
+                                </button>
+                            ) : (
+                                ''
+                            )}
+                            {/* {currentUser && currentUser.nfl_id ? (
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mb-2"
+                                    value="NFL"
+                                    onClick={selectSport}
+                                >
+                                    NFL Team
+                                </button>
+                            ) : (
+                                ''
+                            )} */}
+                            {currentUser && currentUser.cbb_id ? (
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mb-2"
+                                    value="CBB"
+                                    onClick={selectSport}
+                                >
+                                    CBB Team
+                                </button>
+                            ) : (
+                                ''
+                            )}
+                            {/* {currentUser && currentUser.nba_id ? (
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm"
+                                    value="NBA"
+                                    onClick={selectSport}
+                                >
+                                    NBA Team
+                                </button>
+                            ) : (
+                                ''
+                            )} */}
+                        </div>
                     </div>
                 )}
                 <div className={isMobile ? 'col-sm-12' : 'col-sm-10'}>
