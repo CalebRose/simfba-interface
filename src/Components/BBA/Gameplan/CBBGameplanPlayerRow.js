@@ -34,54 +34,26 @@ const GameplanPlayerRow = (props) => {
             </td>
             <td className="align-middle">{player.Position}</td>
             <td className="align-middle">{year}</td>
-            <td className="align-middle">{player.Overall}</td>
-            <td className="align-middle">{player.Shooting}</td>
-            <td className="align-middle">{player.Finishing}</td>
-            <td className="align-middle">{player.Ballwork}</td>
-            <td className="align-middle">{player.Rebounding}</td>
-            <td className="align-middle">{player.Defense}</td>
+            <td className="align-middle">{player.OverallGrade}</td>
+            <td className="align-middle">{player.Shooting2Grade}</td>
+            <td className="align-middle">{player.Shooting3Grade}</td>
+            <td className="align-middle">{player.FinishingGrade}</td>
+            <td className="align-middle">{player.BallworkGrade}</td>
+            <td className="align-middle">{player.ReboundingGrade}</td>
+            <td className="align-middle">{player.DefenseGrade}</td>
             <td className="align-middle">{player.Stamina}</td>
             <td className="align-middle">{player.PlaytimeExpectations}</td>
             <td className="minutes-input align-middle">
                 <input
-                    name="MinutesA"
+                    name="Minutes"
                     type="number"
                     class="form-control"
-                    id="gameAMinutes"
-                    aria-describedby="gameAMinutes"
-                    value={player.MinutesA}
+                    id="gameMinutes"
+                    aria-describedby="gameMinutes"
+                    value={player.Minutes}
                     onChange={handleChange}
-                    min="0"
                 />
             </td>
-            <td className="minutes-input align-middle">
-                <input
-                    name="MinutesB"
-                    type="number"
-                    class="form-control"
-                    id="gameBMinutes"
-                    aria-describedby="gameBMinutes"
-                    value={player.MinutesB}
-                    onChange={handleChange}
-                    min="0"
-                />
-            </td>
-            {player.IsNBA ? (
-                <td className="minutes-input align-middle">
-                    <input
-                        name="MinutesC"
-                        type="number"
-                        class="form-control"
-                        id="gameCMinutes"
-                        aria-describedby="gameCMinutes"
-                        value={player.MinutesC}
-                        onChange={handleChange}
-                        min="0"
-                    />
-                </td>
-            ) : (
-                ''
-            )}
         </tr>
     );
 };

@@ -8,13 +8,13 @@ const CBBGameplanRow = (props) => {
     let paintLabel = `game${data.Game}Paint`;
 
     const handleChange = (event) => {
-        return props.updateGameplan(props.idx, event);
+        return props.updateGameplan(0, event);
     };
 
     return (
         <tr>
             <th scope="row">
-                <h4>{data.Game}</h4>
+                <h4>Gameplan</h4>
             </th>
             <td>
                 <input

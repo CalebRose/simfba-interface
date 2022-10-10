@@ -6,6 +6,8 @@ import routes from '../../../../../Constants/routes';
 import BBATeamService from '../../../../../_Services/simNBA/BBATeamService';
 import StandingsTableRow from '../standingsTable/standingsTableRow';
 import { setCBBTeam } from '../../../../../Redux/cbbTeam/cbbTeam.actions';
+import { useMediaQuery } from 'react-responsive';
+import StandingsMobileRow from '../standingsTable/StandingsMobileRow';
 
 const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     let _teamService = new BBATeamService();
@@ -17,6 +19,14 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const [previousMatches, setPreviousMatches] = React.useState([]);
     const [currentMatches, setCurrentMatches] = React.useState([]);
     const [standings, setStandings] = React.useState([]);
+    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const isMobile = useMediaQuery({ query: `(max-width:845px)` });
+
+    React.useEffect(() => {
+        if (!viewWidth) {
+            setViewWidth(window.innerWidth);
+        }
+    }, [viewWidth]);
 
     useEffect(() => {
         if (currentUser) {
@@ -30,12 +40,25 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                 setTeam(() => cbbTeam);
             }
         }
-    }, [currentUser, cbbTeam]);
+        if (cbb_Timestamp && cbbTeam) {
+            GetConferenceStandings();
+            // GetGames();
+        }
+    }, [currentUser, cbbTeam, cbb_Timestamp]);
 
     const GetTeam = async () => {
         let response = await _teamService.GetTeamByTeamId(currentUser.cbb_id);
         setTeam(() => response);
         dispatch(setCBBTeam(response));
+    };
+
+    const GetConferenceStandings = async () => {
+        const res = await _teamService.GetTeamStandingsByConferenceID(
+            cbbTeam.ConferenceID,
+            cbb_Timestamp.SeasonID
+        );
+
+        setStandings(() => res);
     };
 
     return (
@@ -112,6 +135,63 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                 <div className="col-md-6">
                     <div className="row justify-content-start ms-1">
                         <h3 className="text-start">Conference Standings</h3>
+                        {standings && standings.length > 0 ? (
+                            <>
+                                {isMobile ? (
+                                    <div className="mobile-card-viewer">
+                                        {standings.map((x, i) => {
+                                            return (
+                                                <StandingsMobileRow
+                                                    key={x.TeamName}
+                                                    record={x}
+                                                    rank={i + 1}
+                                                    secondDivision={false}
+                                                />
+                                            );
+                                        })}
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="row">
+                                            <div className="col-sm-1">
+                                                <h6>Rank</h6>
+                                            </div>
+                                            <div className="col-sm-3">
+                                                <h6>Team</h6>
+                                            </div>
+                                            <div className="col-sm-2">
+                                                <h6>Conf Wins</h6>
+                                            </div>
+                                            <div className="col-sm-2">
+                                                <h6>Conf Losses</h6>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                <h6>Total Wins</h6>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                <h6>Total Losses</h6>
+                                            </div>
+                                        </div>
+                                        {standings.map((x, i) => {
+                                            return (
+                                                <StandingsTableRow
+                                                    key={x.TeamName}
+                                                    record={x}
+                                                    rank={i + 1}
+                                                    secondDivision={false}
+                                                />
+                                            );
+                                        })}
+                                    </>
+                                )}
+                            </>
+                        ) : (
+                            <div className="row justify-content-center pt-2 mt-4 mb-2">
+                                <div className="spinner-border" role="status">
+                                    <span className="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

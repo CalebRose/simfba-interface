@@ -120,4 +120,22 @@ export default class BBATeamService {
         }
         return json;
     }
+
+    async GetTeamStandingsByConferenceID(confId, seasonId) {
+        let response = await fetch(
+            url + `standings/college/conf/${confId}/${seasonId}`,
+            {
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            }
+        );
+        let json;
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert('Http-Error', response.status);
+        }
+        return json;
+    }
 }

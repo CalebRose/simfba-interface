@@ -1,5 +1,7 @@
+import url from '../../Constants/SimBBA_url';
+
 export default class BBAGameplanService {
-    async GetGameplans(url, teamId) {
+    async GetGameplan(teamId) {
         let response = await fetch(url + 'gameplans/' + teamId, {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
@@ -14,7 +16,7 @@ export default class BBAGameplanService {
         return json;
     }
 
-    async SaveGameplanOptions(url, dto) {
+    async SaveGameplanOptions(dto) {
         let response = await fetch(url + 'gameplans/update', {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token'),
