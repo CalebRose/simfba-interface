@@ -139,7 +139,7 @@ const CBBTeamDashboardPlayerRow = (props) => {
                 <td className="align-middle">
                     <h6>{recruit.PlaytimeExpectations}</h6>
                 </td>
-                <td className="align-middle">{data.RecruitingStatus}</td>
+                <td className="align-middle">{data.InterestLevel}</td>
                 <td className="align-middle">{leadingTeams}</td>
                 <td className="align-middle">
                     <input
