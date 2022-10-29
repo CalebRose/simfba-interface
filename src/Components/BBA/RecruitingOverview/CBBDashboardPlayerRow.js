@@ -4,13 +4,22 @@ const CBBDashboardPlayerRow = (props) => {
     const [flag, setFlag] = React.useState(false);
     const data = props.player;
     const map = props.map;
-    const name = data.FirstName + data.LastName;
+    const name = data.FirstName + ' ' + data.LastName;
+    const keyCode =
+        data.FirstName +
+        data.LastName +
+        data.Stars +
+        data.PotentialGrade +
+        data.Shooting2 +
+        data.Shooting3 +
+        data.State +
+        data.Country;
 
     useEffect(() => {
         if (map) {
-            setFlag(map[name]);
+            setFlag(map[keyCode]);
         }
-    }, [map, name]);
+    }, [map, keyCode]);
     const attributeMapper = (attr) => {
         switch (true) {
             case attr > 16:
@@ -55,34 +64,18 @@ const CBBDashboardPlayerRow = (props) => {
             return 'F';
         }
     };
-
-    const statusMapper = (data) => {
-        if (
-            data.RecruitingPoints === null ||
-            data.RecruitingPoints.length === 0
-        )
-            return 'Early';
-        // Map through all Recruiting Points
-        // If Team passes High Threshold, return 'Ready to Sign'
-        // If Team passes Medium Threshold, return 'High',
-        // If Team passes Low Threshold, return 'Still Considering'
-        // Else, return Early
-        return '';
-    };
-
-    const leadingTeamsMapper = (data) => {
-        if (
-            data.RecruitingPoints === null ||
-            data.RecruitingPoints.length === 0
-        )
+    const leadingTeamsMapper = (croot) => {
+        // Show list of leading teams
+        if (croot.LeadingTeams == null || croot.LeadingTeams.length === 0)
             return 'None';
-        let teams = [];
-        // Map through All Recruiting Points
-        // First option should be leader
-        // Iterate through all other teams
-        // Set Points Mark == 75% of leader's points
-        // If other teams pass point mark, push to array
-        return teams.join(', ');
+
+        const competingTeams = croot.LeadingTeams.filter(
+            (x, idx) => idx <= 2 && x.Odds > 0
+        );
+
+        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+
+        return competingAbbrs.join(', ');
     };
 
     const addToProfile = () => {
@@ -90,14 +83,13 @@ const CBBDashboardPlayerRow = (props) => {
         return props.add(data);
     };
 
-    let shootingGrade = attributeMapper(data.Shooting);
-    let finishingGrade = attributeMapper(data.Finishing);
-    let ballworkGrade = attributeMapper(data.Ballwork);
-    let reboundingGrade = attributeMapper(data.Rebounding);
-    let defenseGrade = attributeMapper(data.Defense);
-    let recruitingStatus = statusMapper(data);
-    let leadingTeams = leadingTeamsMapper(data);
-    let potentialGrade = getOverall(data.PotentialGrade);
+    const shooting2Grade = attributeMapper(data.Shooting2);
+    const shooting3Grade = attributeMapper(data.Shooting3);
+    const finishingGrade = attributeMapper(data.Finishing);
+    const ballworkGrade = attributeMapper(data.Ballwork);
+    const reboundingGrade = attributeMapper(data.Rebounding);
+    const defenseGrade = attributeMapper(data.Defense);
+    const leadingTeams = leadingTeamsMapper(data);
 
     return (
         <tr>
@@ -105,16 +97,13 @@ const CBBDashboardPlayerRow = (props) => {
                 <h4>{props.rank}</h4>
             </th>
             <td className="align-middle">
+                <h6>{name}</h6>
+            </td>
+            <td className="align-middle">
                 <h6>{data.Position}</h6>
             </td>
             <td className="align-middle">
-                <h6>{data.FirstName + ' ' + data.LastName}</h6>
-            </td>
-            <td className="align-middle">
                 <h6>{data.Height}</h6>
-            </td>
-            <td className="align-middle">
-                <h6>{data.Year}</h6>
             </td>
             <td className="align-middle">
                 <h6>{data.State.length > 0 ? data.State : data.Country}</h6>
@@ -123,7 +112,10 @@ const CBBDashboardPlayerRow = (props) => {
                 <h6>{data.Stars}</h6>
             </td>
             <td className="align-middle">
-                <h6>{shootingGrade}</h6>
+                <h6>{shooting2Grade}</h6>
+            </td>
+            <td className="align-middle">
+                <h6>{shooting3Grade}</h6>
             </td>
             <td className="align-middle">
                 <h6>{finishingGrade}</h6>
@@ -138,15 +130,9 @@ const CBBDashboardPlayerRow = (props) => {
                 <h6>{defenseGrade}</h6>
             </td>
             <td className="align-middle">
-                <h6>{potentialGrade}</h6>
+                <h6>{data.PotentialGrade}</h6>
             </td>
-            <td className="align-middle">
-                <h6>{data.Stamina}</h6>
-            </td>
-            <td className="align-middle">
-                <h6>{data.PlaytimeExpectations}</h6>
-            </td>
-            <td className="align-middle">{recruitingStatus}</td>
+            <td className="align-middle">{data.SigningStatus}</td>
             <td className="align-middle">{leadingTeams}</td>
             <td className="align-middle">
                 {flag ? (

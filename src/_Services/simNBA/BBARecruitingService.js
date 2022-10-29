@@ -1,6 +1,8 @@
+import url from '../../Constants/SimBBA_url';
+
 export default class BBARecruitingService {
-    async GetRecruitingProfile(url, teamId) {
-        let response = await fetch(url + 'recruit/profile/' + teamId, {
+    async GetRecruitingProfile(teamId) {
+        let response = await fetch(url + 'recruiting/profile/team/' + teamId, {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }
@@ -15,7 +17,47 @@ export default class BBARecruitingService {
         return json;
     }
 
-    async GetRecruitsByProfileId(url, profileId) {
+    async GetTeamProfileForDashboard(id) {
+        let json;
+        let response = await fetch(
+            url + 'recruiting/profile/dashboard/' + id + '/',
+            {
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            }
+        );
+
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert(
+                'Could not grab Team Profile for Crooting.\nHTTP-Error:',
+                response.status
+            );
+        }
+        return json;
+    }
+    async GetTeamProfileForTeamboard(id) {
+        let json;
+        let response = await fetch(url + 'recruiting/profile/team/' + id, {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert(
+                'Could not grab Team Profile for Crooting.\nHTTP-Error:',
+                response.status
+            );
+        }
+        return json;
+    }
+
+    async GetRecruitsByProfileId(profileId) {
         let response = await fetch(url + 'recruit/croots/' + profileId, {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
@@ -31,7 +73,7 @@ export default class BBARecruitingService {
         return json;
     }
 
-    async CreateRecruitingPointsProfile(url, payload) {
+    async CreateRecruitingPointsProfile(payload) {
         let response = await fetch(
             url + 'recruit/createRecruitingPointsProfile',
             {
@@ -57,7 +99,7 @@ export default class BBARecruitingService {
         }
     }
 
-    async AllocateRecruitingPointsForRecruit(url, payload) {
+    async AllocateRecruitingPointsForRecruit(payload) {
         let response = await fetch(url + 'recruit/allocatePoints/', {
             headers: {
                 authorization: localStorage.getItem('token'),
@@ -76,7 +118,7 @@ export default class BBARecruitingService {
         return response;
     }
 
-    async RemovePlayerFromBoard(url, payload) {
+    async RemovePlayerFromBoard(payload) {
         let body = {
             RecruitPointsId: payload.ProfileID,
             ProfileId: payload.ProfileID,
@@ -101,7 +143,7 @@ export default class BBARecruitingService {
         return response;
     }
 
-    async SendScholarshipToRecruit(url, payload) {
+    async SendScholarshipToRecruit(payload) {
         let response = await fetch(url + 'recruit/sendScholarshipToRecruit', {
             headers: {
                 authorization: localStorage.getItem('token'),
@@ -120,7 +162,7 @@ export default class BBARecruitingService {
         return response;
     }
 
-    async RevokeScholarshipToRecruit(url, payload) {
+    async RevokeScholarshipToRecruit(payload) {
         let response = await fetch(
             url + 'recruit/revokeScholarshipFromRecruit',
             {
@@ -142,7 +184,7 @@ export default class BBARecruitingService {
         return response;
     }
 
-    async SaveRecruitingBoard(url, payload) {
+    async SaveRecruitingBoard(payload) {
         let response = await fetch(url + 'recruit/saveRecruitingBoard', {
             headers: {
                 authorization: localStorage.getItem('token'),
@@ -153,5 +195,44 @@ export default class BBARecruitingService {
         });
 
         return response;
+    }
+
+    async ExportCroots() {
+        let fullURL = url + 'recruits/export/all/';
+        let response = await fetch(fullURL, {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'text/csv'
+            },
+            responseType: 'blob'
+        })
+            .then((res) => res.blob())
+            .then((blob) => saveAs(blob, `ezacos_secret_croot_list.csv`));
+
+        if (response.ok) {
+            // let blob = response.blob();
+            // saveAs(blob, 'export.csv');
+        } else {
+            alert('HTTP-Error:', response.status);
+        }
+    }
+
+    async GetAllTeamProfiles() {
+        let json;
+        let response = await fetch(url + 'recruiting/profile/all/', {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert(
+                'Recruiting Profiles Could Not be Acquired.\nHTTP-Error:',
+                response.status
+            );
+        }
+        return json;
     }
 }

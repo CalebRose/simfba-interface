@@ -16,7 +16,8 @@ const CFBMatchCard = (props) => {
         game.GameComplete &&
         ((game.HomeTeam === teamAbbr && game.AwayTeamWin) ||
             (game.AwayTeam === teamAbbr && game.HomeTeamWin));
-    const awayGame = game.HomeTeam === teamAbbr ? false : true;
+    const awayGame =
+        game.HomeTeam === teamAbbr || game.IsNeutral ? false : true;
     const opposingTeamLogo = getLogo(opposingTeam);
     const gameWeek = game.Week;
     const ConferenceGame = game.IsConference;
@@ -24,7 +25,9 @@ const CFBMatchCard = (props) => {
     const DivisionLabel = team && team.Division;
     const DivisionGame = game.IsDivisional;
     let detailsLabel = '';
-    if (!ConferenceGame && !DivisionGame) {
+    if (game.GameTitle.length > 0 || game.GameTitle !== '') {
+        detailsLabel = game.GameTitle;
+    } else if (!ConferenceGame && !DivisionGame) {
         detailsLabel = 'Non-Conference Game';
     } else if (DivisionGame && ConferenceGame) {
         detailsLabel = `${ConferenceLabel} ${DivisionLabel} Game`;
@@ -41,6 +44,10 @@ const CFBMatchCard = (props) => {
         cardClass = 'card mb-3';
     }
 
+    const cardTitle = `Week ${gameWeek} ${
+        awayGame ? 'at ' : 'vs '
+    } ${opposingTeam}`;
+
     return (
         <div className={cardClass} style={{ maxWidth: '540px' }}>
             <div className="row g-0">
@@ -53,10 +60,7 @@ const CFBMatchCard = (props) => {
                 </div>
                 <div className="col-md-8">
                     <div className="card-body">
-                        <h5 className="card-title">
-                            Week {gameWeek} {awayGame ? 'at ' : 'vs '}
-                            {opposingTeam}
-                        </h5>
+                        <h5 className="card-title">{cardTitle}</h5>
                         <h6 className="card-subtitle">
                             Opposing Coach: {opposingCoach}
                         </h6>

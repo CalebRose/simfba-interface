@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import SimBBA_url from '../../../../Constants/SimBBA_url';
 import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
 import BBARequestService from '../../../../_Services/simNBA/BBARequestService';
 import TeamRow from '../../../Admin/ManageTeams/TeamRow';
@@ -20,17 +19,14 @@ const BBAManageTeams = ({ currentUser }) => {
 
     // Use Effects End
     const getCoachedTeams = async () => {
-        let coachedTeams = await teamService.GetCoachedTeams(SimBBA_url);
+        let coachedTeams = await teamService.GetCoachedTeams();
         setTeams(coachedTeams);
     };
 
     // Click Functions
     const revokeRequest = async (payload) => {
         // DB Request
-        let res = await requestService.RevokeUserFromTeamRequest(
-            SimBBA_url,
-            payload.reqId
-        );
+        let res = await requestService.RevokeUserFromTeamRequest(payload.reqId);
 
         let firebasePayload = {};
         if (payload.IsNBA) {

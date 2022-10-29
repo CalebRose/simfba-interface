@@ -1,4 +1,5 @@
 import config from '../../config';
+import * as BBAUrl from '../../Constants/SimBBA_url';
 import url from '../../Constants/url';
 
 export default class EasterEggService {
@@ -31,6 +32,23 @@ export default class EasterEggService {
 
     async CollusionCall(dto) {
         let postRequest = await fetch(url + 'easter/egg/collude/', {
+            headers: {
+                authorization: localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(dto)
+        });
+
+        if (postRequest.ok) {
+            console.log('Check the site you cheat!');
+        } else {
+            alert('Nice try :(');
+        }
+    }
+
+    async CollusionCallBBall(dto) {
+        let postRequest = await fetch(BBAUrl + 'easter/egg/collude/', {
             headers: {
                 authorization: localStorage.getItem('token'),
                 'Content-Type': 'application/json'

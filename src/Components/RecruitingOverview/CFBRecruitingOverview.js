@@ -55,8 +55,6 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const [recruitingNeeds, setRecruitingNeeds] = React.useState(null);
     const [crootMap, setCrootMap] = React.useState({});
     const [teamColors, setTeamColors] = React.useState('');
-    const [errorMessage, setErrorMessage] = React.useState('');
-    const [serviceMessage, setServiceMessage] = React.useState('');
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const [showCollusionButton, setShowCollusionButton] = React.useState(true);
 

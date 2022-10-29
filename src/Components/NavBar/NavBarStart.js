@@ -128,18 +128,18 @@ const NavBar_Start = ({ currentUser }) => {
                     </li>
                     <li>
                         <Link
-                            to={routes.CBB_RECRUITING_BOARD}
                             className="dropdown-item"
+                            to={routes.CBB_RECRUITING}
                         >
-                            Team Recruiting Board
+                            CBB Recruiting Overview
                         </Link>
                     </li>
                     <li>
                         <Link
+                            to={routes.CBB_RECRUITING_BOARD}
                             className="dropdown-item"
-                            to={routes.CBB_RECRUITING}
                         >
-                            CBB Recruiting Dashboard
+                            {currentUser.cbb_team} Recruiting Board
                         </Link>
                     </li>
                 </ul>

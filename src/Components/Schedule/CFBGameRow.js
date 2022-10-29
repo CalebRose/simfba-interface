@@ -24,12 +24,17 @@ const GameRow = (props) => {
     const ConferenceGame = game.IsConference;
     const DivisionGame = game.IsDivisional;
     let detailsLabel = '';
-    if (!ConferenceGame && !DivisionGame) {
+    if (game.GameTitle.length > 0 || game.GameTitle !== '') {
+        detailsLabel = game.GameTitle;
+    } else if (!ConferenceGame && !DivisionGame) {
         detailsLabel = 'Non-Conference Game';
     } else if (DivisionGame && ConferenceGame) {
         detailsLabel = `Conference Divisional Game`;
     } else {
         detailsLabel = `Conference Game`;
+    }
+    if (game.IsNeutral) {
+        detailsLabel += ' | Neutral Site';
     }
     let cardClass = 'card mb-3';
     return (

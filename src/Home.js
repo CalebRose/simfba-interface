@@ -21,8 +21,6 @@ import BBAManageSim from './Components/BBA/Admin/ManageSim/BBAManageSim';
 import BBAApproveRequests from './Components/BBA/Admin/ApproveRequests/BBAApproveRequests';
 import BBAManageTeams from './Components/BBA/Admin/ManageTeams/BBAManageTeams';
 import CBBGameplan from './Components/BBA/Gameplan/CBBGameplan';
-import CBBRecruitingDashboard from './Components/BBA/RecruitingBoard/CBBRecruitingDashboard';
-import CBBRecruitingTeamBoard from './Components/BBA/RecruitingBoard/CBBRecruitingTeamBoard';
 import BBATeam from './Components/BBA/Team/BBATeam';
 import { useMediaQuery } from 'react-responsive';
 import CFBGameplan from './Components/Gameplan/CFBGameplan';
@@ -31,6 +29,8 @@ import CFBTeamRecruitingBoard from './Components/TeamRecruitingBoard/CFBTeamRecr
 import CFBStatisticsPage from './Components/Statistics/CFBStatisticsPage';
 import NewsPage from './Components/NewsPage/NewsPage';
 import CFBSchedulePage from './Components/Schedule/CFBSchedulePage';
+import CBBRecruitingDashboard from './Components/BBA/RecruitingOverview/CBBRecruitingDashboard';
+import CBBRecruitingTeamBoard from './Components/BBA/RecruitingBoard/CBBRecruitingTeamBoard';
 
 const Home = ({ currentUser }) => {
     const user = useSelector((state) => state.user.currentUser);

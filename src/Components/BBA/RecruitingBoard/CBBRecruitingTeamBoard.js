@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import LocalStorageService from '../../../_Services/localStorage/LocalStorageService';
+import { useMediaQuery } from 'react-responsive';
 import BBARecruitingService from '../../../_Services/simNBA/BBARecruitingService';
-import SimBBA_url from '../../../Constants/SimBBA_url';
 import CBBTeamDashboardPlayerRow from './DashboardComponents/CBBTeamDashboardPlayerRow';
 
 const CBBRecruitingTeamBoard = ({ currentUser }) => {
     // Services
-    let recruitingService = new BBARecruitingService();
-    let localStorageService = new LocalStorageService();
+    let _recruitingService = new BBARecruitingService();
 
     // Hooks
     const [recruitingProfile, setRecruitingProfile] = React.useState({});
@@ -18,6 +16,15 @@ const CBBRecruitingTeamBoard = ({ currentUser }) => {
     const [serviceMessage, setServiceMessage] = React.useState('');
     const savingMessage = 'Saving Recruiting Options...';
     const successMessage = 'Saved successfully!';
+    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const isMobile = useMediaQuery({ query: `(max-width:844px)` });
+
+    React.useEffect(() => {
+        if (!viewWidth) {
+            setViewWidth(window.innerWidth);
+        }
+    }, [viewWidth]);
+
     // useEffects
     useEffect(() => {
         if (currentUser) {
@@ -25,38 +32,43 @@ const CBBRecruitingTeamBoard = ({ currentUser }) => {
         }
     }, [currentUser]);
 
+    useEffect(() => {
+        if (recruits) {
+            checkValidation();
+        }
+    }, [recruits]);
+
     // Functions
     const getRecruitingProfile = async () => {
-        let profile = localStorageService.getRecruitingProfile();
+        let response = await _recruitingService.GetRecruitingProfile(
+            currentUser.cbb_id
+        );
 
-        if (!profile || profile === undefined) {
-            profile = await recruitingService.GetRecruitingProfile(
-                SimBBA_url,
-                currentUser.cbb_id
-            );
-        }
+        let profile = response.TeamProfile;
 
-        let recruits = profile.Recruits.length > 0 ? profile.Recruits : [];
-        setRecruitingProfile(profile);
-        setRecruits(recruits);
+        let recruits =
+            profile !== undefined && profile.Recruits.length > 0
+                ? profile.Recruits
+                : [];
+
+        let filteredRecruits = recruits
+            .filter((x) => !x.RemovedFromBoard)
+            .sort((a, b) => {
+                return a.IsSigned === b.IsSigned ? 0 : a.IsSigned ? 1 : -1;
+            });
+        setRecruits(() => filteredRecruits);
+        setRecruitingProfile(() => profile);
     };
 
     const removeRecruitFromBoard = async (idx, player) => {
         //
-        let res = await recruitingService.RemovePlayerFromBoard(
-            SimBBA_url,
-            player
-        );
+        let res = await _recruitingService.RemovePlayerFromBoard(player);
 
         const recruitList = recruits.filter(
             (x) => x.PlayerID !== player.PlayerID
         );
 
-        let profile = recruitingProfile;
-        profile.Recruits = recruitList;
-        setRecruits(recruitList);
-        setRecruitingProfile(profile);
-        localStorageService.setRecruitingProfile(profile);
+        setRecruits(() => recruitList);
     };
 
     const toggleScholarship = async (payload) => {};
@@ -110,14 +122,10 @@ const CBBRecruitingTeamBoard = ({ currentUser }) => {
 
         setServiceMessage(savingMessage);
 
-        let response = await recruitingService.SaveRecruitingBoard(
-            SimBBA_url,
-            payload
-        );
+        let response = await _recruitingService.SaveRecruitingBoard(payload);
 
         if (response.ok) {
             profile.Recruits = croots;
-            localStorageService.setRecruitingProfile(profile);
             setRecruitingProfile(profile);
             setRecruits(croots);
             setServiceMessage(successMessage);

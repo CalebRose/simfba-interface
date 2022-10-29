@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
-import { Service } from '../../Constants/CommonConstants';
 import {
     SavingMessage,
     SuccessfulRecruitingBoardSaveMessage

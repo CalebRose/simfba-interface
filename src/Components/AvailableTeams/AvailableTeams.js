@@ -70,7 +70,6 @@ class AvailableTeams extends Component {
 
     sendCBBRequest = async (team) => {
         let postRequest = await this.BBARequestService.CreateTeamRequest(
-            SimBBA_url,
             team,
             this.props.currentUser.username
         );
@@ -153,6 +152,27 @@ class AvailableTeams extends Component {
             <div className="container-fluid mt-3">
                 <div className="justify-content-start">
                     <h2 className="subtitle is-3">Available Teams</h2>
+                </div>
+                <div className="row mt-2 mb-2">
+                    <p>
+                        NOTE: All team requests without an application filled
+                        out will be rejected. If you haven't filled out an
+                        application, please make sure you've registered into{' '}
+                        <a
+                            target="_blank"
+                            href="https://www.simfba.com/index.php"
+                        >
+                            SimFBA
+                        </a>{' '}
+                        and go to the{' '}
+                        <a
+                            target="_blank"
+                            href="https://www.simfba.com/index.php?forums/job-applications-and-interviews.4/"
+                        >
+                            Job Apps Subforum
+                        </a>{' '}
+                        to fill out an application.
+                    </p>
                 </div>
                 <div className="row">
                     <div className="col-md-2">

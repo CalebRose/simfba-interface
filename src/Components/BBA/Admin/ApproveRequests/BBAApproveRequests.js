@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import SimBBA_url from '../../../../Constants/SimBBA_url';
 import BBARequestService from '../../../../_Services/simNBA/BBARequestService';
 import BBARequestRow from './BBARequestRow';
 
@@ -12,13 +11,15 @@ const BBAApproveRequests = ({ currentUser }) => {
     // Use Effects Begin
     // Get Requests
     useEffect(() => {
-        getRequests();
-    }, []);
+        if (currentUser) {
+            getRequests();
+        }
+    }, [currentUser]);
 
     // Use Effects End
     const getRequests = async () => {
-        let requests = await requestService.GetTeamRequests(SimBBA_url);
-        setRequests(requests);
+        let requests = await requestService.GetTeamRequests();
+        setRequests(() => requests);
     };
 
     // Click Functions
@@ -32,12 +33,7 @@ const BBAApproveRequests = ({ currentUser }) => {
                 IsApproved: true
             };
 
-            console.log(requestPayload);
-
-            let res = await requestService.ApproveRequest(
-                SimBBA_url,
-                requestPayload
-            );
+            let res = await requestService.ApproveRequest(requestPayload);
 
             if (res.ok) {
                 console.log(
@@ -86,7 +82,7 @@ const BBAApproveRequests = ({ currentUser }) => {
 
     const rejectRequest = async (payload) => {
         // DB Request
-        let res = await requestService.RejectTeamRequest(SimBBA_url, payload);
+        let res = await requestService.RejectTeamRequest(payload);
 
         if (res.ok) {
             console.log('Rejected Request:', payload.reqId);
@@ -154,7 +150,9 @@ const BBAApproveRequests = ({ currentUser }) => {
                                     </tr>
                                 </tfoot>
                                 <tbody>
-                                    {requests.length > 0
+                                    {requests !== undefined &&
+                                    requests !== null &&
+                                    requests.length > 0
                                         ? requests.map((x, i) => {
                                               return (
                                                   <BBARequestRow

@@ -6,18 +6,22 @@ const BBATeamPlayerRow = (props) => {
     // Row Functions
     const getYear = (player) => {
         let isRedshirt = player.IsRedshirt;
-        switch (player.Year) {
-            case 1:
-                return isRedshirt ? '(Fr)' : 'Fr';
-            case 2:
-                return isRedshirt ? '(So)' : 'So';
-            case 3:
-                return isRedshirt ? '(Jr)' : 'Jr';
-            case 4:
-                return isRedshirt ? '(Sr)' : 'Sr';
-            default:
-                return '?';
+        if (player.Year === 5 && isRedshirt) {
+            return '(Sr)';
+        } else if (player.Year === 4 && !isRedshirt) {
+            return 'Sr';
+        } else if (player.Year === 4 && isRedshirt) {
+            return '(Jr)';
+        } else if (player.Year === 3 && !isRedshirt) {
+            return 'Jr';
+        } else if (player.Year === 3 && isRedshirt) {
+            return '(So)';
+        } else if (player.Year === 2 && !isRedshirt) {
+            return 'So';
+        } else if (player.Year === 2 && isRedshirt) {
+            return '(Fr)';
         }
+        return 'Fr';
     };
 
     const GetRedshirtStatus = (p) => {
@@ -36,14 +40,12 @@ const BBATeamPlayerRow = (props) => {
 
     return (
         <tr>
-            <th scope="row">
-                <h4>{props.idx + 1}</h4>
-            </th>
-            <td className="align-middle">
+            <th scope="row" className="align-middle">
                 <h6>{player.FirstName + ' ' + player.LastName}</h6>
-            </td>
-            <td className="align-middle">{player.Position}</td>
+            </th>{' '}
             <td className="align-middle">{year}</td>
+            <td className="align-middle">{player.Position}</td>
+            <td className="align-middle">{player.Height}</td>
             <td className="align-middle">{player.Stars}</td>
             <td className="align-middle">{player.OverallGrade}</td>
             <td className="align-middle">{player.Shooting2Grade}</td>

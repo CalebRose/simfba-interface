@@ -76,6 +76,7 @@ export default class FBARequestService {
             },
             method: 'DELETE',
             body: JSON.stringify({
+                ID: payload.ID,
                 TeamID: payload.ReqID,
                 Username: payload.Username,
                 IsApproved: true

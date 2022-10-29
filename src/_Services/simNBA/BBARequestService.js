@@ -1,5 +1,7 @@
+import url from '../../Constants/SimBBA_url';
+
 export default class BBARequestService {
-    async GetTeamRequests(url) {
+    async GetTeamRequests() {
         let res = await fetch(url + 'requests/', {
             headers: {}
         });
@@ -14,7 +16,7 @@ export default class BBARequestService {
         return requests;
     }
 
-    async CreateTeamRequest(url, team, username) {
+    async CreateTeamRequest(team, username) {
         let postRequest = await fetch(url + 'requests/createTeamRequest', {
             headers: {
                 authorization: localStorage.getItem('token'),
@@ -22,7 +24,7 @@ export default class BBARequestService {
             },
             method: 'POST',
             body: JSON.stringify({
-                TeamId: team.id,
+                TeamID: team.teamId,
                 Username: username,
                 IsApproved: false
             })
@@ -31,7 +33,7 @@ export default class BBARequestService {
         return postRequest;
     }
 
-    async ApproveRequest(url, payload) {
+    async ApproveRequest(payload) {
         let res = await fetch(url + 'requests/approveTeamRequest', {
             headers: {
                 authorization: localStorage.getItem('token'),
@@ -43,7 +45,7 @@ export default class BBARequestService {
         return res;
     }
 
-    async RejectTeamRequest(url, payload) {
+    async RejectTeamRequest(payload) {
         let res = await fetch(url + 'requests/rejectTeamRequest', {
             headers: {
                 authorization: localStorage.getItem('token'),
@@ -55,7 +57,7 @@ export default class BBARequestService {
         return res;
     }
 
-    async RevokeUserFromTeamRequest(url, teamId) {
+    async RevokeUserFromTeamRequest(teamId) {
         let res = await fetch(url + 'team/removeUserFromTeam/' + teamId, {
             headers: {
                 authorization: localStorage.getItem('token'),

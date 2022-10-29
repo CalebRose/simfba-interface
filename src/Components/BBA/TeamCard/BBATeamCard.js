@@ -1,12 +1,12 @@
 import React from 'react';
 
 const BBATeamCard = (props) => {
-    const { ovr, off, def, team, mascot, logo, conference } = props;
+    const { ovr, off, def, team, mascot, logo, conference, teamId } = props;
     const [requested, setRequested] = React.useState(false);
 
     const sendRequest = () => {
         if (props.disable === false) {
-            props.request(team);
+            props.request({ team, teamId });
             setRequested(true);
         }
     };

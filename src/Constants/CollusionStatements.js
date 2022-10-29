@@ -65,3 +65,31 @@ export const GetCollusionStatements = (user, team) => {
 
     return pick;
 };
+
+export const GetBBallCollusionStatements = (user, team) => {
+    const arr = [
+        `A high school basketball star was seen carrying a bag of money after an assistant's visit from ${team.Team}`,
+        `An investigation is currently underway after a group of assistants allegedly from the ${team.Team} athletic program tried to persuade a recruit to attend ${team.Team} by offering a free Fortnite battlepass.`,
+        `A high school basketball athlete alleges that Basketball Coach ${user.username} was found sleeping on his family's living room floor. Coach ${user.username} has refused to make any comments on the allegations.`,
+        `A high school basketball athlete was recently refused service at a Chik-Fil-A after visiting ${team.Team}, with staff saying they would refuse to serve unless he verbally committed.`,
+        `A local alumni from ${team.City} was caught drunkenly tweeting at an athlete to sign with ${team.Team}.`,
+        `Breaking news! A construction company allegedly funded by a group of alumni from ${team.Team} were attempting to build a giant wall across the Rocky Mountains, with the plan to prevent coaches from crossing either side to croot across the country.`,
+        `Breaking news! A high school student managed to throw a crumpled up piece of paper into a trash bin and was immediately offered an athletic scholarship to play basketball at ${team.Team}!`,
+        `The NCAA has announced a new investigation involving ${user.username} and other supposed coaches after an attempt was made to find the code to the Collusion button.`,
+        `An assistant coach from ${team.Team} was found in the back room of a Golden Corral with a bag of money, supposedly waiting for a croot that never showed up.`,
+        `A lobbyist funded by ${team.Team} had attempted to suspend renewal of visas as a means to prevent other teams from recruiting talent internationally.`,
+        `${user.username} was allegedly seen trying to venmo a Toucan for money in exchange for croot points. It was not the correct Toucan.`,
+        `Can ${user.username} NOT click the Collusion button next time?`,
+        `A high school athlete dropped screenshots on Twitter of what appears to be a DM conversation with an alumni from ${team.Team} harrassing him to commit to ${team.Team}`,
+        `Local T-shirt fans for ${team.Team} were found protesting on twitter after a high school athlete verbally committed to their rival.`,
+        `${user.username} allegedly asked the Admins not to be mentioned when clicking the Collusion button. That's not how this works, ${user.username}`,
+        `Students attending ${team.Team} were caught trying to tamper with the basketball hoops before a big game the next day.`,
+        `A high school basketball athlete tweeted out recently to ${team.Team} fans to leave him alone and stop telling him to sign with ${team.Team}`,
+        `An athlete on the ${team.Team}'s basketball roster reported that an assistant from a team they played earlier in the season reached out for a potential transfer interest.``${user.username} would like everyone to know `,
+        `${user.username} would like everyone to know that they listen to Nickelback when they croot.`,
+        `${user.username} was seen last week attempting to recruit a TE from the ${team.Team} football team to play basketball.`
+    ];
+    let pick = arr[Math.floor(Math.random() * arr.length)];
+
+    return pick;
+};
