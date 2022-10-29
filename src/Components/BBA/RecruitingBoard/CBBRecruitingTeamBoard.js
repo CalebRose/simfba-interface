@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import BBARecruitingService from '../../../_Services/simNBA/BBARecruitingService';
+import ServiceMessageBanner from '../../_Common/ServiceMessageBanner';
 import CBBTeamDashboardPlayerRow from './DashboardComponents/CBBTeamDashboardPlayerRow';
 
-const CBBRecruitingTeamBoard = ({ currentUser }) => {
+const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     // Services
     let _recruitingService = new BBARecruitingService();
 
@@ -64,39 +65,76 @@ const CBBRecruitingTeamBoard = ({ currentUser }) => {
         //
         let res = await _recruitingService.RemovePlayerFromBoard(player);
 
-        const recruitList = recruits.filter(
-            (x) => x.PlayerID !== player.PlayerID
+        const recruitList = [...recruits].filter(
+            (x) => x.RecruitID !== player.RecruitID
         );
 
         setRecruits(() => recruitList);
     };
 
-    const toggleScholarship = async (payload) => {};
+    const toggleScholarship = async (idx, recruitProfile) => {
+        const scholarshipVal = !recruitProfile.Scholarship ? true : false;
+        const revokedVal = recruitProfile.Scholarship ? true : false;
+        const croots = [...recruits].map((x) => {
+            return { ...x };
+        });
+        croots[idx].Scholarship = scholarshipVal;
+        croots[idx].ScholarshipRevoked = revokedVal;
+
+        const UpdateRecruitDto = {
+            RecruitID: recruitProfile.RecruitID,
+            ProfileID: recruitingProfile.ID,
+            Team: recruitingProfile.Team,
+            RewardScholarship: scholarshipVal,
+            RevokeScholarship: revokedVal
+        };
+
+        const response = await _recruitingService.ToggleScholarship(
+            UpdateRecruitDto
+        );
+        if (response.ok) {
+            setRecruits(croots);
+
+            const teamProfile = { ...recruitingProfile };
+            teamProfile.ScholarshipsAvailable = !revokedVal
+                ? teamProfile.ScholarshipsAvailable + 1
+                : teamProfile.ScholarshipsAvailable - 1;
+            setRecruitingProfile(() => teamProfile);
+        }
+    };
 
     const allocatePoints = (idx, event) => {
-        let { value, min } = event.target;
+        let { value } = event.target;
         let recruitList = [...recruits];
-        let pointsSpent = Number(value);
-        recruitList[idx].CurrentPointsSpent = Math.max(
-            Number(min),
-            pointsSpent
-        );
-        setRecruits(recruitList);
-        checkValidation();
+        let pointsSpent = value;
+        recruitList[idx] = {
+            ...recruitList[idx],
+            CurrentWeeksPoints: pointsSpent
+        };
+        setRecruits(() => recruitList);
     };
 
     const checkValidation = () => {
-        //
+        if (recruits.length === 0) return;
         let valid = true;
         let profile = recruitingProfile;
+        let croots = [...recruits];
         let currentPointsSpent = 0;
         let message = '';
-        for (let i = 0; i < recruits.length; i++) {
-            currentPointsSpent += recruits[i].CurrentPointsSpent;
+        for (let i = 0; i < croots.length; i++) {
+            let croot = croots[i];
+            if (isNaN(croot.CurrentWeeksPoints)) croot.CurrentWeeksPoints = 0;
+            if (croot.CurrentWeeksPoints < 0 || croot.CurrentWeeksPoints > 20) {
+                valid = false;
 
-            if (currentPointsSpent > profile.WeeklyPoints) {
-                // Display error message
-                if (valid) valid = false;
+                message = `ERROR! Recruit ${croot.Recruit.FirstName} ${croot.Recruit.LastName} must have a point allocation between 0 and 20 points.`;
+
+                break;
+            }
+            currentPointsSpent += croot.CurrentPointsSpent;
+
+            if (currentPointsSpent > profile.WeeklyPoints && valid) {
+                valid = false;
             }
             if (!valid) {
                 message = `Total Points Spent Exceeds Weekly Points for Team. Please remove ${
@@ -105,22 +143,22 @@ const CBBRecruitingTeamBoard = ({ currentUser }) => {
             }
         }
         profile.SpentPoints = currentPointsSpent;
-        setRecruitingProfile(profile);
-        setErrorMessage(message);
-        setValidation(valid);
+        setRecruitingProfile(() => profile);
+        setErrorMessage(() => message);
+        setValidation(() => valid);
     };
 
     const savePointAllocations = async () => {
         if (!isValid) return;
-        let profile = recruitingProfile;
-        let croots = recruits;
+        let profile = { ...recruitingProfile };
+        let croots = [...recruits];
         let payload = {
             Profile: profile,
             Recruits: croots,
             TeamId: currentUser.cbb_id
         };
 
-        setServiceMessage(savingMessage);
+        setServiceMessage(() => savingMessage);
 
         let response = await _recruitingService.SaveRecruitingBoard(payload);
 
@@ -144,124 +182,128 @@ const CBBRecruitingTeamBoard = ({ currentUser }) => {
     };
 
     return (
-        <div className="container mt-3">
-            <div className="dashboard-row row">
-                <div className="row">
-                    <div className="col-md-auto justify-content-start">
-                        <h2>
-                            {currentUser ? currentUser.cbb_team : 'Team'} Board
-                        </h2>
-                    </div>
-                    <div className="col-md-auto ms-auto">
-                        <div className="row justify-content-end">
-                            <div className="col-md-auto ms-auto">
-                                <h4>
-                                    Weekly Points:{' '}
-                                    {recruitingProfile.WeeklyPoints}
-                                </h4>
-                                <h4>
-                                    Points Spent:{' '}
-                                    {recruitingProfile.SpentPoints}
-                                </h4>
-                            </div>
-                            <div className="col-md-auto ms-auto align-self-center">
-                                {isValid ? (
-                                    <button
-                                        className="btn btn-primary"
-                                        onClick={savePointAllocations}
-                                    >
-                                        Save
-                                    </button>
-                                ) : (
-                                    <button className="btn btn-warning">
-                                        Save
-                                    </button>
-                                )}
-                            </div>
+        <div className="container-fluid mt-3">
+            {/* Place Save Modal Here */}{' '}
+            <div className="col-md-auto justify-content-start">
+                <h2>{currentUser ? currentUser.cbb_team : 'Team'} Board</h2>
+            </div>
+            <div className="row">
+                <div className="col-md-2 dashboard-sidebar"></div>
+                <div className="col-md-10 px-md-4">
+                    <div className="row justify-content-end">
+                        <div className="col-md-auto ms-auto">
+                            <h4>
+                                Weekly Points: {recruitingProfile.WeeklyPoints}
+                            </h4>
+                            <h4>
+                                Points Spent: {recruitingProfile.SpentPoints}
+                            </h4>
+                        </div>
+                        <div className="col-md-auto ms-auto align-self-center">
+                            {isValid &&
+                            cbb_Timestamp &&
+                            !cbb_Timestamp.IsRecruitingLocked ? (
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={savePointAllocations}
+                                >
+                                    Save
+                                </button>
+                            ) : (
+                                <button className="btn btn-warning">
+                                    Save
+                                </button>
+                            )}
                         </div>
                     </div>
-                </div>
-                {serviceMessage.length > 0 || errorMessage.length > 0 ? (
-                    <div className="row mt-1 mb-1">
-                        {serviceMessage.length > 0 &&
-                        serviceMessage !== savingMessage ? (
-                            <div className="alert alert-success">
-                                {serviceMessage}
+                    <ServiceMessageBanner
+                        serMessage={serviceMessage}
+                        errMessage={errorMessage}
+                    />
+                    <div className="row mt-2 dashboard-table-height">
+                        <table className="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col" abbr="Scholarship">
+                                        Scholarship
+                                    </th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Pos</th>
+                                    <th scope="col">Height</th>
+                                    <th scope="col">Yr</th>
+                                    <th scope="col">State/Region</th>
+                                    <th scope="col">Stars</th>
+                                    <th scope="col">Sht. 2</th>
+                                    <th scope="col">Sht. 3</th>
+                                    <th scope="col">Fin.</th>
+                                    <th scope="col">Bal.</th>
+                                    <th scope="col">Reb.</th>
+                                    <th scope="col">Def.</th>
+                                    <th scope="col">Pot.</th>
+                                    <th scope="col">Sta.</th>
+                                    <th scope="col">Pt Exp.</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Leading Teams</th>
+                                    <th scope="col" style={{ width: 125 }}>
+                                        Add Points
+                                    </th>
+                                    <th scope="col">Total Points</th>
+                                    <th scope="col">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody className="overflow-auto">
+                                {recruits !== undefined &&
+                                recruits &&
+                                recruits.length > 0
+                                    ? recruits.map((x, idx) => (
+                                          <CBBTeamDashboardPlayerRow
+                                              key={x.ID}
+                                              player={x}
+                                              idx={idx}
+                                              remove={removeRecruitFromBoard}
+                                              toggleScholarship={
+                                                  toggleScholarship
+                                              }
+                                              changePoints={allocatePoints}
+                                          />
+                                      ))
+                                    : ''}
+                            </tbody>
+                        </table>
+                        {recruits === undefined || recruits === null ? (
+                            <div className="row justify-content-center pt-2 mt-4 mb-2">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
                             </div>
                         ) : (
                             ''
                         )}
-                        {serviceMessage.length > 0 &&
-                        serviceMessage === savingMessage ? (
-                            <div className="alert alert-secondary">
-                                {serviceMessage}
-                            </div>
-                        ) : (
-                            ''
-                        )}
-                        {errorMessage.length > 0 ? (
-                            <div className="alert alert-danger">
-                                {errorMessage}
+                        {recruits !== undefined &&
+                        recruits !== null &&
+                        recruits.length === 0 ? (
+                            <div className="row justify-content-center">
+                                Have you considered adding a croot to your team
+                                board?
                             </div>
                         ) : (
                             ''
                         )}
                     </div>
-                ) : (
-                    ''
-                )}
-                <div className="row mt-2 dashboard-table-height">
-                    <table className="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">Rank</th>
-                                <th scope="col" abbr="Scholarship">
-                                    Schl
-                                </th>
-                                <th scope="col">Pos</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Height</th>
-                                <th scope="col">Yr</th>
-                                <th scope="col">State/Region</th>
-                                <th scope="col">Stars</th>
-                                <th scope="col">Sht.</th>
-                                <th scope="col">Fin.</th>
-                                <th scope="col">Bal.</th>
-                                <th scope="col">Reb.</th>
-                                <th scope="col">Def.</th>
-                                <th scope="col">Pot.</th>
-                                <th scope="col">Sta.</th>
-                                <th scope="col">Pt Exp.</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Leading Teams</th>
-                                <th scope="col">Add Points</th>
-                                <th scope="col">Total Points</th>
-                                <th scope="col">Remove</th>
-                            </tr>
-                        </thead>
-                        <tbody className="overflow-auto">
-                            {recruits.length > 0
-                                ? recruits.map((x, idx) => (
-                                      <CBBTeamDashboardPlayerRow
-                                          key={x.ID}
-                                          player={x}
-                                          rank={idx + 1}
-                                          remove={removeRecruitFromBoard}
-                                          toggleScholarship={toggleScholarship}
-                                          changePoints={allocatePoints}
-                                      />
-                                  ))
-                                : ''}
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
     );
 };
 
-const mapStateToProps = ({ user: { currentUser } }) => ({
-    currentUser
+const mapStateToProps = ({
+    user: { currentUser },
+    cbbTeam: { cbbTeam },
+    timestamp: { cbb_Timestamp }
+}) => ({
+    currentUser,
+    cbbTeam,
+    cbb_Timestamp
 });
 
 export default connect(mapStateToProps)(CBBRecruitingTeamBoard);

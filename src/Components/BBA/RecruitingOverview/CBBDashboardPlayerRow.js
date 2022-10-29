@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 const CBBDashboardPlayerRow = (props) => {
     const [flag, setFlag] = React.useState(false);
+    const timestamp = props.timestamp;
     const data = props.player;
     const map = props.map;
     const name = data.FirstName + ' ' + data.LastName;
@@ -135,7 +136,11 @@ const CBBDashboardPlayerRow = (props) => {
             <td className="align-middle">{data.SigningStatus}</td>
             <td className="align-middle">{leadingTeams}</td>
             <td className="align-middle">
-                {flag ? (
+                {data.IsSigned || timestamp.CollegeWeek === 21 ? (
+                    <h2>
+                        <i class="bi bi-file-lock-fill"></i>
+                    </h2>
+                ) : flag ? (
                     <h2>
                         <i className="bi bi-check-circle-fill rounded-circle link-secondary"></i>
                     </h2>

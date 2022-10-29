@@ -557,6 +557,9 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                                               player={x}
                                                               rank={idx + 1}
                                                               map={crootMap}
+                                                              timestamp={
+                                                                  cbb_Timestamp
+                                                              }
                                                               add={
                                                                   addPlayerToProfile
                                                               }

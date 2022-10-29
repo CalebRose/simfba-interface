@@ -15,7 +15,6 @@ const CFBTeamDashboardPlayerRow = (props) => {
     const crootModalTarget = '#crootModal' + idx;
     const revokeModalTarget = '#revokeModal' + idx;
     const removeModalTarget = '#removeModal' + idx;
-    const heightObj = HeightToFeetAndInches(Recruit.Height);
 
     const totalPoints = Math.round(recruitProfile.TotalPoints * 100) / 100;
 
