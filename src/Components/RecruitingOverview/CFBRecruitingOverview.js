@@ -50,7 +50,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const [filteredRecruits, setFilteredRecruits] = React.useState([]);
     const [viewableRecruits, setViewableRecruits] = React.useState([]);
     const [count, SetCount] = React.useState(100);
-    const [recruitingProfile, setRecruitingProfile] = React.useState({});
+    const [recruitingProfile, setRecruitingProfile] = React.useState(null);
     const [teamProfiles, setTeamProfiles] = React.useState([]);
     const [recruitingNeeds, setRecruitingNeeds] = React.useState(null);
     const [crootMap, setCrootMap] = React.useState({});
@@ -76,14 +76,21 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
 
     // UseEffects
     useEffect(() => {
-        if (currentUser) {
-            // Get Recruits from DB
-            GetCroots();
-
+        if (
+            (currentUser && recruitingProfile === null) ||
+            Object.keys(recruitingProfile).length === 0
+        ) {
             // Get Team Profile
             GetProfile(currentUser.teamId);
         }
-    }, [currentUser]);
+    }, [currentUser, recruitingProfile]);
+
+    useEffect(() => {
+        if (recruits.length === 0) {
+            // Get Recruits from DB
+            GetCroots();
+        }
+    }, [recruits]);
 
     useEffect(() => {
         if (cfbTeam) {
@@ -123,10 +130,9 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
 
     const GetProfile = async (id) => {
         let response = await _recruitingService.GetTeamProfileForDashboard(id);
+        setRecruitingProfile(() => response.TeamProfile);
 
-        setRecruitingProfile(response.TeamProfile);
-
-        setRecruitingNeeds(response.TeamNeedsMap);
+        setRecruitingNeeds(() => response.TeamNeedsMap);
 
         // Get Map
         let croots = response.TeamProfile.Recruits;
@@ -138,7 +144,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             }
         }
 
-        setCrootMap(map);
+        setCrootMap(() => map);
     };
 
     const GetTeamProfiles = async () => {

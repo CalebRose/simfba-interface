@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
+import { Link } from 'react-router-dom';
+import routes from '../../../Constants/routes';
 import BBARecruitingService from '../../../_Services/simNBA/BBARecruitingService';
 import ServiceMessageBanner from '../../_Common/ServiceMessageBanner';
 import CBBTeamDashboardPlayerRow from './DashboardComponents/CBBTeamDashboardPlayerRow';
@@ -10,7 +12,7 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     let _recruitingService = new BBARecruitingService();
 
     // Hooks
-    const [recruitingProfile, setRecruitingProfile] = React.useState({});
+    const [recruitingProfile, setRecruitingProfile] = React.useState(null);
     const [recruits, setRecruits] = React.useState([]);
     const [isValid, setValidation] = React.useState(true);
     const [errorMessage, setErrorMessage] = React.useState('');
@@ -34,7 +36,7 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     }, [currentUser]);
 
     useEffect(() => {
-        if (recruits) {
+        if (recruits && recruits.length > 0) {
             checkValidation();
         }
     }, [recruits]);
@@ -45,10 +47,12 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             currentUser.cbb_id
         );
 
-        let profile = response.TeamProfile;
+        let profile = { ...response.TeamProfile };
 
         let recruits =
-            profile !== undefined && profile.Recruits.length > 0
+            profile !== undefined &&
+            profile.Recruits !== null &&
+            profile.Recruits.length > 0
                 ? profile.Recruits
                 : [];
 
@@ -57,8 +61,8 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             .sort((a, b) => {
                 return a.IsSigned === b.IsSigned ? 0 : a.IsSigned ? 1 : -1;
             });
-        setRecruits(() => filteredRecruits);
         setRecruitingProfile(() => profile);
+        setRecruits(() => filteredRecruits);
     };
 
     const removeRecruitFromBoard = async (idx, player) => {
@@ -74,7 +78,7 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
 
     const toggleScholarship = async (idx, recruitProfile) => {
         const scholarshipVal = !recruitProfile.Scholarship ? true : false;
-        const revokedVal = recruitProfile.Scholarship ? true : false;
+        const revokedVal = !scholarshipVal ? true : false;
         const croots = [...recruits].map((x) => {
             return { ...x };
         });
@@ -83,13 +87,16 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
 
         const UpdateRecruitDto = {
             RecruitID: recruitProfile.RecruitID,
-            ProfileID: recruitingProfile.ID,
-            Team: recruitingProfile.Team,
+            RecruitPointsID: recruitProfile.ID,
+            ProfileID: recruitProfile.ProfileID,
+            Team: recruitingProfile.TeamAbbreviation,
             RewardScholarship: scholarshipVal,
             RevokeScholarship: revokedVal
         };
 
-        const response = await _recruitingService.ToggleScholarship(
+        console.log({ recruitProfile, UpdateRecruitDto });
+
+        const response = await _recruitingService.SendScholarshipToRecruit(
             UpdateRecruitDto
         );
         if (response.ok) {
@@ -109,15 +116,20 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
         let pointsSpent = value;
         recruitList[idx] = {
             ...recruitList[idx],
-            CurrentWeeksPoints: pointsSpent
+            CurrentWeeksPoints: Number(pointsSpent)
         };
         setRecruits(() => recruitList);
     };
 
     const checkValidation = () => {
-        if (recruits.length === 0) return;
+        if (
+            recruits === null ||
+            recruits.length === 0 ||
+            recruitingProfile === null
+        )
+            return;
         let valid = true;
-        let profile = recruitingProfile;
+        let profile = { ...recruitingProfile };
         let croots = [...recruits];
         let currentPointsSpent = 0;
         let message = '';
@@ -131,7 +143,7 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
 
                 break;
             }
-            currentPointsSpent += croot.CurrentPointsSpent;
+            currentPointsSpent += Number(croot.CurrentWeeksPoints);
 
             if (currentPointsSpent > profile.WeeklyPoints && valid) {
                 valid = false;
@@ -155,8 +167,10 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
         let payload = {
             Profile: profile,
             Recruits: croots,
-            TeamId: currentUser.cbb_id
+            TeamID: currentUser.cbb_id
         };
+
+        console.log({ payload });
 
         setServiceMessage(() => savingMessage);
 
@@ -188,32 +202,91 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                 <h2>{currentUser ? currentUser.cbb_team : 'Team'} Board</h2>
             </div>
             <div className="row">
-                <div className="col-md-2 dashboard-sidebar"></div>
-                <div className="col-md-10 px-md-4">
-                    <div className="row justify-content-end">
-                        <div className="col-md-auto ms-auto">
-                            <h4>
-                                Weekly Points: {recruitingProfile.WeeklyPoints}
-                            </h4>
-                            <h4>
-                                Points Spent: {recruitingProfile.SpentPoints}
-                            </h4>
+                <div className="col-md-2 dashboard-sidebar">
+                    <div className="row mt-3">
+                        <div className="justify-content-start">
+                            <h4>{cbbTeam ? cbbTeam.Team : 'Team'} Profile</h4>
+                            <Link
+                                to={routes.CBB_RECRUITING}
+                                type="button"
+                                className="btn btn-primary btn-md me-2 shadow"
+                            >
+                                Recruiting Overview
+                            </Link>
                         </div>
-                        <div className="col-md-auto ms-auto align-self-center">
-                            {isValid &&
-                            cbb_Timestamp &&
-                            !cbb_Timestamp.IsRecruitingLocked ? (
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={savePointAllocations}
-                                >
-                                    Save
-                                </button>
-                            ) : (
-                                <button className="btn btn-warning">
-                                    Save
-                                </button>
-                            )}
+                    </div>
+                    <div className="row gx-1 mt-3">
+                        <div className="justify-content-center">
+                            <h6>State, Region</h6>
+                            {recruitingProfile && recruitingProfile.State},{' '}
+                            {recruitingProfile && recruitingProfile.Region}
+                        </div>
+                    </div>
+                    <div className="row gx-1 mt-3 justify-content-center">
+                        <h6>Scholarships Available</h6>
+                        {recruitingProfile
+                            ? recruitingProfile.RecruitClassSize -
+                              recruitingProfile.TotalCommitments
+                            : 'N/A'}
+                    </div>
+                    <div className="row gx-1 mt-3 justify-content-center">
+                        <h6>Scholarship Offers Available</h6>
+                        {recruitingProfile
+                            ? recruitingProfile.ScholarshipsAvailable
+                            : 'N/A'}
+                    </div>
+                    <div className="row gx-1 mt-3 justify-content-center">
+                        <h6>ESPN Score</h6>
+                        {recruitingProfile
+                            ? recruitingProfile.ESPNScore
+                            : 'N/A'}
+                    </div>
+                    <div className="row gx-1 mt-3 justify-content-center">
+                        <h6>Rivals Score</h6>
+                        {recruitingProfile
+                            ? recruitingProfile.RivalsScore
+                            : 'N/A'}
+                    </div>
+                    <div className="row gx-1 mt-3 justify-content-center">
+                        <h6>247Sports Score</h6>
+                        {recruitingProfile
+                            ? recruitingProfile.Rank247Score
+                            : 'N/A'}
+                    </div>
+                </div>
+                <div className="col-md-10 px-md-4">
+                    <div className="row">
+                        <div className="col-md-auto ms-auto">
+                            <div className="row justify-content-end">
+                                <div className="col-md-auto ms-auto">
+                                    <h4>
+                                        Weekly Points:{' '}
+                                        {recruitingProfile &&
+                                            recruitingProfile.WeeklyPoints}
+                                    </h4>
+                                    <h4>
+                                        Points Spent:{' '}
+                                        {recruitingProfile &&
+                                            recruitingProfile.SpentPoints}
+                                    </h4>
+                                </div>
+                                <div className="col-md-auto ms-auto align-self-center">
+                                    {isValid &&
+                                    cbb_Timestamp &&
+                                    !cbb_Timestamp.IsRecruitingLocked ? (
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={savePointAllocations}
+                                        >
+                                            Save
+                                        </button>
+                                    ) : (
+                                        <button className="btn btn-warning">
+                                            Save
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <ServiceMessageBanner
@@ -230,7 +303,6 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                     <th scope="col">Name</th>
                                     <th scope="col">Pos</th>
                                     <th scope="col">Height</th>
-                                    <th scope="col">Yr</th>
                                     <th scope="col">State/Region</th>
                                     <th scope="col">Stars</th>
                                     <th scope="col">Sht. 2</th>
@@ -240,8 +312,6 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                     <th scope="col">Reb.</th>
                                     <th scope="col">Def.</th>
                                     <th scope="col">Pot.</th>
-                                    <th scope="col">Sta.</th>
-                                    <th scope="col">Pt Exp.</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Leading Teams</th>
                                     <th scope="col" style={{ width: 125 }}>
@@ -253,6 +323,7 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                             </thead>
                             <tbody className="overflow-auto">
                                 {recruits !== undefined &&
+                                recruits !== null &&
                                 recruits &&
                                 recruits.length > 0
                                     ? recruits.map((x, idx) => (

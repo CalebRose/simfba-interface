@@ -449,6 +449,10 @@ td {
     max-width: 100% !important;
 }
 
+.cbb-rank-row {
+    height: 4rem;
+}
+
 .dashboard-table-height {
     max-height: 65vh;
     overflow-y: auto;

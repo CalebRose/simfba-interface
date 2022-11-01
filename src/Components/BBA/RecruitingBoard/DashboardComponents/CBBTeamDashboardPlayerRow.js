@@ -1,9 +1,17 @@
 import React, { useEffect } from 'react';
+import ConfirmRemovePlayerFromBoardModal from '../../../TeamRecruitingBoard/CFBTeamRecruitingComponents/CFBTeamRemovePlayerModal';
+import ConfirmRevokeModal from '../../../TeamRecruitingBoard/CFBTeamRecruitingComponents/CFBTeamRevokeScholarshipModal';
+import CBBCrootModal from './CBBCrootModal';
 
 const CBBTeamDashboardPlayerRow = (props) => {
     const data = props.player;
     const idx = props.idx;
     const recruit = data.Recruit;
+    const logo =
+        recruit && recruit.College.length > 0 ? getLogo(recruit.College) : '';
+    const crootModalTarget = '#crootModal' + idx;
+    const revokeModalTarget = '#revokeModal' + idx;
+    const removeModalTarget = '#removeModal' + idx;
 
     const attributeMapper = (attr) => {
         switch (true) {
@@ -17,36 +25,6 @@ const CBBTeamDashboardPlayerRow = (props) => {
                 return 'D';
             default:
                 return 'F';
-        }
-    };
-
-    const getOverall = (attribute) => {
-        if (attribute > 98) {
-            return 'A+';
-        } else if (attribute > 92) {
-            return 'A';
-        } else if (attribute > 89) {
-            return 'A-';
-        } else if (attribute > 87) {
-            return 'B+';
-        } else if (attribute > 82) {
-            return 'B';
-        } else if (attribute > 79) {
-            return 'B-';
-        } else if (attribute > 77) {
-            return 'C+';
-        } else if (attribute > 72) {
-            return 'C';
-        } else if (attribute > 69) {
-            return 'C-';
-        } else if (attribute > 67) {
-            return 'D+';
-        } else if (attribute > 62) {
-            return 'D';
-        } else if (attribute > 59) {
-            return 'D-';
-        } else {
-            return 'F';
         }
     };
 
@@ -67,8 +45,8 @@ const CBBTeamDashboardPlayerRow = (props) => {
         return props.changePoints(idx, event);
     };
 
-    const toggleScholarship = (event) => {
-        return props.toggleScholarship(idx, event);
+    const toggleScholarship = () => {
+        return props.toggleScholarship(idx, data);
     };
 
     const removePlayerFromBoard = () => {
@@ -81,26 +59,71 @@ const CBBTeamDashboardPlayerRow = (props) => {
     let ballworkGrade = attributeMapper(recruit.Ballwork);
     let reboundingGrade = attributeMapper(recruit.Rebounding);
     let defenseGrade = attributeMapper(recruit.Defense);
-    let potentialGrade = getOverall(recruit.PotentialGrade);
     let leadingTeams = leadingTeamsMapper(recruit);
 
     return (
         <>
+            <CBBCrootModal crt={recruit} idx={idx} />
+            <ConfirmRevokeModal
+                idx={idx}
+                toggleScholarship={toggleScholarship}
+            />
+            <ConfirmRemovePlayerFromBoardModal
+                idx={idx}
+                removePlayer={removePlayerFromBoard}
+            />
             <tr>
-                <td className="align-middle">
-                    <h6>{data.Scholarship}</h6>
-                </td>
+                <th scope="row">
+                    {data.IsLocked ? (
+                        <h2>
+                            <i class="bi bi-file-lock-fill"></i>
+                        </h2>
+                    ) : data.ScholarshipRevoked ? (
+                        <h2>
+                            <i className="bi bi-heartbreak-fill link-danger" />
+                        </h2>
+                    ) : data.Scholarship ? (
+                        <button
+                            type="button"
+                            className="btn"
+                            data-bs-toggle="modal"
+                            data-bs-target={revokeModalTarget}
+                        >
+                            <h2>
+                                <i className="bi bi-mortarboard-fill link-success" />
+                            </h2>
+                        </button>
+                    ) : data.IsSigned ? (
+                        <h2>
+                            <i className="bi bi-plus-circle-fill" />
+                        </h2>
+                    ) : (
+                        <h2>
+                            <i
+                                className="bi bi-plus-circle-fill"
+                                onClick={toggleScholarship}
+                            />
+                        </h2>
+                    )}
+                </th>
                 <td className="align-middle">
                     <h6>{recruit.Position}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{recruit.FirstName + ' ' + recruit.LastName}</h6>
+                    <h6 className={recruit.IsCustomCroot ? 'text-primary' : ''}>
+                        {recruit.FirstName + ' ' + recruit.LastName}
+                    </h6>
+                    <button
+                        type="button"
+                        className="btn btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target={crootModalTarget}
+                    >
+                        <i className="bi bi-info-circle" />
+                    </button>
                 </td>
                 <td className="align-middle">
                     <h6>{recruit.Height}</h6>
-                </td>
-                <td className="align-middle">
-                    <h6>{recruit.Year}</h6>
                 </td>
                 <td className="align-middle">
                     <h6>
@@ -131,16 +154,20 @@ const CBBTeamDashboardPlayerRow = (props) => {
                     <h6>{defenseGrade}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{potentialGrade}</h6>
+                    <h6>{recruit.PotentialGrade}</h6>
                 </td>
+                <td className="align-middle">{recruit.SigningStatus}</td>
                 <td className="align-middle">
-                    <h6>{recruit.Stamina}</h6>
+                    {data.IsSigned ? (
+                        <img
+                            className="image-recruit-logo"
+                            src={logo}
+                            alt="WinningTeam"
+                        />
+                    ) : (
+                        <h6>{leadingTeams}</h6>
+                    )}
                 </td>
-                <td className="align-middle">
-                    <h6>{recruit.PlaytimeExpectations}</h6>
-                </td>
-                <td className="align-middle">{data.InterestLevel}</td>
-                <td className="align-middle">{leadingTeams}</td>
                 <td className="align-middle">
                     <input
                         name="CurrentPoints"
@@ -148,21 +175,26 @@ const CBBTeamDashboardPlayerRow = (props) => {
                         class="form-control"
                         id="currentPoints"
                         aria-describedby="currentPoints"
-                        value={data.CurrentPointsSpent}
+                        value={data.CurrentWeeksPoints}
                         onChange={handleChange}
                         min="0"
                     />
                 </td>
                 <td className="align-middle">
-                    <h6>{data.TotalPointsSpent}</h6>
+                    <h6>{data.TotalPoints}</h6>
                 </td>
                 <td className="align-middle">
-                    <h2>
+                    <button
+                        type="button"
+                        className="btn"
+                        data-bs-toggle="modal"
+                        data-bs-target={removeModalTarget}
+                    >
                         <i
                             className="bi bi-x-circle-fill rounded-circle link-danger"
                             onClick={removePlayerFromBoard}
                         ></i>
-                    </h2>
+                    </button>
                 </td>
             </tr>
         </>

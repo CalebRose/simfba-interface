@@ -469,86 +469,58 @@ export const GetValidation = (croot) => {
         croot.Weight
     )
         return true;
-
-    /*
-    if (
-        croot.FirstName.length <= 0 &&
-        croot.LastName.length <= 0 &&
-        croot.Position.length <= 0 &&
-        croot.Archetype.length <= 0
-    ) {
-        alert(
-            'Please check the following fields: First Name, Last Name, Position, and Archetype'
-        );
-        return false;
-    }
-    if (croot.Height <= 0 && croot.Weight <= 0) {
-        alert('Please check the height and weight inputs');
-        return false;
-    }
-    if (croot.Stars <= 0 && croot.Overall <= 0) {
-        alert('Please check the Stars and Overall inputs');
-        return false;
-    }
-    if (croot.Stamina <= 0 && croot.Injury <= 0 && croot.FootballIQ <= 0) {
-        alert('Please check the Stamina, Injuray and FootballIQ inputs');
-        return false;
-    }
-    if (croot.Speed <= 0 && croot.Carrying <= 0 && croot.Agility <= 0) {
-        alert('Please check the Speed, Carrying, and Agility inputs');
-        return false;
-    }
-    if (croot.Catching <= 0 && croot.RouteRunning <= 0) {
-        alert('Please check the Catching and Route Running inputs');
-        return false;
-    }
-    if (croot.ZoneCoverage <= 0 && croot.ManCoverage <= 0) {
-        alert('Please check the Zone Coverage and Man Coverage inputs');
-        return false;
-    }
-    if (croot.Strength <= 0 && croot.Tackle <= 0) {
-        alert('Please check the Strength and Tackle inputs');
-        return false;
-    }
-    if (croot.PassBlock <= 0 && croot.RunBlock <= 0) {
-        alert('Please check the Pass Blocking and Run Blocking inputs');
-        return false;
-    }
-    if (croot.PassRush <= 0 && croot.RunDefense <= 0) {
-        alert('Please check the Pass Rush and Run Defense inputs');
-        return false;
-    }
-
-    if (croot.ThrowAccuracy <= 0 && croot.ThrowPower <= 0) {
-        alert('Please check the Throw Power and Throw Accuracy inputs');
-        return false;
-    }
-    if (
-        croot.KickAccuracy <= 0 &&
-        croot.KickPower <= 0 &&
-        croot.PuntAccuracy <= 0 &&
-        croot.PuntPower <= 0
-    ) {
-        alert('Please check the Kicking and Punting inputs');
-        return false;
-    }
-    if (croot.Progression <= 0 && croot.Discipline <= 0) {
-        alert('Please check the Progression and Discipline inputs');
-        return false;
-    }
-    if (
-        croot.FreeAgency.length <= 0 &&
-        croot.Personality.length <= 0 &&
-        croot.RecruitingBias.length <= 0 &&
-        croot.WorkEthic.length <= 0 &&
-        croot.AcademicBias.length <= 0
-    ) {
-        alert(
-            'Please check the Free Agency, Personality, RecruitingBias, WorkEthic, and AcademicBias dropdowns'
-        );
-        return false;
-    } */
     return false;
+};
+
+export const GetCBBValidation = (croot) => {
+    if (!croot) return false;
+    if (
+        croot.FirstName &&
+        croot.LastName &&
+        croot.Position &&
+        croot.Height &&
+        croot.Country &&
+        croot.Stars &&
+        croot.Overall &&
+        croot.Stamina &&
+        croot.Shooting2 &&
+        croot.Shooting3 &&
+        croot.Finishing &&
+        croot.Ballwork &&
+        croot.Rebounding &&
+        croot.Defense &&
+        croot.Potential &&
+        croot.FreeAgency &&
+        croot.Personality &&
+        croot.RecruitingBias &&
+        croot.WorkEthic &&
+        croot.AcademicBias
+    )
+        return true;
+    return false;
+};
+
+export const GetCBBOverall = (croot) => {
+    return (
+        Math.floor((croot.Shooting2 + croot.Shooting3) / 2) +
+        croot.Finishing +
+        croot.Ballwork +
+        croot.Rebounding +
+        croot.Defense
+    );
+};
+
+export const GetStarRating = (ovr) => {
+    if (ovr > 59) {
+        return 5;
+    } else if (ovr > 52) {
+        return 4;
+    } else if (ovr > 44) {
+        return 3;
+    } else if (ovr > 36) {
+        return 2;
+    }
+    return 1;
 };
 
 export const RandomRange = (min, max) =>

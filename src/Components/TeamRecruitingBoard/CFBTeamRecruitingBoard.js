@@ -275,7 +275,9 @@ const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                         errMessage={errorMessage}
                     />
                     <div className="row mt-2 dashboard-table-height">
-                        {isMobile ? (
+                        {isMobile &&
+                        cfb_Timestamp &&
+                        !cfb_Timestamp.IsRecruitingLocked ? (
                             <>
                                 {recruits !== undefined &&
                                 recruits !== null &&
@@ -334,6 +336,8 @@ const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                 <tbody className="overflow-auto">
                                     {recruits !== undefined &&
                                     recruits !== null &&
+                                    cfb_Timestamp &&
+                                    !cfb_Timestamp.IsRecruitingLocked &&
                                     recruits.length > 0
                                         ? recruits.map((x, idx) => (
                                               <CFBTeamDashboardPlayerRow
@@ -353,7 +357,9 @@ const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                 </tbody>
                             </table>
                         )}
-                        {recruits === undefined || recruits === null ? (
+                        {(recruits === undefined || recruits === null) &&
+                        cfb_Timestamp &&
+                        !cfb_Timestamp.IsRecruitingLocked ? (
                             <div className="row justify-content-center pt-2 mt-4 mb-2">
                                 <div class="spinner-border" role="status">
                                     <span class="sr-only">Loading...</span>
@@ -368,6 +374,19 @@ const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             <div className="row justify-content-center">
                                 Have you considered adding a croot to your team
                                 board?
+                            </div>
+                        ) : (
+                            ''
+                        )}
+                        {cfb_Timestamp && cfb_Timestamp.IsRecruitingLocked ? (
+                            <div className="row justify-content-center">
+                                If you're seeing this, Recruiting is currently
+                                being synced. No, you can't view your board
+                                right now. Nor can you ask to see who's being
+                                synced in real time. Please go to bed, and in
+                                the morning all of your croots will be gifted
+                                and wrapped nicely underneath your crootsmas
+                                tree. You're welcome.
                             </div>
                         ) : (
                             ''

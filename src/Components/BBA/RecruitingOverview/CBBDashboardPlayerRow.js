@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { getLogo } from '../../../Constants/getLogo';
 
 const CBBDashboardPlayerRow = (props) => {
     const [flag, setFlag] = React.useState(false);
@@ -15,6 +16,8 @@ const CBBDashboardPlayerRow = (props) => {
         data.Shooting3 +
         data.State +
         data.Country;
+
+    const logo = data && data.College.length > 0 ? getLogo(data.College) : '';
 
     useEffect(() => {
         if (map) {
@@ -36,35 +39,6 @@ const CBBDashboardPlayerRow = (props) => {
         }
     };
 
-    const getOverall = (attribute) => {
-        if (attribute > 98) {
-            return 'A+';
-        } else if (attribute > 92) {
-            return 'A';
-        } else if (attribute > 89) {
-            return 'A-';
-        } else if (attribute > 87) {
-            return 'B+';
-        } else if (attribute > 82) {
-            return 'B';
-        } else if (attribute > 79) {
-            return 'B-';
-        } else if (attribute > 77) {
-            return 'C+';
-        } else if (attribute > 72) {
-            return 'C';
-        } else if (attribute > 69) {
-            return 'C-';
-        } else if (attribute > 67) {
-            return 'D+';
-        } else if (attribute > 62) {
-            return 'D';
-        } else if (attribute > 59) {
-            return 'D-';
-        } else {
-            return 'F';
-        }
-    };
     const leadingTeamsMapper = (croot) => {
         // Show list of leading teams
         if (croot.LeadingTeams == null || croot.LeadingTeams.length === 0)
@@ -91,14 +65,14 @@ const CBBDashboardPlayerRow = (props) => {
     const reboundingGrade = attributeMapper(data.Rebounding);
     const defenseGrade = attributeMapper(data.Defense);
     const leadingTeams = leadingTeamsMapper(data);
-
+    const customClass = data.IsCustomCroot ? 'text-primary' : '';
     return (
         <tr>
             <th scope="row">
                 <h4>{props.rank}</h4>
             </th>
             <td className="align-middle">
-                <h6>{name}</h6>
+                <h6 className={customClass}>{name}</h6>
             </td>
             <td className="align-middle">
                 <h6>{data.Position}</h6>
@@ -134,9 +108,19 @@ const CBBDashboardPlayerRow = (props) => {
                 <h6>{data.PotentialGrade}</h6>
             </td>
             <td className="align-middle">{data.SigningStatus}</td>
-            <td className="align-middle">{leadingTeams}</td>
             <td className="align-middle">
-                {data.IsSigned || timestamp.CollegeWeek === 21 ? (
+                {!data.IsSigned ? (
+                    <h6>{leadingTeams}</h6>
+                ) : (
+                    <img
+                        className="image-recruit-logo"
+                        src={logo}
+                        alt="WinningTeam"
+                    />
+                )}
+            </td>
+            <td className="align-middle">
+                {data.IsSigned || timestamp.CollegeWeek === 16 ? (
                     <h2>
                         <i class="bi bi-file-lock-fill"></i>
                     </h2>

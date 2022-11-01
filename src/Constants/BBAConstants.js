@@ -50,6 +50,7 @@ export const CountryList = [
     'Indonesia',
     'Ireland',
     'Israel',
+    'Italy',
     'Jamaica',
     'Japan',
     'Kenya',

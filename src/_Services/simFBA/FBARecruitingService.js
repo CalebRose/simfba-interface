@@ -3,11 +3,16 @@ import url from '../../Constants/url';
 export default class FBARecruitingService {
     async GetTeamProfileForDashboard(id) {
         let json;
-        let response = await fetch(url + 'recruiting/profile/dashboard/' + id, {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
+        let response = await fetch(
+            `${url}recruiting/overview/dashboard/${id}/`,
+            {
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('token'),
+                    'Content-Type': 'application/json'
+                },
+                method: 'GET'
             }
-        });
+        );
 
         if (response.ok) {
             json = await response.json();

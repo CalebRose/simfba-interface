@@ -19,6 +19,7 @@ import { MapOptions, MapObjOptions } from '../../../_Utility/filterHelper';
 import { useMediaQuery } from 'react-responsive';
 import routes from '../../../Constants/routes';
 import { Link } from 'react-router-dom';
+import CBBRankingsModal from './CBBRankingsModal';
 
 const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     // Services
@@ -446,7 +447,7 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                 </h5>
                                 <button
                                     type="button"
-                                    className="btn"
+                                    className="btn btn-primary"
                                     data-bs-toggle="modal"
                                     data-bs-target="#rankingsModal"
                                 >
@@ -488,6 +489,7 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                             ''
                         )}
                     </div>
+                    <CBBRankingsModal teamProfiles={teamProfiles} />
                     <div className="row mt-2 dashboard-table-height">
                         {cbb_Timestamp && !cbb_Timestamp.IsRecruitingLocked ? (
                             <InfiniteScroll

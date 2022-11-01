@@ -20,4 +20,38 @@ export default class BBAAdminService {
 
         return json;
     }
+
+    async LockRecruiting() {
+        let response = await fetch(url + 'admin/lock/recruiting', {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        if (response.ok) {
+            return true;
+        } else {
+            alert(
+                'Could not successfully lock recruiting.\nHTTP-Error:',
+                response.status
+            );
+            return false;
+        }
+    }
+
+    async SyncRecruiting() {
+        let response = await fetch(url + 'admin/recruiting/sync', {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        if (response.ok) {
+            return true;
+        } else {
+            alert(
+                'Could not successfully sync recruiting.\nHTTP-Error:',
+                response.status
+            );
+            return false;
+        }
+    }
 }

@@ -1,35 +1,24 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import BBAAdminService from '../../../../_Services/simNBA/BBAAdminService';
+import BBARecruitingService from '../../../../_Services/simNBA/BBARecruitingService';
+import BBACreateCrootModal from './BBACreateCrootModal';
 
-const BBAManageSim = ({ currentUser }) => {
-    const [timestamp, setTimestamp] = React.useState([]);
+const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
+    let _adminService = new BBAAdminService();
+    let _recruitingService = new BBARecruitingService();
+    const [timestamp, setTimestamp] = React.useState(null);
     const [SyncComplete, setCompletion] = React.useState(false);
     const [ActionsRemaining, setRemainingActionsCount] = React.useState(3);
 
     useEffect(() => {
-        const testTimestamp = {
-            Id: 1,
-            SeasonId: 1,
-            Season: 2022,
-            CollegeWeekId: 1,
-            CollegeWeek: 1,
-            NBAWeekId: 1,
-            NBAWeek: 1,
-            GamesARan: false,
-            GamesBRan: false,
-            GamesCRan: false,
-            RecruitingSynced: false,
-            GMActionsComplete: false,
-            IsOffSeason: true
-        };
-
-        let count = testTimestamp.IsOffSeason ? 2 : 5;
-        setRemainingActionsCount(count);
-        setTimestamp(testTimestamp);
-    }, []);
+        if (cbb_Timestamp) {
+            setTimestamp(() => cbb_Timestamp);
+        }
+    }, [cbb_Timestamp]);
 
     const IsWeekComplete = () => {
-        if (timestamp.IsOffSeason) {
+        if (timestamp && timestamp.IsOffSeason) {
             return timestamp.RecruitingSynced && timestamp.GMActionsComplete;
         } else {
             return (
@@ -42,11 +31,6 @@ const BBAManageSim = ({ currentUser }) => {
         }
     };
 
-    const DeductActionsRemaining = () => {
-        let count = ActionsRemaining - 1;
-        setRemainingActionsCount(count);
-    };
-
     const syncAGames = () => {
         if (timestamp.IsOffSeason) {
             return;
@@ -55,7 +39,6 @@ const BBAManageSim = ({ currentUser }) => {
         newTimestamp.GamesARan = true;
         // API Call to Sync A Games
         setTimestamp({ ...timestamp, ...newTimestamp });
-        DeductActionsRemaining();
     };
     const syncBGames = () => {
         if (timestamp.IsOffSeason || !timestamp.GamesARan) {
@@ -65,8 +48,8 @@ const BBAManageSim = ({ currentUser }) => {
         newTimestamp.GamesBRan = true;
         // API Call to Sync A Games
         setTimestamp({ ...timestamp, ...newTimestamp });
-        DeductActionsRemaining();
     };
+
     const syncCGames = () => {
         if (
             timestamp.IsOffSeason ||
@@ -80,19 +63,33 @@ const BBAManageSim = ({ currentUser }) => {
         // API Call to Sync A Games
         setTimestamp({ ...timestamp, ...newTimestamp });
         setCompletion(IsWeekComplete());
-        DeductActionsRemaining();
     };
 
-    const syncRecruiting = () => {
+    const syncRecruiting = async () => {
         if (timestamp.RecruitingSynced) {
             return;
         }
-        const newTimestamp = timestamp;
-        newTimestamp.RecruitingSynced = true;
-        // API Call to Sync A Games
-        setTimestamp({ ...timestamp, ...newTimestamp });
-        setCompletion(IsWeekComplete());
-        DeductActionsRemaining();
+        const newTimestamp = { ...timestamp };
+        const response = await _adminService.SyncRecruiting();
+        if (response) {
+            newTimestamp.RecruitingSynced = true;
+            // API Call to Sync A Games
+            setTimestamp({ ...newTimestamp });
+            setCompletion(() => IsWeekComplete());
+        }
+    };
+
+    const syncAIBoards = async () => {};
+
+    const lockRecruiting = async () => {
+        const ts = { ...timestamp };
+
+        const response = await _adminService.LockRecruiting();
+
+        if (response) {
+            ts.IsRecruitingLocked = !ts.IsRecruitingLocked;
+            setTimestamp(() => ts);
+        }
     };
 
     const syncManagementActions = () => {
@@ -104,14 +101,13 @@ const BBAManageSim = ({ currentUser }) => {
         // API Call to Sync A Games
         setTimestamp({ ...timestamp, ...newTimestamp });
         setCompletion(IsWeekComplete());
-        DeductActionsRemaining();
     };
 
     const syncToNextWeek = () => {
         if (!timestamp.GMActionsComplete) {
             return;
         }
-        const newTimestamp = timestamp;
+        const newTimestamp = { ...timestamp };
         // API Call to Sync to Next week and receive new timestamp
         // Test data for now
         newTimestamp.NBAWeekId++;
@@ -128,6 +124,20 @@ const BBAManageSim = ({ currentUser }) => {
         setRemainingActionsCount(newTimestamp.IsOffSeason ? 2 : 5);
     };
 
+    const SaveRecruit = async (croot) => {
+        const RecruitDTO = { ...croot };
+        console.log({ RecruitDTO });
+
+        // Set Service Message?
+        const save = await _recruitingService.CreateRecruit(RecruitDTO);
+
+        if (save.ok) {
+            // Set Service Message?
+        } else {
+            alert('HTTP-Error:', save.status);
+        }
+    };
+
     return (
         <div className="container">
             <div className="row mt-3">
@@ -137,13 +147,13 @@ const BBAManageSim = ({ currentUser }) => {
             </div>
             <div className="row mt-4">
                 <div className="col  col-md-4">
-                    <h3>Season: {timestamp.Season ? timestamp.Season : ''}</h3>
+                    <h3>
+                        Season:{' '}
+                        {timestamp && timestamp.Season ? timestamp.Season : ''}
+                    </h3>
                 </div>
                 <div className="col col-md-4">
-                    <h3>
-                        Week:{' '}
-                        {timestamp.CollegeWeek ? timestamp.CollegeWeek : ''}
-                    </h3>
+                    <h3>Week: {timestamp && timestamp.CollegeWeek}</h3>
                 </div>
                 <div className="col col-md-4">
                     <h3>
@@ -171,8 +181,9 @@ const BBAManageSim = ({ currentUser }) => {
                                 <button
                                     type="button"
                                     className={
-                                        timestamp.IsOffSeason ||
-                                        timestamp.GamesARan
+                                        timestamp &&
+                                        (timestamp.IsOffSeason ||
+                                            timestamp.GamesARan)
                                             ? 'btn btn-secondary btn-sm'
                                             : 'btn btn-primary btn-sm'
                                     }
@@ -183,7 +194,7 @@ const BBAManageSim = ({ currentUser }) => {
                             </td>
                             <td>
                                 <h5>
-                                    {timestamp.GamesARan
+                                    {timestamp && timestamp.GamesARan
                                         ? 'Synced'
                                         : 'Incomplete'}
                                 </h5>
@@ -197,6 +208,7 @@ const BBAManageSim = ({ currentUser }) => {
                                 <button
                                     type="button"
                                     className={
+                                        timestamp &&
                                         timestamp.GamesARan &&
                                         !timestamp.GamesBRan
                                             ? 'btn btn-primary btn-sm'
@@ -209,13 +221,13 @@ const BBAManageSim = ({ currentUser }) => {
                             </td>
                             <td>
                                 <h5>
-                                    {timestamp.GamesBRan
+                                    {timestamp && timestamp.GamesBRan
                                         ? 'Synced'
                                         : 'Incomplete'}
                                 </h5>
                             </td>
                         </tr>
-                        <tr>
+                        {/* <tr>
                             <th scope="row">
                                 <h4>Week C (NBA) Games</h4>
                             </th>
@@ -241,16 +253,42 @@ const BBAManageSim = ({ currentUser }) => {
                                         : 'Incomplete'}
                                 </h5>
                             </td>
-                        </tr>
+                        </tr> */}
                         <tr>
                             <th scope="row">
-                                <h4>Recruiting Actions</h4>
+                                <h4>Lock Recruiting</h4>
                             </th>
                             <td>
                                 <button
                                     type="button"
                                     className={
-                                        !timestamp.RecruitingSynced
+                                        timestamp &&
+                                        !timestamp.IsRecruitingLocked
+                                            ? 'btn btn-primary btn-sm'
+                                            : 'btn btn-secondary btn-sm'
+                                    }
+                                    onClick={lockRecruiting}
+                                >
+                                    Lock
+                                </button>
+                            </td>
+                            <td>
+                                <h5>
+                                    {timestamp && timestamp.IsRecruitingLocked
+                                        ? 'Locked'
+                                        : 'Unlocked'}
+                                </h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <h4>Recruiting Sync</h4>
+                            </th>
+                            <td>
+                                <button
+                                    type="button"
+                                    className={
+                                        timestamp && !timestamp.RecruitingSynced
                                             ? 'btn btn-primary btn-sm'
                                             : 'btn btn-secondary btn-sm'
                                     }
@@ -261,13 +299,40 @@ const BBAManageSim = ({ currentUser }) => {
                             </td>
                             <td>
                                 <h5>
-                                    {timestamp.RecruitingSynced
+                                    {timestamp && timestamp.RecruitingSynced
                                         ? 'Synced'
                                         : 'Incomplete'}
                                 </h5>
                             </td>
                         </tr>
                         <tr>
+                            <th scope="row">
+                                <h4>Sync AI Team Boards</h4>
+                            </th>
+                            <td>
+                                <button
+                                    type="button"
+                                    className={
+                                        timestamp &&
+                                        !timestamp.AIPointAllocationComplete
+                                            ? 'btn btn-primary btn-sm'
+                                            : 'btn btn-secondary btn-sm'
+                                    }
+                                    onClick={syncAIBoards}
+                                >
+                                    Sync
+                                </button>
+                            </td>
+                            <td>
+                                <h5>
+                                    {timestamp &&
+                                    timestamp.AIPointAllocationComplete
+                                        ? 'Synced'
+                                        : 'Incomplete'}
+                                </h5>
+                            </td>
+                        </tr>
+                        {/* <tr>
                             <th scope="row">
                                 <h4>GM Actions</h4>
                             </th>
@@ -291,7 +356,7 @@ const BBAManageSim = ({ currentUser }) => {
                                         : 'Incomplete'}
                                 </h5>
                             </td>
-                        </tr>
+                        </tr> */}
                         <tr>
                             <th scope="row">
                                 <h4>Sync to Next Week</h4>
@@ -314,15 +379,29 @@ const BBAManageSim = ({ currentUser }) => {
                 </table>
             </div>
             <div className="row mt-5">
-                <h5>Create Character</h5>
+                <button
+                    type="button"
+                    className="btn btn-primary btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#cbbCreateCrootModal"
+                >
+                    <h5>Create Character</h5>
+                </button>
                 <h6>Note: Only available in off-season</h6>
             </div>
+            <BBACreateCrootModal handleChange={SaveRecruit} />
         </div>
     );
 };
 
-const mapStateToProps = ({ user: { currentUser } }) => ({
-    currentUser
+const mapStateToProps = ({
+    user: { currentUser },
+    cbbTeam: { cbbTeam },
+    timestamp: { cbb_Timestamp }
+}) => ({
+    currentUser,
+    cbbTeam,
+    cbb_Timestamp
 });
 
 export default connect(mapStateToProps)(BBAManageSim);

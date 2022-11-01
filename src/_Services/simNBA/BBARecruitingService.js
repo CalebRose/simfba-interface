@@ -2,11 +2,14 @@ import url from '../../Constants/SimBBA_url';
 
 export default class BBARecruitingService {
     async GetRecruitingProfile(teamId) {
-        let response = await fetch(url + 'recruiting/profile/team/' + teamId, {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
+        let response = await fetch(
+            url + 'recruiting/profile/teamboard/' + teamId,
+            {
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('token')
+                }
             }
-        });
+        );
 
         let json;
         if (response.ok) {
@@ -19,14 +22,11 @@ export default class BBARecruitingService {
 
     async GetTeamProfileForDashboard(id) {
         let json;
-        let response = await fetch(
-            url + 'recruiting/profile/dashboard/' + id + '/',
-            {
-                headers: {
-                    authorization: 'Bearer ' + localStorage.getItem('token')
-                }
+        let response = await fetch(url + 'recruiting/dashboard/' + id + '/', {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
             }
-        );
+        });
 
         if (response.ok) {
             json = await response.json();
@@ -144,19 +144,19 @@ export default class BBARecruitingService {
     }
 
     async SendScholarshipToRecruit(payload) {
-        let response = await fetch(url + 'recruit/sendScholarshipToRecruit', {
+        let response = await fetch(url + 'recruit/toggleScholarship', {
             headers: {
                 authorization: localStorage.getItem('token'),
                 'Content-Type': 'application/json'
             },
-            method: 'PUT',
+            method: 'POST',
             body: JSON.stringify({
-                RecruitPointsId: payload.profileId,
-                ProfileId: payload.profileId,
-                PlayerId: payload.playerId,
-                SpentPoints: payload.spentPoints,
-                RewardScholarship: payload.rewardScholarship,
-                RevokeScholarship: payload.revokeScholarship
+                RecruitPointsId: payload.RecruitPointsID,
+                ProfileId: payload.ProfileID,
+                PlayerId: payload.RecruitID,
+                RewardScholarship: payload.RewardScholarship,
+                RevokeScholarship: payload.RevokeScholarship,
+                Team: payload.Team
             })
         });
         return response;
@@ -188,10 +188,12 @@ export default class BBARecruitingService {
         let response = await fetch(url + 'recruit/saveRecruitingBoard', {
             headers: {
                 authorization: localStorage.getItem('token'),
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
             },
-            method: 'PUT',
-            body: JSON.stringify(payload)
+            method: 'POST',
+            body: JSON.stringify(payload),
+            mode: 'cors'
         });
 
         return response;
@@ -234,5 +236,17 @@ export default class BBARecruitingService {
             );
         }
         return json;
+    }
+
+    async CreateRecruit(dto) {
+        let response = await fetch(url + 'admin/recruit/create', {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(dto)
+        });
+        return response;
     }
 }
