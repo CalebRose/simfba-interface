@@ -20,6 +20,10 @@ import { useMediaQuery } from 'react-responsive';
 import routes from '../../../Constants/routes';
 import { Link } from 'react-router-dom';
 import CBBRankingsModal from './CBBRankingsModal';
+import {
+    HasRegionBonus,
+    HasStateBonus
+} from '../../../_Utility/CBBRecruitingHelper';
 
 const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     // Services
@@ -215,11 +219,15 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const addPlayerToProfile = async (payload) => {
         let crootProfile = { ...recruitingProfile };
         let map = { ...crootMap };
+        const HasStateBonus = HasStateBonus(payload, recruitingProfile);
+        const HasRegionBonus = HasRegionBonus(payload, recruitingProfile);
         let createRecruitPointsDto = {
             profileId: crootProfile.ID,
             playerId: payload.ID,
             seasonId: 0,
-            team: currentUser.cbb_abbr
+            team: currentUser.cbb_abbr,
+            HasStateBonus: HasStateBonus,
+            HasRegionBonus: HasRegionBonus
         };
 
         if (crootProfile.Recruits.length <= 35) {
