@@ -117,6 +117,13 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                 Recruiting
                             </Link>
                             <Link
+                                to={routes.CBB_SCHEDULE}
+                                role="button"
+                                className="btn btn-primary btn-md me-2 shadow"
+                            >
+                                Schedule
+                            </Link>
+                            <Link
                                 to={routes.CBB_STATS}
                                 role="button"
                                 className="btn btn-primary btn-md me-2 shadow"

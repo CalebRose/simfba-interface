@@ -8,7 +8,7 @@ const CBBGameplanRow = (props) => {
     let paintLabel = `game${data.Game}Paint`;
 
     const handleChange = (event) => {
-        return props.updateGameplan(0, event);
+        return props.updateGameplan(event);
     };
 
     return (
@@ -16,19 +16,6 @@ const CBBGameplanRow = (props) => {
             <th scope="row">
                 <h4>Gameplan</h4>
             </th>
-            <td>
-                <input
-                    name="Pace"
-                    type="number"
-                    className="form-control"
-                    id={paceLabel}
-                    aria-describedby={paceLabel}
-                    onChange={handleChange}
-                    min="60"
-                    max="85"
-                    value={data.Pace}
-                />
-            </td>
             <td>
                 <input
                     name="ThreePointProportion"

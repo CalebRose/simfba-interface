@@ -54,4 +54,38 @@ export default class BBAAdminService {
             return false;
         }
     }
+
+    async ShowAGames() {
+        let response = await fetch(url + 'admin/show/a', {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        if (response.ok) {
+            return true;
+        } else {
+            alert(
+                'Could not successfully show A Games.\nHTTP-Error:',
+                response.status
+            );
+            return false;
+        }
+    }
+
+    async ShowBGames() {
+        let response = await fetch(url + 'admin/show/a', {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        if (response.ok) {
+            return true;
+        } else {
+            alert(
+                'Could not successfully show A Games.\nHTTP-Error:',
+                response.status
+            );
+            return false;
+        }
+    }
 }

@@ -86,7 +86,9 @@ export default class BBARecruitingService {
                     ProfileId: payload.profileId,
                     PlayerId: payload.playerId,
                     SeasonId: payload.seasonId,
-                    Team: payload.team
+                    Team: payload.team,
+                    HasStateBonus: payload.HasStateBonus,
+                    HasRegionBonus: payload.HasRegionBonus
                 })
             }
         );
@@ -122,7 +124,7 @@ export default class BBARecruitingService {
         let body = {
             RecruitPointsId: payload.ProfileID,
             ProfileId: payload.ProfileID,
-            PlayerId: payload.PlayerID,
+            PlayerId: payload.RecruitID,
             SpentPoints: payload.CurrentPointsSpent,
             RewardScholarship: false,
             RevokeScholarship: false
@@ -132,7 +134,7 @@ export default class BBARecruitingService {
                 authorization: localStorage.getItem('token'),
                 'Content-Type': 'application/json'
             },
-            method: 'PUT',
+            method: 'POST',
             body: JSON.stringify(body)
         });
         if (response.ok) {
@@ -200,7 +202,7 @@ export default class BBARecruitingService {
     }
 
     async ExportCroots() {
-        let fullURL = url + 'recruits/export/all/';
+        let fullURL = url + 'croots/export/all/';
         let response = await fetch(fullURL, {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token'),

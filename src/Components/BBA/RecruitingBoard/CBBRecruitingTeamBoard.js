@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import routes from '../../../Constants/routes';
 import BBARecruitingService from '../../../_Services/simNBA/BBARecruitingService';
 import ServiceMessageBanner from '../../_Common/ServiceMessageBanner';
+import CBBTeamDashboardMobileRow from './DashboardComponents/CBBTeamDashboardMobileRow';
 import CBBTeamDashboardPlayerRow from './DashboardComponents/CBBTeamDashboardPlayerRow';
 
 const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
@@ -94,8 +95,6 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             RevokeScholarship: revokedVal
         };
 
-        console.log({ recruitProfile, UpdateRecruitDto });
-
         const response = await _recruitingService.SendScholarshipToRecruit(
             UpdateRecruitDto
         );
@@ -169,8 +168,6 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             Recruits: croots,
             TeamID: currentUser.cbb_id
         };
-
-        console.log({ payload });
 
         setServiceMessage(() => savingMessage);
 
@@ -294,6 +291,21 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                         errMessage={errorMessage}
                     />
                     <div className="row mt-2 dashboard-table-height">
+                        {isMobile &&
+                        recruits !== undefined &&
+                        recruits !== null &&
+                        recruits.length > 0
+                            ? recruits.map((x, idx) => (
+                                  <CBBTeamDashboardMobileRow
+                                      key={x.ID}
+                                      idx={idx}
+                                      recruitProfile={x}
+                                      remove={removeRecruitFromBoard}
+                                      toggleScholarship={toggleScholarship}
+                                      changePoints={allocatePoints}
+                                  />
+                              ))
+                            : ''}
                         <table className="table table-hover">
                             <thead>
                                 <tr>

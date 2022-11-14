@@ -5,16 +5,20 @@ import BBAPlayerService from '../../../_Services/simNBA/BBAPlayerService';
 
 import BBATeamPlayerRow from './BBATeamPlayerRow';
 import BBATeamDropdownItem from './BBATeamDropdownItem';
+import ConfirmRedshirtModal from '../../Roster/RedshirtModal';
 
-const BBATeam = ({ currentUser }) => {
+const BBATeam = ({ currentUser, cbb_Timestamp }) => {
     let teamService = new BBATeamService();
     let playerService = new BBAPlayerService();
-
     const [userTeam, setUserTeam] = React.useState('');
     const [team, setTeam] = React.useState('');
     const [teams, setTeams] = React.useState('');
     const [filteredTeams, setFilteredTeams] = React.useState('');
     const [roster, setRoster] = React.useState([]);
+    let redshirtCount =
+        roster && roster.length > 0
+            ? roster.filter((player) => player.IsRedshirting).length
+            : 0;
 
     useEffect(() => {
         if (currentUser) {
@@ -61,9 +65,44 @@ const BBATeam = ({ currentUser }) => {
         selectTeam(userTeam);
     };
 
+    const setRedshirtStatus = async (player) => {
+        const PlayerID = player.PlayerID;
+        const playerRoster = [...roster];
+        const playerIDX = playerRoster.findIndex(
+            (x) => x.PlayerID === PlayerID
+        );
+        playerRoster[playerIDX].IsRedshirting = true;
+
+        const dto = {
+            PlayerID: PlayerID,
+            RedshirtStatus: true
+        };
+
+        const response = await playerService.AssignRedshirt(dto);
+        if (!response) return;
+
+        setRoster(() => playerRoster);
+    };
+
     const playerRows = roster ? (
         roster.map((x, i) => {
-            return <BBATeamPlayerRow key={x.ID} player={x} idx={i} />;
+            return (
+                <>
+                    <ConfirmRedshirtModal
+                        idx={i}
+                        setRedshirtStatus={setRedshirtStatus}
+                        player={x}
+                    />
+                    <BBATeamPlayerRow
+                        key={x.ID}
+                        player={x}
+                        idx={i}
+                        redshirtCount={redshirtCount}
+                        ts={cbb_Timestamp}
+                        view={userTeam.ID === team.ID}
+                    />
+                </>
+            );
         })
     ) : (
         <tr>Attempting to load players...</tr>
@@ -151,8 +190,12 @@ const BBATeam = ({ currentUser }) => {
     );
 };
 
-const mapStateToProps = ({ user: { currentUser } }) => ({
-    currentUser
+const mapStateToProps = ({
+    user: { currentUser },
+    timestamp: { cbb_Timestamp }
+}) => ({
+    currentUser,
+    cbb_Timestamp
 });
 
 export default connect(mapStateToProps)(BBATeam);

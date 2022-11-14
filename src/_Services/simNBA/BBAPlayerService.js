@@ -97,4 +97,28 @@ export default class BBAPlayerService {
         }
         return json;
     }
+
+    async AssignRedshirt(payload) {
+        let response = await fetch(url + 'cbb/player/assign/redshirt/', {
+            headers: {
+                authorization: localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            console.log(
+                'Successfully added redshirt to player',
+                payload.PlayerID
+            );
+        } else {
+            throw (
+                ('HTTP-Error: Could not add redshirt to player',
+                response.status)
+            );
+        }
+        return true;
+    }
 }

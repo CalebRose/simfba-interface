@@ -20,10 +20,12 @@ import { useMediaQuery } from 'react-responsive';
 import routes from '../../../Constants/routes';
 import { Link } from 'react-router-dom';
 import CBBRankingsModal from './CBBRankingsModal';
+import { CheckRegion, CheckState } from '../../../_Utility/CBBRecruitingHelper';
 import {
-    HasRegionBonus,
-    HasStateBonus
-} from '../../../_Utility/CBBRecruitingHelper';
+    ConductSortForCBBOverview,
+    GetDefaultOrderForCBBOverview
+} from '../../../_Utility/utilHelper';
+import CBBDashboardMobileRow from './CBBDashboardMobileRow';
 
 const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     // Services
@@ -59,6 +61,8 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const [showCollusionButton, setShowCollusionButton] = React.useState(true);
     const [teamProfiles, setTeamProfiles] = React.useState([]);
+    const [sort, setSort] = React.useState('Rank');
+    const [isAsc, setIsAsc] = React.useState(false);
 
     const [luckyTeam, setLuckyTeam] = React.useState(() =>
         Math.floor(Math.random() * (172 - 1) + 1)
@@ -77,15 +81,6 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const filterCroots = (recruits) => {
         let fr = [...recruits];
         if (fr.length > 0) {
-            console.log({
-                selectedStates,
-                selectedCountries,
-                selectedPositions,
-                selectedStars,
-                selectedPotentialGrades,
-                selectedOverallGrades
-            });
-
             if (selectedStates.length > 0) {
                 fr = fr.filter((x) => selectedStates.includes(x.State));
             }
@@ -128,15 +123,20 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
 
     useEffect(() => {
         const fc = filterCroots(recruits);
-        setFilteredRecruits(() => [...fc]);
-        setViewableRecruits(() => [...fc.slice(0, count)]);
+        if (fc.length > 0) {
+            const sc = ConductSortForCBBOverview([...fc], sort, isAsc);
+            setFilteredRecruits(() => [...sc]);
+            setViewableRecruits(() => [...sc.slice(0, count)]);
+        }
     }, [
         selectedStates,
         selectedCountries,
         selectedPositions,
         selectedOverallGrades,
         selectedPotentialGrades,
-        selectedStars
+        selectedStars,
+        sort,
+        isAsc
     ]);
 
     const getProfile = async () => {
@@ -219,48 +219,42 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const addPlayerToProfile = async (payload) => {
         let crootProfile = { ...recruitingProfile };
         let map = { ...crootMap };
-        const HasStateBonus = HasStateBonus(payload, recruitingProfile);
-        const HasRegionBonus = HasRegionBonus(payload, recruitingProfile);
+        const hasStateBonus = CheckState(payload, crootProfile);
+        const hasRegionBonus = CheckRegion(payload, crootProfile);
+
         let createRecruitPointsDto = {
             profileId: crootProfile.ID,
             playerId: payload.ID,
             seasonId: 0,
             team: currentUser.cbb_abbr,
-            HasStateBonus: HasStateBonus,
-            HasRegionBonus: HasRegionBonus
+            HasStateBonus: hasStateBonus,
+            HasRegionBonus: hasRegionBonus
         };
 
-        if (crootProfile.Recruits.length <= 35) {
-            let newProfile =
-                await _recruitingService.CreateRecruitingPointsProfile(
-                    createRecruitPointsDto
-                );
+        let newProfile = await _recruitingService.CreateRecruitingPointsProfile(
+            createRecruitPointsDto
+        );
 
-            if (newProfile) {
-                if (!crootProfile.Recruits) {
-                    crootProfile.Recruits = [];
-                }
-                // Add to local profile & crootmap
-                const keyCode =
-                    payload.FirstName +
-                    payload.LastName +
-                    payload.Stars +
-                    payload.PotentialGrade +
-                    payload.Shooting2 +
-                    payload.Shooting3 +
-                    payload.State +
-                    payload.Country;
-                map[keyCode] = true;
-                crootProfile.Recruits.push(newProfile);
-
-                setCrootMap(map);
-                setRecruitingProfile(crootProfile);
-                setFilteredRecruits(filteredRecruits);
+        if (newProfile) {
+            if (!crootProfile.Recruits) {
+                crootProfile.Recruits = [];
             }
-        } else {
-            console.log(
-                'You have reached the maximum limit of recruits onto your profile!'
-            );
+            // Add to local profile & crootmap
+            const keyCode =
+                payload.FirstName +
+                payload.LastName +
+                payload.Stars +
+                payload.PotentialGrade +
+                payload.Shooting2 +
+                payload.Shooting3 +
+                payload.State +
+                payload.Country;
+            map[keyCode] = true;
+            crootProfile.Recruits.push(newProfile);
+
+            setCrootMap(map);
+            setRecruitingProfile(crootProfile);
+            setFilteredRecruits(filteredRecruits);
         }
     };
 
@@ -291,6 +285,13 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
 
     const loadMoreRecords = () => {
         setTimeout(() => loadRecords(), 500);
+    };
+
+    const ChangeSort = (value) => {
+        const newSort = value;
+        const isAscending = GetDefaultOrderForCBBOverview(newSort, sort, isAsc);
+        setSort(() => newSort);
+        setIsAsc(() => isAscending);
     };
 
     // Secondary Components
@@ -519,8 +520,17 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                     </div>
                                 }
                             >
-                                {isMobile ? (
-                                    ''
+                                {isMobile && viewableRecruits.length > 0 ? (
+                                    viewableRecruits.map((x, idx) => (
+                                        <CBBDashboardMobileRow
+                                            key={x.ID}
+                                            croot={x}
+                                            idx={idx}
+                                            add={addPlayerToProfile}
+                                            map={crootMap}
+                                            timestamp={cbb_Timestamp}
+                                        />
+                                    ))
                                 ) : (
                                     <table className="table table-hover">
                                         <thead
@@ -532,25 +542,98 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                             }}
                                         >
                                             <tr>
-                                                <th scope="col">Rank</th>
-                                                <th scope="col">Name</th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort('Rank')
+                                                    }
+                                                >
+                                                    Rank
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort('Name')
+                                                    }
+                                                >
+                                                    Name
+                                                </th>
                                                 <th scope="col">Pos</th>
                                                 <th scope="col">Height</th>
-                                                <th scope="col">
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort('State')
+                                                    }
+                                                >
                                                     State/Region
                                                 </th>
-                                                <th scope="col">Stars</th>
-                                                <th scope="col">
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort('Stars')
+                                                    }
+                                                >
+                                                    Stars
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort('Shooting2')
+                                                    }
+                                                >
                                                     2pt. Shooting
                                                 </th>
-                                                <th scope="col">
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort('Shooting3')
+                                                    }
+                                                >
                                                     3pt Shooting.
                                                 </th>
-                                                <th scope="col">Finishing</th>
-                                                <th scope="col">Ballwork</th>
-                                                <th scope="col">Rebounding</th>
-                                                <th scope="col">Defense</th>
-                                                <th scope="col">Potential</th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort('Finishing')
+                                                    }
+                                                >
+                                                    Finishing
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort('Ballwork')
+                                                    }
+                                                >
+                                                    Ballwork
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort('Rebounding')
+                                                    }
+                                                >
+                                                    Rebounding
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort('Defense')
+                                                    }
+                                                >
+                                                    Defense
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort(
+                                                            'PotentialGrade'
+                                                        )
+                                                    }
+                                                >
+                                                    Potential
+                                                </th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">
                                                     Leading Teams

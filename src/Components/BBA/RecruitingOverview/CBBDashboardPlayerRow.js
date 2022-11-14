@@ -24,20 +24,6 @@ const CBBDashboardPlayerRow = (props) => {
             setFlag(map[keyCode]);
         }
     }, [map, keyCode]);
-    const attributeMapper = (attr) => {
-        switch (true) {
-            case attr > 16:
-                return 'A';
-            case attr > 13:
-                return 'B';
-            case attr > 10:
-                return 'C';
-            case attr > 7:
-                return 'D';
-            default:
-                return 'F';
-        }
-    };
 
     const leadingTeamsMapper = (croot) => {
         // Show list of leading teams
@@ -58,12 +44,6 @@ const CBBDashboardPlayerRow = (props) => {
         return props.add(data);
     };
 
-    const shooting2Grade = attributeMapper(data.Shooting2);
-    const shooting3Grade = attributeMapper(data.Shooting3);
-    const finishingGrade = attributeMapper(data.Finishing);
-    const ballworkGrade = attributeMapper(data.Ballwork);
-    const reboundingGrade = attributeMapper(data.Rebounding);
-    const defenseGrade = attributeMapper(data.Defense);
     const leadingTeams = leadingTeamsMapper(data);
     const customClass = data.IsCustomCroot ? 'text-primary' : '';
     return (
@@ -87,22 +67,22 @@ const CBBDashboardPlayerRow = (props) => {
                 <h6>{data.Stars}</h6>
             </td>
             <td className="align-middle">
-                <h6>{shooting2Grade}</h6>
+                <h6>{data.Shooting2}</h6>
             </td>
             <td className="align-middle">
-                <h6>{shooting3Grade}</h6>
+                <h6>{data.Shooting3}</h6>
             </td>
             <td className="align-middle">
-                <h6>{finishingGrade}</h6>
+                <h6>{data.Finishing}</h6>
             </td>
             <td className="align-middle">
-                <h6>{ballworkGrade}</h6>
+                <h6>{data.Ballwork}</h6>
             </td>
             <td className="align-middle">
-                <h6>{reboundingGrade}</h6>
+                <h6>{data.Rebounding}</h6>
             </td>
             <td className="align-middle">
-                <h6>{defenseGrade}</h6>
+                <h6>{data.Defense}</h6>
             </td>
             <td className="align-middle">
                 <h6>{data.PotentialGrade}</h6>

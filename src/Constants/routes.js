@@ -25,6 +25,7 @@ export default {
     CBB_GAMEPLAN: '/bba/team/gameplan',
     CBB_RECRUITING_BOARD: '/bba/croot/team',
     CBB_RECRUITING: '/bba/croot/dashboard',
+    CBB_SCHEDULE: '/bba/schedule',
     CBB_STATS: '/bba/stats',
     CBB_HOME: 'cbb/home',
     NBA_HOME: 'nba/home'

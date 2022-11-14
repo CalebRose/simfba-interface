@@ -1,10 +1,12 @@
 import React from 'react';
+import { GetYear } from '../../../_Utility/RosterHelper';
 const _ = require('lodash');
 
 export const PlayerStatRow = ({ statType, idx, player }) => {
     const name = player.FirstName + ' ' + player.LastName;
     const seasonStats = player.SeasonStats;
     const games = player.PlayerStats ? player.PlayerStats.length : 0;
+    const year = GetYear(player);
 
     const PassingRow = () => {
         const percentLabel =
@@ -18,6 +20,7 @@ export const PlayerStatRow = ({ statType, idx, player }) => {
             <tr>
                 <th className="">{games}</th>
                 <th className="">{name}</th>
+                <td label="year">{year}</td>
                 <td label="team">{player.TeamAbbr}</td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
@@ -43,6 +46,7 @@ export const PlayerStatRow = ({ statType, idx, player }) => {
             <tr>
                 <th className="">{games}</th>
                 <th className="">{name}</th>
+                <td label="year">{year}</td>
                 <td label="team">{player.TeamAbbr}</td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
@@ -62,6 +66,7 @@ export const PlayerStatRow = ({ statType, idx, player }) => {
             <tr>
                 <th className="">{games}</th>
                 <th className="">{name}</th>
+                <td label="year">{year}</td>
                 <td label="team">{player.TeamAbbr}</td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
@@ -81,6 +86,7 @@ export const PlayerStatRow = ({ statType, idx, player }) => {
             <tr>
                 <th className="">{games}</th>
                 <th className="">{name}</th>
+                <td label="year">{year}</td>
                 <td label="team">{player.TeamAbbr}</td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
@@ -102,6 +108,7 @@ export const PlayerStatRow = ({ statType, idx, player }) => {
             <tr>
                 <th className="">{games}</th>
                 <th className="">{name}</th>
+                <td label="year">{year}</td>
                 <td label="team">{player.TeamAbbr}</td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
@@ -123,6 +130,7 @@ export const PlayerStatRow = ({ statType, idx, player }) => {
             <tr>
                 <th className="">{games}</th>
                 <th className="">{name}</th>
+                <td label="year">{year}</td>
                 <td label="team">{player.TeamAbbr}</td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>

@@ -1,26 +1,26 @@
 import React, { useEffect } from 'react';
 import { getLogo } from '../../../Constants/getLogo';
-import { GetOverall } from '../../../_Utility/RosterHelper';
 
-const CFBDashboardMobilePlayerRow = (props) => {
+const CBBDashboardMobileRow = (props) => {
     const [flag, setFlag] = React.useState(false);
     const { croot, idx, map, timestamp } = props;
     const rank = idx + 1;
     const name = croot.FirstName + ' ' + croot.LastName;
-    const affinities = croot.AffinityTwo.length
-        ? croot.AffinityOne + ', ' + croot.AffinityTwo
-        : croot.AffinityOne;
-    const CrootOverall = GetOverall(croot.OverallGrade);
-    const modalTarget = '#crootModal' + idx;
-    const mapKey = croot.FirstName + croot.LastName + croot.HighSchool;
+    const keyCode =
+        croot.FirstName +
+        croot.LastName +
+        croot.Stars +
+        croot.PotentialGrade +
+        croot.Shooting2 +
+        croot.Shooting3 +
+        croot.State +
+        croot.Country;
     const logo =
         croot && croot.College.length > 0 ? getLogo(croot.College) : '';
 
     useEffect(() => {
-        if (map) {
-            setFlag(map[mapKey]);
-        }
-    }, [map, mapKey]);
+        if (map) setFlag(map[keyCode]);
+    }, [map, keyCode]);
 
     const leadingTeamsMapper = (croot) => {
         // Show list of leading teams
@@ -36,45 +36,58 @@ const CFBDashboardMobilePlayerRow = (props) => {
         return competingAbbrs.join(', ');
     };
 
-    const leadingTeams = leadingTeamsMapper(croot);
-
-    const AddPlayerToBoard = () => {
+    const addToProfile = () => {
         setFlag(true);
         return props.add(croot);
     };
-
-    /* 
-        <button
-            type="button"
-            className="btn btn-sm"
-            data-bs-toggle="modal"
-            data-bs-target={modalTarget}
-        >
-            <i className="bi bi-info-circle" />
-        </button>
-    */
+    const leadingTeams = leadingTeamsMapper(croot);
+    const customClass = croot.IsCustomCroot ? 'text-primary' : '';
+    const loc = croot.Country === 'USA' ? croot.State : croot.Country;
 
     return (
         <>
             <div className="card mb-2">
                 <div className="card-body">
-                    <h5 className="card-title">{name}</h5>
+                    <h5
+                        className={
+                            croot.IsCustomCroot
+                                ? 'card-text text-primary'
+                                : 'card-title'
+                        }
+                    >
+                        {name}
+                    </h5>
                     <h6 className="card-subtitle mb-2 text-muted">
                         Rank: {rank}{' '}
                     </h6>
                     <p className="card-text">
-                        {croot.Stars} star {croot.Archetype} {croot.Position}{' '}
-                        from {croot.HighSchool} in {croot.City}, {croot.State}
+                        {croot.Stars} star {croot.Position} from {loc}
                     </p>
                 </div>
                 <ul className="list-group list-group-flush">
                     <li className="list-group-item">
-                        Overall: {CrootOverall}, Potential:{' '}
-                        {croot.PotentialGrade}
+                        2pt Shooting: {croot.Shooting2} | 3pt Shooting:{' '}
+                        {croot.Shooting3}
                     </li>
                     <li className="list-group-item">
-                        <h6>{affinities}</h6>
+                        Finishing: {croot.Finishing} | Ballwork:{' '}
+                        {croot.Ballwork}
                     </li>
+                    <li className="list-group-item">
+                        Rebounding: {croot.Rebounding} | Defense:{' '}
+                        {croot.Defense}
+                    </li>
+                    <li className="list-group-item">
+                        Potential: {croot.PotentialGrade}
+                    </li>
+                    {croot.SigningStatus.length > 0 &&
+                    croot.SigningStatus !== 'Signed' ? (
+                        <li className="list-group-item">
+                            Recruiting Status: {croot.SigningStatus}
+                        </li>
+                    ) : (
+                        ''
+                    )}
                     <li className="list-group-item">
                         {!croot.IsSigned ? (
                             <h6>{leadingTeams}</h6>
@@ -100,7 +113,7 @@ const CFBDashboardMobilePlayerRow = (props) => {
                         <h2>
                             <i
                                 className="bi bi-plus-circle-fill rounded-circle link-success"
-                                onClick={AddPlayerToBoard}
+                                onClick={addToProfile}
                             ></i>
                         </h2>
                     )}
@@ -110,4 +123,4 @@ const CFBDashboardMobilePlayerRow = (props) => {
     );
 };
 
-export default CFBDashboardMobilePlayerRow;
+export default CBBDashboardMobileRow;

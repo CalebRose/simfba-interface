@@ -21,6 +21,14 @@
     max-width: 125px;
 }
 
+.modal-game {
+    min-width: 85vw;
+}
+
+.modal-col {
+    flex: 0.75 0 0%;
+}
+
 /* logo */
 .logo {
     height: 36vh;

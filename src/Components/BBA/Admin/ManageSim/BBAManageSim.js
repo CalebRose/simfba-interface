@@ -31,23 +31,31 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
         }
     };
 
-    const syncAGames = () => {
+    const syncAGames = async () => {
         if (timestamp.IsOffSeason) {
             return;
         }
-        const newTimestamp = timestamp;
-        newTimestamp.GamesARan = true;
-        // API Call to Sync A Games
-        setTimestamp({ ...timestamp, ...newTimestamp });
+        const response = await _adminService.ShowAGames();
+
+        if (response) {
+            const newTimestamp = timestamp;
+            newTimestamp.GamesARan = true;
+            // API Call to Sync A Games
+            setTimestamp({ ...timestamp, ...newTimestamp });
+        }
     };
-    const syncBGames = () => {
+    const syncBGames = async () => {
         if (timestamp.IsOffSeason || !timestamp.GamesARan) {
             return;
         }
-        const newTimestamp = timestamp;
-        newTimestamp.GamesBRan = true;
-        // API Call to Sync A Games
-        setTimestamp({ ...timestamp, ...newTimestamp });
+        const response = await _adminService.ShowBGames();
+
+        if (response) {
+            const newTimestamp = timestamp;
+            newTimestamp.GamesBRan = true;
+            // API Call to Sync A Games
+            setTimestamp({ ...timestamp, ...newTimestamp });
+        }
     };
 
     const syncCGames = () => {

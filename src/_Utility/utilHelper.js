@@ -38,6 +38,26 @@ export const GetDefaultStatsOrder = (newSortValue, sort, isAsc, newView) => {
     }
 };
 
+export const GetDefaultOrderForCBBOverview = (newSortValue, sort, isAsc) => {
+    if (newSortValue.toLowerCase() === sort.toLowerCase()) return !isAsc;
+    switch (newSortValue) {
+        case 'Rank':
+        case 'Name':
+        case 'State':
+        case 'Country':
+        case 'Shooting2':
+        case 'Shooting3':
+        case 'Finishing':
+        case 'Ballwork':
+        case 'Rebounding':
+        case 'Defense':
+        case 'PotentialGrade':
+            return true;
+        default:
+            return false;
+    }
+};
+
 export const ConductSort = (data, sortVal, isAsc) => {
     switch (sortVal) {
         case 'PassingYards':
@@ -65,6 +85,43 @@ export const ConductSort = (data, sortVal, isAsc) => {
                 (a, b) =>
                     (a.SeasonStats[sortVal] - b.SeasonStats[sortVal]) *
                     (isAsc ? 1 : -1)
+            );
+    }
+};
+
+export const ConductSortForCBBOverview = (data, sortVal, isAsc) => {
+    switch (sortVal) {
+        case 'Rank':
+            return data.sort(
+                (a, b) =>
+                    (a.TotalRank - b.TotalRank) * (isAsc ? 1 : -1) ||
+                    (a.Stars - b.Stars) * (isAsc ? 1 : -1)
+            );
+        case 'Name':
+            return data.sort(
+                (a, b) =>
+                    a.LastName.localeCompare(b.LastName) * (isAsc ? 1 : -1)
+            );
+        case 'State':
+            return data.sort(
+                (a, b) =>
+                    a.Country.localeCompare(b.Country) * (isAsc ? 1 : -1) ||
+                    a.State.localeCompare(b.State) * (isAsc ? 1 : -1)
+            );
+
+        case 'PotentialGrade':
+            return data.sort((a, b) => {
+                const cmp = (x, y) => (x > y) - (x < y);
+                return (
+                    cmp(a.PotentialGrade + ',', b.PotentialGrade + ',') *
+                    (isAsc ? 1 : -1)
+                );
+            });
+
+        default:
+            return data.sort(
+                (a, b) =>
+                    a[sortVal].localeCompare(b[sortVal]) * (isAsc ? 1 : -1)
             );
     }
 };

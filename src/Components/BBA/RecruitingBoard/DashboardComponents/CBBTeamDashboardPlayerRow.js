@@ -13,21 +13,6 @@ const CBBTeamDashboardPlayerRow = (props) => {
     const revokeModalTarget = '#revokeModal' + idx;
     const removeModalTarget = '#removeModal' + idx;
 
-    const attributeMapper = (attr) => {
-        switch (true) {
-            case attr > 16:
-                return 'A';
-            case attr > 13:
-                return 'B';
-            case attr > 10:
-                return 'C';
-            case attr > 7:
-                return 'D';
-            default:
-                return 'F';
-        }
-    };
-
     const leadingTeamsMapper = (data) => {
         if (data.LeadingTeams == null || data.LeadingTeams.length === 0)
             return 'None';
@@ -52,13 +37,6 @@ const CBBTeamDashboardPlayerRow = (props) => {
     const removePlayerFromBoard = () => {
         return props.remove(idx, data);
     };
-
-    let shooting2Grade = attributeMapper(recruit.Shooting2);
-    let shooting3Grade = attributeMapper(recruit.Shooting3);
-    let finishingGrade = attributeMapper(recruit.Finishing);
-    let ballworkGrade = attributeMapper(recruit.Ballwork);
-    let reboundingGrade = attributeMapper(recruit.Rebounding);
-    let defenseGrade = attributeMapper(recruit.Defense);
     let leadingTeams = leadingTeamsMapper(recruit);
 
     return (
@@ -136,22 +114,22 @@ const CBBTeamDashboardPlayerRow = (props) => {
                     <h6>{recruit.Stars}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{shooting2Grade}</h6>
+                    <h6>{recruit.Shooting2}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{shooting3Grade}</h6>
+                    <h6>{recruit.Shooting3}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{finishingGrade}</h6>
+                    <h6>{recruit.Finishing}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{ballworkGrade}</h6>
+                    <h6>{recruit.Ballwork}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{reboundingGrade}</h6>
+                    <h6>{recruit.Rebounding}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{defenseGrade}</h6>
+                    <h6>{recruit.Defense}</h6>
                 </td>
                 <td className="align-middle">
                     <h6>{recruit.PotentialGrade}</h6>
@@ -190,10 +168,7 @@ const CBBTeamDashboardPlayerRow = (props) => {
                         data-bs-toggle="modal"
                         data-bs-target={removeModalTarget}
                     >
-                        <i
-                            className="bi bi-x-circle-fill rounded-circle link-danger"
-                            onClick={removePlayerFromBoard}
-                        ></i>
+                        <i className="bi bi-x-circle-fill rounded-circle link-danger" />
                     </button>
                 </td>
             </tr>

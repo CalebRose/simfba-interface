@@ -128,6 +128,14 @@ const NavBar_Start = ({ currentUser }) => {
                     </li>
                     <li>
                         <Link
+                            to={routes.CBB_SCHEDULE}
+                            className="dropdown-item"
+                        >
+                            Team Statistics
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
                             className="dropdown-item"
                             to={routes.CBB_RECRUITING}
                         >

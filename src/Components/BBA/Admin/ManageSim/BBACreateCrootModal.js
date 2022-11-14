@@ -58,7 +58,6 @@ const BBACreateCrootModal = (props) => {
 
         if (name !== 'Stamina') {
             let overall = GetCBBOverall(croot);
-            console.log({ overall, croot });
 
             croot['Overall'] = overall > 99 ? 99 : overall;
             croot['Stars'] = GetStarRating(overall);

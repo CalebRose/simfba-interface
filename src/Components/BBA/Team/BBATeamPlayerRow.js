@@ -1,7 +1,8 @@
 import React from 'react';
 
 const BBATeamPlayerRow = (props) => {
-    const { player } = props;
+    const { player, idx, redshirtCount, ts, view } = props;
+    let modalTarget = '#redshirtModal' + idx;
 
     // Row Functions
     const getYear = (player) => {
@@ -57,7 +58,26 @@ const BBATeamPlayerRow = (props) => {
             <td className="align-middle">{player.Stamina}</td>
             <td className="align-middle">{player.PotentialGrade}</td>
             <td className="align-middle">{player.PlaytimeExpectations}</td>
-            <td className="align-middle">{redshirtStatus}</td>
+            <td label="redshirt-status" className="align-middle">
+                {player.IsRedshirting ? (
+                    <i className="bi bi-check-circle-fill rounded-circle link-danger"></i>
+                ) : redshirtCount < 4 &&
+                  !player.IsRedshirt &&
+                  ts.CollegeWeek < 3 &&
+                  view ? (
+                    <button
+                        type="button"
+                        className="btn btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target={modalTarget}
+                    >
+                        <i className="bi bi-plus-circle-fill rounded-circle link-success"></i>
+                    </button>
+                ) : (
+                    redshirtStatus
+                )}
+            </td>
+            {/* <td className="align-middle">{redshirtStatus}</td> */}
         </tr>
     );
 };

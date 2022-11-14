@@ -118,6 +118,16 @@ const CBBCrootModal = (props) => {
                                 {crt.Country}
                             </div>
                         </div>
+                        {crt.HasStateBonus || crt.HasRegionBonus ? (
+                            <div className="row g-2 gy-2 mb-3">
+                                <div className="col">
+                                    <h5>Bonus Applied</h5>
+                                    {crt.HasStateBonus ? 'State' : 'Region'}
+                                </div>
+                            </div>
+                        ) : (
+                            ''
+                        )}
                         <div className="row g-2 gy-2 mb-3">
                             <div className="col">
                                 <h5>Rivals Rank:</h5>{' '}

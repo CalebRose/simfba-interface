@@ -1,8 +1,8 @@
-export const HasStateBonus = (croot, tp) => {
+export const CheckState = (croot, tp) => {
     return croot.State === tp.State;
 };
 
-export const HasRegionBonus = (croot, tp) => {
+export const CheckRegion = (croot, tp) => {
     if (croot.Country !== 'USA' || croot.State === tp.State) return false;
     switch (tp.Region) {
         case 'Mid-Atlantic':

@@ -1,0 +1,211 @@
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import Select from 'react-select';
+import BBAMatchService from '../../../_Services/simNBA/BBAMatchService';
+import BBATeamService from '../../../_Services/simNBA/BBATeamService';
+import CBBGameModal from './CBBGameModal';
+import CBBGameRow from './CBBGameRow';
+
+const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
+    // Services
+    let _matchService = new BBAMatchService();
+    let _teamService = new BBATeamService();
+
+    // Hooks
+    const [allMatches, setAllMatches] = useState([]);
+    const [viewMatches, setViewMatches] = useState([]);
+    const [weekOptions, setWeekOptions] = useState(null);
+    const [teamOptions, setTeamOptions] = useState(null);
+    const [selectedTeam, setSelectedTeam] = useState(null);
+    const [selectedWeek, setSelectedWeek] = useState(null);
+    const [viewType, setViewType] = useState('WEEK');
+    const [viewGame, setViewGame] = useState(null);
+
+    // UseEffects
+    useEffect(() => {
+        if (cbbTeam && cbb_Timestamp) {
+            GetAllWeeks();
+            GetAllTeams();
+            GetAllMatches();
+        }
+    }, [cbbTeam, cbb_Timestamp]);
+
+    useEffect(() => {
+        let gamesView = [];
+        if (viewType === 'TEAM') {
+            gamesView = [
+                ...allMatches.filter(
+                    (x) =>
+                        x.HomeTeam === selectedTeam ||
+                        x.AwayTeam === selectedTeam
+                )
+            ];
+        } else {
+            gamesView = [...allMatches.filter((x) => x.Week === selectedWeek)];
+        }
+
+        setViewMatches(() => gamesView);
+    }, [selectedTeam, selectedWeek, viewType, allMatches]);
+
+    // API Functions
+    const GetAllTeams = async () => {
+        const response = await _teamService.GetActiveCollegeTeams();
+        const teamOptionForm = [
+            ...response.map((x) => {
+                return { label: x.Team, value: x.Abbr };
+            })
+        ];
+
+        setTeamOptions(() => teamOptionForm);
+    };
+
+    const GetAllWeeks = () => {
+        // Until weeks are uploaded into the DB
+        const weeksForm = [];
+        for (let i = 1; i < 21; i++) {
+            weeksForm.push({ label: i, value: i });
+        }
+
+        setWeekOptions(() => weeksForm);
+        setSelectedWeek(() => cbb_Timestamp.CollegeWeek);
+    };
+
+    const GetAllMatches = async () => {
+        const response = await _matchService.GetMatchesBySeason(
+            cbb_Timestamp.SeasonID
+        );
+
+        setAllMatches(() => [...response]);
+    };
+
+    const ResetTeamViewOptions = () => {
+        setSelectedTeam(() => cbbTeam.Abbr);
+    };
+
+    const ResetWeekViewOptions = () => {
+        setSelectedWeek(() => cbb_Timestamp.CollegeWeek);
+    };
+
+    // Click Functions
+    const SelectTeamView = () => {
+        ResetTeamViewOptions();
+        setViewType(() => 'TEAM');
+    };
+
+    const SelectWeekView = () => {
+        ResetWeekViewOptions();
+        setViewType(() => 'WEEK');
+    };
+
+    const ChangeTeam = (options) => {
+        const opts = options.value;
+        setSelectedTeam(() => opts);
+    };
+
+    const ChangeWeek = (options) => {
+        const opts = options.value;
+        setSelectedWeek(() => opts);
+    };
+
+    const SetGame = (game) => {
+        setViewGame(() => game);
+    };
+
+    return (
+        <div className="container-fluid">
+            <div className="justify-content-start">
+                <h2>SimCBB {cbb_Timestamp.Season} Schedule</h2>
+                <div className="row">
+                    <div className="col-md-2">
+                        <h5>Schedule Filters</h5>
+                        <div className="row mt-2 justify-content-center">
+                            <div className="col-md-auto">
+                                <div
+                                    className="btn-group btn-group-lg"
+                                    role="group"
+                                    aria-label="ViewOptions"
+                                >
+                                    <button
+                                        type="button"
+                                        className={
+                                            viewType === 'TEAM'
+                                                ? 'btn btn-primary'
+                                                : 'btn btn-secondary'
+                                        }
+                                        onClick={SelectTeamView}
+                                    >
+                                        By Team
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={
+                                            viewType === 'WEEK'
+                                                ? 'btn btn-primary'
+                                                : 'btn btn-secondary'
+                                        }
+                                        onClick={SelectWeekView}
+                                    >
+                                        By Week
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {viewType === 'TEAM' ? (
+                            <div className="row mt-2 mb-2">
+                                <h6>Teams</h6>
+                                <Select
+                                    options={teamOptions}
+                                    isMulti={false}
+                                    className="basic-multi-select"
+                                    classNamePrefix="select"
+                                    onChange={ChangeTeam}
+                                />
+                            </div>
+                        ) : (
+                            <div className="row">
+                                <h6>Week</h6>
+                                <Select
+                                    options={weekOptions}
+                                    isMulti={false}
+                                    className="basic-multi-select"
+                                    classNamePrefix="select"
+                                    onChange={ChangeWeek}
+                                />
+                            </div>
+                        )}
+                    </div>
+                    <CBBGameModal game={viewGame} />
+                    <div className="col-md-10 px-md-4">
+                        <div className="row mt-3 mb-5 justify-content-between">
+                            {viewMatches && viewMatches.length > 0
+                                ? viewMatches.map((x, idx) => (
+                                      <>
+                                          <CBBGameRow
+                                              idx={idx}
+                                              key={x.ID}
+                                              game={x}
+                                              ts={cbb_Timestamp}
+                                              SetGame={SetGame}
+                                          />
+                                      </>
+                                  ))
+                                : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const mapStateToProps = ({
+    user: { currentUser },
+    cbbTeam: { cbbTeam },
+    timestamp: { cbb_Timestamp }
+}) => ({
+    currentUser,
+    cbbTeam,
+    cbb_Timestamp
+});
+
+export default connect(mapStateToProps)(CBBSchedulePage);

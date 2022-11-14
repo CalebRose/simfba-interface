@@ -41,7 +41,7 @@ const ConfirmRedshirtModal = (props) => {
                             If this player is already existing on your depth
                             chart, please swap out the player immediately.
                             Refusal to do so will incur severe punishments to
-                            your program both on the field and in recruiting.
+                            your program both in the game and in recruiting.
                         </div>
                     </div>
                     <div className="modal-footer">

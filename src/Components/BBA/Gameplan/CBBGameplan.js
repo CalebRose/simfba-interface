@@ -15,6 +15,7 @@ const CBBGameplan = ({ currentUser }) => {
     const [errorMessage, setErrorMessage] = React.useState('');
     const [serviceMessage, setServiceMessage] = React.useState('');
     const savingMessage = 'Saving...';
+    const paceOptions = ['Very Fast', 'Fast', 'Balanced', 'Slow', 'Very Slow'];
 
     useEffect(() => {
         if (currentUser) {
@@ -37,17 +38,20 @@ const CBBGameplan = ({ currentUser }) => {
     };
 
     const getRoster = async () => {
-        console.log('PING!');
         let players = await playerService.GetPlayersByTeam(currentUser.cbb_id);
-        console.log(players);
         setRoster(() => players);
     };
 
-    const updateGameplan = (idx, event) => {
+    const updateGameplan = (event) => {
+        const tar = event.target === null ? event.currentTarget : event.target;
         let gp = { ...gameplan };
-        let { name, value } = event.target;
+        let { name, value } = tar;
         // Keep the value in range of what's being changed
-        gp[name] = Number(value);
+        if (name !== 'Pace') {
+            gp[name] = Number(value);
+        } else {
+            gp[name] = value;
+        }
         setGameplan(() => gp);
     };
 
@@ -84,6 +88,14 @@ const CBBGameplan = ({ currentUser }) => {
         // Check Players
         for (let i = 0; i < roster.length; i++) {
             totalMinutes += roster[i].Minutes;
+
+            if (roster[i].IsRedshirting && roster[i].Minutes > 0) {
+                message = `${roster[i].FirstName} ${roster[i].LastName} is redshirted and is allocated ${roster[i].Minutes} minutes. Please set the number of minutes to 0.`;
+                setErrorMessage(message);
+                valid = false;
+                setValidation(valid);
+                return;
+            }
 
             if (roster[i].Minutes > roster[i].Stamina) {
                 message = `${roster[i].FirstName} ${roster[i].LastName}'s minutes allocation cannot exceed its Stamina.`;
@@ -134,12 +146,54 @@ const CBBGameplan = ({ currentUser }) => {
                     <h2>{team} Gameplan</h2>
                 </div>
                 <div className="col-md-auto ms-auto">
-                    <button
-                        className="btn btn-primary"
-                        onClick={saveGameplanOptions}
-                    >
-                        Save
-                    </button>
+                    <div className="row">
+                        {gameplan !== undefined && gameplan !== null ? (
+                            <div className="col-md-auto me-1">
+                                <div className="dropdown">
+                                    <button
+                                        className="btn btn-secondary dropdown-toggle"
+                                        type="button"
+                                        id="dropdownMenuButton1"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                    >
+                                        Pace: {gameplan.Pace}
+                                    </button>
+                                    <ul
+                                        className="dropdown-menu dropdown-content"
+                                        aria-labelledby="dropdownMenuButton1"
+                                        style={{ zIndex: 3 }}
+                                    >
+                                        {paceOptions.map((x) => (
+                                            <li
+                                                className="clickable"
+                                                style={{ zIndex: 3 }}
+                                            >
+                                                <button
+                                                    className="dropdown-item clickable"
+                                                    name="Pace"
+                                                    value={x}
+                                                    onClick={updateGameplan}
+                                                >
+                                                    {x}
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        ) : (
+                            ''
+                        )}
+                        <div className="col-md-auto">
+                            <button
+                                className="btn btn-primary"
+                                onClick={saveGameplanOptions}
+                            >
+                                Save
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -176,7 +230,6 @@ const CBBGameplan = ({ currentUser }) => {
                         <thead>
                             <tr>
                                 <th scope="col"></th>
-                                <th scope="col">Pace</th>
                                 <th scope="col">3pt Proportion</th>
                                 <th scope="col">Jumper Proportion</th>
                                 <th scope="col">Paint Proportion</th>
