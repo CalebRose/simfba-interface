@@ -8,18 +8,17 @@ const GameModalRow = (props) => {
     return (
         <tr className="mb-1">
             <td>{player.FirstName + ' ' + player.LastName}</td>
+            <td>{player.Position}</td>
             <td>{stats ? stats.Minutes : 0}</td>
             <td>{stats ? stats.FGM : 0}</td>
             <td>{stats ? stats.FGA : 0}</td>
-            <td>{stats ? RoundToTwoDecimals(stats.FGPercent) * 100 : 0}%</td>
+            <td>{stats ? Math.round(stats.FGPercent * 100) : 0}%</td>
             <td>{stats ? stats.ThreePointsMade : 0}</td>
             <td>{stats ? stats.ThreePointAttempts : 0}</td>
-            <td>
-                {stats ? RoundToTwoDecimals(stats.ThreePointPercent) * 100 : 0}%
-            </td>
+            <td>{stats ? Math.round(stats.ThreePointPercent * 100) : 0}%</td>
             <td>{stats ? stats.FTM : 0}</td>
             <td>{stats ? stats.FTA : 0}</td>
-            <td>{stats ? RoundToTwoDecimals(stats.FTPercent) * 100 : 0}%</td>
+            <td>{stats ? Math.round(stats.FTPercent * 100) : 0}%</td>
             <td>{stats ? stats.Points : 0}</td>
             <td>{stats ? stats.TotalRebounds : 0}</td>
             <td>{stats ? stats.Assists : 0}</td>

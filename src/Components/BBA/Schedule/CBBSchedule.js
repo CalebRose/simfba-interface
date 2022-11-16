@@ -5,6 +5,7 @@ import BBAMatchService from '../../../_Services/simNBA/BBAMatchService';
 import BBATeamService from '../../../_Services/simNBA/BBATeamService';
 import CBBGameModal from './CBBGameModal';
 import CBBGameRow from './CBBGameRow';
+import CBBStandingsModal from './CBBStandingsModal';
 
 const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     // Services
@@ -20,6 +21,8 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const [selectedWeek, setSelectedWeek] = useState(null);
     const [viewType, setViewType] = useState('WEEK');
     const [viewGame, setViewGame] = useState(null);
+    const [showAGames, setShowAGames] = useState(true);
+    const [showBGames, setShowBGames] = useState(true);
 
     // UseEffects
     useEffect(() => {
@@ -44,8 +47,23 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             gamesView = [...allMatches.filter((x) => x.Week === selectedWeek)];
         }
 
+        if (!showAGames) {
+            gamesView = gamesView.filter((x) => x.MatchOfWeek !== 'A');
+        }
+
+        if (!showBGames) {
+            gamesView = gamesView.filter((x) => x.MatchOfWeek !== 'B');
+        }
+
         setViewMatches(() => gamesView);
-    }, [selectedTeam, selectedWeek, viewType, allMatches]);
+    }, [
+        selectedTeam,
+        selectedWeek,
+        viewType,
+        allMatches,
+        showAGames,
+        showBGames
+    ]);
 
     // API Functions
     const GetAllTeams = async () => {
@@ -150,6 +168,42 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                 </div>
                             </div>
                         </div>
+                        <div className="row mt-2 justify-content-center">
+                            <div className="col-md-auto">
+                                <div
+                                    className="btn-group btn-group-lg"
+                                    role="group"
+                                    aria-label="ViewOptions"
+                                >
+                                    <button
+                                        type="button"
+                                        className={
+                                            showAGames
+                                                ? 'btn btn-primary'
+                                                : 'btn btn-danger'
+                                        }
+                                        onClick={() =>
+                                            setShowAGames(() => !showAGames)
+                                        }
+                                    >
+                                        A Games
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={
+                                            showBGames
+                                                ? 'btn btn-primary'
+                                                : 'btn btn-danger'
+                                        }
+                                        onClick={() =>
+                                            setShowBGames(() => !showBGames)
+                                        }
+                                    >
+                                        B Games
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         {viewType === 'TEAM' ? (
                             <div className="row mt-2 mb-2">
                                 <h6>Teams</h6>
@@ -162,7 +216,7 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                 />
                             </div>
                         ) : (
-                            <div className="row">
+                            <div className="row mt-2 mb-2">
                                 <h6>Week</h6>
                                 <Select
                                     options={weekOptions}
@@ -173,8 +227,19 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                 />
                             </div>
                         )}
+                        <div className="row mt-2 justify-content-center">
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#standingsModal"
+                            >
+                                Standings
+                            </button>
+                        </div>
                     </div>
                     <CBBGameModal game={viewGame} />
+                    <CBBStandingsModal ts={cbb_Timestamp} />
                     <div className="col-md-10 px-md-4">
                         <div className="row mt-3 mb-5 justify-content-between">
                             {viewMatches && viewMatches.length > 0

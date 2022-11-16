@@ -21,6 +21,17 @@
     max-width: 125px;
 }
 
+/* Schedule Styles */
+.image-standings-logo {
+    max-height: 30px !important;
+    max-width: 30px !important;
+}
+
+.standings-container {
+    font-size: 14px !important;
+    max-width: 22rem !important;
+}
+
 .modal-game {
     min-width: 85vw;
 }

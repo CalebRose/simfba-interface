@@ -292,57 +292,17 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                     />
                     <div className="row mt-2 dashboard-table-height">
                         {isMobile &&
-                        recruits !== undefined &&
-                        recruits !== null &&
-                        recruits.length > 0
-                            ? recruits.map((x, idx) => (
-                                  <CBBTeamDashboardMobileRow
-                                      key={x.ID}
-                                      idx={idx}
-                                      recruitProfile={x}
-                                      remove={removeRecruitFromBoard}
-                                      toggleScholarship={toggleScholarship}
-                                      changePoints={allocatePoints}
-                                  />
-                              ))
-                            : ''}
-                        <table className="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th scope="col" abbr="Scholarship">
-                                        Scholarship
-                                    </th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Pos</th>
-                                    <th scope="col">Height</th>
-                                    <th scope="col">State/Region</th>
-                                    <th scope="col">Stars</th>
-                                    <th scope="col">Sht. 2</th>
-                                    <th scope="col">Sht. 3</th>
-                                    <th scope="col">Fin.</th>
-                                    <th scope="col">Bal.</th>
-                                    <th scope="col">Reb.</th>
-                                    <th scope="col">Def.</th>
-                                    <th scope="col">Pot.</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Leading Teams</th>
-                                    <th scope="col" style={{ width: 125 }}>
-                                        Add Points
-                                    </th>
-                                    <th scope="col">Total Points</th>
-                                    <th scope="col">Remove</th>
-                                </tr>
-                            </thead>
-                            <tbody className="overflow-auto">
+                        cbb_Timestamp &&
+                        !cbb_Timestamp.IsRecruitingLocked ? (
+                            <>
                                 {recruits !== undefined &&
                                 recruits !== null &&
-                                recruits &&
                                 recruits.length > 0
                                     ? recruits.map((x, idx) => (
-                                          <CBBTeamDashboardPlayerRow
+                                          <CBBTeamDashboardMobileRow
                                               key={x.ID}
-                                              player={x}
                                               idx={idx}
+                                              recruitProfile={x}
                                               remove={removeRecruitFromBoard}
                                               toggleScholarship={
                                                   toggleScholarship
@@ -351,8 +311,60 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                           />
                                       ))
                                     : ''}
-                            </tbody>
-                        </table>
+                            </>
+                        ) : (
+                            <table className="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" abbr="Scholarship">
+                                            Scholarship
+                                        </th>
+                                        <th scope="col">Pos</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Height</th>
+                                        <th scope="col">State/Region</th>
+                                        <th scope="col">Stars</th>
+                                        <th scope="col">Sht. 2</th>
+                                        <th scope="col">Sht. 3</th>
+                                        <th scope="col">Fin.</th>
+                                        <th scope="col">Bal.</th>
+                                        <th scope="col">Reb.</th>
+                                        <th scope="col">Def.</th>
+                                        <th scope="col">Pot.</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Leading Teams</th>
+                                        <th scope="col" style={{ width: 125 }}>
+                                            Add Points
+                                        </th>
+                                        <th scope="col">Total Points</th>
+                                        <th scope="col">Remove</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="overflow-auto">
+                                    {cbb_Timestamp &&
+                                    !cbb_Timestamp.IsRecruitingLocked &&
+                                    recruits !== undefined &&
+                                    recruits !== null &&
+                                    recruits &&
+                                    recruits.length > 0
+                                        ? recruits.map((x, idx) => (
+                                              <CBBTeamDashboardPlayerRow
+                                                  key={x.ID}
+                                                  player={x}
+                                                  idx={idx}
+                                                  remove={
+                                                      removeRecruitFromBoard
+                                                  }
+                                                  toggleScholarship={
+                                                      toggleScholarship
+                                                  }
+                                                  changePoints={allocatePoints}
+                                              />
+                                          ))
+                                        : ''}
+                                </tbody>
+                            </table>
+                        )}
                         {recruits === undefined || recruits === null ? (
                             <div className="row justify-content-center pt-2 mt-4 mb-2">
                                 <div class="spinner-border" role="status">
@@ -368,6 +380,19 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                             <div className="row justify-content-center">
                                 Have you considered adding a croot to your team
                                 board?
+                            </div>
+                        ) : (
+                            ''
+                        )}
+                        {cbb_Timestamp && cbb_Timestamp.IsRecruitingLocked ? (
+                            <div className="row justify-content-center">
+                                Good morning! If you're seeing this, it means
+                                that the recruiting sync is currently occurring.
+                                Please make a cup of coffee, tea, and have some
+                                breakfast and enjoy the smells of the morning
+                                air until recruiting completes. Also, please
+                                consider Giovanni Giorgio as the next forward
+                                for your team.
                             </div>
                         ) : (
                             ''

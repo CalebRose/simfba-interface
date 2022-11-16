@@ -73,7 +73,7 @@ export default class BBAAdminService {
     }
 
     async ShowBGames() {
-        let response = await fetch(url + 'admin/show/a', {
+        let response = await fetch(url + 'admin/show/b', {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }
@@ -82,7 +82,7 @@ export default class BBAAdminService {
             return true;
         } else {
             alert(
-                'Could not successfully show A Games.\nHTTP-Error:',
+                'Could not successfully show B Games.\nHTTP-Error:',
                 response.status
             );
             return false;

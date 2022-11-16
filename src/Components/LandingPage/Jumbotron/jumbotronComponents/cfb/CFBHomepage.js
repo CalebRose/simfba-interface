@@ -5,9 +5,11 @@ import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
 import { getLogo } from '../../../../../Constants/getLogo';
 import routes from '../../../../../Constants/routes';
+import { setCBBTeam } from '../../../../../Redux/cbbTeam/cbbTeam.actions';
 import { setCFBTeam } from '../../../../../Redux/cfbTeam/cfbTeam.actions';
 import FBAScheduleService from '../../../../../_Services/simFBA/FBAScheduleService';
 import FBATeamService from '../../../../../_Services/simFBA/FBATeamService';
+import BBATeamService from '../../../../../_Services/simNBA/BBATeamService';
 import StandingsMobileRow from '../standingsTable/StandingsMobileRow';
 import StandingsTableRow from '../standingsTable/standingsTableRow';
 import CFBMatchCard from './CFBMatchCard';
@@ -15,6 +17,7 @@ import CFBMatchCard from './CFBMatchCard';
 const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     let teamService = new FBATeamService();
     let _scheduleService = new FBAScheduleService();
+    let _teamService = new BBATeamService();
     const dispatch = useDispatch();
     const [team, setTeam] = React.useState('');
     const [logo, setLogo] = React.useState('');
@@ -41,6 +44,9 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         if (currentUser) {
             setTeam(currentUser.team);
             setLogo(getLogo(currentUser.teamAbbr));
+        }
+        if (currentUser.cbb_team.length > 0 || currentUser.cbb_id > 0) {
+            GetCBBTeam();
         }
         if (!cfbTeam) {
             getTeam();
@@ -114,6 +120,11 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             setTeamColors(colors);
         }
     }, [teamData]);
+
+    const GetCBBTeam = async () => {
+        let response = await _teamService.GetTeamByTeamId(currentUser.cbb_id);
+        dispatch(setCBBTeam(response));
+    };
 
     const getTeam = async () => {
         let response = await teamService.GetTeamByTeamId(currentUser.teamId);

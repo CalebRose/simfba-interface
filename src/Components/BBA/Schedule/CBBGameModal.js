@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import BBAMatchService from '../../../_Services/simNBA/BBAMatchService';
-import CBBGameRow from './CBBGameRow';
 import GameModalRow from './GameModalRow';
 
 const CBBGameModal = (props) => {
@@ -21,7 +20,6 @@ const CBBGameModal = (props) => {
 
     const GetMatchResults = async () => {
         const response = await _matchService.GetMatchResultData(game.ID);
-        console.log({ response });
 
         setHomePlayers(() => response.HomePlayers);
         setAwayPlayers(() => response.AwayPlayers);
@@ -62,6 +60,7 @@ const CBBGameModal = (props) => {
                                     <div className="col">Second Half</div>
                                     <div className="col">OT</div>
                                     <div className="col">Total</div>
+                                    <div className="col">Possessions</div>
                                 </div>
                                 <div className="row g-2 gy-2 mb-1">
                                     <div className="col">{game.HomeTeam}</div>
@@ -76,6 +75,9 @@ const CBBGameModal = (props) => {
                                     </div>
                                     <div className="col">
                                         {homeStats.Points}
+                                    </div>
+                                    <div className="col">
+                                        {homeStats.Possessions}
                                     </div>
                                 </div>
                                 <div className="row g-2 gy-2 mb-3">
@@ -92,6 +94,9 @@ const CBBGameModal = (props) => {
                                     <div className="col">
                                         {awayStats.Points}
                                     </div>
+                                    <div className="col">
+                                        {awayStats.Possessions}
+                                    </div>
                                 </div>
                                 <div className="row mb-2">
                                     <h4 className="ms-auto">
@@ -102,6 +107,7 @@ const CBBGameModal = (props) => {
                                     <table className="table">
                                         <tr>
                                             <th scope="col">Name</th>
+                                            <th scope="col">Position</th>
                                             <th scope="col">Minutes</th>
                                             <th scope="col">FGM</th>
                                             <th scope="col">FGA</th>
@@ -136,6 +142,7 @@ const CBBGameModal = (props) => {
                                     <table className="table">
                                         <tr>
                                             <th scope="col">Name</th>
+                                            <th scope="col">Position</th>
                                             <th scope="col">Minutes</th>
                                             <th scope="col">FGM</th>
                                             <th scope="col">FGA</th>

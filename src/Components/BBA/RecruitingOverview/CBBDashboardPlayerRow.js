@@ -8,14 +8,7 @@ const CBBDashboardPlayerRow = (props) => {
     const map = props.map;
     const name = data.FirstName + ' ' + data.LastName;
     const keyCode =
-        data.FirstName +
-        data.LastName +
-        data.Stars +
-        data.PotentialGrade +
-        data.Shooting2 +
-        data.Shooting3 +
-        data.State +
-        data.Country;
+        data.FirstName + data.LastName + data.Stars + data.State + data.Country;
 
     const logo = data && data.College.length > 0 ? getLogo(data.College) : '';
 

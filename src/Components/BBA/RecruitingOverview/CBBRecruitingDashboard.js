@@ -150,22 +150,17 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
         let recruits = profile.Recruits;
         let map = {};
         for (let i = 0; i < recruits.length; i++) {
-            if (recruits[i].Recruit) {
-                if (!recruits[i].RemovedFromBoard && recruits[i].Recruit) {
-                    const keyCode =
-                        recruits[i].Recruit.FirstName +
-                        recruits[i].Recruit.LastName +
-                        recruits[i].Recruit.Stars +
-                        recruits[i].Recruit.PotentialGrade +
-                        recruits[i].Recruit.Shooting2 +
-                        recruits[i].Recruit.Shooting3 +
-                        recruits[i].Recruit.State +
-                        recruits[i].Recruit.Country;
-                    map[keyCode] = true;
-                }
+            if (!recruits[i].RemovedFromBoard && recruits[i].Recruit !== null) {
+                const keyCode =
+                    recruits[i].Recruit.FirstName +
+                    recruits[i].Recruit.LastName +
+                    recruits[i].Recruit.Stars +
+                    recruits[i].Recruit.State +
+                    recruits[i].Recruit.Country;
+                map[keyCode] = true;
             }
         }
-        setCrootMap(map);
+        setCrootMap(() => map);
         setRecruitingProfile(profile);
     };
 
@@ -665,7 +660,24 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                 )}
                             </InfiniteScroll>
                         ) : (
-                            ''
+                            <>
+                                <div className="row justify-content-center mt-3 mb-2">
+                                    My dude, recruiting is currently in-sync.
+                                    Please wait until it's finished. Until then,
+                                    make some tea and enjoy the next few
+                                    minutes. Please check Discord for news on
+                                    the completion of this week's recruiting
+                                    sync. Also, please consider 3-Star player
+                                    Kevin Chen from China as a future player on
+                                    your team.
+                                </div>
+
+                                <div className="row justify-content-center pt-2 mt-4 mb-2">
+                                    <div class="spinner-border" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            </>
                         )}
                     </div>
                 </div>

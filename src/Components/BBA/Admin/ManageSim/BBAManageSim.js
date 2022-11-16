@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
+import { setCBBTimestamp } from '../../../../Redux/timestamp/timestamp.actions';
 import BBAAdminService from '../../../../_Services/simNBA/BBAAdminService';
 import BBARecruitingService from '../../../../_Services/simNBA/BBARecruitingService';
 import BBACreateCrootModal from './BBACreateCrootModal';
@@ -7,6 +8,7 @@ import BBACreateCrootModal from './BBACreateCrootModal';
 const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     let _adminService = new BBAAdminService();
     let _recruitingService = new BBARecruitingService();
+    const dispatch = useDispatch();
     const [timestamp, setTimestamp] = React.useState(null);
     const [SyncComplete, setCompletion] = React.useState(false);
     const [ActionsRemaining, setRemainingActionsCount] = React.useState(3);
@@ -42,6 +44,7 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             newTimestamp.GamesARan = true;
             // API Call to Sync A Games
             setTimestamp({ ...timestamp, ...newTimestamp });
+            dispatch(setCBBTimestamp({ ...timestamp, ...newTimestamp }));
         }
     };
     const syncBGames = async () => {
@@ -55,6 +58,7 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             newTimestamp.GamesBRan = true;
             // API Call to Sync A Games
             setTimestamp({ ...timestamp, ...newTimestamp });
+            dispatch(setCBBTimestamp({ ...timestamp, ...newTimestamp }));
         }
     };
 
@@ -83,6 +87,7 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             newTimestamp.RecruitingSynced = true;
             // API Call to Sync A Games
             setTimestamp({ ...newTimestamp });
+            dispatch(setCBBTimestamp({ ...timestamp, ...newTimestamp }));
             setCompletion(() => IsWeekComplete());
         }
     };
@@ -97,6 +102,7 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
         if (response) {
             ts.IsRecruitingLocked = !ts.IsRecruitingLocked;
             setTimestamp(() => ts);
+            dispatch(setCBBTimestamp({ ...timestamp, ...newTimestamp }));
         }
     };
 

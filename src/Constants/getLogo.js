@@ -36,7 +36,7 @@ export const getLogo = (team) => {
             return logos.Buffalo;
         case 'BYU':
             return logos.BYU;
-        case 'BUTL':
+        case 'BUT':
             return logos.Butler;
         case 'CAL':
             return logos.California;

@@ -131,7 +131,7 @@ const NavBar_Start = ({ currentUser }) => {
                             to={routes.CBB_SCHEDULE}
                             className="dropdown-item"
                         >
-                            Team Statistics
+                            Schedule
                         </Link>
                     </li>
                     <li>
