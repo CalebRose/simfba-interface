@@ -9,19 +9,6 @@ const CBBStandingsModal = (props) => {
     const { ts } = props;
     const [conferences, setConferences] = useState([]);
     const [allStandings, setAllStandings] = useState([]);
-    const [ACCStandings, setACCStandings] = useState([]);
-    const [B1GStandings, setB1GStandings] = useState([]);
-    const [B12Standings, setB12Standings] = useState([]);
-    const [PACStandings, setPACStandings] = useState([]);
-    const [SECStandings, setSECStandings] = useState([]);
-    const [AACStandings, setAACStandings] = useState([]);
-    const [CUSAStandings, setCUSAStandings] = useState([]);
-    const [MACStandings, setMACStandings] = useState([]);
-    const [SBCStandings, setSBCStandings] = useState([]);
-    const [A10Standings, setA10Standings] = useState([]);
-    const [BEStandings, setBEStandings] = useState([]);
-    const [MWCStandings, setMWCStandings] = useState([]);
-    const [WCCStandings, setWCCStandings] = useState([]);
     const [viewableStandings, setViewableStandings] = useState([]);
     const [selectedConferences, setSelectedConferences] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -38,9 +25,8 @@ const CBBStandingsModal = (props) => {
             fcs = fcs.filter((x) =>
                 selectedConferences.includes(x[0].ConferenceID)
             );
-
-            setViewableStandings(() => fcs);
         }
+        setViewableStandings(() => fcs);
     }, [selectedConferences]);
 
     const GetAllStandingsData = async () => {

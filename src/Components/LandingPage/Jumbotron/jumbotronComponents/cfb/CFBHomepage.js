@@ -45,7 +45,11 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             setTeam(currentUser.team);
             setLogo(getLogo(currentUser.teamAbbr));
         }
-        if (currentUser.cbb_team.length > 0 || currentUser.cbb_id > 0) {
+        if (
+            (currentUser.cbb_team !== undefined &&
+                currentUser.cbb_team.length > 0) ||
+            currentUser.cbb_id > 0
+        ) {
             GetCBBTeam();
         }
         if (!cfbTeam) {

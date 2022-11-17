@@ -108,12 +108,16 @@ export const getLogo = (team) => {
             return logos.Iowa_State;
         case 'JMU':
             return logos.JMU;
+        case 'JST':
+            return logos.JacksonvilleState;
         case 'KANS':
             return logos.Kansas;
         case 'KSST':
             return logos.Kansas_State;
         case 'KENT':
             return logos.Kent_State;
+        case 'KNSW':
+            return logos.KennesawState;
         case 'UKEN':
             return logos.Kentucky;
         case 'LAS':
@@ -224,6 +228,8 @@ export const getLogo = (team) => {
             return logos.San_Diego_State;
         case 'SF':
             return logos.SFDons;
+        case 'SHSU':
+            return logos.SamHoustonState;
         case 'SJSU':
             return logos.San_Jose;
         case 'SCU':
