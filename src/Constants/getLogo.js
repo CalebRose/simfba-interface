@@ -326,6 +326,8 @@ export const getLogo = (team) => {
             return logos.UMBC;
         case 'WICH':
             return logos.Wichita_State;
+        case 'USD':
+            return logos.U_San_Diego;
         case 'UCSD':
             return logos.UC_San_Diego;
         case 'SMC':

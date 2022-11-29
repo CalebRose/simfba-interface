@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { getLogo } from '../../../Constants/getLogo';
 
 const StandingsRow = (props) => {
@@ -20,8 +20,28 @@ const StandingsRow = (props) => {
 
 const StandingsCard = (props) => {
     const { standings } = props;
+    const [standingsOne, setStandingsOne] = React.useState([]);
+    const [standingsTwo, setStandingsTwo] = React.useState([]);
 
-    const Conference = standings.length > 0 ? standings[0].ConferenceName : '';
+    useEffect(() => {
+        if (standings !== undefined || standings !== null) {
+            if (standings[0].DivisionID > 0) {
+                const division1Standings = standings.filter(
+                    (x) => x.DivisionID === standings[0].DivisionID
+                );
+                const division2Standings = standings.filter(
+                    (x) => x.DivisionID !== standings[0].DivisionID
+                );
+                setStandingsOne(() => division1Standings);
+                setStandingsTwo(() => division2Standings);
+            } else {
+                setStandingsOne(() => standings);
+            }
+        }
+    }, [standings]);
+
+    const Conference =
+        standingsOne.length > 0 ? standingsOne[0].ConferenceName : '';
 
     return (
         <div className="d-flex flex-column standings-container me-1 p-2 border rounded">
@@ -36,9 +56,20 @@ const StandingsCard = (props) => {
                 <div className="col">T.W.</div>
                 <div className="col">T.L.</div>
             </div>
-            {standings.map((x, idx) => (
-                <StandingsRow row={x} rank={idx + 1} />
-            ))}
+            {standingsOne.length > 0 &&
+                standingsOne.map((x, idx) => (
+                    <StandingsRow row={x} rank={idx + 1} />
+                ))}
+            {standingsTwo.length > 0 && standings[0].DivisionID > 0 ? (
+                <>
+                    <br />
+                    {standingsTwo.map((x, idx) => (
+                        <StandingsRow row={x} rank={idx + 1} />
+                    ))}
+                </>
+            ) : (
+                ''
+            )}
         </div>
     );
 };

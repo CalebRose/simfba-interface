@@ -1,22 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
-import { NewsTypeList } from '../../Constants/CommonConstants';
+import {
+    LeaguesList,
+    NewsTypeList,
+    SeasonsList
+} from '../../Constants/CommonConstants';
 import FBALandingPageService from '../../_Services/simFBA/FBALandingPageService';
+import BBANewsService from '../../_Services/simNBA/BBANewsService';
 import { MapObjOptions } from '../../_Utility/filterHelper';
 import NewsLog from './NewsLog';
 
-const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
+const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
     // Services
     let _landingService = new FBALandingPageService();
+    let _newsService = new BBANewsService();
+
     // Hooks
     const newsOptions = MapObjOptions(NewsTypeList);
     const [allNews, setAllNews] = useState([]);
     const [currentNews, setCurrentNews] = useState([]);
     const [selectedNewsTypes, setSelectedNewsTypes] = useState([]);
+    const [selectedLeagues, setSelectedLeagues] = useState([]);
     const [selectedSeason, setSelectedSeason] = useState([]);
     const [selectedWeeks, setSelectedWeeks] = useState([]);
-    const [seasonOptions, setSeasonOptions] = useState(null);
+    const [seasonOptions, setSeasonOptions] = useState(SeasonsList);
+    const [leagueOptions, setLeagueOptions] = useState(LeaguesList);
     const [weekOptions, setWeekOptions] = useState(null);
 
     // Use Effects
@@ -30,14 +39,27 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     useEffect(() => {
         const filterLogs = FilterLogs(allNews);
         setCurrentNews(() => filterLogs);
-    }, [selectedWeeks, selectedNewsTypes]);
+    }, [selectedWeeks, selectedNewsTypes, selectedLeagues, selectedSeason]);
 
     // Api Functions
     const GetAllNews = async () => {
         const res = await _landingService.GetAllNewsLogsForASeason(
             cfb_Timestamp.CollegeSeasonID
         );
-        setAllNews(() => res);
+
+        const bbaNews = await _newsService.GetAllNewsLogsForASeason(
+            cfb_Timestamp.CollegeSeasonID
+        );
+
+        const cfbNews = [...res].map((x) => {
+            return { ...x, League: 'CFB' };
+        });
+
+        const cbbNews = [...bbaNews].map((x) => {
+            return { ...x, League: 'CBB' };
+        });
+
+        setAllNews(() => [...cfbNews, ...cbbNews]);
         const currentWeekNews = res.filter(
             (x) => x.WeekID === cfb_Timestamp.CollegeWeekID
         );
@@ -54,8 +76,9 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         );
 
         let weeks = allowedWeeks.map((x) => {
-            return { label: `Week ${x.Week}`, value: x.ID };
+            return { label: `Week ${x.Week}`, value: x.Week };
         });
+        weeks.unshift({ label: 'Week 0', value: 0 });
 
         setWeekOptions(() => weeks);
     };
@@ -63,13 +86,19 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const FilterLogs = (news) => {
         let fl = [...news];
         if (fl.length > 0) {
+            if (selectedLeagues.length > 0) {
+                fl = fl.filter((x) => selectedLeagues.includes(x.League));
+            }
             if (selectedNewsTypes.length > 0) {
                 fl = fl.filter((x) =>
                     selectedNewsTypes.includes(x.MessageType)
                 );
             }
+            if (selectedSeason.length > 0) {
+                fl = fl.filter((x) => selectedSeason.includes(x.SeasonID));
+            }
             if (selectedWeeks.length > 0) {
-                fl = fl.filter((x) => selectedWeeks.includes(x.WeekID));
+                fl = fl.filter((x) => selectedWeeks.includes(x.Week));
             }
         }
 
@@ -88,13 +117,37 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         setSelectedWeeks(() => opts);
     };
 
+    const ChangeSeasons = (options) => {
+        const opts = [options.value];
+        setSelectedSeason(() => opts);
+    };
+
+    const ChangeLeagues = (options) => {
+        const opts = [...options.map((x) => x.value)];
+        setSelectedLeagues(() => opts);
+    };
+
     return (
         <div className="container-fluid">
             <div className="justify-content-start">
                 <h2>SimFBA News</h2>
+                <h4 className="align-end">
+                    CFB Week: {cfb_Timestamp.CollegeWeek} | CBB Week:{' '}
+                    {cbb_Timestamp.CollegeWeek}
+                </h4>
                 <div className="row">
                     <div className="col-md-2">
                         <h5>News Filters</h5>
+                        <div className="row">
+                            <h6>League</h6>
+                            <Select
+                                options={leagueOptions}
+                                isMulti={true}
+                                className="basic-multi-select"
+                                classNamePrefix="select"
+                                onChange={ChangeLeagues}
+                            />
+                        </div>
                         <div className="row mb-2">
                             <h6>News Type</h6>
                             <Select
@@ -103,6 +156,16 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                 className="basic-multi-select"
                                 classNamePrefix="select"
                                 onChange={ChangeNewsTypes}
+                            />
+                        </div>
+                        <div className="row">
+                            <h6>Season</h6>
+                            <Select
+                                options={seasonOptions}
+                                isMulti={false}
+                                className="basic-multi-select"
+                                classNamePrefix="select"
+                                onChange={ChangeSeasons}
                             />
                         </div>
                         <div className="row">
@@ -139,11 +202,12 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
 const mapStateToProps = ({
     user: { currentUser },
     cfbTeam: { cfbTeam },
-    timestamp: { cfb_Timestamp }
+    timestamp: { cfb_Timestamp, cbb_Timestamp }
 }) => ({
     currentUser,
     cfbTeam,
-    cfb_Timestamp
+    cfb_Timestamp,
+    cbb_Timestamp
 });
 
 export default connect(mapStateToProps)(NewsPage);

@@ -32,6 +32,7 @@ import CFBSchedulePage from './Components/Schedule/CFBSchedulePage';
 import CBBRecruitingDashboard from './Components/BBA/RecruitingOverview/CBBRecruitingDashboard';
 import CBBRecruitingTeamBoard from './Components/BBA/RecruitingBoard/CBBRecruitingTeamBoard';
 import CBBSchedule from './Components/BBA/Schedule/CBBSchedule';
+import CBBStatistics from './Components/BBA/Statistics/CBBStatistics';
 
 const Home = ({ currentUser }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -266,6 +267,17 @@ const Home = ({ currentUser }) => {
                 render={() =>
                     CBBTeam > 0 ? (
                         <CBBSchedule />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
+                path={routes.CBB_STATS}
+                render={() =>
+                    CBBTeam > 0 ? (
+                        <CBBStatistics />
                     ) : (
                         <Redirect to={routes.LANDING} />
                     )

@@ -299,3 +299,14 @@ export const NewsTypeList = [
     { name: 'Recruiting', abbr: 'Recruiting' },
     { name: 'Commitment', abbr: 'Commitment' }
 ];
+
+export const SeasonsList = [
+    { label: '2021', value: 1 },
+    { label: '2022', value: 2 },
+    { label: '2023', value: 3 }
+];
+
+export const LeaguesList = [
+    { label: 'College Football', value: 'CFB' },
+    { label: 'College Basketball', value: 'CBB' }
+];

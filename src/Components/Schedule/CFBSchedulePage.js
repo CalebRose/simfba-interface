@@ -5,6 +5,7 @@ import FBALandingPageService from '../../_Services/simFBA/FBALandingPageService'
 import FBAScheduleService from '../../_Services/simFBA/FBAScheduleService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import GameRow from './CFBGameRow';
+import CFBStandingsModal from './CFBStandingsModal';
 
 const SchedulePage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     // Services
@@ -178,7 +179,18 @@ const SchedulePage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                 />
                             </div>
                         )}
+                        <div className="row mt-2 justify-content-center">
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#standingsModal"
+                            >
+                                Standings
+                            </button>
+                        </div>
                     </div>
+                    <CFBStandingsModal ts={cfb_Timestamp} />
                     <div className="col-md-10 px-md-4">
                         <div className="row mt-3 mb-5 justify-content-between">
                             {viewGames.length > 0

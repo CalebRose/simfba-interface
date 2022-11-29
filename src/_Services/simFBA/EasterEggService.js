@@ -48,7 +48,7 @@ export default class EasterEggService {
     }
 
     async CollusionCallBBall(dto) {
-        let postRequest = await fetch(BBAUrl + 'easter/egg/collude/', {
+        let postRequest = await fetch(BBAUrl + 'cbb/easter/egg/collude/', {
             headers: {
                 authorization: localStorage.getItem('token'),
                 'Content-Type': 'application/json'

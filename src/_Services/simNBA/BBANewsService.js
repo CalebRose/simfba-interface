@@ -1,9 +1,9 @@
 import url from '../../Constants/SimBBA_url';
 
-export default class BBAStatsService {
-    async GetStatsPageData() {
+export default class BBANewsService {
+    async GetAllNewsLogsForASeason(season) {
         let json;
-        let response = await fetch(`${url}/stats/cbb/page`, {
+        let response = await fetch(url + 'cbb/news/all/' + season, {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }

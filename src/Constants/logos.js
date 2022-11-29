@@ -138,6 +138,7 @@ const logos = {
     VCU: './img/logos/VCU_Rams_logo.png',
     St_Marys: "./img/logos/Saint_Mary's_College_Gaels_logo.png",
     UC_San_Diego: './img/logos/UC_San_Diego.png',
+    U_San_Diego: './img/logos/San_Diego_Toreros_logo.png',
     Wichita_State: './img/logos/Wichita_State_Shockers_logo.png',
     DePaul: './img/logos/DePaul_Blue_Demons_logo.png',
     FGCU: './img/logos/Florida_Gulf_Coast_Eagles_logo.png',

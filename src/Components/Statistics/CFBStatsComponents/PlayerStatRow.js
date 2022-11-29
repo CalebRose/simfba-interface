@@ -5,7 +5,7 @@ const _ = require('lodash');
 export const PlayerStatRow = ({ statType, idx, player }) => {
     const name = player.FirstName + ' ' + player.LastName;
     const seasonStats = player.SeasonStats;
-    const games = player.PlayerStats ? player.PlayerStats.length : 0;
+    const games = player.SeasonStats ? player.SeasonStats.GamesPlayed : 0;
     const year = GetYear(player);
 
     const PassingRow = () => {

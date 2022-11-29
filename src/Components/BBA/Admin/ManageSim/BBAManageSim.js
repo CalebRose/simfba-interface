@@ -118,24 +118,29 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     };
 
     const syncToNextWeek = () => {
-        if (!timestamp.GMActionsComplete) {
-            return;
-        }
+        // if (!timestamp.GMActionsComplete) {
+        //     return;
+        // }
+
+        let response = _adminService.SyncWeek();
         const newTimestamp = { ...timestamp };
         // API Call to Sync to Next week and receive new timestamp
         // Test data for now
-        newTimestamp.NBAWeekId++;
-        newTimestamp.CollegeWeekId++;
-        newTimestamp.NBAWeek++;
-        newTimestamp.CollegeWeek++;
-        newTimestamp.GamesARan = false;
-        newTimestamp.GamesBRan = false;
-        newTimestamp.GamesCRan = false;
-        newTimestamp.RecruitingSynced = false;
-        newTimestamp.GMActionsComplete = false;
-        setTimestamp({ ...timestamp, ...newTimestamp });
-        setCompletion(IsWeekComplete());
-        setRemainingActionsCount(newTimestamp.IsOffSeason ? 2 : 5);
+        if (response) {
+            newTimestamp.NBAWeekId++;
+            newTimestamp.CollegeWeekId++;
+            newTimestamp.NBAWeek++;
+            newTimestamp.CollegeWeek++;
+            newTimestamp.GamesARan = false;
+            newTimestamp.GamesBRan = false;
+            // newTimestamp.GamesCRan = false;
+            newTimestamp.RecruitingSynced = false;
+            newTimestamp.GMActionsComplete = false;
+            setTimestamp({ ...timestamp, ...newTimestamp });
+            dispatch(setCBBTimestamp({ ...timestamp, ...newTimestamp }));
+            // setCompletion(IsWeekComplete());
+            // setRemainingActionsCount(newTimestamp.IsOffSeason ? 2 : 5);
+        }
     };
 
     const SaveRecruit = async (croot) => {

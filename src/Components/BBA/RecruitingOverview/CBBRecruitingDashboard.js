@@ -65,7 +65,7 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const [isAsc, setIsAsc] = React.useState(false);
 
     const [luckyTeam, setLuckyTeam] = React.useState(() =>
-        Math.floor(Math.random() * (172 - 1) + 1)
+        Math.floor(Math.random() * (30 - 1) + 1)
     );
 
     // For mobile
@@ -474,9 +474,7 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                 Export
                             </button>
                         </div>
-                        {cbbTeam &&
-                        cbbTeam.ID === luckyTeam &&
-                        showCollusionButton ? (
+                        {cbbTeam && 25 === luckyTeam && showCollusionButton ? (
                             <div className="col-md-auto">
                                 <h5 className="text-start align-middle">
                                     Collude?
@@ -486,7 +484,8 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                     className="btn btn-danger"
                                     onClick={CollusionButton}
                                 >
-                                    You Know You Want To
+                                    Do you really want to collude in this league
+                                    too?
                                 </button>
                             </div>
                         ) : (

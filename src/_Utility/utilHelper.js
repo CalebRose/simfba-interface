@@ -32,6 +32,23 @@ export const GetDefaultStatsOrder = (newSortValue, sort, isAsc, newView) => {
         case 'QBSacks':
         case 'Fumbles':
         case 'SacksAllowed':
+        case 'PAPG':
+        case 'FGAAPG':
+        case 'FGMAPG':
+        case 'TPMAPG':
+        case 'TPAAPG':
+        case 'FTAAPG':
+        case 'FTMAPG':
+        case 'FGPercentAgainst':
+        case 'ThreePointPercentAgainst':
+        case 'FTPercentAgainst':
+        case 'OffReboundsAllowedPerGame':
+        case 'DefReboundsAllowedPerGame':
+        case 'ReboundsAllowedPerGame':
+        case 'AssistsAllowedPerGame':
+        case 'StealsAllowedPerGame':
+        case 'BlocksAllowedPerGame':
+        case 'TurnoversAllowedPerGame':
             return true;
         default:
             return false;

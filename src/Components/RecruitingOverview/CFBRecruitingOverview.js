@@ -432,18 +432,22 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             ''
                         )}
 
-                        <div className="col-md-auto">
-                            <h5 className="text-start align-middle">
-                                Export Croots
-                            </h5>
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={Export}
-                            >
-                                Export
-                            </button>
-                        </div>
+                        {!cfb_Timestamp.IsRecruitingLocked ? (
+                            <div className="col-md-auto">
+                                <h5 className="text-start align-middle">
+                                    Export Croots
+                                </h5>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    onClick={Export}
+                                >
+                                    Export
+                                </button>
+                            </div>
+                        ) : (
+                            ''
+                        )}
                         {cfbTeam &&
                         cfbTeam.ID === luckyTeam &&
                         showCollusionButton ? (

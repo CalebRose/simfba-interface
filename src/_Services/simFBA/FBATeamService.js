@@ -133,4 +133,19 @@ export default class FBATeamService {
         }
         return json;
     }
+
+    async GetAllCollegeStandingsBySeasonID(seasonID) {
+        let response = await fetch(`${url}/standings/cfb/season/${seasonID}/`, {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        let json;
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert('HTTP-Error:', response.status);
+        }
+        return json;
+    }
 }

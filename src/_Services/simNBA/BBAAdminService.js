@@ -88,4 +88,21 @@ export default class BBAAdminService {
             return false;
         }
     }
+
+    async SyncWeek() {
+        let response = await fetch(url + 'admin/week/sync/', {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        if (response.ok) {
+            return true;
+        } else {
+            alert(
+                'Could not successfully sync to next week.\nHTTP-Error:',
+                response.status
+            );
+            return false;
+        }
+    }
 }

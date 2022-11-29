@@ -2,7 +2,7 @@ import React from 'react';
 
 export const TeamStatRow = ({ statType, idx, team }) => {
     const seasonStats = team.SeasonStats;
-    const games = team.TeamStats ? team.TeamStats.length : 0;
+    const games = team.SeasonStats ? team.SeasonStats.GamesPlayed : 0;
 
     const OverallRow = () => {
         return (

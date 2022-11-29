@@ -22,6 +22,14 @@ export const MapTeamOptions = (arr) => {
     ];
 };
 
+export const MapCBBTeamOptions = (arr) => {
+    return [
+        ...arr.map((x) => {
+            return { label: x.Team, value: x.ID };
+        })
+    ];
+};
+
 export const MapConferenceOptions = (arr) => {
     return [
         ...arr.map((x) => {
