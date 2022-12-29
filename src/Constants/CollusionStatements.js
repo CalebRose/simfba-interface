@@ -66,8 +66,9 @@ export const GetCollusionStatements = (user, team) => {
     return pick;
 };
 
-export const GetBBallCollusionStatements = (user, team) => {
-    const arr = [
+export const GetBBallCollusionStatements = (user, team, recruit) => {
+    console.log({ recruit });
+    let arr = [
         `A high school basketball star was seen carrying a bag of money after an assistant's visit from ${team.Team}`,
         `An investigation is currently underway after a group of assistants allegedly from the ${team.Team} athletic program tried to persuade a recruit to attend ${team.Team} by offering a free Fortnite battlepass.`,
         `A high school basketball athlete alleges that Basketball Coach ${user.username} was found sleeping on his family's living room floor. Coach ${user.username} has refused to make any comments on the allegations.`,
@@ -78,17 +79,43 @@ export const GetBBallCollusionStatements = (user, team) => {
         `The NCAA has announced a new investigation involving ${user.username} and other supposed coaches after an attempt was made to find the code to the Collusion button.`,
         `An assistant coach from ${team.Team} was found in the back room of a Golden Corral with a bag of money, supposedly waiting for a croot that never showed up.`,
         `A lobbyist funded by ${team.Team} had attempted to suspend renewal of visas as a means to prevent other teams from recruiting talent internationally.`,
-        `${user.username} was allegedly seen trying to venmo a Toucan for money in exchange for croot points. It was not the correct Toucan.`,
+        `${user.username} was allegedly seen trying to venmo a Toucan for money in exchange for croot points. Unfortunately they venmoed the wrong Toucan.`,
         `Can ${user.username} NOT click the Collusion button next time?`,
         `A high school athlete dropped screenshots on Twitter of what appears to be a DM conversation with an alumni from ${team.Team} harrassing him to commit to ${team.Team}`,
         `Local T-shirt fans for ${team.Team} were found protesting on twitter after a high school athlete verbally committed to their rival.`,
         `${user.username} allegedly asked the Admins not to be mentioned when clicking the Collusion button. That's not how this works, ${user.username}`,
         `Students attending ${team.Team} were caught trying to tamper with the basketball hoops before a big game the next day.`,
         `A high school basketball athlete tweeted out recently to ${team.Team} fans to leave him alone and stop telling him to sign with ${team.Team}`,
-        `An athlete on the ${team.Team}'s basketball roster reported that an assistant from a team they played earlier in the season reached out for a potential transfer interest.``${user.username} would like everyone to know `,
-        `${user.username} would like everyone to know that they listen to Nickelback when they croot.`,
+        `An athlete on the ${team.Team}'s basketball roster reported that an assistant from a team they played earlier in the season reached out for a potential transfer interest.`,
+        `${user.username} would like everyone to know that they listen to Nickelback while they croot.`,
         `${user.username} was seen last week attempting to recruit a TE from the ${team.Team} football team to play basketball.`
     ];
+    let recruitArr = [];
+    if (recruit !== undefined && recruit.College.length > 0) {
+        recruitArr = [
+            `${recruit.College} signee ${recruit.FirstName} ${recruit.LastName} was reportedly found on an off-campus party after a recruiting visit this past weekend.`,
+            `A rumor has floated on social media alleging taht ${recruit.College} ${recruit.Stars} signee ${recruit.FirstName} ${recruit.LastName} only committed for the NIL money.`,
+            `${recruit.College} ${recruit.Stars} signee ${recruit.FirstName} ${recruit.LastName} was reportedly seen volunteering at a homeless shelter near campus and helping the community. <3`,
+            `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has promised ${recruit.College} fans that they will be winning a conference championship during his tenure.`,
+            `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has promised ${recruit.College} fans that they will be winning the national championship during his tenure.`,
+            `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has promised ${recruit.College} fans that they will never lose a game while he plays at ${recruit.College}.`
+        ];
+    } else if (recruit !== undefined) {
+        recruitArr = [
+            `A recruiting watch dog warns against recruiting ${recruit.FirstName} ${recruit.LastName} after it was discovered he de-committed after receiving NIL money from the same institution and has re-opened his recruiting.`,
+            `${recruit.FirstName} ${recruit.LastName} reported had a scholarship revoked from them due to their level of activity while playing Call of Duty.`,
+            `A reporter from ${
+                recruit.State.length === 0 ? recruit.Country : recruit.State
+            } reported that ${recruit.FirstName} ${
+                recruit.LastName
+            } was found betting on hedgehog races. Their biggest bet did not win the race.`,
+            `${recruit.FirstName} ${recruit.LastName} alleges that a university in ${team.State} rescinded a scholarship after a false rumor went viral on Social Media.`,
+            `${recruit.Stars} Star Recruit ${recruit.FirstName} ${recruit.LastName} has allegedly stated he plans on shopping around NIL deals before he makes a commitment.`,
+            `A university in ${team.State} has reportedly rescinded a scholarship offer for ${recruit.FirstName} ${recruit.LastName} after it was discovered the recruit accepted an NIL deal from a rival institution.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} has recently tweeted that he is interested in playing for ${team.Team}.`
+        ];
+    }
+    arr = arr.concat([...recruitArr]);
     let pick = arr[Math.floor(Math.random() * arr.length)];
 
     return pick;

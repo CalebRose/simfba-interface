@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { getLogo } from '../../../../Constants/getLogo';
 import ConfirmRemovePlayerFromBoardModal from '../../../TeamRecruitingBoard/CFBTeamRecruitingComponents/CFBTeamRemovePlayerModal';
 import ConfirmRevokeModal from '../../../TeamRecruitingBoard/CFBTeamRecruitingComponents/CFBTeamRevokeScholarshipModal';
 import CBBCrootModal from './CBBCrootModal';
@@ -136,7 +137,7 @@ const CBBTeamDashboardPlayerRow = (props) => {
                 </td>
                 <td className="align-middle">{recruit.SigningStatus}</td>
                 <td className="align-middle">
-                    {data.IsSigned ? (
+                    {recruit.IsSigned ? (
                         <img
                             className="image-recruit-logo"
                             src={logo}
@@ -146,18 +147,32 @@ const CBBTeamDashboardPlayerRow = (props) => {
                         <h6>{leadingTeams}</h6>
                     )}
                 </td>
-                <td className="align-middle">
-                    <input
-                        name="CurrentPoints"
-                        type="number"
-                        class="form-control"
-                        id="currentPoints"
-                        aria-describedby="currentPoints"
-                        value={data.CurrentWeeksPoints}
-                        onChange={handleChange}
-                        min="0"
-                    />
-                </td>
+                {recruit.IsSigned || data.CaughtCheating ? (
+                    <td>
+                        <input
+                            name="CurrentPoints"
+                            type="number"
+                            className="form-control"
+                            id="currentPoints"
+                            aria-describedby="currentPoints"
+                            value={data.CurrentWeeksPoints}
+                            disabled
+                        />
+                    </td>
+                ) : (
+                    <td className="align-middle">
+                        <input
+                            name="CurrentPoints"
+                            type="number"
+                            class="form-control"
+                            id="currentPoints"
+                            aria-describedby="currentPoints"
+                            value={data.CurrentWeeksPoints}
+                            onChange={handleChange}
+                            min="0"
+                        />
+                    </td>
+                )}
                 <td className="align-middle">
                     <h6>{data.TotalPoints}</h6>
                 </td>

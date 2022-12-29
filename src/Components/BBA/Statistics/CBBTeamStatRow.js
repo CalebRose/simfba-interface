@@ -8,13 +8,13 @@ const CBBTeamStatRow = ({ statType, idx, team }) => {
     const FTPercentLabel =
         parseFloat(seasonStats.FTPercent * 100).toFixed(2) + '%';
     const TPPercentLabel =
-        parseFloat(seasonStats.ThreePointPercentAgainst * 100).toFixed(2) + '%';
+        parseFloat(seasonStats.ThreePointPercent * 100).toFixed(2) + '%';
     const FGPercentAllowedLabel =
         parseFloat(seasonStats.FGPercentAgainst * 100).toFixed(2) + '%';
     const FTPercentAllowedLabel =
         parseFloat(seasonStats.FTPercentAgainst * 100).toFixed(2) + '%';
     const TPPercentAllowedLabel =
-        parseFloat(seasonStats.ThreePointPercent * 100).toFixed(2) + '%';
+        parseFloat(seasonStats.ThreePointPercentAgainst * 100).toFixed(2) + '%';
     const FGPercentDiffLabel =
         parseFloat(seasonStats.FGPercentDiff * 100).toFixed(2) + '%';
     const FTPercentDiffLabel =

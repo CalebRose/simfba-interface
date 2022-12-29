@@ -390,9 +390,9 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                 that the recruiting sync is currently occurring.
                                 Please make a cup of coffee, tea, and have some
                                 breakfast and enjoy the smells of the morning
-                                air until recruiting completes. Also, please
-                                consider Giovanni Giorgio as the next forward
-                                for your team.
+                                air until recruiting completes. Also, congrats
+                                to Southern Alabama for considering Giovanni
+                                Giorgio as the future of their team.
                             </div>
                         ) : (
                             ''

@@ -2,15 +2,15 @@ import React, { useEffect } from 'react';
 // import { connect, useDispatch, useSelector } from 'react-redux';
 import { connect } from 'react-redux';
 import PlayerRow from './PlayerRow';
-import AttributeRow from './AttributeRow';
 import DropdownItem from './DropdownItem';
 import FBAPlayerService from '../../_Services/simFBA/FBAPlayerService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
-import { SetPriority, GetDefaultOrder } from '../../_Utility/RosterHelper';
+import { GetDefaultOrder } from '../../_Utility/RosterHelper';
 import { useMediaQuery } from 'react-responsive';
 import ConfirmRedshirtModal from './RedshirtModal';
-
-// import DepthChartRow from "../DepthChart/DepthChartRow";
+import PlayerModal from './PlayerModal';
+import MobileRosterRow from './MobileRosterRow';
+import { numberWithCommas } from '../../_Utility/utilHelper';
 
 const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     /* 
@@ -22,8 +22,6 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     // React Hooks for Modal
     //
     const [modalState, setModal] = React.useState(false);
-    const [player, setPlayer] = React.useState(null);
-    const [attributes, setAttributes] = React.useState([]);
     const [userTeam, setUserTeam] = React.useState([]);
     const [viewingUserTeam, setViewingUserTeam] = React.useState(true);
     const [team, setTeam] = React.useState([]); // Redux value as initial value for react hook
@@ -32,7 +30,6 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const [viewRoster, setViewRoster] = React.useState([]);
     const [sort, setSort] = React.useState('ovr');
     const [isAsc, setIsAsc] = React.useState(false);
-    const [playerYear, setPlayerYear] = React.useState('');
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:760px)` });
 
@@ -94,20 +91,6 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             } else {
                 setViewingUserTeam((x) => true);
             }
-        }
-    };
-
-    // Call Back Function
-    const getPlayerData = (data, year) => {
-        if (data) {
-            let toggle = !modalState;
-            setModal(toggle);
-
-            let playerRecord = data;
-            playerRecord['priorityAttributes'] = SetPriority(playerRecord);
-            setPlayer(playerRecord);
-            setPlayerYear(year);
-            setAttributes(playerRecord.priorityAttributes);
         }
     };
     // Priority Queue
@@ -225,263 +208,246 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             return;
         }
 
-        setRoster((x) => originalRoster);
-        setViewRoster((x) => playerRoster);
+        setRoster(() => originalRoster);
+        setViewRoster(() => playerRoster);
     };
 
-    // Designations
-    // Objects inside design. array; designation being QB1, QB2, etc...
-    // Position being the position related to the designation
-    // Use the position key-value as a means to grab players from sample content and display them in player
-
     return (
-        <div className="container">
+        <div className="container-fluid">
             <div className="row userInterface">
                 <h2 className="">{team ? team.TeamName : ''} Roster</h2>
             </div>
             <div className="row">
-                <div className="col-4">
-                    <div className="btn-group btn-dropdown-width-auto">
-                        <div className="drop-start btn-dropdown-width-auto">
-                            <button
-                                name="team"
-                                className="btn btn-secondary dropdown-toggle btn-dropdown-width-auto"
-                                id="dropdownMenuButton1"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                            >
-                                <span>{team ? team.TeamName : ''}</span>
-                            </button>
-                            <ul className="dropdown-menu dropdown-content">
-                                <DropdownItem
-                                    value={
-                                        currentUser
-                                            ? currentUser.team +
-                                              ' ' +
-                                              currentUser.mascot
-                                            : null
-                                    }
-                                    click={selectUserTeam}
-                                    id={currentUser ? currentUser.teamId : null}
-                                />
-                                <hr className="dropdown-divider"></hr>
-                                {teamDropDowns}
-                            </ul>
+                <div className="col-md-2">
+                    <div className="row mb-1">
+                        <h5>Coach: {team && team.Coach ? team.Coach : 'AI'}</h5>
+                    </div>
+                    <div className="row mb-1">
+                        <h5>Conference: {team && team.Conference}</h5>
+                    </div>
+                    {team !== undefined && team.DivisionID > 0 && (
+                        <div className="row mb-1">
+                            <h5>Division: {team && team.Division}</h5>
                         </div>
+                    )}
+
+                    <div className="row mb-1">
+                        <h5>Stadium: {team && team.Stadium}</h5>
+                    </div>
+                    <div className="row mb-1">
+                        <h5>
+                            Stadium Capacity:{' '}
+                            {team && numberWithCommas(team.StadiumCapacity)}
+                        </h5>
+                    </div>
+                </div>
+                <div className="col-md-10">
+                    <div className="row">
+                        <div className="col-4">
+                            <div className="btn-group btn-dropdown-width-auto">
+                                <div className="drop-start btn-dropdown-width-auto">
+                                    <button
+                                        name="team"
+                                        className="btn btn-secondary dropdown-toggle btn-dropdown-width-auto"
+                                        id="dropdownMenuButton1"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                    >
+                                        <span>{team ? team.TeamName : ''}</span>
+                                    </button>
+                                    <ul className="dropdown-menu dropdown-content">
+                                        <DropdownItem
+                                            value={
+                                                currentUser
+                                                    ? currentUser.team +
+                                                      ' ' +
+                                                      currentUser.mascot
+                                                    : null
+                                            }
+                                            click={selectUserTeam}
+                                            id={
+                                                currentUser
+                                                    ? currentUser.teamId
+                                                    : null
+                                            }
+                                        />
+                                        <hr className="dropdown-divider"></hr>
+                                        {teamDropDowns}
+                                    </ul>
+                                </div>
+                                {!isMobile ? (
+                                    <div className="export ms-2">
+                                        <button
+                                            className="btn btn-primary export-btn"
+                                            onClick={exportRoster}
+                                        >
+                                            Export
+                                        </button>
+                                    </div>
+                                ) : (
+                                    ''
+                                )}
+                            </div>
+                        </div>
+                        <div className="col-4">
+                            <h2>Players: {playerCount}</h2>
+                        </div>
+                        <div className="col-4">
+                            <h2>Redshirts: {redshirtCount}</h2>
+                        </div>
+                    </div>
+                    <div className="row">
                         {!isMobile ? (
-                            <div className="export ms-2">
-                                <button
-                                    className="btn btn-primary export-btn"
-                                    onClick={exportRoster}
+                            <div className="table-wrapper table-height">
+                                <table
+                                    className={
+                                        viewWidth >= 901
+                                            ? 'table table-hover'
+                                            : 'table table-sm'
+                                    }
                                 >
-                                    Export
-                                </button>
+                                    <thead>
+                                        <tr>
+                                            <th
+                                                scope="col"
+                                                onClick={() =>
+                                                    setSortValues('name')
+                                                }
+                                            >
+                                                <abbr>Name</abbr>
+                                            </th>
+                                            <th scope="col">
+                                                <abbr
+                                                    title="Archetype"
+                                                    onClick={() =>
+                                                        setSortValues('arch')
+                                                    }
+                                                >
+                                                    Archetype
+                                                </abbr>
+                                            </th>
+                                            <th scope="col">
+                                                <abbr
+                                                    title="Position"
+                                                    onClick={() =>
+                                                        setSortValues('pos')
+                                                    }
+                                                >
+                                                    Pos
+                                                </abbr>
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                onClick={() =>
+                                                    setSortValues('ovr')
+                                                }
+                                            >
+                                                <abbr title="Overall">Ovr</abbr>
+                                            </th>
+                                            <th scope="col">
+                                                <abbr
+                                                    title="Year"
+                                                    onClick={() =>
+                                                        setSortValues('year')
+                                                    }
+                                                >
+                                                    Yr
+                                                </abbr>
+                                            </th>
+                                            <th scope="col">
+                                                <abbr title="Height">Ht</abbr>
+                                            </th>
+                                            <th scope="col">
+                                                <abbr title="Weight">Wt</abbr>
+                                            </th>
+                                            <th scope="col">
+                                                <abbr title="State">St</abbr>
+                                            </th>{' '}
+                                            <th scope="col">
+                                                <abbr title="Stars">Sr</abbr>
+                                            </th>
+                                            <th scope="col">
+                                                <abbr title="Redshirt">
+                                                    Redshirt Status
+                                                </abbr>
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                onClick={() =>
+                                                    setSortValues('pot')
+                                                }
+                                            >
+                                                <abbr title="Potential">
+                                                    Pot
+                                                </abbr>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {viewRoster && viewRoster.length > 0
+                                            ? viewRoster.map((player, idx) => (
+                                                  <>
+                                                      <ConfirmRedshirtModal
+                                                          idx={idx}
+                                                          setRedshirtStatus={
+                                                              setRedshirtStatus
+                                                          }
+                                                          player={player}
+                                                      />
+                                                      <PlayerModal
+                                                          player={player}
+                                                          team={team}
+                                                          idx={idx}
+                                                      />
+                                                      <PlayerRow
+                                                          key={player.ID}
+                                                          idx={idx}
+                                                          data={player}
+                                                          width={viewWidth}
+                                                          redshirtCount={
+                                                              redshirtCount
+                                                          }
+                                                          view={viewingUserTeam}
+                                                          ts={cfb_Timestamp}
+                                                      />
+                                                  </>
+                                              ))
+                                            : ''}
+                                    </tbody>
+                                </table>
                             </div>
                         ) : (
-                            ''
+                            <>
+                                {viewRoster && viewRoster.length > 0
+                                    ? viewRoster.map((player, idx) => (
+                                          <>
+                                              <ConfirmRedshirtModal
+                                                  idx={idx}
+                                                  setRedshirtStatus={
+                                                      setRedshirtStatus
+                                                  }
+                                                  player={player}
+                                              />
+                                              <PlayerModal
+                                                  player={player}
+                                                  team={team}
+                                                  idx={idx}
+                                              />
+                                              <MobileRosterRow
+                                                  key={player.ID}
+                                                  idx={idx}
+                                                  data={player}
+                                                  width={viewWidth}
+                                                  redshirtCount={redshirtCount}
+                                                  view={viewingUserTeam}
+                                                  ts={cfb_Timestamp}
+                                              />
+                                          </>
+                                      ))
+                                    : ''}
+                            </>
                         )}
                     </div>
-                </div>
-                <div className="col-4">
-                    <h2>Players: {playerCount}</h2>
-                </div>
-                <div className="col-4">
-                    <h2>Redshirts: {redshirtCount}</h2>
-                </div>
-            </div>
-            <div className="row">
-                {player ? (
-                    <div
-                        className="modal fade"
-                        id="playerModal"
-                        tabindex="-1"
-                        aria-labelledby="playerModalLabel"
-                        aria-hidden="true"
-                    >
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-                                <header className="modal-header">
-                                    <h2 className="modal-title">
-                                        {player.FirstName +
-                                            ' ' +
-                                            player.LastName}
-                                    </h2>
-
-                                    <button
-                                        type="button"
-                                        className="btn-close"
-                                        data-bs-dismiss="modal"
-                                        aria-label="Close"
-                                    ></button>
-                                </header>
-                                <section className="modal-body">
-                                    <div className="row">
-                                        <div className="col">
-                                            <div className="row text-start">
-                                                <h5>{team.TeamName}</h5>
-                                                <p className="gap">
-                                                    <strong>Year: </strong>
-                                                    {playerYear
-                                                        ? playerYear
-                                                        : ''}
-                                                </p>
-                                                <p className="gap">
-                                                    <strong>Stars: </strong>
-                                                    {player.Stars}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="col">
-                                            <div className="row text-start">
-                                                <p>
-                                                    <strong>Position: </strong>
-                                                    {player.Position}
-                                                </p>
-                                                <p>
-                                                    <strong>Archetype:</strong>{' '}
-                                                    {player.Archetype}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="row mt-1">
-                                        <div className="col-md-auto">
-                                            <h4 className="">
-                                                {player.Height} inches,{' '}
-                                                {player.Weight} lbs
-                                            </h4>
-                                        </div>
-                                        <div className="col-md-auto">
-                                            <h4 className="">
-                                                Overall: {player.Overall}
-                                            </h4>
-                                        </div>
-                                    </div>
-                                    <div className="AttributeTable row mt-1">
-                                        {player.priorityAttributes &&
-                                        player.priorityAttributes.length > 0
-                                            ? player.priorityAttributes.map(
-                                                  (attribute) => (
-                                                      <AttributeRow
-                                                          key={attribute.Name}
-                                                          data={attribute}
-                                                      />
-                                                  )
-                                              )
-                                            : ''}
-                                    </div>
-                                </section>
-                                <footer className="modal-footer">
-                                    <button
-                                        className="btn btn-light"
-                                        data-bs-dismiss="modal"
-                                    >
-                                        Cancel
-                                    </button>
-                                </footer>
-                            </div>
-                        </div>
-                    </div>
-                ) : (
-                    ''
-                )}
-                <div className="table-wrapper table-height">
-                    <table
-                        className={
-                            viewWidth >= 901
-                                ? 'table table-hover'
-                                : 'table table-sm'
-                        }
-                    >
-                        <thead>
-                            <tr>
-                                <th
-                                    scope="col"
-                                    onClick={() => setSortValues('name')}
-                                >
-                                    <abbr>Name</abbr>
-                                </th>
-                                <th scope="col">
-                                    <abbr
-                                        title="Archetype"
-                                        onClick={() => setSortValues('arch')}
-                                    >
-                                        Archetype
-                                    </abbr>
-                                </th>
-                                <th scope="col">
-                                    <abbr
-                                        title="Position"
-                                        onClick={() => setSortValues('pos')}
-                                    >
-                                        Pos
-                                    </abbr>
-                                </th>
-                                <th
-                                    scope="col"
-                                    onClick={() => setSortValues('ovr')}
-                                >
-                                    <abbr title="Overall">Ovr</abbr>
-                                </th>
-                                <th scope="col">
-                                    <abbr
-                                        title="Year"
-                                        onClick={() => setSortValues('year')}
-                                    >
-                                        Yr
-                                    </abbr>
-                                </th>
-                                <th scope="col">
-                                    <abbr title="Height">Ht</abbr>
-                                </th>
-                                <th scope="col">
-                                    <abbr title="Weight">Wt</abbr>
-                                </th>
-                                <th scope="col">
-                                    <abbr title="State">St</abbr>
-                                </th>{' '}
-                                <th scope="col">
-                                    <abbr title="Stars">Sr</abbr>
-                                </th>
-                                <th scope="col">
-                                    <abbr title="Redshirt">
-                                        Redshirt Status
-                                    </abbr>
-                                </th>
-                                <th
-                                    scope="col"
-                                    onClick={() => setSortValues('pot')}
-                                >
-                                    <abbr title="Potential">Pot</abbr>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {viewRoster && viewRoster.length > 0
-                                ? viewRoster.map((player, idx) => (
-                                      <>
-                                          <ConfirmRedshirtModal
-                                              idx={idx}
-                                              setRedshirtStatus={
-                                                  setRedshirtStatus
-                                              }
-                                              player={player}
-                                          />
-                                          <PlayerRow
-                                              key={player.ID}
-                                              idx={idx}
-                                              data={player}
-                                              getData={getPlayerData}
-                                              width={viewWidth}
-                                              redshirtCount={redshirtCount}
-                                              view={viewingUserTeam}
-                                              ts={cfb_Timestamp}
-                                          />
-                                      </>
-                                  ))
-                                : ''}
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>

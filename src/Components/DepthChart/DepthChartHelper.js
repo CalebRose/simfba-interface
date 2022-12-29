@@ -125,21 +125,29 @@ export const GetAvailablePlayers = (pos, players) => {
             availablePlayers = players.filter((x) => x.Position === 'OLB');
             availablePlayers = availablePlayers.concat(
                 players.filter(
-                    (x) => x.Position === 'ILB' || x.Position === 'DE'
+                    (x) =>
+                        x.Position === 'ILB' ||
+                        x.Position === 'DE' ||
+                        x.Position === 'SS'
                 )
             );
             break;
         case 'MLB':
             availablePlayers = players.filter((x) => x.Position === 'ILB');
             availablePlayers = availablePlayers.concat(
-                players.filter((x) => x.Position === 'OLB')
+                players.filter(
+                    (x) => x.Position === 'OLB' || x.Position === 'SS'
+                )
             );
             break;
         case 'ROLB':
             availablePlayers = players.filter((x) => x.Position === 'OLB');
             availablePlayers = availablePlayers.concat(
                 players.filter(
-                    (x) => x.Position === 'ILB' || x.Position === 'DE'
+                    (x) =>
+                        x.Position === 'ILB' ||
+                        x.Position === 'DE' ||
+                        x.Position === 'SS'
                 )
             );
             break;
@@ -287,6 +295,10 @@ export const GetPositionAttributes = (pos) => {
         default:
             break;
     }
+    attributes = attributes.concat([
+        { attr: 'Injury', label: 'Injury', abbr: 'Inj' },
+        { attr: 'PotentialGrade', label: 'Potential Grade', abbr: 'Pot' }
+    ]);
     return attributes;
 };
 

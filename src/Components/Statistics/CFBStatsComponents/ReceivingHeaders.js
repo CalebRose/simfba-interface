@@ -2,7 +2,7 @@ import React from 'react';
 
 const ReceivingHeaders = ({ sortFunc, cv }) => {
     const returnSort = (val) => {
-        return sortFunc(val);
+        return sortFunc(val, cv);
     };
 
     return (

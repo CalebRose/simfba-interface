@@ -39,16 +39,19 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const countries = MapOptions(CountryList);
     const letterGrades = MapOptions(LetterGradesList);
     const simpleLetterGrades = MapOptions(SimpleLetterGrades);
+    const statusOptions = MapOptions([
+        'Not Ready',
+        'Hearing Offers',
+        'Narrowing Down Offers',
+        'Finalizing Decisions',
+        'Ready to Sign',
+        'Signed'
+    ]);
     const stars = MapOptions(StarsList);
     const [selectedStates, setSelectedStates] = React.useState('');
     const [selectedCountries, setSelectedCountries] = React.useState('');
     const [selectedPositions, setPositions] = React.useState('');
-    const [selectedShooting2Grades, setShooting2Grades] = React.useState('');
-    const [selectedShooting3Grades, setShooting3Grades] = React.useState('');
-    const [selectedFinishingGrades, setFinishingGrades] = React.useState('');
-    const [selectedBallworkGrades, setBallworkGrades] = React.useState('');
-    const [selectedReboundingGrades, setReboundingGrades] = React.useState('');
-    const [selectedDefenseGrades, setDefenseGrades] = React.useState('');
+    const [selectedStatuses, setStatuses] = React.useState('');
     const [selectedOverallGrades, setOverallGrades] = React.useState('');
     const [selectedPotentialGrades, setPotentialGrades] = React.useState('');
     const [selectedStars, setStars] = React.useState('');
@@ -63,10 +66,9 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const [teamProfiles, setTeamProfiles] = React.useState([]);
     const [sort, setSort] = React.useState('Rank');
     const [isAsc, setIsAsc] = React.useState(false);
+    const luckyTeam = Math.floor(Math.random() * (20 - 1) + 1);
 
-    const [luckyTeam, setLuckyTeam] = React.useState(() =>
-        Math.floor(Math.random() * (30 - 1) + 1)
-    );
+    console.log(luckyTeam);
 
     // For mobile
     React.useEffect(() => {
@@ -107,6 +109,11 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             if (selectedStars.length > 0) {
                 fr = fr.filter((x) => selectedStars.includes(x.Stars));
             }
+            if (selectedStatuses.length > 0) {
+                fr = fr.filter((x) =>
+                    selectedStatuses.includes(x.SigningStatus)
+                );
+            }
         }
 
         return fr;
@@ -135,6 +142,7 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
         selectedOverallGrades,
         selectedPotentialGrades,
         selectedStars,
+        selectedStatuses,
         sort,
         isAsc
     ]);
@@ -211,6 +219,11 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
         setStars(() => opts);
     };
 
+    const ChangeRecruitingStatus = (options) => {
+        const opts = [...options.map((x) => x.value)];
+        setStatuses(() => opts);
+    };
+
     const addPlayerToProfile = async (payload) => {
         let crootProfile = { ...recruitingProfile };
         let map = { ...crootMap };
@@ -254,14 +267,24 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     };
 
     const CollusionButton = async () => {
-        const message = GetBBallCollusionStatements(currentUser, cbbTeam);
+        console.log({ cbbTeam, currentUser, luckyTeam });
+        const randomInt = Math.floor(Math.random() * recruits.length - 1);
+        const randomCroot =
+            randomInt > -1 && randomInt < recruits.length
+                ? recruits[randomInt]
+                : recruits[Math.floor(Math.random() * recruits.length - 1)];
+        const message = GetBBallCollusionStatements(
+            currentUser,
+            cbbTeam,
+            randomCroot
+        );
         const dto = {
             WeekID: cbb_Timestamp.CollegeWeekID,
             SeasonID: cbb_Timestamp.CollegeSeasonID,
             Message: message
         };
-        setShowCollusionButton(false);
-        await _easterEggService.CollusionCall(dto);
+        setShowCollusionButton(() => false);
+        await _easterEggService.CollusionCallBBall(dto);
     };
 
     const Export = async () => {
@@ -408,20 +431,20 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                 onChange={ChangeCountries}
                             />
                         </div>
+                        <div className="col-md-auto">
+                            <h5 className="text-start align-middle">
+                                Export Croots
+                            </h5>
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={Export}
+                            >
+                                Export
+                            </button>
+                        </div>
                     </div>
                     <div className="row mt-2">
-                        {/* <div className="col-md-auto">
-                            <h5 className="text-start align-middle">
-                                Overall Grade
-                            </h5>
-                            <Select
-                                options={simpleLetterGrades}
-                                isMulti={true}
-                                className="basic-multi-select btn-dropdown-width-team z-index-2"
-                                classNamePrefix="select"
-                                onChange={ChangeOverallLetterGrades}
-                            />
-                        </div> */}
                         <div className="col-md-auto">
                             <h5 className="text-start align-middle">
                                 Potential Grade
@@ -444,6 +467,16 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                 onChange={ChangeStars}
                             />
                         </div>
+                        <div className="col-md-auto">
+                            <h5 className="text-start align-middle">Status</h5>
+                            <Select
+                                options={statusOptions}
+                                isMulti={true}
+                                className="basic-multi-select btn-dropdown-width-team z-index-1"
+                                classNamePrefix="select"
+                                onChange={ChangeRecruitingStatus}
+                            />
+                        </div>
                         {cbb_Timestamp && cbb_Timestamp.CollegeWeek > 4 ? (
                             <div className="col-md-auto">
                                 <h5 className="text-start align-middle">
@@ -461,20 +494,7 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                         ) : (
                             ''
                         )}
-
-                        <div className="col-md-auto">
-                            <h5 className="text-start align-middle">
-                                Export Croots
-                            </h5>
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={Export}
-                            >
-                                Export
-                            </button>
-                        </div>
-                        {cbbTeam && 25 === luckyTeam && showCollusionButton ? (
+                        {cbbTeam && luckyTeam >= 16 && showCollusionButton ? (
                             <div className="col-md-auto">
                                 <h5 className="text-start align-middle">
                                     Collude?
@@ -484,8 +504,7 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                     className="btn btn-danger"
                                     onClick={CollusionButton}
                                 >
-                                    Do you really want to collude in this league
-                                    too?
+                                    Free poionts heere
                                 </button>
                             </div>
                         ) : (
@@ -642,6 +661,7 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                                           <CBBDashboardPlayerRow
                                                               key={x.ID}
                                                               player={x}
+                                                              idx={idx}
                                                               rank={idx + 1}
                                                               map={crootMap}
                                                               timestamp={

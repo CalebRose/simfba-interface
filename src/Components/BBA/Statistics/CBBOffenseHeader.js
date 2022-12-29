@@ -2,7 +2,7 @@ import React from 'react';
 
 export const CBBOffenseHeader = ({ sortFunc, cv }) => {
     const returnSort = (val) => {
-        return sortFunc(val);
+        return sortFunc(val, cv);
     };
     return (
         <tr>
@@ -27,7 +27,7 @@ export const CBBOffenseHeader = ({ sortFunc, cv }) => {
             <th scope="col" onClick={() => returnSort('TPAPG', cv)}>
                 3PA
             </th>
-            <th scope="col" onClick={() => returnSort('TPPercent', cv)}>
+            <th scope="col" onClick={() => returnSort('ThreePointPercent', cv)}>
                 3P%
             </th>
             <th scope="col" onClick={() => returnSort('FTMPG', cv)}>

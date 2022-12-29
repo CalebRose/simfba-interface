@@ -12,7 +12,7 @@ const CBBCrootModal = (props) => {
         let displayStatus = '';
         if (displayOdds > 50) {
             displayStatus = 'Strong Favorite';
-        } else if (displayOdds > 25) {
+        } else if (displayOdds > 19) {
             displayStatus = 'In Contention';
         } else {
             displayStatus = 'Unlikely';

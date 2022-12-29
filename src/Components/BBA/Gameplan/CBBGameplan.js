@@ -62,12 +62,39 @@ const CBBGameplan = ({ currentUser }) => {
         setRoster(() => playerList);
     };
 
+    const IsProportionInLimits = (proportion) => {
+        return proportion >= 20 && proportion <= 60;
+    };
+
     const checkValidation = () => {
         let valid = true;
         const proportionLimit = 100;
         let currentProportion = 0;
         let message = '';
         // Check Gameplan
+        if (!IsProportionInLimits(gameplan.ThreePointProportion)) {
+            message = `Three Point Proportion for Gameplan ${gameplan.Game} set to ${gameplan.ThreePointProportion}. Please make sure this allocation is between 20 and 60.`;
+            setErrorMessage(message);
+            valid = false;
+            setValidation(valid);
+            return;
+        }
+
+        if (!IsProportionInLimits(gameplan.JumperProportion)) {
+            message = `Jumper Proportion for Gameplan ${gameplan.Game} set to ${gameplan.JumperProportion}. Please make sure this allocation is between 20 and 60.`;
+            setErrorMessage(message);
+            valid = false;
+            setValidation(valid);
+            return;
+        }
+
+        if (!IsProportionInLimits(gameplan.PaintProportion)) {
+            message = `Paint Proportion for Gameplan ${gameplan.Game} set to ${gameplan.PaintProportion}. Please make sure this allocation is between 20 and 60.`;
+            setErrorMessage(message);
+            valid = false;
+            setValidation(valid);
+            return;
+        }
 
         currentProportion =
             gameplan.ThreePointProportion +

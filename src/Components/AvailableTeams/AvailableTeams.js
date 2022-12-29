@@ -30,9 +30,11 @@ class AvailableTeams extends Component {
 
     CFBGetAvailableTeams = async () => {
         let teams = await this.CFBTeamService.GetAvailableCollegeTeams();
-        const filterTeams = teams.filter(
-            (x) => x.Coach === null || x.Coach === '' || x.Coach === 'AI'
-        );
+        const filterTeams = teams
+            .filter(
+                (x) => x.Coach === null || x.Coach === '' || x.Coach === 'AI'
+            )
+            .sort((a, b) => '' + a.TeamName.localeCompare(b.TeamName));
 
         this.setState({ teams: teams, filterTeams: filterTeams });
     };
@@ -113,6 +115,7 @@ class AvailableTeams extends Component {
                         logo={getLogo(team.TeamAbbr)}
                         request={this.sendCFBRequest}
                         disable={this.state.sentRequest}
+                        isFBS={team.IsFBS}
                     />
                 );
             } else if (this.state.selectedSport === constants.CBB) {
@@ -153,7 +156,7 @@ class AvailableTeams extends Component {
                 <div className="justify-content-start">
                     <h2 className="subtitle is-3">Available Teams</h2>
                 </div>
-                <div className="row mt-2 mb-2">
+                <div className="row mt-2 mb-1">
                     <p>
                         NOTE: All team requests without an application filled
                         out will be rejected. If you haven't filled out an
@@ -172,6 +175,12 @@ class AvailableTeams extends Component {
                             Job Apps Subforum
                         </a>{' '}
                         to fill out an application.
+                    </p>
+                </div>
+                <div className="row mt-2 mb-2">
+                    <p>
+                        FCS Teams are currently being displayed but are
+                        unavailable for the 2023 Season.
                     </p>
                 </div>
                 <div className="row">

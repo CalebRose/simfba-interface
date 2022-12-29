@@ -83,14 +83,16 @@ export default class FBARecruitingService {
 
     async GetRecruits() {
         let json;
-        let response = await fetch(url + 'recruits/all/', {
+        let response = await fetch(url + 'recruits/all', {
+            method: 'GET',
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
 
         if (response.ok) {
-            json = await response.json();
+            const string = await response.text();
+            json = string === '' ? {} : JSON.parse(string);
         } else {
             alert(
                 'Recruits Could Not be Acquired.\nHTTP-Error:',

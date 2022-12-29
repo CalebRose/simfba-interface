@@ -1,9 +1,9 @@
 import url from '../../Constants/url';
 
 export default class FBAStatsService {
-    async GetStatsForStatisticsPage() {
+    async GetStatsForStatisticsPage(season) {
         let json;
-        let response = await fetch(url + 'statistics/interface/cfb/', {
+        let response = await fetch(`${url}statistics/interface/cfb/${season}`, {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }

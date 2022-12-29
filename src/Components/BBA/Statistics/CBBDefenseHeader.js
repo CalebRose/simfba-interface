@@ -2,7 +2,7 @@ import React from 'react';
 
 export const CBBDefenseHeader = ({ sortFunc, cv }) => {
     const returnSort = (val) => {
-        return sortFunc(val);
+        return sortFunc(val, cv);
     };
     return (
         <tr>
@@ -27,7 +27,10 @@ export const CBBDefenseHeader = ({ sortFunc, cv }) => {
             <th scope="col" onClick={() => returnSort('TPAAPG', cv)}>
                 3PA
             </th>
-            <th scope="col" onClick={() => returnSort('TPPercentAgainst', cv)}>
+            <th
+                scope="col"
+                onClick={() => returnSort('ThreePointPercentAgainst', cv)}
+            >
                 3P%
             </th>
             <th scope="col" onClick={() => returnSort('FTMAPG', cv)}>

@@ -1,9 +1,9 @@
-import url from '../../Constants/SimBBA_url';
+import BBAURL from '../../Constants/SimBBA_url';
 
 export default class BBARecruitingService {
     async GetRecruitingProfile(teamId) {
         let response = await fetch(
-            url + 'recruiting/profile/teamboard/' + teamId,
+            BBAURL + 'recruiting/profile/teamboard/' + teamId,
             {
                 headers: {
                     authorization: 'Bearer ' + localStorage.getItem('token')
@@ -22,11 +22,14 @@ export default class BBARecruitingService {
 
     async GetTeamProfileForDashboard(id) {
         let json;
-        let response = await fetch(url + 'recruiting/dashboard/' + id + '/', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
+        let response = await fetch(
+            BBAURL + 'recruiting/dashboard/' + id + '/',
+            {
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('token')
+                }
             }
-        });
+        );
 
         if (response.ok) {
             json = await response.json();
@@ -40,7 +43,7 @@ export default class BBARecruitingService {
     }
     async GetTeamProfileForTeamboard(id) {
         let json;
-        let response = await fetch(url + 'recruiting/profile/team/' + id, {
+        let response = await fetch(BBAURL + 'recruiting/profile/team/' + id, {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }
@@ -58,7 +61,7 @@ export default class BBARecruitingService {
     }
 
     async GetRecruitsByProfileId(profileId) {
-        let response = await fetch(url + 'recruit/croots/' + profileId, {
+        let response = await fetch(BBAURL + 'recruit/croots/' + profileId, {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }
@@ -75,7 +78,7 @@ export default class BBARecruitingService {
 
     async CreateRecruitingPointsProfile(payload) {
         let response = await fetch(
-            url + 'recruit/createRecruitingPointsProfile',
+            BBAURL + 'recruit/createRecruitingPointsProfile',
             {
                 headers: {
                     authorization: localStorage.getItem('token'),
@@ -102,7 +105,7 @@ export default class BBARecruitingService {
     }
 
     async AllocateRecruitingPointsForRecruit(payload) {
-        let response = await fetch(url + 'recruit/allocatePoints/', {
+        let response = await fetch(BBAURL + 'recruit/allocatePoints/', {
             headers: {
                 authorization: localStorage.getItem('token'),
                 'Content-Type': 'application/json'
@@ -129,7 +132,7 @@ export default class BBARecruitingService {
             RewardScholarship: false,
             RevokeScholarship: false
         };
-        let response = await fetch(url + 'recruit/removeRecruit', {
+        let response = await fetch(BBAURL + 'recruit/removeRecruit', {
             headers: {
                 authorization: localStorage.getItem('token'),
                 'Content-Type': 'application/json'
@@ -146,7 +149,7 @@ export default class BBARecruitingService {
     }
 
     async SendScholarshipToRecruit(payload) {
-        let response = await fetch(url + 'recruit/toggleScholarship', {
+        let response = await fetch(BBAURL + 'recruit/toggleScholarship', {
             headers: {
                 authorization: localStorage.getItem('token'),
                 'Content-Type': 'application/json'
@@ -166,7 +169,7 @@ export default class BBARecruitingService {
 
     async RevokeScholarshipToRecruit(payload) {
         let response = await fetch(
-            url + 'recruit/revokeScholarshipFromRecruit',
+            BBAURL + 'recruit/revokeScholarshipFromRecruit',
             {
                 headers: {
                     authorization: localStorage.getItem('token'),
@@ -187,7 +190,7 @@ export default class BBARecruitingService {
     }
 
     async SaveRecruitingBoard(payload) {
-        let response = await fetch(url + 'recruit/saveRecruitingBoard', {
+        let response = await fetch(BBAURL + 'recruit/saveRecruitingBoard', {
             headers: {
                 authorization: localStorage.getItem('token'),
                 'Content-Type': 'application/json',
@@ -202,7 +205,7 @@ export default class BBARecruitingService {
     }
 
     async ExportCroots() {
-        let fullURL = url + 'croots/export/all/';
+        let fullURL = BBAURL + 'croots/export/all/';
         let response = await fetch(fullURL, {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token'),
@@ -223,7 +226,7 @@ export default class BBARecruitingService {
 
     async GetAllTeamProfiles() {
         let json;
-        let response = await fetch(url + 'recruiting/profile/all/', {
+        let response = await fetch(BBAURL + 'recruiting/profile/all/', {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }
@@ -241,7 +244,7 @@ export default class BBARecruitingService {
     }
 
     async CreateRecruit(dto) {
-        let response = await fetch(url + 'admin/recruit/create', {
+        let response = await fetch(BBAURL + 'admin/recruit/create', {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token'),
                 'Content-Type': 'application/json'

@@ -11,7 +11,8 @@ import {
 } from '../../../_Utility/filterHelper';
 import {
     ConductSort,
-    GetDefaultStatsOrder
+    GetDefaultStatsOrder,
+    uniq_fast
 } from '../../../_Utility/utilHelper';
 import { CBBDefenseHeader } from './CBBDefenseHeader';
 import { CBBDifferentialHeader } from './CBBDifferentialHeader';
@@ -143,7 +144,6 @@ const CBBStatsPage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
         setConferenceOptions(() => conferenceOptions);
         setCollegePlayers(() => [...res.CollegePlayers]);
         setCollegeTeams(() => [...res.CollegeTeams]);
-        setConferenceList(() => res.CollegeConferences);
     };
 
     const SelectPlayerView = () => {
@@ -218,7 +218,13 @@ const CBBStatsPage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
 
     const ChangeSort = (value, view) => {
         const newSort = value;
-        const isAscending = GetDefaultStatsOrder(newSort, sort, isAsc, view);
+        const isAscending = GetDefaultStatsOrder(
+            newSort,
+            sort,
+            isAsc,
+            view,
+            currentView
+        );
         setSort(() => newSort);
         setIsAsc(() => isAscending);
     };

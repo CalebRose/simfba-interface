@@ -15,9 +15,19 @@ export const RoundToTwoDecimals = (num) => {
     return Math.round(num * 100) / 100;
 };
 
-export const GetDefaultStatsOrder = (newSortValue, sort, isAsc, newView) => {
+export const GetDefaultStatsOrder = (
+    newSortValue,
+    sort,
+    isAsc,
+    newView,
+    currentView
+) => {
     // If the newSortValue and sort are both equal, return the opposite of isAsc
-    if (newSortValue.toLowerCase() === sort.toLowerCase()) return !isAsc;
+    if (
+        newSortValue.toLowerCase() === sort.toLowerCase() &&
+        newView === currentView
+    )
+        return !isAsc;
 
     // If they aren't equal, set it default descending by the value
     switch (newSortValue) {
@@ -156,4 +166,9 @@ export const uniq_fast = (a) => {
         }
     }
     return out;
+};
+
+export const numberWithCommas = (x) => {
+    if (!x) return '';
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };

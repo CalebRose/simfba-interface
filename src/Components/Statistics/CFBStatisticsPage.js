@@ -27,6 +27,7 @@ import TeamOffenseHeaders from './CFBStatsComponents/TeamOffenseHeaders';
 import TeamDefensiveHeaders from './CFBStatsComponents/TeamDefenseHeaders';
 import HeismanModal from './CFBStatsComponents/HeismanModal';
 import OLineHeaders from './CFBStatsComponents/OLineStats';
+import { SeasonsList } from '../../Constants/CommonConstants';
 
 const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     // Services
@@ -41,6 +42,8 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const [collegeTeams, setCollegeTeams] = useState([]);
     const [collegeTeamOptions, setCollegeTeamOptions] = useState([]);
     const [conferenceOptions, setConferenceOptions] = useState([]);
+    const [seasons, setSeasons] = useState(SeasonsList);
+    const [selectedSeason, setSelectedSeason] = useState(null);
     const [heismanList, setHeismanList] = useState([]);
     const [collegePlayers, setCollegePlayers] = useState([]);
     const [filteredView, setFilteredView] = useState([]);
@@ -64,6 +67,20 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             GetHeismanList();
         }
     }, [currentUser]);
+
+    useEffect(() => {
+        if (cfb_Timestamp !== undefined || cfb_Timestamp !== null) {
+            if (selectedSeason === null) {
+                const year = {
+                    label: cfb_Timestamp.Season,
+                    value: cfb_Timestamp.CollegeSeasonID
+                };
+                setSelectedSeason(() => year);
+            } else {
+                GetStatsPageInfo();
+            }
+        }
+    }, [cfb_Timestamp, selectedSeason]);
 
     useEffect(() => {}, [viewableStats, currentView]);
 
@@ -177,21 +194,28 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     };
 
     const GetStatsPageInfo = async () => {
-        const res = await _statsService.GetStatsForStatisticsPage();
+        const res = await _statsService.GetStatsForStatisticsPage(
+            selectedSeason.value
+        );
         const teamOptions = MapTeamOptions(res.CollegeTeams);
         const conferenceOptions = MapConferenceOptions(res.CollegeConferences);
 
         setCollegeTeamOptions(() => teamOptions);
         setConferenceOptions(() => conferenceOptions);
-        setCollegePlayers(() => [...res.CollegePlayers]);
-        setCollegeTeams(() => [...res.CollegeTeams]);
+        if (res.CollegePlayers) {
+            setCollegePlayers(() => [...res.CollegePlayers]);
+        }
+        if (res.CollegeTeams) {
+            setCollegeTeams(() => [...res.CollegeTeams]);
+        }
         setConferenceList(() => res.CollegeConferences);
     };
 
     const GetHeismanList = async () => {
         const res = await _statsService.GetHeismanList();
-
-        setHeismanList(() => [...res.slice(0, 25)]);
+        if (res) {
+            setHeismanList(() => [...res.slice(0, 25)]);
+        }
     };
 
     const SelectPlayerView = () => {
@@ -245,9 +269,15 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         const opts = [...options.map((x) => x.value)];
         setSelectedTeams(() => opts);
     };
+
     const ChangeConferenceSelections = (options) => {
         const opts = [...options.map((x) => x.value)];
         setSelectedConferences(() => opts);
+    };
+
+    const ChangeSeason = (options) => {
+        const opts = { label: options.label, value: options.value };
+        setSelectedSeason(() => opts);
     };
 
     const ResetPlayerViewOptions = () => {
@@ -265,7 +295,7 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     };
 
     const LoadMoreRecords = () => {
-        if (currentView === 'PLAYER') {
+        if (currentView === 'PLAYER' && filteredView) {
             const currentDataSet = [...viewableStats];
             let newCount = [...currentDataSet].concat(
                 [...filteredView].slice(count, count + 100)
@@ -278,7 +308,13 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
 
     const ChangeSort = (value, view) => {
         const newSort = value;
-        const isAscending = GetDefaultStatsOrder(newSort, sort, isAsc, view);
+        const isAscending = GetDefaultStatsOrder(
+            newSort,
+            sort,
+            isAsc,
+            view,
+            currentView
+        );
 
         setSort(() => newSort);
         setIsAsc(() => isAscending);
@@ -540,6 +576,16 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                         </div>
                     </div>
                     <div className="row">
+                        <div className="col-md-auto">
+                            <h5 className="text-start align-middle">Seasons</h5>
+                            <Select
+                                options={seasons}
+                                isMulti={false}
+                                className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                classNamePrefix="select"
+                                onChange={ChangeSeason}
+                            />
+                        </div>
                         {currentView === 'PLAYER' ? (
                             <div className="col-md-auto">
                                 <h5 className="text-start align-middle">

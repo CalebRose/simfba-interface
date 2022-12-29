@@ -89,8 +89,25 @@ export default class BBAAdminService {
         }
     }
 
+    async SyncAIBoards() {
+        let response = await fetch(url + 'admin/ai/sync/boards', {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        if (response.ok) {
+            return true;
+        } else {
+            alert(
+                'Could not successfully sync AI Boards for next week.\nHTTP-Error:',
+                response.status
+            );
+            return false;
+        }
+    }
+
     async SyncWeek() {
-        let response = await fetch(url + 'admin/week/sync/', {
+        let response = await fetch(url + 'admin/week/sync', {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }

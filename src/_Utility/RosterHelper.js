@@ -11,7 +11,8 @@ export const SetPriority = (data) => {
                     Value: data.Agility,
                     Letter: GetLetterGrade(
                         AttributeAverages['Agility'][data.Position],
-                        data.Agility
+                        data.Agility,
+                        data.Year
                     )
                 },
                 {
@@ -19,7 +20,8 @@ export const SetPriority = (data) => {
                     Value: data.Speed,
                     Letter: GetLetterGrade(
                         AttributeAverages['Speed'][data.Position],
-                        data.Speed
+                        data.Speed,
+                        data.Year
                     )
                 },
                 {
@@ -27,7 +29,8 @@ export const SetPriority = (data) => {
                     Value: data.Carrying,
                     Letter: GetLetterGrade(
                         AttributeAverages['Carrying'][data.Position],
-                        data.Carrying
+                        data.Carrying,
+                        data.Year
                     )
                 },
                 {
@@ -35,7 +38,8 @@ export const SetPriority = (data) => {
                     Value: data.Strength,
                     Letter: GetLetterGrade(
                         AttributeAverages['Strength'][data.Position],
-                        data.Strength
+                        data.Strength,
+                        data.Year
                     )
                 },
                 {
@@ -43,7 +47,8 @@ export const SetPriority = (data) => {
                     Value: data.ThrowPower,
                     Letter: GetLetterGrade(
                         AttributeAverages['ThrowPower'][data.Position],
-                        data.ThrowPower
+                        data.ThrowPower,
+                        data.Year
                     )
                 },
                 {
@@ -51,7 +56,8 @@ export const SetPriority = (data) => {
                     Value: data.ThrowAccuracy,
                     Letter: GetLetterGrade(
                         AttributeAverages['ThrowAccuracy'][data.Position],
-                        data.ThrowAccuracy
+                        data.ThrowAccuracy,
+                        data.Year
                     )
                 }
             ];
@@ -63,7 +69,8 @@ export const SetPriority = (data) => {
                     Value: data.Agility,
                     Letter: GetLetterGrade(
                         AttributeAverages['Agility'][data.Position],
-                        data.Agility
+                        data.Agility,
+                        data.Year
                     )
                 },
                 {
@@ -71,7 +78,8 @@ export const SetPriority = (data) => {
                     Value: data.Speed,
                     Letter: GetLetterGrade(
                         AttributeAverages['Speed'][data.Position],
-                        data.Speed
+                        data.Speed,
+                        data.Year
                     )
                 },
                 {
@@ -79,7 +87,8 @@ export const SetPriority = (data) => {
                     Value: data.Carrying,
                     Letter: GetLetterGrade(
                         AttributeAverages['Carrying'][data.Position],
-                        data.Carrying
+                        data.Carrying,
+                        data.Year
                     )
                 },
                 {
@@ -87,7 +96,8 @@ export const SetPriority = (data) => {
                     Value: data.Catching,
                     Letter: GetLetterGrade(
                         AttributeAverages['Catching'][data.Position],
-                        data.Catching
+                        data.Catching,
+                        data.Year
                     )
                 },
                 {
@@ -95,7 +105,8 @@ export const SetPriority = (data) => {
                     Value: data.PassBlock,
                     Letter: GetLetterGrade(
                         AttributeAverages['PassBlock'][data.Position],
-                        data.PassBlock
+                        data.PassBlock,
+                        data.Year
                     )
                 },
                 {
@@ -103,7 +114,8 @@ export const SetPriority = (data) => {
                     Value: data.Strength,
                     Letter: GetLetterGrade(
                         AttributeAverages['Strength'][data.Position],
-                        data.Strength
+                        data.Strength,
+                        data.Year
                     )
                 }
             ];
@@ -115,7 +127,8 @@ export const SetPriority = (data) => {
                     Value: data.Agility,
                     Letter: GetLetterGrade(
                         AttributeAverages['Agility'][data.Position],
-                        data.Agility
+                        data.Agility,
+                        data.Year
                     )
                 },
                 {
@@ -123,7 +136,8 @@ export const SetPriority = (data) => {
                     Value: data.Speed,
                     Letter: GetLetterGrade(
                         AttributeAverages['Speed'][data.Position],
-                        data.Speed
+                        data.Speed,
+                        data.Year
                     )
                 },
                 {
@@ -131,7 +145,8 @@ export const SetPriority = (data) => {
                     Value: data.Carrying,
                     Letter: GetLetterGrade(
                         AttributeAverages['Carrying'][data.Position],
-                        data.Carrying
+                        data.Carrying,
+                        data.Year
                     )
                 },
                 {
@@ -139,7 +154,8 @@ export const SetPriority = (data) => {
                     Value: data.Catching,
                     Letter: GetLetterGrade(
                         AttributeAverages['Catching'][data.Position],
-                        data.Catching
+                        data.Catching,
+                        data.Year
                     )
                 },
                 {
@@ -147,7 +163,8 @@ export const SetPriority = (data) => {
                     Value: data.PassBlock,
                     Letter: GetLetterGrade(
                         AttributeAverages['PassBlock'][data.Position],
-                        data.PassBlock
+                        data.PassBlock,
+                        data.Year
                     )
                 },
                 {
@@ -155,7 +172,8 @@ export const SetPriority = (data) => {
                     Value: data.RunBlock,
                     Letter: GetLetterGrade(
                         AttributeAverages['RunBlock'][data.Position],
-                        data.RunBlock
+                        data.RunBlock,
+                        data.Year
                     )
                 },
                 {
@@ -163,7 +181,8 @@ export const SetPriority = (data) => {
                     Value: data.Strength,
                     Letter: GetLetterGrade(
                         AttributeAverages['Strength'][data.Position],
-                        data.Strength
+                        data.Strength,
+                        data.Year
                     )
                 }
             ];
@@ -175,7 +194,8 @@ export const SetPriority = (data) => {
                     Value: data.Agility,
                     Letter: GetLetterGrade(
                         AttributeAverages['Agility'][data.Position],
-                        data.Agility
+                        data.Agility,
+                        data.Year
                     )
                 },
                 {
@@ -183,7 +203,8 @@ export const SetPriority = (data) => {
                     Value: data.Speed,
                     Letter: GetLetterGrade(
                         AttributeAverages['Speed'][data.Position],
-                        data.Speed
+                        data.Speed,
+                        data.Year
                     )
                 },
                 {
@@ -191,7 +212,8 @@ export const SetPriority = (data) => {
                     Value: data.Carrying,
                     Letter: GetLetterGrade(
                         AttributeAverages['Carrying'][data.Position],
-                        data.Carrying
+                        data.Carrying,
+                        data.Year
                     )
                 },
                 {
@@ -199,7 +221,8 @@ export const SetPriority = (data) => {
                     Value: data.Catching,
                     Letter: GetLetterGrade(
                         AttributeAverages['Catching'][data.Position],
-                        data.Catching
+                        data.Catching,
+                        data.Year
                     )
                 },
                 {
@@ -207,7 +230,8 @@ export const SetPriority = (data) => {
                     Value: data.RouteRunning,
                     Letter: GetLetterGrade(
                         AttributeAverages['RouteRunning'][data.Position],
-                        data.RouteRunning
+                        data.RouteRunning,
+                        data.Year
                     )
                 },
                 {
@@ -215,7 +239,8 @@ export const SetPriority = (data) => {
                     Value: data.Strength,
                     Letter: GetLetterGrade(
                         AttributeAverages['Strength'][data.Position],
-                        data.Strength
+                        data.Strength,
+                        data.Year
                     )
                 }
             ];
@@ -227,7 +252,8 @@ export const SetPriority = (data) => {
                     Value: data.Agility,
                     Letter: GetLetterGrade(
                         AttributeAverages['Agility'][data.Position],
-                        data.Agility
+                        data.Agility,
+                        data.Year
                     )
                 },
                 {
@@ -235,7 +261,8 @@ export const SetPriority = (data) => {
                     Value: data.Speed,
                     Letter: GetLetterGrade(
                         AttributeAverages['Speed'][data.Position],
-                        data.Speed
+                        data.Speed,
+                        data.Year
                     )
                 },
                 {
@@ -243,7 +270,8 @@ export const SetPriority = (data) => {
                     Value: data.Carrying,
                     Letter: GetLetterGrade(
                         AttributeAverages['Carrying'][data.Position],
-                        data.Carrying
+                        data.Carrying,
+                        data.Year
                     )
                 },
                 {
@@ -251,7 +279,8 @@ export const SetPriority = (data) => {
                     Value: data.Catching,
                     Letter: GetLetterGrade(
                         AttributeAverages['Catching'][data.Position],
-                        data.Catching
+                        data.Catching,
+                        data.Year
                     )
                 },
                 {
@@ -259,7 +288,8 @@ export const SetPriority = (data) => {
                     Value: data.RouteRunning,
                     Letter: GetLetterGrade(
                         AttributeAverages['RouteRunning'][data.Position],
-                        data.RouteRunning
+                        data.RouteRunning,
+                        data.Year
                     )
                 },
                 {
@@ -267,7 +297,8 @@ export const SetPriority = (data) => {
                     Value: data.Strength,
                     Letter: GetLetterGrade(
                         AttributeAverages['Strength'][data.Position],
-                        data.Strength
+                        data.Strength,
+                        data.Year
                     )
                 },
                 {
@@ -275,7 +306,8 @@ export const SetPriority = (data) => {
                     Value: data.PassBlock,
                     Letter: GetLetterGrade(
                         AttributeAverages['PassBlock'][data.Position],
-                        data.PassBlock
+                        data.PassBlock,
+                        data.Year
                     )
                 },
                 {
@@ -283,7 +315,8 @@ export const SetPriority = (data) => {
                     Value: data.RunBlock,
                     Letter: GetLetterGrade(
                         AttributeAverages['RunBlock'][data.Position],
-                        data.RunBlock
+                        data.RunBlock,
+                        data.Year
                     )
                 }
             ];
@@ -297,7 +330,8 @@ export const SetPriority = (data) => {
                     Value: data.Agility,
                     Letter: GetLetterGrade(
                         AttributeAverages['Agility'][data.Position],
-                        data.Agility
+                        data.Agility,
+                        data.Year
                     )
                 },
                 {
@@ -305,7 +339,8 @@ export const SetPriority = (data) => {
                     Value: data.Strength,
                     Letter: GetLetterGrade(
                         AttributeAverages['Strength'][data.Position],
-                        data.Strength
+                        data.Strength,
+                        data.Year
                     )
                 },
                 {
@@ -313,7 +348,8 @@ export const SetPriority = (data) => {
                     Value: data.PassBlock,
                     Letter: GetLetterGrade(
                         AttributeAverages['PassBlock'][data.Position],
-                        data.PassBlock
+                        data.PassBlock,
+                        data.Year
                     )
                 },
                 {
@@ -321,7 +357,8 @@ export const SetPriority = (data) => {
                     Value: data.RunBlock,
                     Letter: GetLetterGrade(
                         AttributeAverages['RunBlock'][data.Position],
-                        data.RunBlock
+                        data.RunBlock,
+                        data.Year
                     )
                 }
             ];
@@ -333,7 +370,8 @@ export const SetPriority = (data) => {
                     Value: data.Agility,
                     Letter: GetLetterGrade(
                         AttributeAverages['Agility'][data.Position],
-                        data.Agility
+                        data.Agility,
+                        data.Year
                     )
                 },
                 {
@@ -341,7 +379,8 @@ export const SetPriority = (data) => {
                     Value: data.Speed,
                     Letter: GetLetterGrade(
                         AttributeAverages['Speed'][data.Position],
-                        data.Speed
+                        data.Speed,
+                        data.Year
                     )
                 },
                 {
@@ -349,7 +388,8 @@ export const SetPriority = (data) => {
                     Value: data.Tackle,
                     Letter: GetLetterGrade(
                         AttributeAverages['Tackle'][data.Position],
-                        data.Tackle
+                        data.Tackle,
+                        data.Year
                     )
                 },
                 {
@@ -357,7 +397,8 @@ export const SetPriority = (data) => {
                     Value: data.Strength,
                     Letter: GetLetterGrade(
                         AttributeAverages['Strength'][data.Position],
-                        data.Strength
+                        data.Strength,
+                        data.Year
                     )
                 },
                 {
@@ -365,7 +406,8 @@ export const SetPriority = (data) => {
                     Value: data.PassRush,
                     Letter: GetLetterGrade(
                         AttributeAverages['PassRush'][data.Position],
-                        data.PassRush
+                        data.PassRush,
+                        data.Year
                     )
                 },
                 {
@@ -373,7 +415,8 @@ export const SetPriority = (data) => {
                     Value: data.RunDefense,
                     Letter: GetLetterGrade(
                         AttributeAverages['RunDefense'][data.Position],
-                        data.RunDefense
+                        data.RunDefense,
+                        data.Year
                     )
                 }
             ];
@@ -385,7 +428,8 @@ export const SetPriority = (data) => {
                     Value: data.Agility,
                     Letter: GetLetterGrade(
                         AttributeAverages['Agility'][data.Position],
-                        data.Agility
+                        data.Agility,
+                        data.Year
                     )
                 },
                 {
@@ -393,7 +437,8 @@ export const SetPriority = (data) => {
                     Value: data.Tackle,
                     Letter: GetLetterGrade(
                         AttributeAverages['Tackle'][data.Position],
-                        data.Tackle
+                        data.Tackle,
+                        data.Year
                     )
                 },
                 {
@@ -401,7 +446,8 @@ export const SetPriority = (data) => {
                     Value: data.Strength,
                     Letter: GetLetterGrade(
                         AttributeAverages['Strength'][data.Position],
-                        data.Strength
+                        data.Strength,
+                        data.Year
                     )
                 },
                 {
@@ -409,7 +455,8 @@ export const SetPriority = (data) => {
                     Value: data.PassRush,
                     Letter: GetLetterGrade(
                         AttributeAverages['PassRush'][data.Position],
-                        data.PassRush
+                        data.PassRush,
+                        data.Year
                     )
                 },
                 {
@@ -417,7 +464,8 @@ export const SetPriority = (data) => {
                     Value: data.RunDefense,
                     Letter: GetLetterGrade(
                         AttributeAverages['RunDefense'][data.Position],
-                        data.RunDefense
+                        data.RunDefense,
+                        data.Year
                     )
                 }
             ];
@@ -430,7 +478,8 @@ export const SetPriority = (data) => {
                     Value: data.Agility,
                     Letter: GetLetterGrade(
                         AttributeAverages['Agility'][data.Position],
-                        data.Agility
+                        data.Agility,
+                        data.Year
                     )
                 },
                 {
@@ -438,7 +487,8 @@ export const SetPriority = (data) => {
                     Value: data.Speed,
                     Letter: GetLetterGrade(
                         AttributeAverages['Speed'][data.Position],
-                        data.Speed
+                        data.Speed,
+                        data.Year
                     )
                 },
                 {
@@ -446,7 +496,8 @@ export const SetPriority = (data) => {
                     Value: data.Tackle,
                     Letter: GetLetterGrade(
                         AttributeAverages['Tackle'][data.Position],
-                        data.Tackle
+                        data.Tackle,
+                        data.Year
                     )
                 },
                 {
@@ -454,7 +505,8 @@ export const SetPriority = (data) => {
                     Value: data.Strength,
                     Letter: GetLetterGrade(
                         AttributeAverages['Strength'][data.Position],
-                        data.Strength
+                        data.Strength,
+                        data.Year
                     )
                 },
                 {
@@ -462,7 +514,8 @@ export const SetPriority = (data) => {
                     Value: data.PassRush,
                     Letter: GetLetterGrade(
                         AttributeAverages['PassRush'][data.Position],
-                        data.PassRush
+                        data.PassRush,
+                        data.Year
                     )
                 },
                 {
@@ -470,7 +523,8 @@ export const SetPriority = (data) => {
                     Value: data.RunDefense,
                     Letter: GetLetterGrade(
                         AttributeAverages['RunDefense'][data.Position],
-                        data.RunDefense
+                        data.RunDefense,
+                        data.Year
                     )
                 },
                 {
@@ -478,7 +532,8 @@ export const SetPriority = (data) => {
                     Value: data.ZoneCoverage,
                     Letter: GetLetterGrade(
                         AttributeAverages['ZoneCoverage'][data.Position],
-                        data.ZoneCoverage
+                        data.ZoneCoverage,
+                        data.Year
                     )
                 },
                 {
@@ -486,7 +541,8 @@ export const SetPriority = (data) => {
                     Value: data.ManCoverage,
                     Letter: GetLetterGrade(
                         AttributeAverages['ManCoverage'][data.Position],
-                        data.ManCoverage
+                        data.ManCoverage,
+                        data.Year
                     )
                 }
             ];
@@ -498,7 +554,8 @@ export const SetPriority = (data) => {
                     Value: data.Agility,
                     Letter: GetLetterGrade(
                         AttributeAverages['Agility'][data.Position],
-                        data.Agility
+                        data.Agility,
+                        data.Year
                     )
                 },
                 {
@@ -506,7 +563,8 @@ export const SetPriority = (data) => {
                     Value: data.Speed,
                     Letter: GetLetterGrade(
                         AttributeAverages['Speed'][data.Position],
-                        data.Speed
+                        data.Speed,
+                        data.Year
                     )
                 },
                 {
@@ -514,7 +572,8 @@ export const SetPriority = (data) => {
                     Value: data.Tackle,
                     Letter: GetLetterGrade(
                         AttributeAverages['Tackle'][data.Position],
-                        data.Tackle
+                        data.Tackle,
+                        data.Year
                     )
                 },
                 {
@@ -522,7 +581,8 @@ export const SetPriority = (data) => {
                     Value: data.Strength,
                     Letter: GetLetterGrade(
                         AttributeAverages['Strength'][data.Position],
-                        data.Strength
+                        data.Strength,
+                        data.Year
                     )
                 },
                 {
@@ -530,7 +590,8 @@ export const SetPriority = (data) => {
                     Value: data.ZoneCoverage,
                     Letter: GetLetterGrade(
                         AttributeAverages['ZoneCoverage'][data.Position],
-                        data.ZoneCoverage
+                        data.ZoneCoverage,
+                        data.Year
                     )
                 },
                 {
@@ -538,7 +599,8 @@ export const SetPriority = (data) => {
                     Value: data.ManCoverage,
                     Letter: GetLetterGrade(
                         AttributeAverages['ManCoverage'][data.Position],
-                        data.ManCoverage
+                        data.ManCoverage,
+                        data.Year
                     )
                 },
                 {
@@ -546,7 +608,8 @@ export const SetPriority = (data) => {
                     Value: data.Catching,
                     Letter: GetLetterGrade(
                         AttributeAverages['Catching'][data.Position],
-                        data.Catching
+                        data.Catching,
+                        data.Year
                     )
                 }
             ];
@@ -559,7 +622,8 @@ export const SetPriority = (data) => {
                     Value: data.Agility,
                     Letter: GetLetterGrade(
                         AttributeAverages['Agility'][data.Position],
-                        data.Agility
+                        data.Agility,
+                        data.Year
                     )
                 },
                 {
@@ -567,7 +631,8 @@ export const SetPriority = (data) => {
                     Value: data.Speed,
                     Letter: GetLetterGrade(
                         AttributeAverages['Speed'][data.Position],
-                        data.Speed
+                        data.Speed,
+                        data.Year
                     )
                 },
                 {
@@ -575,7 +640,8 @@ export const SetPriority = (data) => {
                     Value: data.Tackle,
                     Letter: GetLetterGrade(
                         AttributeAverages['Tackle'][data.Position],
-                        data.Tackle
+                        data.Tackle,
+                        data.Year
                     )
                 },
                 {
@@ -583,7 +649,8 @@ export const SetPriority = (data) => {
                     Value: data.Strength,
                     Letter: GetLetterGrade(
                         AttributeAverages['Strength'][data.Position],
-                        data.Strength
+                        data.Strength,
+                        data.Year
                     )
                 },
                 {
@@ -591,7 +658,8 @@ export const SetPriority = (data) => {
                     Value: data.RunDefense,
                     Letter: GetLetterGrade(
                         AttributeAverages['RunDefense'][data.Position],
-                        data.RunDefense
+                        data.RunDefense,
+                        data.Year
                     )
                 },
                 {
@@ -599,7 +667,8 @@ export const SetPriority = (data) => {
                     Value: data.ZoneCoverage,
                     Letter: GetLetterGrade(
                         AttributeAverages['ZoneCoverage'][data.Position],
-                        data.ZoneCoverage
+                        data.ZoneCoverage,
+                        data.Year
                     )
                 },
                 {
@@ -607,7 +676,8 @@ export const SetPriority = (data) => {
                     Value: data.ManCoverage,
                     Letter: GetLetterGrade(
                         AttributeAverages['ManCoverage'][data.Position],
-                        data.ManCoverage
+                        data.ManCoverage,
+                        data.Year
                     )
                 },
                 {
@@ -615,7 +685,8 @@ export const SetPriority = (data) => {
                     Value: data.Catching,
                     Letter: GetLetterGrade(
                         AttributeAverages['Catching'][data.Position],
-                        data.Catching
+                        data.Catching,
+                        data.Year
                     )
                 }
             ];
@@ -627,7 +698,8 @@ export const SetPriority = (data) => {
                     Value: data.KickAccuracy,
                     Letter: GetLetterGrade(
                         AttributeAverages['KickAccuracy'][data.Position],
-                        data.KickAccuracy
+                        data.KickAccuracy,
+                        data.Year
                     )
                 },
                 {
@@ -635,7 +707,8 @@ export const SetPriority = (data) => {
                     Value: data.KickPower,
                     Letter: GetLetterGrade(
                         AttributeAverages['KickPower'][data.Position],
-                        data.KickPower
+                        data.KickPower,
+                        data.Year
                     )
                 }
             ];
@@ -647,7 +720,8 @@ export const SetPriority = (data) => {
                     Value: data.PuntAccuracy,
                     Letter: GetLetterGrade(
                         AttributeAverages['PuntAccuracy'][data.Position],
-                        data.PuntAccuracy
+                        data.PuntAccuracy,
+                        data.Year
                     )
                 },
                 {
@@ -655,7 +729,8 @@ export const SetPriority = (data) => {
                     Value: data.PuntPower,
                     Letter: GetLetterGrade(
                         AttributeAverages['PuntPower'][data.Position],
-                        data.PuntPower
+                        data.PuntPower,
+                        data.Year
                     )
                 }
             ];
@@ -668,7 +743,8 @@ export const SetPriority = (data) => {
         Value: data.FootballIQ,
         Letter: GetLetterGrade(
             AttributeAverages['FootballIQ'][data.Position],
-            data.FootballIQ
+            data.FootballIQ,
+            data.Year
         )
     });
     priorityAttributes.push({
@@ -676,7 +752,17 @@ export const SetPriority = (data) => {
         Value: data.Stamina,
         Letter: GetLetterGrade(
             AttributeAverages['Stamina'][data.Position],
-            data.Stamina
+            data.Stamina,
+            data.Year
+        )
+    });
+    priorityAttributes.push({
+        Name: 'Injury',
+        Value: data.Injury,
+        Letter: GetLetterGrade(
+            AttributeAverages['Injury'][data.Position],
+            data.Injury,
+            data.Year
         )
     });
     priorityAttributes.push({
@@ -728,36 +814,129 @@ export const GetYear = (data) => {
     } else if (year === 5 && isRedshirt) {
         return '(Sr)';
     } else {
-        return 'Super Sr';
+        return 'Grad';
     }
 };
 
-export const GetOverall = (ovr) => {
+export const GetStatsYear = (data) => {
+    const isRedshirt = data.IsRedshirt;
+    const year = Number(data.SeasonStats.Year);
+
+    if (year === 1) {
+        return 'Fr';
+    } else if (year === 2 && isRedshirt) {
+        return '(Fr)';
+    } else if (year === 2 && !isRedshirt) {
+        return 'So';
+    } else if (year === 3 && isRedshirt) {
+        return '(So)';
+    } else if (year === 3 && !isRedshirt) {
+        return 'Jr';
+    } else if (year === 4 && isRedshirt) {
+        return '(Jr)';
+    } else if (year === 4 && !isRedshirt) {
+        return 'Sr';
+    } else if (year === 5 && isRedshirt) {
+        return '(Sr)';
+    } else {
+        return 'Grad';
+    }
+};
+
+export const GetOverall = (ovr, year) => {
     if (typeof ovr === 'string') return ovr;
-    if (ovr > 44) return 'A';
-    else if (ovr > 34) return 'B';
-    else if (ovr > 24) return 'C';
-    else if (ovr > 14) return 'D';
-    else return 'F';
+    if (year < 3) {
+        if (ovr > 44) return 'A';
+        else if (ovr > 34) return 'B';
+        else if (ovr > 24) return 'C';
+        else if (ovr > 14) return 'D';
+    } else {
+        if (ovr > 47) return 'A';
+        else if (ovr > 44) return 'A-';
+        else if (ovr > 40) return 'B+';
+        else if (ovr > 37) return 'B';
+        else if (ovr > 34) return 'B-';
+        else if (ovr > 30) return 'C+';
+        else if (ovr > 27) return 'C';
+        else if (ovr > 24) return 'C-';
+        else if (ovr > 20) return 'D+';
+        else if (ovr > 17) return 'D';
+        else if (ovr > 14) return 'D-';
+    }
+    return 'F';
 };
 
 // Private methods related to Position
-export const GetLetterGrade = (attr, value) => {
+export const GetLetterGrade = (attr, value, year) => {
+    const y = Number(year);
+    if (attr === undefined) return 'F';
     const { mean, stddev } = attr;
-    let dev = stddev * 2;
-    if (value > mean + dev) {
-        return 'A';
+
+    if (y < 3) {
+        let dev = stddev * 2;
+        if (value > mean + dev) {
+            return 'A';
+        }
+        dev = stddev * 1;
+        if (value > mean + dev) {
+            return 'B';
+        }
+        if (value > mean) {
+            return 'C';
+        }
+        dev = stddev * -1;
+        if (value > mean + dev) {
+            return 'D';
+        }
+    } else {
+        let dev = stddev * 2.5;
+        if (value > mean + dev) {
+            return 'A+';
+        }
+        dev = stddev * 2;
+        if (value > mean + dev) {
+            return 'A';
+        }
+        dev = stddev * 1.75;
+        if (value > mean + dev) {
+            return 'A-';
+        }
+        dev = stddev * 1.5;
+        if (value > mean + dev) {
+            return 'B+';
+        }
+        dev = stddev * 1;
+        if (value > mean + dev) {
+            return 'B';
+        }
+        dev = stddev * 0.75;
+        if (value > mean + dev) {
+            return 'B-';
+        }
+        dev = stddev * 0.5;
+        if (value > mean + dev) {
+            return 'C+';
+        }
+        if (value > mean) {
+            return 'C';
+        }
+        dev = stddev * -0.5;
+        if (value > mean + dev) {
+            return 'C-';
+        }
+        dev = stddev * -0.75;
+        if (value > mean + dev) {
+            return 'D+';
+        }
+        dev = stddev * -1;
+        if (value > mean + dev) {
+            return 'D';
+        }
+        dev = stddev * -1.5;
+        if (value > mean + dev) {
+            return 'D-';
+        }
     }
-    dev = stddev * 1;
-    if (value > mean + dev) {
-        return 'B';
-    }
-    if (value > mean) {
-        return 'C';
-    }
-    dev = stddev * -1;
-    if (value > mean + dev) {
-        return 'D';
-    }
+
     return 'F';
 };

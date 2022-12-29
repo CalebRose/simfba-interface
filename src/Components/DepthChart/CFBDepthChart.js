@@ -370,182 +370,208 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
     };
 
     return (
-        <div className="container mt-3 cfb-depthchart-container">
+        <div className="container-fluid mt-3 cfb-depthchart-container">
             <div className="row">
-                <div className="col-md-auto justify-content-start">
-                    <h2>{team ? team.TeamName + ' ' : ''}Depth Chart</h2>
-                </div>
-                <div className="col-md-auto ms-auto">
-                    {canModify ? (
-                        <button
-                            className="btn btn-danger me-2"
-                            onClick={ResetCurrentDepthChart}
-                        >
-                            Reset Depth Chart
-                        </button>
-                    ) : (
-                        ''
-                    )}
-                    {isValid && canModify ? (
-                        <button
-                            className="btn btn-primary"
-                            onClick={SaveDepthChart}
-                        >
-                            Save Depth Chart
-                        </button>
-                    ) : (
-                        <button className="btn btn-secondary" disabled>
-                            Save Depth Chart
-                        </button>
-                    )}
-                </div>
-                {!isMobile ? (
-                    <ServiceMessageBanner
-                        serMessage={serviceMessage}
-                        errMessage={errorMessage}
-                    />
-                ) : (
-                    ''
-                )}
-            </div>
-            <div className="row">
-                <div className="col-md-auto">
-                    <div className="drop-start btn-dropdown-width-team mt-1 mb-1">
-                        <button
-                            name="team"
-                            className="btn dropdown-toggle btn-dropdown-width-team"
-                            id="dropdownMenuButton1"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            style={teamColors ? teamColors : {}}
-                        >
-                            <span>{team ? team.TeamName : ''}</span>
-                        </button>
-                        <ul className="dropdown-menu dropdown-content">
-                            <DropdownItem
-                                value={
-                                    currentUser
-                                        ? currentUser.team +
-                                          ' ' +
-                                          currentUser.mascot
-                                        : null
-                                }
-                                click={SelectUserTeam}
-                                id={currentUser ? currentUser.teamId : null}
+                <div className="col-md-1"></div>
+                <div className="col-md-11 px-md-4">
+                    {' '}
+                    <div className="row">
+                        <div className="col-md-auto justify-content-start">
+                            <h2>
+                                {team ? team.TeamName + ' ' : ''}Depth Chart
+                            </h2>
+                        </div>
+                        <div className="col-md-auto ms-auto">
+                            {canModify ? (
+                                <button
+                                    className="btn btn-danger me-2"
+                                    onClick={ResetCurrentDepthChart}
+                                >
+                                    Reset Depth Chart
+                                </button>
+                            ) : (
+                                ''
+                            )}
+                            {isValid && canModify ? (
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={SaveDepthChart}
+                                >
+                                    Save Depth Chart
+                                </button>
+                            ) : (
+                                <button className="btn btn-secondary" disabled>
+                                    Save Depth Chart
+                                </button>
+                            )}
+                        </div>
+                        {!isMobile ? (
+                            <ServiceMessageBanner
+                                serMessage={serviceMessage}
+                                errMessage={errorMessage}
                             />
-                            <hr className="dropdown-divider"></hr>
-                            {collegeTeams && collegeTeams.length > 0
-                                ? collegeTeams.map((x) => (
-                                      <DropdownItem
-                                          key={x.ID}
-                                          value={x.TeamName + ' ' + x.Mascot}
-                                          team={x}
-                                          id={x.ID}
-                                          click={SelectTeam}
-                                      />
-                                  ))
-                                : ''}
-                        </ul>
+                        ) : (
+                            ''
+                        )}
                     </div>
-                </div>
-                <div className="col-md-auto">
-                    <div className="drop-start btn-dropdown-width-team mt-1 mb-1">
-                        <button
-                            name="position"
-                            className="btn dropdown-toggle btn-dropdown-width-team"
-                            id="dropdownMenuButton2"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            style={teamColors ? teamColors : {}}
-                        >
-                            <span>
-                                {currentPosition
-                                    ? currentPosition.name +
-                                      ' | ' +
-                                      currentPosition.abbr
-                                    : ''}
-                            </span>
-                        </button>
-                        <ul className="dropdown-menu dropdown-content">
-                            <DCPositionItem
-                                position={
-                                    currentPosition ? currentPosition : ''
-                                }
-                                id={0}
-                                click={SelectPosition}
-                            />
-                            <hr className="dropdown-divider"></hr>
-                            {positions && positions.length > 0
-                                ? positions.map((x, idx) => (
-                                      <DCPositionItem
-                                          key={idx}
-                                          position={x}
-                                          id={idx}
-                                          click={SelectPosition}
-                                      />
-                                  ))
-                                : ''}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div className="row depth-chart-table mt-1 mb-5">
-                {isMobile ? (
-                    <>
-                        {currentDepthChartPositions &&
-                            currentDepthChartPositions.length > 0 &&
-                            currentDepthChartPositions.map((x, idx) => {
-                                return (
-                                    <DepthChartMobilePlayerRow
-                                        canModify={canModify}
-                                        key={idx}
-                                        player={x}
-                                        availablePlayers={availablePlayers}
-                                        positionAttributes={positionAttributes}
-                                        swapPlayer={SwapPlayer}
+                    <div className="row">
+                        <div className="col-md-auto">
+                            <div className="drop-start btn-dropdown-width-team mt-1 mb-1">
+                                <button
+                                    name="team"
+                                    className="btn dropdown-toggle btn-dropdown-width-team"
+                                    id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    style={teamColors ? teamColors : {}}
+                                >
+                                    <span>{team ? team.TeamName : ''}</span>
+                                </button>
+                                <ul className="dropdown-menu dropdown-content">
+                                    <DropdownItem
+                                        value={
+                                            currentUser
+                                                ? currentUser.team +
+                                                  ' ' +
+                                                  currentUser.mascot
+                                                : null
+                                        }
+                                        click={SelectUserTeam}
+                                        id={
+                                            currentUser
+                                                ? currentUser.teamId
+                                                : null
+                                        }
                                     />
-                                );
-                            })}
-                    </>
-                ) : (
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                {positionAttributes &&
-                                    positionAttributes.length > 0 &&
-                                    positionAttributes.map((x, idx) => {
+                                    <hr className="dropdown-divider"></hr>
+                                    {collegeTeams && collegeTeams.length > 0
+                                        ? collegeTeams.map((x) => (
+                                              <DropdownItem
+                                                  key={x.ID}
+                                                  value={
+                                                      x.TeamName +
+                                                      ' ' +
+                                                      x.Mascot
+                                                  }
+                                                  team={x}
+                                                  id={x.ID}
+                                                  click={SelectTeam}
+                                              />
+                                          ))
+                                        : ''}
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="col-md-auto">
+                            <div className="drop-start btn-dropdown-width-team mt-1 mb-1">
+                                <button
+                                    name="position"
+                                    className="btn dropdown-toggle btn-dropdown-width-team"
+                                    id="dropdownMenuButton2"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    style={teamColors ? teamColors : {}}
+                                >
+                                    <span>
+                                        {currentPosition
+                                            ? currentPosition.name +
+                                              ' | ' +
+                                              currentPosition.abbr
+                                            : ''}
+                                    </span>
+                                </button>
+                                <ul className="dropdown-menu dropdown-content">
+                                    <DCPositionItem
+                                        position={
+                                            currentPosition
+                                                ? currentPosition
+                                                : ''
+                                        }
+                                        id={0}
+                                        click={SelectPosition}
+                                    />
+                                    <hr className="dropdown-divider"></hr>
+                                    {positions && positions.length > 0
+                                        ? positions.map((x, idx) => (
+                                              <DCPositionItem
+                                                  key={idx}
+                                                  position={x}
+                                                  id={idx}
+                                                  click={SelectPosition}
+                                              />
+                                          ))
+                                        : ''}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row depth-chart-table mt-1 mb-5">
+                        {isMobile ? (
+                            <>
+                                {currentDepthChartPositions &&
+                                    currentDepthChartPositions.length > 0 &&
+                                    currentDepthChartPositions.map((x, idx) => {
                                         return (
-                                            <DepthChartHeader
+                                            <DepthChartMobilePlayerRow
+                                                canModify={canModify}
                                                 key={idx}
-                                                idx={idx}
-                                                label={x.label}
-                                                abbr={x.abbr}
-                                                isMobile={isMobile}
+                                                player={x}
+                                                availablePlayers={
+                                                    availablePlayers
+                                                }
+                                                positionAttributes={
+                                                    positionAttributes
+                                                }
+                                                swapPlayer={SwapPlayer}
                                             />
                                         );
                                     })}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentDepthChartPositions &&
-                                currentDepthChartPositions.length > 0 &&
-                                currentDepthChartPositions.map((x, idx) => {
-                                    return (
-                                        <DepthChartPlayerRow
-                                            canModify={canModify}
-                                            key={idx}
-                                            player={x}
-                                            availablePlayers={availablePlayers}
-                                            positionAttributes={
-                                                positionAttributes
+                            </>
+                        ) : (
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        {positionAttributes &&
+                                            positionAttributes.length > 0 &&
+                                            positionAttributes.map((x, idx) => {
+                                                return (
+                                                    <DepthChartHeader
+                                                        key={idx}
+                                                        idx={idx}
+                                                        label={x.label}
+                                                        abbr={x.abbr}
+                                                        isMobile={isMobile}
+                                                    />
+                                                );
+                                            })}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {currentDepthChartPositions &&
+                                        currentDepthChartPositions.length > 0 &&
+                                        currentDepthChartPositions.map(
+                                            (x, idx) => {
+                                                return (
+                                                    <DepthChartPlayerRow
+                                                        canModify={canModify}
+                                                        key={idx}
+                                                        player={x}
+                                                        availablePlayers={
+                                                            availablePlayers
+                                                        }
+                                                        positionAttributes={
+                                                            positionAttributes
+                                                        }
+                                                        swapPlayer={SwapPlayer}
+                                                    />
+                                                );
                                             }
-                                            swapPlayer={SwapPlayer}
-                                        />
-                                    );
-                                })}
-                        </tbody>
-                    </table>
-                )}
+                                        )}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );

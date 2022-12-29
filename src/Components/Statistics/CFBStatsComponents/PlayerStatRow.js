@@ -1,12 +1,12 @@
 import React from 'react';
-import { GetYear } from '../../../_Utility/RosterHelper';
+import { GetStatsYear, GetYear } from '../../../_Utility/RosterHelper';
 const _ = require('lodash');
 
 export const PlayerStatRow = ({ statType, idx, player }) => {
     const name = player.FirstName + ' ' + player.LastName;
     const seasonStats = player.SeasonStats;
     const games = player.SeasonStats ? player.SeasonStats.GamesPlayed : 0;
-    const year = GetYear(player);
+    const year = GetStatsYear(player);
 
     const PassingRow = () => {
         const percentLabel =

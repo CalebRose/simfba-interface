@@ -92,14 +92,23 @@ const DepthChartMobilePlayerRow = (props) => {
                             if (label === 'Archetype') {
                                 attr = playerData[label];
                             } else if (label === 'Overall') {
-                                attr = GetOverall(playerData.Overall);
+                                attr = GetOverall(
+                                    playerData.Overall,
+                                    playerData.Year
+                                );
                             } else if (label === 'Year') {
                                 attr = GetYear(playerData);
+                            } else if (label === 'PotentialGrade') {
+                                attr = playerData.PotentialGrade;
                             } else {
                                 let val = playerData[label];
                                 // May want to go off of the original position values
                                 const average = AttributeAverages[label][pos];
-                                attr = GetLetterGrade(average, val);
+                                attr = GetLetterGrade(
+                                    average,
+                                    val,
+                                    playerData.Year
+                                );
                             }
                             return (
                                 <li className="list-group-item">

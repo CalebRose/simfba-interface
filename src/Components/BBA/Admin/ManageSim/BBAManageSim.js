@@ -16,6 +16,7 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     useEffect(() => {
         if (cbb_Timestamp) {
             setTimestamp(() => cbb_Timestamp);
+            console.log({ cbb_Timestamp });
         }
     }, [cbb_Timestamp]);
 
@@ -92,7 +93,17 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
         }
     };
 
-    const syncAIBoards = async () => {};
+    const syncAIBoards = async () => {
+        const ts = { ...timestamp };
+
+        const response = await _adminService.SyncAIBoards();
+
+        if (response) {
+            ts.AIPointAllocationComplete = !ts.AIPointAllocationComplete;
+            setTimestamp(() => ts);
+            dispatch(setCBBTimestamp({ ...timestamp }));
+        }
+    };
 
     const lockRecruiting = async () => {
         const ts = { ...timestamp };
@@ -102,7 +113,7 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
         if (response) {
             ts.IsRecruitingLocked = !ts.IsRecruitingLocked;
             setTimestamp(() => ts);
-            dispatch(setCBBTimestamp({ ...timestamp, ...newTimestamp }));
+            dispatch(setCBBTimestamp({ ...timestamp }));
         }
     };
 
@@ -145,7 +156,6 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
 
     const SaveRecruit = async (croot) => {
         const RecruitDTO = { ...croot };
-        console.log({ RecruitDTO });
 
         // Set Service Message?
         const save = await _recruitingService.CreateRecruit(RecruitDTO);
