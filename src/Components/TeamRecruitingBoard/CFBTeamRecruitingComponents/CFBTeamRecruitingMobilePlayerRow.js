@@ -116,7 +116,9 @@ const CFBTeamMobilePlayerRow = (props) => {
                     </li>
                     <li className="list-group-item">
                         {!Recruit.IsSigned ? (
-                            <h6>{leadingTeams}</h6>
+                            <h6>
+                                {leadingTeams} | {Recruit.RecruitingStatus}
+                            </h6>
                         ) : (
                             <img
                                 className="image-recruit-logo"
@@ -152,9 +154,9 @@ const CFBTeamMobilePlayerRow = (props) => {
                             </h6>
                         )}
                     </li>
-                    <li className="list-group-item">
+                    {/* <li className="list-group-item">
                         <h6>Approx. Points: {adjustedPoints}</h6>
-                    </li>
+                    </li> */}
                     <li className="list-group-item">
                         <h6>Total Points: {recruitProfile.TotalPoints}</h6>
                     </li>

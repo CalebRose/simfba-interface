@@ -46,15 +46,23 @@ const StandingsCard = (props) => {
     return (
         <div className="d-flex flex-column standings-container me-1 p-2 border rounded">
             <div className="row">
-                <h6>{Conference}</h6>
+                <h6>{Conference} Standings</h6>
             </div>
             <div className="row">
                 <div className="col">Rank</div>
                 <div className="col">Team</div>
-                <div className="col">C.W.</div>
-                <div className="col">C.L.</div>
-                <div className="col">T.W.</div>
-                <div className="col">T.L.</div>
+                <div className="col" title="Conference Wins">
+                    C.W.
+                </div>
+                <div className="col" title="Conference Losses">
+                    C.L.
+                </div>
+                <div className="col" title="Total Wins">
+                    T.W.
+                </div>
+                <div className="col" title="Total Losses">
+                    T.L.
+                </div>
             </div>
             {standingsOne.length > 0 &&
                 standingsOne.map((x, idx) => (

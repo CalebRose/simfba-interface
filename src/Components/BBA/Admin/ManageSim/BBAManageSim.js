@@ -16,7 +16,6 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     useEffect(() => {
         if (cbb_Timestamp) {
             setTimestamp(() => cbb_Timestamp);
-            console.log({ cbb_Timestamp });
         }
     }, [cbb_Timestamp]);
 

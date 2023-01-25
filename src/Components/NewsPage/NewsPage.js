@@ -48,7 +48,7 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
         );
 
         const bbaNews = await _newsService.GetAllNewsLogsForASeason(
-            cfb_Timestamp.CollegeSeasonID
+            cbb_Timestamp.SeasonID
         );
 
         const cfbNews = [...res].map((x) => {
@@ -67,7 +67,7 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
     };
     const GetWeeksInASeason = async () => {
         let response = await _landingService.GetWeeksInSeason(
-            cfb_Timestamp.CollegeSeasonID,
+            2,
             cfb_Timestamp.CollegeWeekID
         );
 

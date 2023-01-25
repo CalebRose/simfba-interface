@@ -258,6 +258,7 @@ const logos = {
     NY_Giants: './img/logos/NY_Giants.png',
     PHI_Eagles: './img/logos/PHI_Eagles.png',
     WFT: './img/logos/WFT.png',
+    WAS_Commies: './img/logos/Washington_Commanders_logo.png',
     CHI_Bears: './img/logos/CHI_Bears.png',
     DET_Lions: './img/logos/DET_Lions.png',
     GB_Packers: './img/logos/GB_Packers.png',

@@ -67,7 +67,6 @@ export const GetCollusionStatements = (user, team) => {
 };
 
 export const GetBBallCollusionStatements = (user, team, recruit) => {
-    console.log({ recruit });
     let arr = [
         `A high school basketball star was seen carrying a bag of money after an assistant's visit from ${team.Team}`,
         `An investigation is currently underway after a group of assistants allegedly from the ${team.Team} athletic program tried to persuade a recruit to attend ${team.Team} by offering a free Fortnite battlepass.`,
@@ -88,19 +87,46 @@ export const GetBBallCollusionStatements = (user, team, recruit) => {
         `A high school basketball athlete tweeted out recently to ${team.Team} fans to leave him alone and stop telling him to sign with ${team.Team}`,
         `An athlete on the ${team.Team}'s basketball roster reported that an assistant from a team they played earlier in the season reached out for a potential transfer interest.`,
         `${user.username} would like everyone to know that they listen to Nickelback while they croot.`,
-        `${user.username} was seen last week attempting to recruit a TE from the ${team.Team} football team to play basketball.`
+        `${user.username} was seen last week attempting to recruit a TE from the ${team.Team} football team to play basketball.`,
+        `A recruit has announced they are no longer considering ${team.Team} after allegedly not receiving a Rice Krispies Treat that he was promised during a visit on campus.`
     ];
     let recruitArr = [];
     if (recruit !== undefined && recruit.College.length > 0) {
         recruitArr = [
             `${recruit.College} signee ${recruit.FirstName} ${recruit.LastName} was reportedly found on an off-campus party after a recruiting visit this past weekend.`,
-            `A rumor has floated on social media alleging taht ${recruit.College} ${recruit.Stars} signee ${recruit.FirstName} ${recruit.LastName} only committed for the NIL money.`,
+            `A rumor has floated on social media alleging that ${recruit.College} ${recruit.Stars} signee ${recruit.FirstName} ${recruit.LastName} only committed for the NIL money.`,
             `${recruit.College} ${recruit.Stars} signee ${recruit.FirstName} ${recruit.LastName} was reportedly seen volunteering at a homeless shelter near campus and helping the community. <3`,
             `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has promised ${recruit.College} fans that they will be winning a conference championship during his tenure.`,
             `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has promised ${recruit.College} fans that they will be winning the national championship during his tenure.`,
+            `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has announced that they do not like the city of Cleveland.`,
+            `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has announced that they would love to go to a winning team like Vancouver.`,
+            `${recruit.Stars} star ${recruit.College} commit ${recruit.FirstName} ${recruit.LastName} tweeted that another institution has been DMing him to reconsider his decision.`,
+            `${recruit.Stars} star ${recruit.College} commit ${recruit.FirstName} ${recruit.LastName} tweeted that he does not believe in recruiting rankings and that they are a human made construct.`,
+            `${recruit.Stars} star ${recruit.FirstName} ${recruit.LastName} announced his commitment to ${recruit.College} via a Tiktok dance video.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} tweeted last night that he's not doing it for the NIL money, he's doing it for the chance to make history.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} tweeted last night that he wants ${user.username} to stop sliding into his DMs.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he prefers Wendy's over McDonald's.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he prefers Whataburger over Five Guys.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he prefers Five Guys over Whataburger.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he prefers McDonald's over Whataburger.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he prefers Shake Shack over In-N-Out.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he believes McDonald's McFlurries are a myth.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he believes Burger King doesn't serve real burgers.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he can beat SimNBA All Star Jamel Bacon in a One-on-One matchup.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} tweeted his excitement over a potential relocation of the Vancouver Sea Lions to Las Vegas.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} tweeted that he'd rather see Vancouver not move their franchise to Las Vegas.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he could be SimNFL QB Matt Howard in a 1x1 match up.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he could be SimNBA PG Jesus Lloyd in a 1x1 match up.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he could be SimNBA PG Larry Jenkins in a 1x1 match up.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he could be SimNBA SG Saul Hunter in a 1x1 match up.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} is rumored to be working on an NIL shoe deal with Big Baller Brand.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName}'s dad announced that he's proud of his son's commitment and that he wants to be involved in his son's collegiate development during his tenure.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} retweeted a viral fan request that SimFBA needs a college hockey sim.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} retweeted a viral fan request that SimFBA needs an Aussie Football sim.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} told news outlets last night that rival insitutions were attempting to sway him away from his commitment.`,
             `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has promised ${recruit.College} fans that they will never lose a game while he plays at ${recruit.College}.`
         ];
-    } else if (recruit !== undefined) {
+    } else if (recruit !== undefined && recruit.College.length === 0) {
         recruitArr = [
             `A recruiting watch dog warns against recruiting ${recruit.FirstName} ${recruit.LastName} after it was discovered he de-committed after receiving NIL money from the same institution and has re-opened his recruiting.`,
             `${recruit.FirstName} ${recruit.LastName} reported had a scholarship revoked from them due to their level of activity while playing Call of Duty.`,
@@ -112,7 +138,27 @@ export const GetBBallCollusionStatements = (user, team, recruit) => {
             `${recruit.FirstName} ${recruit.LastName} alleges that a university in ${team.State} rescinded a scholarship after a false rumor went viral on Social Media.`,
             `${recruit.Stars} Star Recruit ${recruit.FirstName} ${recruit.LastName} has allegedly stated he plans on shopping around NIL deals before he makes a commitment.`,
             `A university in ${team.State} has reportedly rescinded a scholarship offer for ${recruit.FirstName} ${recruit.LastName} after it was discovered the recruit accepted an NIL deal from a rival institution.`,
-            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} has recently tweeted that he is interested in playing for ${team.Team}.`
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} has recently tweeted that he is interested in playing for ${team.Team}.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} has tweeted that he wants ${team.Team} to stop sliding into their DMs and to look elsewhere.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} announced that he is not considering ${team.Team} after a rival institution allegedly left them a bag on money on his parent's porch.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he can beat SimNBA player Philip Taylor in a 1x1 matchup.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he can beat SimNBA player Jamel Bacon in a 1x1 matchup.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he can beat SimNFL player Matt Howard in a 1x1 matchup.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he can out-punt SimCFB punter David Ross in a 1x1 matchup.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he can beat SimNBA player Dennis Thomas in a 1x1 matchup.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he can beat SimNBA player Elmer Barton in a 1x1 matchup.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he can beat SimNBA player Russell Garcia in a 1x1 matchup.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he can beat SimNBA player Stephen Williams in a 1x1 matchup.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he can beat SimNBA player Jose Foster in a 1x1 matchup.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he can beat SimNBA player Moises Farr in a 1x1 matchup.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he can beat SimNBA player Benjamin Morris in a 1x1 matchup.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks the SimNBA refs want the Vancouver Sea Lions to win the Finals next season.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks this is all just a simulation.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his SimNBA role model is SG Charles Bailey.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his SimNBA role model is SG Kent Alvarado.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his SimNBA role model is PG Blake Watts and that his play-style is based on his.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his SimNBA role model is PG Mitchell Weber and that his play-style is based on his.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his SimNBA role model is SF Peter Thompson and that his play-style is based on his.`
         ];
     }
     arr = arr.concat([...recruitArr]);

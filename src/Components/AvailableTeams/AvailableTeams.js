@@ -9,6 +9,7 @@ import BBATeamService from '../../_Services/simNBA/BBATeamService.js';
 import BBARequestService from '../../_Services/simNBA/BBARequestService.js';
 import constants from '../../Constants/acronyms.js';
 import BBATeamCard from '../BBA/TeamCard/BBATeamCard.js';
+import NFLTeamCard from './NFLTeamCard.js';
 
 class AvailableTeams extends Component {
     state = {
@@ -17,7 +18,7 @@ class AvailableTeams extends Component {
         sentRequest: false,
         selectedSport: 'CFB'
     };
-    CFBTeamService = new FBATeamService();
+    _FBTeamService = new FBATeamService();
     CFBRequestService = new FBARequestService();
     BBATeamService = new BBATeamService();
     BBARequestService = new BBARequestService();
@@ -29,7 +30,7 @@ class AvailableTeams extends Component {
     }
 
     CFBGetAvailableTeams = async () => {
-        let teams = await this.CFBTeamService.GetAvailableCollegeTeams();
+        let teams = await this._FBTeamService.GetAvailableCollegeTeams();
         const filterTeams = teams
             .filter(
                 (x) => x.Coach === null || x.Coach === '' || x.Coach === 'AI'
@@ -39,10 +40,21 @@ class AvailableTeams extends Component {
         this.setState({ teams: teams, filterTeams: filterTeams });
     };
 
+    NFLGetAvailableTeams = async () => {
+        let teams = await this._FBTeamService.GetAllNFLTeams();
+        const sortedTeams = teams.sort(
+            (a, b) => '' + a.TeamName.localeCompare(b.TeamName)
+        );
+
+        this.setState({ teams: teams, filterTeams: sortedTeams });
+    };
+
     CBBGetAvailableTeams = async () => {
         let teams = await this.BBATeamService.GetCollegeTeams(SimBBA_url);
         const filterTeams = teams.filter(
-            (x) => x.Coach === null || x.Coach === '' || x.Coach === 'AI'
+            (x) =>
+                (x.Coach === null || x.Coach === '' || x.Coach === 'AI') &&
+                x.IsNBA === false
         );
         this.setState({ teams: teams, filterTeams: filterTeams });
     };
@@ -57,7 +69,7 @@ class AvailableTeams extends Component {
 
     sendCFBRequest = async (team) => {
         if (this.state.sentRequest === false) {
-            let postRequest = await this.CFBRequestService.CreateTeamRequest(
+            await this.CFBRequestService.CreateTeamRequest(
                 team,
                 this.props.currentUser.username
             );
@@ -70,8 +82,35 @@ class AvailableTeams extends Component {
         }
     };
 
+    sendNFLRequest = async (team, role) => {
+        if (this.state.sentRequest === false) {
+            const isOwner = role === 'o';
+            const isManager = role === 'gm';
+            const isCoach = role === 'hc';
+            const isAssistant = role === 'a';
+            const requestDTO = {
+                Username: this.props.currentUser.username,
+                NFLTeamID: team.ID,
+                NFLTeam: team.TeamName + ' ' + team.Mascot,
+                NFLTeamAbbreviation: team.TeamAbbr,
+                IsOwner: isOwner,
+                IsManager: isManager,
+                IsCoach: isCoach,
+                IsAssistant: isAssistant,
+                IsApproved: false
+            };
+
+            await this.CFBRequestService.CreateNFLTeamRequest(requestDTO);
+            this.setState({ sentRequest: true });
+        } else {
+            alert(
+                "It appears you've already requested a team. Please wait for an admin to approve the request."
+            );
+        }
+    };
+
     sendCBBRequest = async (team) => {
-        let postRequest = await this.BBARequestService.CreateTeamRequest(
+        await this.BBARequestService.CreateTeamRequest(
             team,
             this.props.currentUser.username
         );
@@ -85,6 +124,9 @@ class AvailableTeams extends Component {
         switch (sport) {
             case constants.CFB:
                 await this.CFBGetAvailableTeams();
+                break;
+            case constants.NFL:
+                await this.NFLGetAvailableTeams();
                 break;
             case constants.CBB:
                 await this.CBBGetAvailableTeams();
@@ -116,6 +158,15 @@ class AvailableTeams extends Component {
                         request={this.sendCFBRequest}
                         disable={this.state.sentRequest}
                         isFBS={team.IsFBS}
+                    />
+                );
+            } else if (this.state.selectedSport === constants.NFL) {
+                return (
+                    <NFLTeamCard
+                        key={team.ID}
+                        team={team}
+                        request={this.sendNFLRequest}
+                        disable={this.state.sentRequest}
                     />
                 );
             } else if (this.state.selectedSport === constants.CBB) {
@@ -174,7 +225,14 @@ class AvailableTeams extends Component {
                         >
                             Job Apps Subforum
                         </a>{' '}
-                        to fill out an application.
+                        to fill out an application.{' '}
+                    </p>
+                    <p>
+                        If you're not sure where to start, please join our{' '}
+                        <a target="_blank" href="https://discord.gg/q46vwZ83RH">
+                            Discord server
+                        </a>{' '}
+                        and we shall help you there.
                     </p>
                 </div>
                 <div className="row mt-2 mb-2">
@@ -185,26 +243,26 @@ class AvailableTeams extends Component {
                 </div>
                 <div className="row">
                     <div className="col-md-2">
-                        <div className="btn-group mb-2">
+                        <div className="btn-group-vertical mb-2">
                             <button
                                 type="button"
-                                class="btn btn-primary btn-sm me-2"
+                                class="btn btn-primary btn-sm mb-1"
                                 value="CFB"
                                 onClick={this.selectSport}
                             >
                                 CFB Team
                             </button>
-                            {/* <button
+                            <button
                                 type="button"
-                                class="btn btn-primary btn-sm me-2"
+                                class="btn btn-primary btn-sm mb-1"
                                 value="NFL"
                                 onClick={this.selectSport}
                             >
                                 NFL Team
-                            </button> */}
+                            </button>
                             <button
                                 type="button"
-                                class="btn btn-primary btn-sm me-2"
+                                class="btn btn-primary btn-sm mb-1"
                                 value="CBB"
                                 onClick={this.selectSport}
                             >

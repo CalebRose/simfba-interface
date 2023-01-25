@@ -3,6 +3,7 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import cbbTeamReducer from './cbbTeam/cbbTeam.reducer';
 import cfbTeamReducer from './cfbTeam/cfbTeam.reducer';
+import nflTeamReducer from './nflTeam/nflTeam.reducer';
 import timestampReducer from './timestamp/timestamp.reducer';
 import userReducer from './user/user.reducer';
 
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
     user: userReducer,
     timestamp: timestampReducer,
     cfbTeam: cfbTeamReducer,
-    cbbTeam: cbbTeamReducer
+    cbbTeam: cbbTeamReducer,
+    nflTeam: nflTeamReducer
 });
 
 export default persistReducer(persistConfig, rootReducer);

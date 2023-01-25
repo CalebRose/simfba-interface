@@ -470,16 +470,28 @@ export const getLogo = (team) => {
             return logos.Seattle;
         case 'EVAN':
             return logos.Evansville;
-        case 'Seattle Supersonics':
-            return logos.SEA_Supersonics;
-        case 'Seattle Seahawks':
-            return logos.SEA_Seahawks;
+        case 'Arizona Cardinals':
+            return logos.ARI_Cardinals;
         case 'Atlanta Hawks':
             return logos.ATL_Hawks;
         case 'Atlanta Falcons':
             return logos.ATL_Falcons;
+        case 'Baltimore Ravens':
+            return logos.BAL_Ravens;
         case 'Brooklyn Nets':
             return logos.BRK_Nets;
+        case 'Buffalo Bills':
+            return logos.BUF_Bills;
+        case 'Carolina Panthers':
+            return logos.CAR_Panthers;
+        case 'Cincinnati Bengals':
+            return logos.CIN_Bengals;
+        case 'Cleveland Browns':
+            return logos.CLE_Browns;
+        case 'Cleveland Cavaliers':
+            return logos.CLE_Cavaliers;
+        case 'Charlotte Hornets':
+            return logos.CHA_Hornets;
         case 'Chicago Bulls':
             return logos.CHI_Bulls;
         case 'Chicago Bears':
@@ -496,10 +508,24 @@ export const getLogo = (team) => {
             return logos.DET_Pistons;
         case 'Detroit Lions':
             return logos.DET_Lions;
+        case 'Green Bay Packers':
+            return logos.GB_Packers;
+        case 'Golden State Warriors':
+            return logos.GS_Warriors;
+        case 'Houston Rockets':
+            return logos.HOU_Rockets;
+        case 'Houston Texans':
+            return logos.HOU_Texans;
         case 'Indiana Pacers':
             return logos.IND_Pacers;
         case 'Indianapolis Colts':
             return logos.IND_Colts;
+        case 'Jacksonville Jaguars':
+            return logos.JAX_Jaguars;
+        case 'Kansas City Chiefs':
+            return logos.KC_Chiefs;
+        case 'Las Vegas Raiders':
+            return logos.LV_Raiders;
         case 'Los Angeles Lakers':
             return logos.LA_Lakers;
         case 'Los Angeles Clippers':
@@ -510,20 +536,22 @@ export const getLogo = (team) => {
             return logos.LA_Chargers;
         case 'Memphis Grizzlies':
             return logos.MEM_Grizzlies;
-        case 'Tennessee Titans':
-            return logos.TEN_Titans;
         case 'Miami Heat':
             return logos.MIA_Heat;
         case 'Miami Dolphins':
             return logos.MIA_Dolphins;
         case 'Milwaukee Bucks':
             return logos.MIL_Bucks;
-        case 'Green Bay Packers':
-            return logos.GB_Packers;
         case 'Minnesota Timberwolves':
             return logos.MIN_Timberwolves;
         case 'Minnesota Vikings':
             return logos.MN_Vikings;
+        case 'New England Patriots':
+            return logos.NE_Patriots;
+        case 'New Orleans Pelicans':
+            return logos.NO_Pelicans;
+        case 'New Orleans Saints':
+            return logos.NO_Saints;
         case 'New York Knicks':
             return logos.NY_Knicks;
         case 'New York Giants':
@@ -532,54 +560,42 @@ export const getLogo = (team) => {
             return logos.NY_Jets;
         case 'Orlando Magic':
             return logos.ORL_Magic;
-        case 'Jacksonville Jaguars':
-            return logos.JAX_Jaguars;
-        case 'Tampa Bay Buccaneers':
-            return logos.TB_Buccaneers;
+        case 'Oklahoma City Thunder':
+            return logos.OKC_Thunder;
         case 'Philadelphia 76ers':
             return logos.PHI_76ers;
         case 'Philadelphia Eagles':
             return logos.PHI_Eagles;
         case 'Phoenix Suns':
             return logos.PHO_Suns;
-        case 'Arizona Cardinals':
-            return logos.ARI_Cardinals;
+        case 'Pittsburgh Steelers':
+            return logos.PIT_Steelers;
         case 'Portland Trailblazers':
             return logos.POR_Trailblazers;
         case 'Sacramento Kings':
             return logos.SAC_Kings;
         case 'San Antonio Spurs':
             return logos.SA_Spurs;
-        case 'Golden State Warriors':
-            return logos.GS_Warriors;
         case 'San Francisco 49ers':
             return logos.SF_49ers;
-        case 'Washington Wizards':
-            return logos.WAS_Wizards;
-        case 'Washington Football Team':
-            return logos.WFT;
-        case 'Buffalo Bills':
-            return logos.BUF_Bills;
-        case 'Charlotte Hornets':
-            return logos.CHA_Hornets;
-        case 'Carolina Panthers':
-            return logos.CAR_Panthers;
-        case 'Houston Rockets':
-            return logos.HOU_Rockets;
-        case 'Houston Texans':
-            return logos.HOU_Texans;
-        case 'New Orleans Pelicans':
-            return logos.NO_Pelicans;
-        case 'New Orleans Saints':
-            return logos.NO_Saints;
-        case 'Oklahoma City Thunder':
-            return logos.OKC_Thunder;
+        case 'Seattle Supersonics':
+            return logos.SEA_Supersonics;
+        case 'Seattle Seahawks':
+            return logos.SEA_Seahawks;
+        case 'Tampa Bay Buccaneers':
+            return logos.TB_Buccaneers;
+        case 'Tennessee Titans':
+            return logos.TEN_Titans;
         case 'Toronto Raptors':
             return logos.TOR_Raptors;
         case 'Utah Jazz':
             return logos.UTA_Jazz;
         case 'Vancouver Sea Lions':
             return logos.VAN_Sealions;
+        case 'Washington Wizards':
+            return logos.WAS_Wizards;
+        case 'Washington Commanders':
+            return logos.WAS_Commies;
 
         default:
             return logos.Unknown;

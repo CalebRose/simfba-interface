@@ -248,7 +248,7 @@ const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         {recruitingProfile &&
                                             recruitingProfile.SpentPoints}
                                     </h4>
-                                    <h4>Approximate Points: {approxPoints}</h4>
+                                    {/* <h4>Approximate Points: {approxPoints}</h4> */}
                                 </div>
                                 <div className="col-md-auto ms-auto align-self-center">
                                     {isValid &&
@@ -319,7 +319,8 @@ const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         <th scope="col" style={{ width: 125 }}>
                                             Add Points
                                         </th>
-                                        <th scope="col">
+
+                                        {/* <th scope="col">
                                             Approx. Points
                                             <i
                                                 className="bi bi-info-circle"
@@ -328,8 +329,9 @@ const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                                 data-bs-placement="top"
                                                 title="Approximate Points submitted with Recruiting Efficiency in mind. (Points * RES)"
                                             />
-                                        </th>
+                                        </th> */}
                                         <th scope="col">Total Points</th>
+                                        <th scope="col">Status</th>
                                         <th scope="col">Remove</th>
                                     </tr>
                                 </thead>

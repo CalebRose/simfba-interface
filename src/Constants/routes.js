@@ -1,6 +1,7 @@
 export default {
     LANDING: '/',
     APPROVE: '/admin-approve',
+    APPROVE_NFL: '/admin-nfl-approve',
     MANAGE_USERS: '/admin-users',
     MANAGE_SIM: '/admin-fba',
     USER: '/user',

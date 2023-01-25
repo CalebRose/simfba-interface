@@ -26,6 +26,7 @@ import {
     GetDefaultOrderForCBBOverview
 } from '../../../_Utility/utilHelper';
 import CBBDashboardMobileRow from './CBBDashboardMobileRow';
+import RecruitingClassModal from '../../_Common/RecruitingClassModal';
 
 const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     // Services
@@ -67,8 +68,6 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const [sort, setSort] = React.useState('Rank');
     const [isAsc, setIsAsc] = React.useState(false);
     const luckyTeam = Math.floor(Math.random() * (20 - 1) + 1);
-
-    console.log(luckyTeam);
 
     // For mobile
     React.useEffect(() => {
@@ -185,7 +184,7 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const GetTeamProfiles = async () => {
         let response = await _recruitingService.GetAllTeamProfiles();
 
-        setTeamProfiles(response);
+        setTeamProfiles(() => response);
     };
 
     // On Click Functions
@@ -267,8 +266,10 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     };
 
     const CollusionButton = async () => {
-        console.log({ cbbTeam, currentUser, luckyTeam });
         const randomInt = Math.floor(Math.random() * recruits.length - 1);
+        if (randomInt >= recruits.length) {
+            randomInt -= recruits.length - 1;
+        }
         const randomCroot =
             randomInt > -1 && randomInt < recruits.length
                 ? recruits[randomInt]
@@ -443,6 +444,23 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                 Export
                             </button>
                         </div>
+                        {cbb_Timestamp &&
+                            cbb_Timestamp.CollegeWeek > 4 &&
+                            teamProfiles.length > 0 && (
+                                <div className="col-md-auto">
+                                    <h5 className="text-start align-middle">
+                                        Recruiting Class
+                                    </h5>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#recruitingClassModal"
+                                    >
+                                        Class
+                                    </button>
+                                </div>
+                            )}
                     </div>
                     <div className="row mt-2">
                         <div className="col-md-auto">
@@ -478,19 +496,21 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                             />
                         </div>
                         {cbb_Timestamp && cbb_Timestamp.CollegeWeek > 4 ? (
-                            <div className="col-md-auto">
-                                <h5 className="text-start align-middle">
-                                    Team Rankings
-                                </h5>
-                                <button
-                                    type="button"
-                                    className="btn btn-primary"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#rankingsModal"
-                                >
-                                    Recruiting Rankings
-                                </button>
-                            </div>
+                            <>
+                                <div className="col-md-auto">
+                                    <h5 className="text-start align-middle">
+                                        Team Rankings
+                                    </h5>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#rankingsModal"
+                                    >
+                                        Recruiting Rankings
+                                    </button>
+                                </div>
+                            </>
                         ) : (
                             ''
                         )}
@@ -512,6 +532,10 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                         )}
                     </div>
                     <CBBRankingsModal teamProfiles={teamProfiles} />
+                    <RecruitingClassModal
+                        teams={teamProfiles}
+                        userTeam={cbbTeam}
+                    />
                     <div className="row mt-2 dashboard-table-height">
                         {cbb_Timestamp && !cbb_Timestamp.IsRecruitingLocked ? (
                             <InfiniteScroll

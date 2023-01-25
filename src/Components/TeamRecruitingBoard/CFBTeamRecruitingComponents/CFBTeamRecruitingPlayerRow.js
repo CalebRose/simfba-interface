@@ -192,11 +192,14 @@ const CFBTeamDashboardPlayerRow = (props) => {
                         </h6>
                     )}
                 </td>
-                <td className="align-middle">
+                {/* <td className="align-middle">
                     <h6>{adjustedPoints}</h6>
-                </td>
+                </td> */}
                 <td className="align-middle">
                     <h6>{totalPoints}</h6>
+                </td>
+                <td className="align-middle">
+                    <h6>{Recruit.RecruitingStatus}</h6>
                 </td>
                 <td className="align-middle">
                     <button

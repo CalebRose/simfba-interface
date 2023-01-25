@@ -19,6 +19,24 @@ export default class FBAScheduleService {
         return json;
     }
 
+    async GetNFLGamesByTeamAndSeason(TeamID, SeasonID) {
+        let response = await fetch(
+            url + `games/nfl/team/${TeamID}/${SeasonID}/`,
+            {
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            }
+        );
+        let json;
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert('Http-Error', response.status);
+        }
+        return json;
+    }
+
     async GetAllCollegeGamesInASeason(SeasonID) {
         let response = await fetch(url + `games/college/season/${SeasonID}/`, {
             headers: {

@@ -27,6 +27,11 @@
     max-width: 30px !important;
 }
 
+.nfl-standings-container {
+    font-size: 14px !important;
+    max-width: 35rem !important;
+}
+
 .standings-container {
     font-size: 14px !important;
     max-width: 22rem !important;

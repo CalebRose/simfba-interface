@@ -53,7 +53,7 @@ const CBBTeamDashboardPlayerRow = (props) => {
             />
             <tr>
                 <th scope="row">
-                    {data.IsLocked ? (
+                    {data.IsLocked || data.IsSigned ? (
                         <h2>
                             <i class="bi bi-file-lock-fill"></i>
                         </h2>
@@ -72,10 +72,6 @@ const CBBTeamDashboardPlayerRow = (props) => {
                                 <i className="bi bi-mortarboard-fill link-success" />
                             </h2>
                         </button>
-                    ) : data.IsSigned ? (
-                        <h2>
-                            <i className="bi bi-plus-circle-fill" />
-                        </h2>
                     ) : (
                         <h2>
                             <i

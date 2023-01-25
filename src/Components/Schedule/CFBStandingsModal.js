@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { SeasonsList } from '../../Constants/CommonConstants';
-import FBAScheduleService from '../../_Services/simFBA/FBAScheduleService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import StandingsCard from '../BBA/Schedule/StandingsModalCard';
 

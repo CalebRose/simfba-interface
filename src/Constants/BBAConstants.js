@@ -146,7 +146,9 @@ export const StatesList = [
     'Washington',
     'West Virginia',
     'Wisconsin',
-    'Wyoming'
+    'Wyoming',
+    'American Samoa',
+    'Guam'
 ];
 
 export const LetterGradesList = [

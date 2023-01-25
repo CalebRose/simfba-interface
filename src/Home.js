@@ -33,6 +33,7 @@ import CBBRecruitingDashboard from './Components/BBA/RecruitingOverview/CBBRecru
 import CBBRecruitingTeamBoard from './Components/BBA/RecruitingBoard/CBBRecruitingTeamBoard';
 import CBBSchedule from './Components/BBA/Schedule/CBBSchedule';
 import CBBStatistics from './Components/BBA/Statistics/CBBStatistics';
+import ApproveNFLRequests from './Components/Admin/ApproveNFLRequests/ApproveNFLRequests';
 
 const Home = ({ currentUser }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -119,6 +120,13 @@ const Home = ({ currentUser }) => {
             <Route exact path={routes.APPROVE}>
                 {roleId === Constants.ADMIN ? (
                     <ApproveRequests />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
+            <Route exact path={routes.APPROVE_NFL}>
+                {roleId === Constants.ADMIN ? (
+                    <ApproveNFLRequests />
                 ) : (
                     <Redirect to={routes.LANDING} />
                 )}

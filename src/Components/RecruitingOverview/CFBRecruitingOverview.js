@@ -25,6 +25,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import CFBDashboardRankingsModal from './CFBDashboardComponents/CFBDashboardRankingsModal';
 import { GetCollusionStatements } from '../../Constants/CollusionStatements';
 import CFBDashboardMobilePlayerRow from './CFBDashboardComponents/CFBDashboardMobilePlayerRow';
+import RecruitingClassModal from '../_Common/RecruitingClassModal';
 
 const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     // Services
@@ -46,6 +47,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         React.useState('');
     const [selectedAffinities, setSelectedAffinities] = React.useState('');
     const [selectedStars, setSelectedStars] = React.useState('');
+    const [selectedStatuses, setStatuses] = React.useState('');
     const [recruits, setRecruits] = React.useState([]);
     const [filteredRecruits, setFilteredRecruits] = React.useState([]);
     const [viewableRecruits, setViewableRecruits] = React.useState([]);
@@ -57,7 +59,14 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const [teamColors, setTeamColors] = React.useState('');
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const [showCollusionButton, setShowCollusionButton] = React.useState(true);
-
+    const statusOptions = MapOptions([
+        'Not Ready',
+        'Hearing Offers',
+        'Narrowing Down Offers',
+        'Finalizing Decisions',
+        'Ready to Sign',
+        'Signed'
+    ]);
     let luckyTeam = Math.floor(Math.random() * (130 - 1) + 1);
     // Setup Modals?
 
@@ -116,6 +125,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         selectedAffinities,
         selectedPotentialLetterGrades,
         selectedOverallLetterGrades,
+        selectedStatuses,
         selectedStars
     ]);
 
@@ -188,6 +198,12 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             if (selectedStars.length > 0) {
                 fr = fr.filter((x) => selectedStars.includes(x.Stars));
             }
+
+            if (selectedStatuses.length > 0) {
+                fr = fr.filter((x) =>
+                    selectedStatuses.includes(x.RecruitingStatus)
+                );
+            }
         }
 
         return fr;
@@ -197,32 +213,37 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
 
     const ChangePositions = (options) => {
         const opts = [...options.map((x) => x.value)];
-        setSelectedPositions(opts);
+        setSelectedPositions(() => opts);
     };
 
     const ChangeStates = (options) => {
         const opts = [...options.map((x) => x.value)];
-        setSelectedStates((x) => opts);
+        setSelectedStates(() => opts);
     };
 
     const ChangeAffinities = (affinityOptions) => {
         const options = [...affinityOptions.map((x) => x.value)];
-        setSelectedAffinities((x) => options);
+        setSelectedAffinities(() => options);
     };
 
     const ChangePotentialLetterGrades = (options) => {
         const opts = [...options.map((x) => x.value)];
-        setSelectedPotentialLetterGrades((x) => opts);
+        setSelectedPotentialLetterGrades(() => opts);
     };
 
     const ChangeOverallLetterGrades = (options) => {
         const opts = [...options.map((x) => x.value)];
-        setSelectedOverallLetterGrades((x) => opts);
+        setSelectedOverallLetterGrades(() => opts);
     };
 
     const ChangeStars = (options) => {
         const opts = [...options.map((x) => x.value)];
-        setSelectedStars((x) => opts);
+        setSelectedStars(() => opts);
+    };
+
+    const ChangeRecruitingStatus = (options) => {
+        const opts = [...options.map((x) => x.value)];
+        setStatuses(() => opts);
     };
 
     const AddRecruitToBoard = async (recruit) => {
@@ -389,6 +410,24 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                 onChange={ChangePotentialLetterGrades}
                             />
                         </div>
+                        {cfb_Timestamp &&
+                            cfb_Timestamp.CollegeWeek > 4 &&
+                            teamProfiles.length > 0 && (
+                                <div className="col-md-auto">
+                                    <h5 className="text-start align-middle">
+                                        Recruiting Class
+                                    </h5>
+                                    <button
+                                        type="button"
+                                        className="btn"
+                                        style={teamColors ? teamColors : {}}
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#recruitingClassModal"
+                                    >
+                                        View Class
+                                    </button>
+                                </div>
+                            )}
                     </div>
                     <div className="row mt-2">
                         <div className="col-md-auto">
@@ -411,6 +450,16 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                 className="basic-multi-select btn-dropdown-width-team z-index-1"
                                 classNamePrefix="select"
                                 onChange={ChangeStars}
+                            />
+                        </div>
+                        <div className="col-md-auto">
+                            <h5 className="text-start align-middle">Status</h5>
+                            <Select
+                                options={statusOptions}
+                                isMulti={true}
+                                className="basic-multi-select btn-dropdown-width-team z-index-1"
+                                classNamePrefix="select"
+                                onChange={ChangeRecruitingStatus}
                             />
                         </div>
                         {cfb_Timestamp && cfb_Timestamp.CollegeWeek > 4 ? (
@@ -468,6 +517,11 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                         )}
                     </div>
                     <CFBDashboardRankingsModal teamProfiles={teamProfiles} />
+                    <RecruitingClassModal
+                        teams={teamProfiles}
+                        userTeam={cfbTeam}
+                        isCFB
+                    />
                     <div className="row mt-3 mb-5 dashboard-table-height">
                         {cfb_Timestamp && !cfb_Timestamp.IsRecruitingLocked ? (
                             <InfiniteScroll
@@ -549,6 +603,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                                 <th scope="col">
                                                     Leading Schools
                                                 </th>
+                                                <th scope="col">Status</th>
                                                 <th scope="col">Add</th>
                                             </tr>
                                         </thead>

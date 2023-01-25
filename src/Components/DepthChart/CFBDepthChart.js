@@ -107,7 +107,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
 
     // OnClickEvents
     const SelectTeam = (selectedTeam) => {
-        setTeam(selectedTeam);
+        setTeam(() => selectedTeam);
     };
 
     const SelectUserTeam = () => {
@@ -115,7 +115,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
     };
 
     const SelectPosition = (pos) => {
-        setCurrentPosition(pos);
+        setCurrentPosition(() => pos);
     };
 
     const SaveDepthChart = async () => {
@@ -161,14 +161,14 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
     const SetDepthChartAttributeHeaders = (position) => {
         const { abbr, name } = position;
         let attributes = GetPositionAttributes(abbr);
-        setPositionAttributes(attributes);
+        setPositionAttributes(() => attributes);
     };
 
     const SetAvailablePlayersList = (position) => {
         const { abbr } = position;
         let rosterList = [...roster];
         let players = GetAvailablePlayers(abbr, rosterList);
-        setAvailablePlayers(players);
+        setAvailablePlayers(() => players);
     };
 
     const SetDepthChartPositionList = (position) => {
@@ -176,20 +176,20 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
         const dc = [...currentDepthChart];
         if (dc.length > 0) {
             const newPositionsList = dc.filter((x) => x.Position === abbr);
-            setCurrentDepthChartPositions(newPositionsList);
+            setCurrentDepthChartPositions(() => newPositionsList);
         }
     };
 
     const GetTeams = async () => {
         //
         let teams = await teamService.GetAllCollegeTeams();
-        setCollegeTeams(teams);
+        setCollegeTeams(() => teams);
     };
 
     const GetRoster = async (ID) => {
         if (ID !== null || ID > 0) {
             let roster = await rosterService.GetPlayersByTeamNoRedshirts(ID);
-            setRoster(roster);
+            setRoster(() => roster);
         }
     };
 

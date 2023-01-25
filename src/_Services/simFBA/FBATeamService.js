@@ -16,6 +16,21 @@ export default class FBATeamService {
         return json;
     }
 
+    async GetAllNFLTeams() {
+        let response = await fetch(url + 'teams/nfl/all', {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        let json;
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert('Http-Error', response.status);
+        }
+        return json;
+    }
+
     async GetAllActiveCollegeTeams() {
         let response = await fetch(url + 'teams/college/active', {
             headers: {
@@ -48,6 +63,21 @@ export default class FBATeamService {
 
     async GetTeamByTeamId(teamID) {
         let response = await fetch(url + 'teams/college/team/' + teamID, {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        let json;
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert('Http-Error', response.status);
+        }
+        return json;
+    }
+
+    async GetNFLTeamByTeamID(teamID) {
+        let response = await fetch(url + 'teams/nfl/team/' + teamID, {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')
             }
@@ -101,6 +131,24 @@ export default class FBATeamService {
     async GetTeamStandingsByConference(conferenceID, seasonID) {
         let response = await fetch(
             url + `standings/cfb/${conferenceID}/${seasonID}/`,
+            {
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            }
+        );
+        let json;
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert('Http-Error', response.status);
+        }
+        return json;
+    }
+
+    async GetNFLTeamStandingsByDivision(divisionID, seasonID) {
+        let response = await fetch(
+            url + `standings/nfl/${divisionID}/${seasonID}/`,
             {
                 headers: {
                     authorization: 'Bearer ' + localStorage.getItem('token')

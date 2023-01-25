@@ -43,6 +43,9 @@ const CFBDashboardPlayerRow = (props) => {
         return props.add(croot);
     };
 
+    const customClass = croot.IsCustomCroot
+        ? 'text-primary align-middle'
+        : 'align-middle';
     return (
         <tr style={{ backgroundColor: 'white', zIndex: -1 }}>
             <th scope="row">
@@ -56,7 +59,7 @@ const CFBDashboardPlayerRow = (props) => {
                     <i className="bi bi-info-circle" />
                 </button>
             </th>
-            <td className="align-middle" style={{ width: 175 }}>
+            <td className={customClass} style={{ width: 175 }}>
                 <h6>{name}</h6>
             </td>
             <td className="align-middle">
@@ -97,6 +100,9 @@ const CFBDashboardPlayerRow = (props) => {
                     />
                     // <h6 className="text-success">{croot.College}</h6>
                 )}
+            </td>
+            <td className="align-middle">
+                <h6>{croot.RecruitingStatus}</h6>
             </td>
             <td className="align-middle">
                 {croot.IsSigned || timestamp.CollegeWeek === 21 ? (

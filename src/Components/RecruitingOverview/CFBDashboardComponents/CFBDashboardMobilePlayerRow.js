@@ -43,6 +43,10 @@ const CFBDashboardMobilePlayerRow = (props) => {
         return props.add(croot);
     };
 
+    const customClass = croot.IsCustomCroot
+        ? 'text-primary card-title'
+        : 'card-title';
+
     /* 
         <button
             type="button"
@@ -58,7 +62,7 @@ const CFBDashboardMobilePlayerRow = (props) => {
         <>
             <div className="card mb-2">
                 <div className="card-body">
-                    <h5 className="card-title">{name}</h5>
+                    <h5 className={customClass}>{name}</h5>
                     <h6 className="card-subtitle mb-2 text-muted">
                         Rank: {rank}{' '}
                     </h6>
@@ -77,7 +81,9 @@ const CFBDashboardMobilePlayerRow = (props) => {
                     </li>
                     <li className="list-group-item">
                         {!croot.IsSigned ? (
-                            <h6>{leadingTeams}</h6>
+                            <h6>
+                                {leadingTeams} | {croot.RecruitingStatus}
+                            </h6>
                         ) : (
                             <img
                                 className="image-recruit-logo"

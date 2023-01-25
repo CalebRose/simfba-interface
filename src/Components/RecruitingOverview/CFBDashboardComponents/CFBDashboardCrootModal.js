@@ -12,10 +12,12 @@ const CrootModal = (props) => {
         const { TeamAbbr, Odds } = lt;
         const displayOdds = Math.round(Odds * 100);
         let displayStatus = '';
-        if (displayOdds > 50) {
+        if (displayOdds > 45) {
             displayStatus = 'Strong Favorite';
-        } else if (displayOdds > 25) {
+        } else if (displayOdds > 24) {
             displayStatus = 'In Contention';
+        } else if (displayOdds > 11) {
+            displayStatus = 'Just Outside';
         } else {
             displayStatus = 'Unlikely';
         }
@@ -55,6 +57,20 @@ const CrootModal = (props) => {
             </div>
         );
     };
+
+    const getTendency = (mod) => {
+        if (mod > 1.9) {
+            return 'Signs Very Early';
+        } else if (mod < 1.9 && mod > 1.5) {
+            return 'Signs Early';
+        } else if (mod < 1.5 && mod > 1.4) {
+            return 'Average';
+        } else {
+            return 'Takes Their Time';
+        }
+    };
+
+    const tendency = getTendency(crt.RecruitModifier);
 
     return (
         <div
@@ -112,6 +128,15 @@ const CrootModal = (props) => {
                             </div>
                         </div>
                         <div className="row g-2 mb-3">
+                            {crt.IsCustomCroot ? (
+                                <div className="col">
+                                    <h5>
+                                        Custom Croot By {crt.CustomCrootFor}
+                                    </h5>
+                                </div>
+                            ) : (
+                                ''
+                            )}
                             <div className="col">
                                 <h5>High School:</h5> {crt.HighSchool}
                             </div>
@@ -132,6 +157,10 @@ const CrootModal = (props) => {
                             <div className="col">
                                 <h5>Affinity Two</h5>
                                 {crt.AffinityTwo}
+                            </div>
+                            <div className="col">
+                                <h5>Recruiting Tendencies</h5>
+                                {tendency}
                             </div>
                         </div>
                         <div className="row g-1 mb-3">

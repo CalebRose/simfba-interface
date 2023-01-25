@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import constants from '../../Constants/acronyms';
-import CBBHomePage from './Jumbotron/jumbotronComponents/cbb/CBBHomepage';
-import CFBHomepage from './Jumbotron/jumbotronComponents/cfb/CFBHomepage';
-import NBAHomepage from './Jumbotron/jumbotronComponents/nba/NBAHomepage';
-import NFLHomepage from './Jumbotron/jumbotronComponents/nfl/NFLHomepage';
+import CBBHomePage from './Jumbotron/cbb/CBBHomepage';
+import CFBHomepage from './Jumbotron/cfb/CFBHomepage';
+import NBAHomepage from './Jumbotron/nba/NBAHomepage';
+import NFLHomepage from './Jumbotron/nfl/NFLHomepage';
 
 const LandingPage = ({ currentUser }) => {
     const [sport, setSport] = React.useState('');
@@ -59,7 +59,7 @@ const LandingPage = ({ currentUser }) => {
                             ) : (
                                 ''
                             )}
-                            {/* {currentUser && currentUser.nfl_id ? (
+                            {currentUser && currentUser.NFLTeamID ? (
                                 <button
                                     type="button"
                                     className="btn btn-primary btn-sm mb-2"
@@ -70,7 +70,7 @@ const LandingPage = ({ currentUser }) => {
                                 </button>
                             ) : (
                                 ''
-                            )} */}
+                            )}
                             {currentUser && currentUser.cbb_id ? (
                                 <button
                                     type="button"

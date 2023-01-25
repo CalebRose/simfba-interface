@@ -16,6 +16,21 @@ export default class FBARequestService {
         return json;
     }
 
+    async GetNFLRequests() {
+        let res = await fetch(url + 'nfl/requests/all/', {
+            headers: {
+                authorization: localStorage.getItem('token')
+            }
+        });
+        let json;
+        if (res.ok) {
+            json = await res.json();
+        } else {
+            alert('HTTP-Error:', res.status);
+        }
+        return json;
+    }
+
     async ApproveRequest(payload) {
         let res = await fetch(url + 'requests/approve/', {
             headers: {
@@ -29,6 +44,18 @@ export default class FBARequestService {
                 Username: payload.username,
                 IsApproved: true
             })
+        });
+        return res;
+    }
+
+    async ApproveNFLRequest(payload) {
+        let res = await fetch(url + 'nfl/requests/approve/', {
+            headers: {
+                authorization: localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(payload)
         });
         return res;
     }
@@ -67,9 +94,40 @@ export default class FBARequestService {
         return postRequest;
     }
 
+    async CreateNFLTeamRequest(dto) {
+        let postRequest = await fetch(url + 'nfl/requests/create/', {
+            headers: {
+                authorization: localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(dto)
+        });
+
+        return postRequest;
+    }
+
     async RejectRequest(payload) {
         // DB Request
         let res = await fetch(url + 'requests/reject/', {
+            headers: {
+                authorization: localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            },
+            method: 'DELETE',
+            body: JSON.stringify({
+                ID: payload.ID,
+                TeamID: payload.ReqID,
+                Username: payload.Username,
+                IsApproved: true
+            })
+        });
+        return res;
+    }
+
+    async RejectNFLRequest(payload) {
+        // DB Request
+        let res = await fetch(url + 'nfl/requests/reject/', {
             headers: {
                 authorization: localStorage.getItem('token'),
                 'Content-Type': 'application/json'
@@ -92,6 +150,17 @@ export default class FBARequestService {
                 'Content-Type': 'application/json'
             },
             method: 'PUT'
+        });
+        return res;
+    }
+
+    async RemoveUserFromNFLTeamRequest(teamID) {
+        let res = await fetch(url + 'nfl/requests/remove/' + teamID, {
+            headers: {
+                authorization: localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            },
+            method: 'POST'
         });
         return res;
     }

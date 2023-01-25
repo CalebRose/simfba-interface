@@ -47,6 +47,11 @@ const authorizedUser = (props) => {
                             Approve Requests <span className="caret"></span>
                         </Link>
                     </li>
+                    <li className="dropdown-item">
+                        <Link to={routes.APPROVE_NFL} className="dropdown-item">
+                            Approve NFL Requests <span className="caret"></span>
+                        </Link>
+                    </li>
                 </ul>
             </li>
         );
@@ -116,6 +121,15 @@ const authorizedUser = (props) => {
                     target="_blank"
                 >
                     SimFBA Site
+                </a>
+            </li>
+            <li className="nav-item">
+                <a
+                    className="nav-link"
+                    href="https://discord.gg/q46vwZ83RH"
+                    target="_blank"
+                >
+                    Discord
                 </a>
             </li>
             <li className="nav-item">

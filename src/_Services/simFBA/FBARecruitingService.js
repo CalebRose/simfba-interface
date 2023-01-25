@@ -220,4 +220,25 @@ export default class FBARecruitingService {
             alert('HTTP-Error:', response.status);
         }
     }
+
+    async GetRecruitingClass(id) {
+        let json;
+        let response = await fetch(`${url}croots/ds/class/${id}`, {
+            method: 'GET',
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+
+        if (response.ok) {
+            const string = await response.text();
+            json = string === '' ? {} : JSON.parse(string);
+        } else {
+            alert(
+                'Recruits Could Not be Acquired.\nHTTP-Error:',
+                response.status
+            );
+        }
+        return json;
+    }
 }
