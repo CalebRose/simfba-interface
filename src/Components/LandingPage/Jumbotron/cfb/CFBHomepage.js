@@ -7,6 +7,7 @@ import { getLogo } from '../../../../Constants/getLogo';
 import routes from '../../../../Constants/routes';
 import { setCBBTeam } from '../../../../Redux/cbbTeam/cbbTeam.actions';
 import { setCFBTeam } from '../../../../Redux/cfbTeam/cfbTeam.actions';
+import { setNFLTeam } from '../../../../Redux/nflTeam/nflTeam.actions';
 import FBAScheduleService from '../../../../_Services/simFBA/FBAScheduleService';
 import FBATeamService from '../../../../_Services/simFBA/FBATeamService';
 import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
@@ -47,6 +48,13 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         ) {
             GetCBBTeam();
         }
+        if (
+            currentUser.NFLTeam !== undefined &&
+            currentUser.NFLTeam.length > 0 &&
+            currentUser.NFLTeamID > 0
+        ) {
+            GetNFLTeam();
+        }
         if (!cfbTeam) {
             getTeam();
         } else {
@@ -68,7 +76,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             games.length > 0
         ) {
             const currentWeek = cfb_Timestamp.CollegeWeek;
-            const prevWeek = isMobile ? currentWeek - 1 : currentWeek - 2;
+            let prevWeek = isMobile ? currentWeek - 1 : currentWeek - 2;
             let nextWeek = isMobile ? currentWeek + 1 : currentWeek + 2;
             let prevIdx = 0;
             let nextIdx = 0;
@@ -104,6 +112,13 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const GetCBBTeam = async () => {
         let response = await _teamService.GetTeamByTeamId(currentUser.cbb_id);
         dispatch(setCBBTeam(response));
+    };
+
+    const GetNFLTeam = async () => {
+        let response = await teamService.GetNFLTeamByTeamID(
+            currentUser.NFLTeamID
+        );
+        dispatch(setNFLTeam(response));
     };
 
     const getTeam = async () => {

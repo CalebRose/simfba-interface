@@ -2,6 +2,8 @@ import React from 'react';
 
 const PlayerDropdownItem = (props) => {
     const { name, click, player } = props;
+    const id = player && player.ID ? player.ID : 0;
+    const pos = player && player.Position ? player.Position : 'Empty';
 
     const handleChange = () => {
         return click(player);
@@ -13,7 +15,7 @@ const PlayerDropdownItem = (props) => {
                 className="dropdown-item"
                 value={name}
                 onClick={handleChange}
-                id={player.ID}
+                id={id}
             >
                 {name + ' | ' + player.Position}
             </p>

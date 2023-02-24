@@ -2,21 +2,22 @@ import React from 'react';
 import AttributeAverages from '../../Constants/AttributeAverages';
 import {
     GetLetterGrade,
+    GetNFLYear,
     GetOverall,
     GetYear
 } from '../../_Utility/RosterHelper';
 import { GetPosition } from './DepthChartHelper';
 import PlayerDropdownItem from './PlayerDropdownItem';
 
-const DepthChartMobilePlayerRow = (props) => {
-    const {
-        player,
-        availablePlayers,
-        positionAttributes,
-        swapPlayer,
-        canModify
-    } = props;
-    const playerData = player.CollegePlayer;
+const DepthChartMobilePlayerRow = ({
+    player,
+    availablePlayers,
+    positionAttributes,
+    swapPlayer,
+    canModify,
+    isCFB
+}) => {
+    const playerData = isCFB ? player.CollegePlayer : player.NFLPlayer;
     const name = player.FirstName + ' ' + player.LastName;
     const PositionLabel =
         player.OriginalPosition.length > 0 &&
@@ -53,15 +54,21 @@ const DepthChartMobilePlayerRow = (props) => {
                             />
                             <hr className="dropdown-divider"></hr>
                             {availablePlayers && availablePlayers.length > 0 ? (
-                                availablePlayers.map((x) => (
-                                    <PlayerDropdownItem
-                                        key={x.ID}
-                                        name={x.FirstName + ' ' + x.LastName}
-                                        player={x}
-                                        id={x.ID}
-                                        click={handleChange}
-                                    />
-                                ))
+                                availablePlayers.map((x) => {
+                                    const id = x && x.ID ? x.ID : 0;
+
+                                    return (
+                                        <PlayerDropdownItem
+                                            key={id}
+                                            name={
+                                                x.FirstName + ' ' + x.LastName
+                                            }
+                                            player={x}
+                                            id={id}
+                                            click={handleChange}
+                                        />
+                                    );
+                                })
                             ) : (
                                 <h5 className="card-title">{name}</h5>
                             )}
@@ -79,6 +86,7 @@ const DepthChartMobilePlayerRow = (props) => {
                 {positionAttributes &&
                     positionAttributes.length > 0 &&
                     positionAttributes.map((x, idx) => {
+                        if (!playerData) return '';
                         const label = idx > 5 ? x.attr : x.label;
                         const mobileLabel = label
                             .replace(/([A-Z])/g, ' $1')
@@ -92,23 +100,33 @@ const DepthChartMobilePlayerRow = (props) => {
                             if (label === 'Archetype') {
                                 attr = playerData[label];
                             } else if (label === 'Overall') {
-                                attr = GetOverall(
-                                    playerData.Overall,
-                                    playerData.Year
-                                );
+                                if (isCFB || playerData.Experience < 2) {
+                                    attr = GetOverall(
+                                        playerData.Overall,
+                                        playerData.Year
+                                    );
+                                } else {
+                                    attr = playerData.Overall;
+                                }
                             } else if (label === 'Year') {
-                                attr = GetYear(playerData);
+                                attr = isCFB
+                                    ? GetYear(playerData)
+                                    : GetNFLYear(playerData);
                             } else if (label === 'PotentialGrade') {
                                 attr = playerData.PotentialGrade;
                             } else {
                                 let val = playerData[label];
                                 // May want to go off of the original position values
                                 const average = AttributeAverages[label][pos];
-                                attr = GetLetterGrade(
-                                    average,
-                                    val,
-                                    playerData.Year
-                                );
+                                if (isCFB || playerData.Experience < 2) {
+                                    attr = GetLetterGrade(
+                                        average,
+                                        val,
+                                        playerData.Year
+                                    );
+                                } else {
+                                    attr = val;
+                                }
                             }
                             return (
                                 <li className="list-group-item">

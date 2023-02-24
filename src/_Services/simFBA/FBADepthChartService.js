@@ -34,4 +34,37 @@ export default class FBADepthChartService {
         });
         return response;
     }
+
+    async GetNFLDepthChartByTeamID(TeamID) {
+        let json;
+        if (TeamID > 0) {
+            let response = await fetch(
+                url + 'gameplan/nfl/depthchart/' + TeamID,
+                {
+                    headers: {
+                        authorization: 'Bearer ' + localStorage.getItem('token')
+                    }
+                }
+            );
+
+            if (response.ok) {
+                json = await response.json();
+            } else {
+                alert('HTTP-Error:', response.status);
+            }
+        }
+        return json;
+    }
+
+    async SaveNFLDepthChart(DTO) {
+        let response = await fetch(url + 'gameplan/nfl/updatedepthchart', {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(DTO)
+        });
+        return response;
+    }
 }

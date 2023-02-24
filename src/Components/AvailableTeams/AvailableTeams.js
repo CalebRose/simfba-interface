@@ -30,12 +30,10 @@ class AvailableTeams extends Component {
     }
 
     CFBGetAvailableTeams = async () => {
-        let teams = await this._FBTeamService.GetAvailableCollegeTeams();
-        const filterTeams = teams
-            .filter(
-                (x) => x.Coach === null || x.Coach === '' || x.Coach === 'AI'
-            )
-            .sort((a, b) => '' + a.TeamName.localeCompare(b.TeamName));
+        let teams = await this._FBTeamService.GetAllCollegeTeams();
+        const filterTeams = teams.sort(
+            (a, b) => '' + a.TeamName.localeCompare(b.TeamName)
+        );
 
         this.setState({ teams: teams, filterTeams: filterTeams });
     };
@@ -51,11 +49,9 @@ class AvailableTeams extends Component {
 
     CBBGetAvailableTeams = async () => {
         let teams = await this.BBATeamService.GetCollegeTeams(SimBBA_url);
-        const filterTeams = teams.filter(
-            (x) =>
-                (x.Coach === null || x.Coach === '' || x.Coach === 'AI') &&
-                x.IsNBA === false
-        );
+        const filterTeams = teams
+            .filter((x) => x.IsNBA === false)
+            .sort((a, b) => '' + a.TeamName.localeCompare(b.TeamName));
         this.setState({ teams: teams, filterTeams: filterTeams });
     };
 
@@ -158,6 +154,7 @@ class AvailableTeams extends Component {
                         request={this.sendCFBRequest}
                         disable={this.state.sentRequest}
                         isFBS={team.IsFBS}
+                        coach={team.Coach}
                     />
                 );
             } else if (this.state.selectedSport === constants.NFL) {
@@ -183,6 +180,7 @@ class AvailableTeams extends Component {
                         ovr={team.OverallGrade}
                         off={team.OffenseGrade}
                         def={team.DefenseGrade}
+                        coach={team.Coach}
                     />
                 );
             } else if (this.state.selectedSport === constants.NBA) {

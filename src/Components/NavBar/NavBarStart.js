@@ -91,6 +91,57 @@ const NavBar_Start = ({ currentUser }) => {
         );
     };
 
+    var NFLTeam = () => {
+        return (
+            <li className="nav-item dropdown">
+                <a
+                    class="nav-link dropdown-toggle"
+                    href="#"
+                    id="navbarDropdownMenuLink"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                >
+                    {user.NFLTeam}
+                </a>
+                <ul
+                    className="dropdown-menu"
+                    aria-labelledby="navbarDropdownMenuLink"
+                >
+                    <li>
+                        <Link to={routes.NFL_ROSTER} className="dropdown-item">
+                            Roster
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
+                            to={routes.NFL_GAMEPLAN}
+                            className="dropdown-item"
+                        >
+                            Gameplan
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
+                            to={routes.NFL_DEPTHCHART}
+                            className="dropdown-item"
+                        >
+                            Depth Chart
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
+                            to={routes.NFL_FREE_AGENCY}
+                            className="dropdown-item"
+                        >
+                            Free Agency
+                        </Link>
+                    </li>
+                </ul>
+            </li>
+        );
+    };
+
     const CBBTeam = () => {
         return (
             <li className="nav-item dropdown">
@@ -181,7 +232,11 @@ const NavBar_Start = ({ currentUser }) => {
                 <>
                     <DesktopBarrier />
                     <li className="nav-item">
-                        <span className="nav-link">NFL (Soon)</span>
+                        {currentUser.NFLTeamID > 0 ? (
+                            <NFLTeam />
+                        ) : (
+                            <span className="nav-link">NFL (None)</span>
+                        )}
                     </li>
                 </>
                 <DesktopBarrier />

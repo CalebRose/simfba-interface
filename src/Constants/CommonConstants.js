@@ -18,6 +18,36 @@ export const PositionList = [
     { name: 'Kickers', abbr: 'K' }
 ];
 
+export const ArchetypesListForFA = [
+    { name: 'Pocket', abbr: 'Pocket' },
+    { name: 'Scrambling', abbr: 'Scrambling' },
+    { name: 'Balanced', abbr: 'Balanced' },
+    { name: 'Field General', abbr: 'Field General' },
+    { name: 'Power', abbr: 'Power' },
+    { name: 'Receiving', abbr: 'Receiving' },
+    { name: 'Speed', abbr: 'Speed' },
+    { name: 'Blocking', abbr: 'Blocking' },
+    { name: 'Rushing', abbr: 'Rushing' },
+    { name: 'Vertical Threat', abbr: 'Vertical Threat' },
+    { name: 'Possession', abbr: 'Possession' },
+    { name: 'Red Zone Threat', abbr: 'Red Zone Threat' },
+    { name: 'Route Runner', abbr: 'Route Runner' },
+    { name: 'Pass Blocking', abbr: 'Pass Blocking' },
+    { name: 'Run Blocking', abbr: 'Run Blocking' },
+    { name: 'Line Captain', abbr: 'Line Captain' },
+    { name: 'Nose Tackle', abbr: 'Nose Tackle' },
+    { name: 'Pass Rusher', abbr: 'Pass Rusher' },
+    { name: 'Run Stopper', abbr: 'Run Stopper' },
+    { name: 'Speed Rusher', abbr: 'Speed Rusher' },
+    { name: 'Coverage', abbr: 'Coverage' },
+    { name: 'Pass Rush', abbr: 'Pass Rush' },
+    { name: 'Run Stopper', abbr: 'Run Stopper' },
+    { name: 'Ball Hawk', abbr: 'Ball Hawk' },
+    { name: 'Man Coverage', abbr: 'Man Coverage' },
+    { name: 'Zone Coverage', abbr: 'Zone Coverage' },
+    { name: 'Accuracy', abbr: 'Accuracy' }
+];
+
 export const ArchetypeList = [
     { pos: 'QB', archetype: 'Pocket' },
     { pos: 'QB', archetype: 'Scrambling' },

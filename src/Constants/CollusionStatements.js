@@ -1,65 +1,343 @@
-export const GetCollusionStatements = (user, team) => {
-    const MessageOne = `A local bagman from ${team.City} was reported to be using a local Waffle House as a laundering front for recruiting points!`;
-    const MessageTwo = `Breaking News! Coach ${user.username} has actually clicked the collusion button! Yes! How dare you?`;
-    const MessageThree = `Coach ${user.username} reportedly asked a booster to orchestrate a business venture to give new recruits customized Ford F-150s!`;
-    const MessageFour = `A high school recruit after a recruiting visit to ${team.TeamName} was reportedly seen leaving campus in a brand new Bentley.`;
-    const MessageFive = `A high school recruit was reportedly offered crab legs for life from a local grocery store in ${team.City}, should they decide to commit to ${team.TeamName}`;
-    const MessageSix = `Local police in ${team.City} recently cleared out a back room where big money donors from ${team.TeamName} were conspiring on how much money they were to donate to a five star recruit.`;
-    const MessageSeven = `A nationally ranked recruit has now added ${team.TeamName} to their top list of teams after a brief phone call with a well-renowned booster.`;
-    const MessageEight = `One of the top quarterbacks from ${team.State} was offered free buffalo wings for life to play for the ${team.TeamName} ${team.Mascot}`;
-    const MessageNine = `Breaking news! Coach ${user.username} was seen loaded dice as a means of improving their odds in the Recruit Sync.`;
-    const MessageTen = `After a recent breakthrough case involving ${team.TeamName} donors, the SimFBA have decided to investigate and penalize the University of Missouri's athletic program of twenty scholarships.`;
-    const MessageEleven = `A local tip from an avid college football fan claims that ${team.TeamName} donors were conspiring to use DogeCoin to pay for recruits.`;
-    const MessageTwelve = `A leak from a source recently let go from ${team.TeamName} states that coach ${user.username} was attempting to convince David Ross into transferring to the university.`;
-    const MessageThirteen = `A nationally ranked recruit claims that the ${team.TeamName} football program was hosting an illegal practice consisting of recruits and current players.`;
-    const MessageFourteen = `Coach ${user.username} has claimed on national television that competing programs in their conference were using NIL illegally and against the benefit of student athletes.`;
-    const MessageFifteen = `A booster from ${team.TeamName} has sent us a bag of money asking us not to share that-- oh... oops. Sorry, I mean, that everything is fine!`;
-    const MessageSixteen = `The University of Missouri has agreed to take the fall for Coach ${user.username} of ${team.TeamName} after it was discovered that the ${team.Mascot} bought Chipotle for a visiting recruit.`;
-    const MessageSeventeen = `An Olive Garden in ${team.City} is under investigation after reported offering free garlic bread after a high school recruit's visit ended.`;
-    const MessageEighteen = `A booster from ${team.City}, ${team.State} was seen placing bags of money in the back of their car after it was announced a five star recruit was visiting a local university.`;
-    const MessageNineteen = `We've received an anonymous tip that a boosters associated with the ${team.TeamName} ${team.Mascot} were threatening coaches from putting points on a certain recruit.`;
-    const MessageTwenty = `Fans of the ${team.TeamName} ${team.Mascot} were reportedly pooling together money for a "Feed Developer" button as a means of improving their schools chances in the recruit sync. (It may work.)`;
-    const MessageTwentyOne = `A recent anonymous tip suggests that high school recruits were offered emotional-support monkeys if they were to verbally commit to ${team.TeamName}.`;
-    const MessageTwentyTwo = `A ${team.TeamName} booster has verbally denounced conference opponents claiming they were offering recruits more money than what they had on hand.`;
-    const MessageTwentyThree = `A high school athlete's family living in ${team.City}, ${team.State} reported to authorities of a sketchy-looking van with 'free scholarship 2 ${team.TeamName}' painted on the side.`;
-    const MessageTwentyFour = `This is your friendly reminder to not tweet at croots. Looking at you, ${team.TeamName} fans.`;
-    const MessageTwentyFive = `A high school athlete was berated by inebriated ${team.TeamName} fans after attending their last game on an official visit.`;
-    const MessageTwentySix = `An ESPN Executive was reportedly persuading croots to attend his alma-mater after negotiating a controversial tv deal between ESPN and ${team.TeamName}`;
-    const MessageTwentySeven = `Police uncovered an illegal NIL-ring consisting of ${team.TeamName} alumni attempting to take money promised from recruits attending other schools.`;
-    const MessageTwentyEight = `A high school recruit reported to authorities a false NIL deal from ${team.TeamName} where recruits would be compensated in university-bucks, as opposed to USD, if they attended the university.`;
-    const MessageTwentyNine = `After playing a game against ${team.TeamName} earlier in the season, a visiting collegiate athlete told local news that a well-reknowned ${team.TeamName} booster was DM-ing him monetary offers in exchange for transferring to ${team.TeamName}.`;
-
-    const arr = [
-        MessageOne,
-        MessageTwo,
-        MessageThree,
-        MessageFour,
-        MessageFive,
-        MessageSix,
-        MessageSeven,
-        MessageEight,
-        MessageNine,
-        MessageTen,
-        MessageEleven,
-        MessageTwelve,
-        MessageThirteen,
-        MessageFourteen,
-        MessageFifteen,
-        MessageSixteen,
-        MessageSeventeen,
-        MessageEighteen,
-        MessageNineteen,
-        MessageTwenty,
-        MessageTwentyOne,
-        MessageTwentyTwo,
-        MessageTwentyThree,
-        MessageTwentyFour,
-        MessageTwentyFive,
-        MessageTwentySix,
-        MessageTwentySeven,
-        MessageTwentyEight,
-        MessageTwentyNine
+export const GetCollusionStatements = (user, team, recruit) => {
+    let arr = [
+        `A local bagman from ${team.City} was reported to be using a local Waffle House as a laundering front for recruiting points!`,
+        `Breaking News! Coach ${user.username} has actually clicked the collusion button! Yes! How dare you?`,
+        `Coach ${user.username} reportedly asked a booster to orchestrate a business venture to give new recruits customized Ford F-150s!`,
+        `A high school recruit after a recruiting visit to ${team.TeamName} was reportedly seen leaving campus in a brand new Bentley.`,
+        `A high school recruit was reportedly offered crab legs for life from a local grocery store in ${team.City}, should they decide to commit to ${team.TeamName}`,
+        `Local police in ${team.City} recently cleared out a back room where big money donors from ${team.TeamName} were conspiring on how much money they were to donate to a five star recruit.`,
+        `A nationally ranked recruit has now added ${team.TeamName} to their top list of teams after a brief phone call with a well-renowned booster.`,
+        `One of the top quarterbacks from ${team.State} was offered free buffalo wings for life to play for the ${team.TeamName} ${team.Mascot}`,
+        `Breaking news! Coach ${user.username} was seen using loaded dice as a means of improving their odds in the Recruit Sync.`,
+        `After a recent breakthrough case involving ${team.TeamName} donors, the SimFBA have decided to investigate and penalize the University of Missouri's athletic program of twenty scholarships.`,
+        `A local tip from an avid college football fan claims that ${team.TeamName} donors were conspiring to use DogeCoin to pay for recruits.`,
+        `A leak from a source recently let go from ${team.TeamName} states that coach ${user.username} was attempting to convince David Ross into transferring to the university.`,
+        `A nationally ranked recruit claims that the ${team.TeamName} football program was hosting an illegal practice consisting of recruits and current players.`,
+        `Coach ${user.username} has claimed on national television that competing programs in their conference were using NIL illegally and against the benefit of student athletes.`,
+        `A booster from ${team.TeamName} has sent us a bag of money asking us not to share that-- oh... oops. Sorry, I mean, that everything is fine!`,
+        `The University of Missouri has agreed to take the fall for Coach ${user.username} of ${team.TeamName} after it was discovered that the ${team.Mascot} bought Chipotle for a visiting recruit.`,
+        `An Olive Garden in ${team.City} is under investigation after reported offering free garlic bread after a high school recruit's visit ended.`,
+        `A booster from ${team.City}, ${team.State} was seen placing bags of money in the back of their car after it was announced a five star recruit was visiting a local university.`,
+        `We've received an anonymous tip that a boosters associated with the ${team.TeamName} ${team.Mascot} were threatening coaches from putting points on a certain recruit.`,
+        `Fans of the ${team.TeamName} ${team.Mascot} were reportedly pooling together money for a "Feed Developer" button as a means of improving their schools chances in the recruit sync. (It may work.)`,
+        `A recent anonymous tip suggests that high school recruits were offered emotional-support monkeys if they were to verbally commit to ${team.TeamName}.`,
+        `A ${team.TeamName} booster has verbally denounced conference opponents claiming they were offering recruits more money than what they had on hand.`,
+        `A high school athlete's family living in ${team.City}, ${team.State} reported to authorities of a sketchy-looking van with 'free scholarship 2 ${team.TeamName}' painted on the side.`,
+        `This is your friendly reminder to not tweet at croots. Looking at you, ${team.TeamName} fans.`,
+        `A high school athlete was berated by inebriated ${team.TeamName} fans after attending their last game on an official visit.`,
+        `An ESPN Executive was reportedly persuading croots to attend his alma-mater after negotiating a controversial tv deal between ESPN and ${team.TeamName}`,
+        `Police uncovered an illegal NIL-ring consisting of ${team.TeamName} alumni attempting to take money promised from recruits attending other schools.`,
+        `A high school recruit reported to authorities a false NIL deal from ${team.TeamName} where recruits would be compensated in university-bucks, as opposed to USD, if they attended the university.`,
+        `After playing a game against ${team.TeamName} earlier in the season, a visiting collegiate athlete told local news that a well-reknowned ${team.TeamName} booster was DM-ing him monetary offers in exchange for transferring to ${team.TeamName}.`
     ];
+
+    let recruitArr = [];
+    if (recruit !== undefined) {
+        let positionArr = [];
+        if (recruit.College.length > 0) {
+            recruitArr = [
+                `${recruit.College} signee ${recruit.FirstName} ${recruit.LastName} was reportedly found on an off-campus party after a recruiting visit this past weekend.`,
+                `A rumor has floated on social media alleging that ${recruit.College} ${recruit.Stars} signee ${recruit.FirstName} ${recruit.LastName} only committed for the NIL money.`,
+                `${recruit.College} ${recruit.Stars} signee ${recruit.FirstName} ${recruit.LastName} was reportedly seen volunteering at a homeless shelter near campus and helping the community. <3`,
+                `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has promised ${recruit.College} fans that they will be winning a conference championship during his tenure.`,
+                `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has promised ${recruit.College} fans that they will be making the playoffs during his tenure.`,
+                `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has announced that they do not think Detroit is a real city.`,
+                `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has announced that they would love to go to a winning team like the Washington Commanders.`,
+                `${recruit.College} ${recruit.Stars} star ${recruit.Position} commit ${recruit.FirstName} ${recruit.LastName} announced his commitment via a pretty straightforward livestream instagram video.`,
+                `${recruit.College} ${recruit.Stars} star ${recruit.Position} commit ${recruit.FirstName} ${recruit.LastName} announced his commitment via a twitch stream, with all of his fans spamming the team's logo and the POG emoji.`,
+                `${recruit.Stars} star ${recruit.College} commit ${recruit.FirstName} ${recruit.LastName} tweeted that another institution has been DMing him to reconsider his decision.`,
+                `${recruit.Stars} star ${recruit.College} commit ${recruit.FirstName} ${recruit.LastName} tweeted that he does not believe in recruiting rankings and that they are a human made construct.`,
+                `${recruit.Stars} star ${recruit.FirstName} ${recruit.LastName} announced his commitment to ${recruit.College} via a Tiktok dance video.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} tweeted last night that he's not doing it for the NIL money, he's doing it for the chance to make history.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} tweeted last night that he wants ${user.username} to stop sliding into his DMs.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he prefers Wendy's over McDonald's.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he prefers Whataburger over Five Guys.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he prefers Five Guys over Whataburger.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he prefers McDonald's over Whataburger.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he prefers Shake Shack over In-N-Out.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he believes McDonald's McFlurries are a myth.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he believes Burger King doesn't serve real burgers.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} is rumored to be working on an NIL shoe deal with Big Baller Brand.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName}'s dad announced that he's proud of his son's commitment and that he wants to be involved in his son's collegiate development during his tenure.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} retweeted a viral fan request that SimFBA needs a college hockey sim.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} retweeted a viral fan request that SimFBA needs an Aussie Football sim.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} told news outlets last night that rival insitutions were attempting to sway him away from his commitment.`,
+                `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has promised ${recruit.College} fans that they will never lose a game while he plays at ${recruit.College}.`
+            ];
+            if (recruit.College === 'MICH') {
+                recruitArr.push(
+                    `${recruit.College} ${recruit.Stars} star ${recruit.Position} commit ${recruit.FirstName} ${recruit.LastName} announced his commitment by posting a loaf of bread with the Michigan logo branded on it, and the caption being 'Let's get this bread'.`
+                );
+                recruitArr.push(
+                    `${recruit.College} ${recruit.Stars} star ${recruit.Position} commit ${recruit.FirstName} ${recruit.LastName} tweeted that he intends to get the bread and win the Big Ten Conference.`
+                );
+            }
+            if (recruit.Position == 'QB') {
+                positionArr = [
+                    `${recruit.College} ${recruit.Stars} star ${recruit.Position} commit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he is better than Matt Howard at throwing the ball.`,
+                    `${recruit.College} ${recruit.Stars} star ${recruit.Position} commit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks Matt Howard was only successful because of his teammates.`,
+                    `${recruit.College} ${recruit.Stars} star ${recruit.Position} commit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he will have a better collegiate career than Matt Howard.`,
+                    `${recruit.College} ${recruit.Stars} star ${recruit.Position} commit ${recruit.FirstName} ${recruit.LastName} tweeted that he is excited about his collegiate career at ${recruit.College}.`,
+                    `${recruit.College} ${recruit.Stars} star ${recruit.Position} commit ${recruit.FirstName} ${recruit.LastName} announced his commitment to ${recruit.College} with a video of him flipping a quarter, with the quarter landing on the face with the team's logo.`,
+                    `${recruit.College} ${recruit.Stars} star ${recruit.Position} commit ${recruit.FirstName} ${recruit.LastName} tweeted that he wishes he was invited to Matt Howard's Quarterback Camp for Quarterbacks who can throw pretty good.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Matt Howard.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Dean Hammonds.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Steven Connolly.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Peter London.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Philip Avila.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Patrick Johnson.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Jose Padilla.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Jessie Noel.`
+                ];
+            } else if (recruit.Position == 'RB') {
+                positionArr = [
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} announced his commitment to ${recruit.College} via a home-made rap video.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} announced his commitment to ${recruit.College} via a zoom call with all of his family, who are happy and excited for him.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is Stanley Piper.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is Dario Tamayo.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is Juan Mora.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is Max Smith.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is Stephen Tabbert.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is James Carter.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is David Taylor.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is Ryan Johnson.`
+                ];
+            } else if (
+                recruit.Position === 'OG' ||
+                recruit.Position === 'OT' ||
+                recruit.Position === 'C'
+            ) {
+                positionArr = [
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} he hops there is an IHOP close to ${recruit.College}.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite plate of pancakes is Chocolate Chip, and wants OL coaches to take note.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite plate of pancakes is Blueberry Wheat, and wants OL coaches to take note.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he prefers waffles and would rather play at a school that's close to a Waffle House.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} prefers a school where the QB will reward his linemen for excellent play in New York Prime Steaks.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite lineman in the NFL is Haim Costa.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite lineman in the NFL is Jason Naylor.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite lineman in the NFL is Sung Liu.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite lineman in the NFL is David Mcneal.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite lineman in the NFL is William Chittum.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite lineman in the NFL is Walter Arrasmith.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite lineman in the NFL is Nelson Garcia.`
+                ];
+            } else if (recruit.Position === 'WR') {
+                positionArr = [
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} hopes that he gets plenty of playing time at ${recruit.College}.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} announced his commitment to ${recruit.College} with a montage video of him catching a football with the ${recruit.College} logo across the field.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he hopes cornerbacks in the ${team.Conference} are familiar with the ground, because they're going to eat dirt once he hits the field.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Mathew Madden.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Alexander Williams III.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Hector Covarrubias, even though his last name can be difficult to spell.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Daniel Elswick.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Kevin Lund.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Scott Baldwin.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is James Blanck.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Tracey Borders.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Fernando Ownes.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Richard Maguire.`
+                ];
+            } else if (recruit.Position === 'TE') {
+                positionArr = [
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} prefers running routes over blocking on the line of scrimmage`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} is confident that he's a Tight End, with the speed of a wide receiver.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he considers himself a dual-threat Tight End.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he intends to be an All American Tight End in the ${team.Conference}.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Sebastian Moore.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Carmine Rhodes.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Jose Sobrevilla.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Jin Zhong.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Kevin Black.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is George Devoe.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Michael Vega.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Jan Summers.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Charles Tice.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Jaime Perez.`
+                ];
+            } else if (recruit.Position === 'FB') {
+                positionArr = [
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} prefers running the ball over blocking the quarterback.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} is confident that he's a fullback, with the speed of a runningback.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that ${recruit.College} has found their Ryan Johnson.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he intends to be an All American Fullback in the ${team.Conference}.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite FB in the NFL is Ryan Johnson.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he will be a better fullback than Ryan Johnson.`
+                ];
+            } else if (recruit.Position === 'DE') {
+                positionArr = [
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} announced his commitment by breaking through at brick wall with the ${recruit.College} logo painted on it.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} announced his commitment to ${recruit.College} and uploaded a video of him sacking a quarterback wearing a helmit with the logo of ${recruit.College}'s rival.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that teams in the ${team.Conference} won't be ready for him.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Andrew Rahi.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is David Cunningham.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Jeremy Pruitt.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Ryan Ludi.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Ray Jackson.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Jeffrey Amend.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Stephen Dinardo.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is James Wood.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Gerald Javed.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Vaughn Johnson.`
+                ];
+            } else if (recruit.Position === 'P') {
+                positionArr = [
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks David Ross punts mid.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he will be better than David Ross.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he is better than David Ross.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks punting is an expressive form of kicking.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that no one will be able to block his punts once he starts in college.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that teams in the ${recruit.College}'s conference won't be ready for him.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite Punter in the NFL is no one, because David Ross isn't in the league yet.`
+                ];
+            }
+        } else if (recruit !== undefined && recruit.College.length === 0) {
+            recruitArr = [
+                `A recruiting watch dog warns against recruiting ${recruit.FirstName} ${recruit.LastName} after it was discovered he de-committed after receiving NIL money from the same institution and has re-opened his recruiting.`,
+                `${recruit.FirstName} ${recruit.LastName} reported had a scholarship revoked from them due to their level of activity while playing Call of Duty.`,
+                `A reporter from ${recruit.State} reported that ${recruit.FirstName} ${recruit.LastName} was found betting on hedgehog races. Their biggest bet did not win the race.`,
+                `${recruit.FirstName} ${recruit.LastName} alleges that a university in ${team.State} rescinded a scholarship after a false rumor went viral on Social Media.`,
+                `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} has allegedly stated he plans on shopping around NIL deals before he makes a commitment.`,
+                `A university in ${team.State} has reportedly rescinded a scholarship offer for ${recruit.FirstName} ${recruit.LastName} after it was discovered the recruit accepted an NIL deal from a rival institution.`,
+                `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} has recently tweeted that he is interested in playing for ${team.TeamName}.`,
+                `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} has tweeted that he wants ${team.TeamName} to stop sliding into their DMs and to look elsewhere.`,
+                `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} announced that he is not considering ${team.TeamName} after a rival institution allegedly left them a bag on money on his parent's porch.`,
+                `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks this is all just a simulation.`
+            ];
+            if (recruit.Position == 'QB') {
+                positionArr = [
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he is better than Matt Howard at throwing the ball.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Matt Howard.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Dean Hammonds.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Steven Connolly.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Peter London.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Philip Avila.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Patrick Johnson.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Jose Padilla.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite QB in the NFL is Jessie Noel.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he does not like ${team.TeamName}'s QB depth and how they develop their QBs.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he sees opportunity for him to play at ${team.TeamName}.`
+                ];
+            } else if (recruit.Position == 'RB') {
+                positionArr = [
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is Stanley Piper.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is Dario Tamayo.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is Juan Mora.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is Max Smith.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is Stephen Tabbert.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is James Carter.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is David Taylor.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite RB in the NFL is Ryan Johnson.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he does not like ${team.TeamName}'s RB depth and how they develop their RBs.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he sees opportunity for him to play at ${team.TeamName}.`
+                ];
+            } else if (
+                recruit.Position === 'OG' ||
+                recruit.Position === 'OT' ||
+                recruit.Position === 'C'
+            ) {
+                positionArr = [
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} prefers a school close to an IHOP because he plans on making plenty of pancakes during his collegiate career.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite plate of pancakes is Chocolate Chip, and wants OL coaches to take note.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite plate of pancakes is Blueberry Wheat, and wants OL coaches to take note.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he prefers waffles and would rather play at a school that's close to a Waffle House.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} prefers a school where the QB will reward his linemen for excellent play in New York Prime Steaks.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite lineman in the NFL is Haim Costa.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite lineman in the NFL is Jason Naylor.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite lineman in the NFL is Sung Liu.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite lineman in the NFL is David Mcneal.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite lineman in the NFL is William Chittum.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite lineman in the NFL is Walter Arrasmith.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite lineman in the NFL is Nelson Garcia.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he does not like ${team.TeamName}'s OL depth and how they develop their linemen.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he sees opportunity for him to play at ${team.TeamName}.`
+                ];
+            } else if (recruit.Position === 'WR') {
+                positionArr = [
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} prefers a school close to an airport because he intends fly high on the football field.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} prefers a school with a fountain because he plans on catching dimes thrown across the football field.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he prefers to start early, and intends to have plenty of targets his way when he plays.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he hopes cornerbacks in the ${team.Conference} are familiar with the ground, because they're going to eat dirt once he hits the field.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Mathew Madden.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Charles Grady.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Hector Covarrubias, even though his last name can be difficult to spell.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Daniel Elswick.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Kevin Lund.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Scott Baldwin.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is James Blanck.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Tracey Borders.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Fernando Ownes.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite wide receiver in the NFL is Richard Maguire.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he does not like ${team.TeamName}'s WR depth and how they develop their wide receivers.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he sees opportunity for him to play at ${team.TeamName}.`
+                ];
+            } else if (recruit.Position === 'TE') {
+                positionArr = [
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} prefers running routes over blocking on the line of scrimmage`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} is confident that he's a Tight End, with the speed of a wide receiver.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he considers himself a dual-threat Tight End.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he intends to be an All American Tight End in the ${team.Conference}.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Sebastian Moore.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Carmine Rhodes.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Jose Sobrevilla.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Jin Zhong.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Kevin Black.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is George Devoe.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Michael Vega.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Jan Summers.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Charles Tice.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite TE in the NFL is Jaime Perez.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he does not like ${team.TeamName}'s TE depth and how they develop their wide receivers.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he sees opportunity for him to play at ${team.TeamName}.`
+                ];
+            } else if (recruit.Position === 'FB') {
+                positionArr = [
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} prefers running the ball over blocking the quarterback.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} is confident that he's a fullback, with the speed of a runningback.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that fullbacks are people too.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he intends to be an All American Fullback in the ${team.Conference}.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite FB in the NFL is Ryan Johnson.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he will be a better fullback than Ryan Johnson.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he does not like ${team.TeamName}'s FB depth and how they develop them.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he sees opportunity for him to play at ${team.TeamName}.`
+                ];
+            } else if (recruit.Position === 'DE') {
+                positionArr = [
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} prefers playing in a conference where the offensive lines are like wet paper, and thought that the ${team.Conference} would be an ideal place to play.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} is confident linemen won't be getting pancakes when they play against him.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite activity is sacking the quarterback.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that teams in the ${team.Conference} won't be ready for him.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Andrew Rahi.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is David Cunningham.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Jeremy Pruitt.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Ryan Ludi.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Ray Jackson.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Jeffrey Amend.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Stephen Dinardo.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is James Wood.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Gerald Javed.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite DE in the NFL is Vaughn Johnson.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he does not like ${team.TeamName}'s DE depth and how they develop defensive line talent.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he sees opportunity for him to play at ${team.TeamName}.`
+                ];
+            } else if (recruit.Position === 'P') {
+                positionArr = [
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks David Ross punts mid.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he will be better than David Ross.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks he is better than David Ross.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he thinks punting is an expressive form of kicking.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that no one will be able to block his punts once he starts in college.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that teams in the ${team.Conference} won't be ready for him.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that his favorite Punter in the NFL is no one, because David Ross isn't in the league yet.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he does not like ${team.TeamName}'s Punter depth and how they develop defensive line talent.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} tweeted that he sees opportunity for him to play at ${team.TeamName}.`
+                ];
+            }
+        }
+
+        recruitArr = recruitArr.concat([...positionArr]);
+    }
+
+    arr = arr.concat([...recruitArr]);
 
     let pick = arr[Math.floor(Math.random() * arr.length)];
 

@@ -1,7 +1,8 @@
 import React from 'react';
+import { baseUrl } from '../../Constants/logos';
 
 const AttributeRow = (props) => {
-    let attributeImage = '../img/attributes/' + props.data.Name + '.png';
+    let attributeImage = baseUrl + '/attributes/' + props.data.Name + '.png';
     return (
         <div className="col-sm-3">
             <img src={attributeImage} className="attribute-icon" alt="" />

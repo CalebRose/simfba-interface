@@ -1,24 +1,28 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
-import FBADepthChartService from '../../_Services/simFBA/FBADepthChartService';
-import FBAPlayerService from '../../_Services/simFBA/FBAPlayerService';
-import FBATeamService from '../../_Services/simFBA/FBATeamService';
-import DropdownItem from '../Roster/DropdownItem';
+
+import DropdownItem from '../../Roster/DropdownItem';
 import {
     SavingMessage,
     SuccessfulDepthChartSaveMessage,
     UnsuccessfulDepthChartSaveMessage
-} from '../../Constants/SystemMessages';
-import ServiceMessageBanner from '../_Common/ServiceMessageBanner';
-import DCPositionItem from './DC_PositionItem';
-import { DepthChartPositionList } from './DepthChartConstants';
-import DepthChartHeader from './DepthChartHeader';
-import { GetAvailablePlayers, GetPositionAttributes } from './DepthChartHelper';
-import DepthChartPlayerRow from './DepthChartPlayerRow';
-import DepthChartMobilePlayerRow from './DepthChartMobilePlayerRow';
+} from '../../../Constants/SystemMessages';
+import ServiceMessageBanner from '../../_Common/ServiceMessageBanner';
+import DCPositionItem from '../../DepthChart/DC_PositionItem';
+import { DepthChartPositionList } from '../../DepthChart/DepthChartConstants';
+import DepthChartHeader from '../../DepthChart/DepthChartHeader';
+import {
+    GetAvailablePlayers,
+    GetPositionAttributes
+} from '../../DepthChart/DepthChartHelper';
+import DepthChartPlayerRow from '../../DepthChart/DepthChartPlayerRow';
+import DepthChartMobilePlayerRow from '../../DepthChart/DepthChartMobilePlayerRow';
+import FBADepthChartService from '../../../_Services/simFBA/FBADepthChartService';
+import FBATeamService from '../../../_Services/simFBA/FBATeamService';
+import FBAPlayerService from '../../../_Services/simFBA/FBAPlayerService';
 
-const CFBDepthChart = ({ currentUser, cfbTeam }) => {
+const NFLDepthChart = ({ currentUser, nflTeam }) => {
     // Services
     let depthChartService = new FBADepthChartService();
     let teamService = new FBATeamService();
@@ -44,8 +48,6 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
     const [serviceMessage, setServiceMessage] = React.useState('');
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
-    const AttributeWarning =
-        "Attribute ratings are based on the player's original position.";
 
     // For mobile
     React.useEffect(() => {
@@ -64,21 +66,25 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
     useEffect(() => {
         if (currentUser) {
             GetTeams();
-            setPositions(DepthChartPositionList);
+            setPositions(() => DepthChartPositionList);
         }
     }, [currentUser]);
 
     useEffect(() => {
-        if (cfbTeam) {
-            setTeam(cfbTeam);
-            setUserTeam(cfbTeam);
+        if (nflTeam) {
+            setTeam(() => nflTeam);
+            setUserTeam(() => nflTeam);
         }
-    }, [cfbTeam]);
+    }, [nflTeam]);
 
     useEffect(() => {
         if (team) {
             setCanModify(
-                team.ID === currentUser.teamId || currentUser.roleID === 'Admin'
+                () =>
+                    (team.ID === currentUser.NFLTeamID &&
+                        (currentUser.NFLRole === 'Owner' ||
+                            currentUser.NFLRole === 'Coach')) ||
+                    currentUser.roleID === 'Admin'
             );
             GetRoster(team.ID);
             GetDepthChart(team.ID);
@@ -88,7 +94,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
                     team && team.ColorOne ? team.ColorOne : '#6c757d',
                 borderColor: team && team.ColorOne ? team.ColorOne : '#6c757d'
             };
-            setTeamColors(colors);
+            setTeamColors(() => colors);
             setCurrentPosition({
                 name: 'Quarterbacks',
                 abbr: 'QB'
@@ -128,7 +134,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
             PositionLevel: x.PositionLevel,
             FirstName: x.FirstName,
             LastName: x.LastName,
-            OriginalPosition: x.CollegePlayer.Position
+            OriginalPosition: x.NFLPlayer.Position
         }));
         const UpdateDepthChartDTO = {
             DepthChartID: dc[0].DepthChartID,
@@ -136,25 +142,25 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
         };
 
         // Save Call
-        setServiceMessage(SavingMessage);
+        setServiceMessage(() => SavingMessage);
 
-        const save = await depthChartService.SaveDepthChart(
+        const save = await depthChartService.SaveNFLDepthChart(
             UpdateDepthChartDTO
         );
 
         if (save.ok) {
-            setServiceMessage(SuccessfulDepthChartSaveMessage);
-            setTimeout(() => setServiceMessage(''), 5000);
+            setServiceMessage(() => SuccessfulDepthChartSaveMessage);
+            setTimeout(() => setServiceMessage(() => ''), 5000);
         } else {
-            setServiceMessage('');
+            setServiceMessage(() => '');
             alert('HTTP-Error:', save.status);
             setErrorMessage(UnsuccessfulDepthChartSaveMessage);
-            setTimeout(() => setErrorMessage(''), 8000);
+            setTimeout(() => setErrorMessage(() => ''), 8000);
         }
 
         // Update Initial DC
         const newInitialDC = currentDepthChart.map((x) => ({ ...x }));
-        setInitialDC(newInitialDC);
+        setInitialDC(() => newInitialDC);
     };
 
     // Functions
@@ -184,25 +190,27 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
 
     const GetTeams = async () => {
         //
-        let teams = await teamService.GetAllCollegeTeams();
+        let teams = await teamService.GetAllNFLTeams();
         setCollegeTeams(() => teams);
     };
 
     const GetRoster = async (ID) => {
         if (ID !== null || ID > 0) {
-            let roster = await rosterService.GetPlayersByTeamNoRedshirts(ID);
+            let roster = await rosterService.GetNFLPlayersForDepthChartPage(ID);
             setRoster(() => roster);
+            let players = GetAvailablePlayers(abbr, [...roster]);
+            setAvailablePlayers(() => players);
         }
     };
 
     const GetDepthChart = async (ID) => {
         if (ID !== null || ID > 0) {
             let depthChartResponse =
-                await depthChartService.GetDepthChartByTeamID(ID);
-            setCurrentDepthChart((x) =>
+                await depthChartService.GetNFLDepthChartByTeamID(ID);
+            setCurrentDepthChart(() =>
                 depthChartResponse.DepthChartPlayers.map((x) => ({ ...x }))
             );
-            setInitialDC((x) =>
+            setInitialDC(() =>
                 depthChartResponse.DepthChartPlayers.map((x) => ({ ...x }))
             );
         }
@@ -215,11 +223,11 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
             ...x
         }));
 
-        setCurrentDepthChart((x) => originalDepthChart);
+        setCurrentDepthChart(() => originalDepthChart);
     };
 
     const SwapPlayer = (depthChartRow, newPlayer) => {
-        const originalPlayer = depthChartRow.CollegePlayer;
+        const originalPlayer = depthChartRow.NFLPlayer;
         const dc = [...currentDepthChart];
         // Check if the new player is existing in the position depth chart
         const originalPlayerRowIndex = dc.findIndex(
@@ -236,13 +244,13 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
             // If the player does exist in a different level on the depth chart, conduct a swap
             const newPlayerRow = dc[existingOnDepthChartIndex];
 
-            // Swap the first name, last name, player ID, and CollegePlayer Records between both
+            // Swap the first name, last name, player ID, and NFLPlayer Records between both
             const temp = {
                 PlayerID: newPlayerRow.PlayerID,
                 FirstName: newPlayerRow.FirstName,
                 LastName: newPlayerRow.LastName,
                 OriginalPosition: newPlayer.Position,
-                CollegePlayer: newPlayer
+                NFLPlayer: newPlayer
             };
 
             dc[existingOnDepthChartIndex].PlayerID =
@@ -253,28 +261,28 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
                 dc[originalPlayerRowIndex].LastName;
             dc[existingOnDepthChartIndex].OriginalPosition =
                 originalPlayer.Position;
-            dc[existingOnDepthChartIndex].CollegePlayer = originalPlayer;
+            dc[existingOnDepthChartIndex].NFLPlayer = originalPlayer;
 
             dc[originalPlayerRowIndex].PlayerID = temp.PlayerID;
             dc[originalPlayerRowIndex].FirstName = temp.FirstName;
             dc[originalPlayerRowIndex].LastName = temp.LastName;
             dc[originalPlayerRowIndex].OriginalPosition = temp.OriginalPosition;
-            dc[originalPlayerRowIndex].CollegePlayer = temp.CollegePlayer;
+            dc[originalPlayerRowIndex].NFLPlayer = temp.NFLPlayer;
         } else {
             // If the player does not exist yet on the depth chart...
             dc[originalPlayerRowIndex].PlayerID = newPlayer.PlayerID;
             dc[originalPlayerRowIndex].FirstName = newPlayer.FirstName;
             dc[originalPlayerRowIndex].LastName = newPlayer.LastName;
             dc[originalPlayerRowIndex].OriginalPosition = newPlayer.Position;
-            dc[originalPlayerRowIndex].CollegePlayer = newPlayer;
+            dc[originalPlayerRowIndex].NFLPlayer = newPlayer;
         }
-        setCurrentDepthChart(dc);
+        setCurrentDepthChart(() => dc);
     };
 
     const ValidateDepthChart = () => {
         if (!canModify) {
             setServiceMessage(
-                "Viewing other team's depth charts in read-only mode."
+                () => "Viewing other team's depth charts in read-only mode."
             );
             return;
         }
@@ -288,13 +296,6 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
             let row = dc[i];
             const pos = row.Position;
             let NameKey = row.FirstName + row.LastName + row.PlayerID;
-            if (row.CollegePlayer.IsRedshirting) {
-                setValidation(false);
-                setErrorMessage(
-                    `${row.FirstName} ${row.LastName} is currently a redshirt player. Please swap them from their ${row.Position} position level.`
-                );
-                return;
-            }
             let isSpecialTeamsPosition =
                 pos === 'P' ||
                 pos === 'K' ||
@@ -321,7 +322,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
                 }
 
                 if (!validStatus) {
-                    setValidation(validStatus);
+                    setValidation(() => validStatus);
                     let isLinemenPosition =
                         pos === 'LT' ||
                         pos === 'LG' ||
@@ -331,7 +332,8 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
 
                     if (isLinemenPosition) {
                         setErrorMessage(
-                            `You have an offensive linemen set at First String for two OLine Positions. Please resolve this issue`
+                            () =>
+                                `You have an offensive linemen set at First String for two OLine Positions. Please resolve this issue`
                         );
                         return;
                     }
@@ -340,7 +342,8 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
 
                     if (isDlinePosition) {
                         setErrorMessage(
-                            `You have a defensive linemen set at First String for two DLine Positions. Please resolve this issue`
+                            () =>
+                                `You have a defensive linemen set at First String for two DLine Positions. Please resolve this issue`
                         );
                         return;
                     }
@@ -350,7 +353,8 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
 
                     if (isLinebackerPosition) {
                         setErrorMessage(
-                            `You have a linebacker set at First String for Linebacker positions. Please resolve this issue`
+                            () =>
+                                `You have a linebacker set at First String for Linebacker positions. Please resolve this issue`
                         );
                         return;
                     }
@@ -360,15 +364,16 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
 
                     if (isSecondaryPosition)
                         setErrorMessage(
-                            `You have a defensive back set at First String for two DB Positions. Please resolve this issue`
+                            () =>
+                                `You have a defensive back set at First String for two DB Positions. Please resolve this issue`
                         );
                     return;
                 }
             }
         }
-        setServiceMessage('');
-        setErrorMessage('');
-        setValidation(validStatus);
+        setServiceMessage(() => '');
+        setErrorMessage(() => '');
+        setValidation(() => validStatus);
     };
 
     return (
@@ -376,7 +381,6 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
             <div className="row">
                 <div className="col-md-1"></div>
                 <div className="col-md-11 px-md-4">
-                    {' '}
                     <div className="row">
                         <div className="col-md-auto justify-content-start">
                             <h2>
@@ -433,15 +437,13 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
                                     <DropdownItem
                                         value={
                                             currentUser
-                                                ? currentUser.team +
-                                                  ' ' +
-                                                  currentUser.mascot
+                                                ? currentUser.NFLTeam
                                                 : null
                                         }
                                         click={SelectUserTeam}
                                         id={
                                             currentUser
-                                                ? currentUser.teamId
+                                                ? currentUser.NFLTeamID
                                                 : null
                                         }
                                     />
@@ -525,7 +527,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
                                                     positionAttributes
                                                 }
                                                 swapPlayer={SwapPlayer}
-                                                isCFB={true}
+                                                isCFB={false}
                                             />
                                         );
                                     })}
@@ -566,7 +568,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
                                                             positionAttributes
                                                         }
                                                         swapPlayer={SwapPlayer}
-                                                        isCFB={true}
+                                                        isCFB={false}
                                                     />
                                                 );
                                             }
@@ -581,9 +583,9 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
     );
 };
 
-const mapStateToProps = ({ user: { currentUser }, cfbTeam: { cfbTeam } }) => ({
+const mapStateToProps = ({ user: { currentUser }, nflTeam: { nflTeam } }) => ({
     currentUser,
-    cfbTeam
+    nflTeam
 });
 
-export default connect(mapStateToProps)(CFBDepthChart);
+export default connect(mapStateToProps)(NFLDepthChart);

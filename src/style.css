@@ -21,6 +21,31 @@
     max-width: 125px;
 }
 
+.image-nfl-roster {
+    max-height: 16px !important;
+    max-width: 16px !important;
+}
+
+.image-nfl-fa {
+    max-height: 24px !important;
+    max-width: 24px !important;
+}
+
+.image-nfl-player-modal {
+    max-height: 32px !important;
+    max-width: 32px !important;
+}
+
+.image-nfl-team {
+    max-height: 64px !important;
+    max-width: 64px !important;
+}
+
+.image-college-team {
+    max-height: 32px !important;
+    max-width: 32px !important;
+}
+
 /* Schedule Styles */
 .image-standings-logo {
     max-height: 30px !important;
@@ -45,6 +70,9 @@
     flex: 0.75 0 0%;
 }
 
+.text-small {
+    font-size: 12px;
+}
 /* logo */
 .logo {
     height: 36vh;

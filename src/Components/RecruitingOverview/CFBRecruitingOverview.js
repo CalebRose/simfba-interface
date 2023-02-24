@@ -67,7 +67,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         'Ready to Sign',
         'Signed'
     ]);
-    let luckyTeam = Math.floor(Math.random() * (130 - 1) + 1);
+    let luckyTeam = Math.floor(Math.random() * (20 - 1) + 1);
     // Setup Modals?
 
     // For mobile
@@ -78,10 +78,6 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     }, [viewWidth]);
 
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
-
-    const handleResize = () => {
-        setViewWidth(window.innerWidth);
-    };
 
     // UseEffects
     useEffect(() => {
@@ -302,7 +298,19 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     };
 
     const CollusionButton = async () => {
-        const message = GetCollusionStatements(currentUser, cfbTeam);
+        const randomInt = Math.floor(Math.random() * recruits.length - 1);
+        if (randomInt >= recruits.length) {
+            randomInt -= recruits.length - 1;
+        }
+        const randomCroot =
+            randomInt > -1 && randomInt < recruits.length
+                ? recruits[randomInt]
+                : recruits[Math.floor(Math.random() * recruits.length - 1)];
+        const message = GetCollusionStatements(
+            currentUser,
+            cfbTeam,
+            randomCroot
+        );
         const dto = {
             WeekID: cfb_Timestamp.CollegeWeekID,
             SeasonID: cfb_Timestamp.CollegeSeasonID,
@@ -497,9 +505,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                         ) : (
                             ''
                         )}
-                        {cfbTeam &&
-                        cfbTeam.ID === luckyTeam &&
-                        showCollusionButton ? (
+                        {cfbTeam && luckyTeam >= 16 && showCollusionButton ? (
                             <div className="col-md-auto">
                                 <h5 className="text-start align-middle">
                                     Collude?

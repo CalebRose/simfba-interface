@@ -1,7 +1,18 @@
 import React from 'react';
 
 const BBATeamCard = (props) => {
-    const { ovr, off, def, team, mascot, logo, conference, teamId } = props;
+    const {
+        ovr,
+        off,
+        def,
+        team,
+        mascot,
+        logo,
+        conference,
+        teamId,
+        coach,
+        disable
+    } = props;
     const [requested, setRequested] = React.useState(false);
 
     const sendRequest = () => {
@@ -38,22 +49,30 @@ const BBATeamCard = (props) => {
                         <strong>Defense:</strong> {def}
                     </li>
                 </ul>
-                <footer
-                    onClick={sendRequest}
-                    className={
-                        props.disable ? 'card-footer disabled' : 'card-footer'
-                    }
-                >
-                    <p
+                {coach.length === 0 || coach === 'AI' ? (
+                    <footer
+                        onClick={sendRequest}
                         className={
-                            props.disable && !requested
-                                ? 'card-footer-item card-footer-item-disabled'
-                                : 'card-footer-item card-footer-item-active'
+                            disable ? 'card-footer disabled' : 'card-footer'
                         }
                     >
-                        {!requested ? 'Request' : 'Request Sent!'}
-                    </p>
-                </footer>
+                        <p
+                            className={
+                                disable && !requested
+                                    ? 'card-footer-item card-footer-item-disabled'
+                                    : 'card-footer-item card-footer-item-active'
+                            }
+                        >
+                            {!requested ? 'Request' : 'Request Sent!'}
+                        </p>
+                    </footer>
+                ) : (
+                    <footer className="card-footer disabled">
+                        <p className="card-footer-item card-footer-item-disabled">
+                            Coach {coach}
+                        </p>
+                    </footer>
+                )}
             </div>
         </div>
     );

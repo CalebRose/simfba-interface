@@ -2,6 +2,7 @@ import React from 'react';
 import AttributeAverages from '../../Constants/AttributeAverages';
 import {
     GetLetterGrade,
+    GetNFLYear,
     GetOverall,
     GetYear
 } from '../../_Utility/RosterHelper';
@@ -14,9 +15,10 @@ const DepthChartPlayerRow = (props) => {
         availablePlayers,
         positionAttributes,
         swapPlayer,
-        canModify
+        canModify,
+        isCFB
     } = props;
-    const playerData = player.CollegePlayer;
+    const playerData = isCFB ? player.CollegePlayer : player.NFLPlayer;
     const name = player.FirstName + ' ' + player.LastName;
     const PositionLabel =
         player.OriginalPosition.length > 0 &&
@@ -52,15 +54,18 @@ const DepthChartPlayerRow = (props) => {
                         />
                         <hr className="dropdown-divider"></hr>
                         {availablePlayers && availablePlayers.length > 0
-                            ? availablePlayers.map((x) => (
-                                  <PlayerDropdownItem
-                                      key={x.ID}
-                                      name={x.FirstName + ' ' + x.LastName}
-                                      player={x}
-                                      id={x.ID}
-                                      click={handleChange}
-                                  />
-                              ))
+                            ? availablePlayers.map((x) => {
+                                  const id = x && x.ID ? x.ID : 0;
+                                  return (
+                                      <PlayerDropdownItem
+                                          key={id}
+                                          name={x.FirstName + ' ' + x.LastName}
+                                          player={x}
+                                          id={id}
+                                          click={handleChange}
+                                      />
+                                  );
+                              })
                             : ''}
                     </ul>
                 </th>
@@ -73,6 +78,7 @@ const DepthChartPlayerRow = (props) => {
             {positionAttributes &&
                 positionAttributes.length > 0 &&
                 positionAttributes.map((x, idx) => {
+                    if (!playerData) return '';
                     const label = idx > 5 ? x.attr : x.label;
                     let attr = '';
                     let pos = GetPosition(player.Position, playerData.Position);
@@ -80,23 +86,34 @@ const DepthChartPlayerRow = (props) => {
                         if (label === 'Archetype') {
                             attr = playerData[label];
                         } else if (label === 'Overall') {
-                            attr = GetOverall(
-                                playerData.Overall,
-                                playerData.Year
-                            );
+                            if (isCFB || playerData.Experience < 2) {
+                                attr = GetOverall(
+                                    playerData.Overall,
+                                    playerData.Year
+                                );
+                            } else {
+                                attr = playerData.Overall;
+                            }
                         } else if (label === 'Year') {
-                            attr = GetYear(playerData);
+                            attr = isCFB
+                                ? GetYear(playerData)
+                                : GetNFLYear(playerData);
                         } else if (label === 'PotentialGrade') {
                             attr = playerData.PotentialGrade;
                         } else {
                             let val = playerData[label];
                             // May want to go off of the original position values
                             const average = AttributeAverages[label][pos];
-                            attr = GetLetterGrade(
-                                average,
-                                val,
-                                playerData.Year
-                            );
+                            // If player is either in college or is a rookie, show letter attribute
+                            if (isCFB || playerData.Experience < 2) {
+                                attr = GetLetterGrade(
+                                    average,
+                                    val,
+                                    playerData.Year
+                                );
+                            } else {
+                                attr = val;
+                            }
                         }
                         return <td>{attr}</td>;
                     }

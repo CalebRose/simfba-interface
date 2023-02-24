@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
+import { Link } from 'react-router-dom';
 import { getLogo } from '../../../../Constants/getLogo';
+import routes from '../../../../Constants/routes';
 import { setNFLTeam } from '../../../../Redux/nflTeam/nflTeam.actions';
 import FBAScheduleService from '../../../../_Services/simFBA/FBAScheduleService';
 import FBATeamService from '../../../../_Services/simFBA/FBATeamService';
@@ -155,30 +157,48 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                 <div className="col-4">
                     <div className="row mt-3 mb-2">
                         <div className="btn-group">
-                            <button
-                                type="button"
-                                class="btn btn-primary btn-md me-2 shadow"
+                            <Link
+                                to={routes.NFL_ROSTER}
+                                role="button"
+                                className="btn btn-primary btn-md me-2 shadow"
+                                style={teamColors ? teamColors : {}}
+                            >
+                                Team
+                            </Link>
+                            <Link
+                                to={routes.NFL_GAMEPLAN}
+                                role="button"
+                                className="btn btn-primary btn-md me-2 shadow"
                                 style={teamColors ? teamColors : {}}
                             >
                                 Gameplan
-                            </button>
-                            <button
-                                type="button"
-                                class="btn btn-primary btn-md me-2 shadow"
+                            </Link>
+                            <Link
+                                to={routes.NFL_DEPTHCHART}
+                                role="button"
+                                className="btn btn-primary btn-md me-2 shadow"
                                 style={teamColors ? teamColors : {}}
                             >
                                 Depth Chart
-                            </button>
-                            <button
-                                type="button"
-                                class="btn btn-primary btn-md me-2 shadow"
+                            </Link>
+                            <Link
+                                to={routes.NFL_FREE_AGENCY}
+                                role="button"
+                                className="btn btn-primary btn-md me-2 shadow"
                                 style={teamColors ? teamColors : {}}
                             >
-                                Management
+                                Free Agency
+                            </Link>
+                            <button
+                                type="button"
+                                className="btn btn-primary btn-md me-2 shadow"
+                                style={teamColors ? teamColors : {}}
+                            >
+                                Schedule
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-primary btn-md shadow"
+                                className="btn btn-primary btn-md shadow"
                                 style={teamColors ? teamColors : {}}
                             >
                                 Stats

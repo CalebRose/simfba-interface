@@ -196,4 +196,19 @@ export default class FBATeamService {
         }
         return json;
     }
+
+    async GetNFLRosterData(teamID) {
+        let response = await fetch(url + `teams/nfl/roster/${teamID}`, {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        let json;
+        if (response.ok) {
+            json = await response.json();
+        } else {
+            alert('Http-Error', response.status);
+        }
+        return json;
+    }
 }

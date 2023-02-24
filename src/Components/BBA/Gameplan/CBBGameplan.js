@@ -48,7 +48,9 @@ const CBBGameplan = ({ currentUser }) => {
         let { name, value } = tar;
         // Keep the value in range of what's being changed
         if (name !== 'Pace') {
-            gp[name] = Number(value);
+            let num = Number(value);
+            if (num < 0) num = 0;
+            gp[name] = Number(num);
         } else {
             gp[name] = value;
         }
@@ -114,6 +116,13 @@ const CBBGameplan = ({ currentUser }) => {
         let totalMinutes = 0;
         // Check Players
         for (let i = 0; i < roster.length; i++) {
+            if (roster[i].Minutes < 0) {
+                message = `${roster[i].FirstName} ${roster[i].LastName} has allocated ${roster[i].Minutes} minutes. Please set the number of minutes to 0 or above.`;
+                setErrorMessage(message);
+                valid = false;
+                setValidation(valid);
+                return;
+            }
             totalMinutes += roster[i].Minutes;
 
             if (roster[i].IsRedshirting && roster[i].Minutes > 0) {
@@ -212,14 +221,22 @@ const CBBGameplan = ({ currentUser }) => {
                         ) : (
                             ''
                         )}
-                        <div className="col-md-auto">
-                            <button
-                                className="btn btn-primary"
-                                onClick={saveGameplanOptions}
-                            >
-                                Save
-                            </button>
-                        </div>
+                        {isValid ? (
+                            <div className="col-md-auto">
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={saveGameplanOptions}
+                                >
+                                    Save
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="col-md-auto">
+                                <button className="btn btn-primary" disabled>
+                                    Save
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import {
     SavingMessage,
     SuccessfulGameplanSaveMessage
-} from '../../Constants/SystemMessages';
-import ServiceMessageBanner from '../_Common/ServiceMessageBanner';
-import FBAGameplanService from '../../_Services/simFBA/FBAGameplanService';
-import FBATeamService from '../../_Services/simFBA/FBATeamService';
+} from '../../../Constants/SystemMessages';
+import ServiceMessageBanner from '../../_Common/ServiceMessageBanner';
+import FBAGameplanService from '../../../_Services/simFBA/FBAGameplanService';
+import FBATeamService from '../../../_Services/simFBA/FBATeamService';
 import { useMediaQuery } from 'react-responsive';
 import {
     AirRaidFormations,
@@ -19,24 +19,23 @@ import {
     OffensiveSchemeOptions,
     PassPlayLabels,
     ProFormations,
-    RunnerDistributionLabels,
     RunPlayLabels,
     SpreadOptionFormations,
     TargetingLabels,
     YesNoOptions
-} from './GameplanConstants';
-import GameplanDropdownItem from './GameplanDropdownItem';
-import GameplanInputItem from './GameplanInputItem';
+} from '../../Gameplan/GameplanConstants';
+import GameplanDropdownItem from './../../Gameplan/GameplanDropdownItem';
+import GameplanInputItem from './../../Gameplan/GameplanInputItem';
 import {
     GetDefenseFormationLabel,
     GetMaxForPassPlays,
     ValidatePassPlayDistribution,
     ValidateRunPlayDistribution
-} from './GameplanHelper';
-import DropdownItem from '../Roster/DropdownItem';
-import SchemeModal from './SchemeModal';
+} from '../../Gameplan/GameplanHelper';
+import DropdownItem from '../../Roster/DropdownItem';
+import SchemeModal from '../../Gameplan/SchemeModal';
 
-const CFBGameplan = ({ currentUser, cfbTeam }) => {
+const NFLGameplan = ({ currentUser, nflTeam }) => {
     // GameplanService
     let gameplanService = new FBAGameplanService();
     let _teamService = new FBATeamService();
@@ -81,28 +80,38 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
     useEffect(() => {
         if (currentUser) {
             // GetGameplan(currentUser.teamId);
-            setUserTeam(cfbTeam);
+            setUserTeam(() => nflTeam);
             GetAvailableTeams();
+            GetGameplan(currentUser.NFLTeamID);
         }
     }, [currentUser]);
 
     useEffect(() => {
-        if (cfbTeam) {
-            setTeam(cfbTeam);
+        if (nflTeam) {
+            // GetGameplan(team.ID);
             const colors = {
                 color: '#fff',
                 backgroundColor:
-                    cfbTeam && cfbTeam.ColorOne ? cfbTeam.ColorOne : '#6c757d',
+                    nflTeam && nflTeam.ColorOne ? nflTeam.ColorOne : '#6c757d',
                 borderColor:
-                    cfbTeam && cfbTeam.ColorOne ? cfbTeam.ColorOne : '#6c757d'
+                    nflTeam && nflTeam.ColorOne ? nflTeam.ColorOne : '#6c757d'
             };
-            setTeamColors(colors);
+            setTeamColors(() => colors);
+            setTeam(() => nflTeam);
         }
-    }, [cfbTeam]);
+    }, [nflTeam]);
 
     useEffect(() => {
         if (team) {
-            GetGameplan(team.ID);
+            // GetGameplan(team.ID);
+            const colors = {
+                color: '#fff',
+                backgroundColor:
+                    team && team.ColorOne ? team.ColorOne : '#6c757d',
+                borderColor:
+                    team && nflTeam.ColorOne ? team.ColorOne : '#6c757d'
+            };
+            setTeamColors(() => colors);
         }
     }, [team]);
 
@@ -126,8 +135,8 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         if (currentDistribution !== totalDistribution) {
             message = `Total Offensive Formation Ratio is set to ${currentDistribution}. Please make sure your allocation equals 100.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
@@ -140,8 +149,8 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         ) {
             message = `Offense Run to Pass Ratio is not with the range of ${offRunToPassRatioMin} and ${offRunToPassRatioMax} for the ${gp.OffensiveScheme} scheme. Please adjust.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
@@ -150,8 +159,8 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         if (gp.RunnerDistributionQB > distributionMaxQB) {
             message = `QB Run Distribution set to ${gp.RunnerDistributionQB}. Please lower the distribution to keep within the valid range of the ${gp.OffensiveScheme} scheme.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
@@ -161,24 +170,24 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         ) {
             message = `BK1 Run Distribution set to ${gp.RunnerDistributionBK1}. Please lower the distribution to keep within the valid range of the ${gp.OffensiveScheme} scheme.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
         if (gp.RunnerDistributionBK2 > distributionMaxBK2) {
             message = `BK2 Run Distribution set to ${gp.RunnerDistributionBK2}. Please lower the distribution to keep within the valid range of the ${gp.OffensiveScheme} scheme.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
         if (gp.RunnerDistributionBK3 > distributionMaxBK3) {
             message = `BK3 Run Distribution set to ${gp.RunnerDistributionBK3}. Please lower the distribution to keep within the valid range of the ${gp.OffensiveScheme} scheme.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
@@ -191,8 +200,8 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         if (currentDistribution !== totalDistribution) {
             message = `Total Runner Distribution is set to ${currentDistribution}. Please make sure your allocation equals 100.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
@@ -203,8 +212,8 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         if (!validRunPlays) {
             message =
                 'Run Play Distribution is out of range. Please change ranges for all inside, outside, and power plays (50 max) and all draw plays (15 max)';
-            setValidation(validRunPlays);
-            setErrorMessage(message);
+            setValidation(() => validRunPlays);
+            setErrorMessage(() => message);
             return;
         }
 
@@ -221,8 +230,8 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         if (currentDistribution !== totalDistribution) {
             message = `Total Run Play Distribution is set to ${currentDistribution}. Please make sure your allocation equals 100.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
@@ -231,8 +240,8 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
 
         if (!validPassPlays) {
             message = `Please modify the pass play distribution for all plays for the current scheme: ${gp.OffensiveScheme}`;
-            setValidation(validPassPlays);
-            setErrorMessage(message);
+            setValidation(() => validPassPlays);
+            setErrorMessage(() => message);
             return;
         }
 
@@ -247,8 +256,8 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         if (currentDistribution !== totalDistribution) {
             message = `Total Pass Play Distribution is set to ${currentDistribution}. Please make sure your allocation equals 100.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
@@ -256,88 +265,88 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         if (gp.TargetingWR1 > 60) {
             message = `TargetingWR1 Distribution is set to ${gp.TargetingWR1}. Please set it to below 60.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
         if (gp.TargetingWR2 > 60) {
             message = `TargetingWR2 Distribution is set to ${gp.TargetingWR2}. Please set it to below 60.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
         if (gp.TargetingWR3 > 60) {
             message = `TargetingWR3 Distribution is set to ${gp.TargetingWR3}. Please set it to below 60.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
         if (gp.TargetingWR4 > 60) {
             message = `TargetingWR4 Distribution is set to ${gp.TargetingWR4}. Please set it to below 60.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
         if (gp.TargetingWR5 > 60) {
             message = `TargetingWR5 Distribution is set to ${gp.TargetingWR5}. Please set it to below 60.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
         if (gp.TargetingRB1 > 60) {
             message = `TargetingRB1 Distribution is set to ${gp.TargetingRB1}. Please set it to below 60.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
         if (gp.TargetingRB2 > 60) {
             message = `TargetingRB2 Distribution is set to ${gp.TargetingRB2}. Please set it to below 60.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
         if (gp.TargetingRB3 > 60) {
             message = `TargetingRB3 Distribution is set to ${gp.TargetingRB3}. Please set it to below 60.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
         if (gp.TargetingTE1 > 60) {
             message = `TargetingTE1 Distribution is set to ${gp.TargetingTE1}. Please set it to below 60.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
         if (gp.TargetingTE2 > 60) {
             message = `TargetingTE2 Distribution is set to ${gp.TargetingTE2}. Please set it to below 60.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
         if (gp.TargetingTE3 > 0) {
             message = `TargetingTE3 is not ready for use. Please leave this input as 0.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
@@ -357,8 +366,8 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         if (currentDistribution !== totalDistribution) {
             message = `Total Targeting Distribution is set to ${currentDistribution}. Please make sure your allocation equals 100.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
@@ -369,13 +378,18 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         if (currentDistribution !== totalDistribution) {
             message = `Total Defensive Formation Distribution is set to ${currentDistribution}. Please make sure your allocation equals 100.`;
             valid = false;
-            setValidation(valid);
-            setErrorMessage(message);
+            setValidation(() => valid);
+            setErrorMessage(() => message);
             return;
         }
 
-        setValidation(valid);
-        setErrorMessage(message);
+        setValidation(
+            () =>
+                valid &&
+                (currentUser.NFLRole === 'Owner' ||
+                    currentUser.NFLRole === 'Coach')
+        );
+        setErrorMessage(() => message);
     };
 
     const SelectUserTeam = () => {
@@ -383,11 +397,11 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
     };
 
     const SelectTeam = (selectedTeam) => {
-        setTeam(selectedTeam);
+        setTeam(() => selectedTeam);
     };
 
     const GetGameplan = async (ID) => {
-        let response = await gameplanService.GetGameplanByTeamID(ID);
+        let response = await gameplanService.GetNFLGameplanByTeamID(ID);
         SetFormationNames(response.OffensiveScheme);
         SetFormationNames(response.DefensiveScheme);
         setInitialGameplan({ ...response });
@@ -395,59 +409,59 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
     };
 
     const GetAvailableTeams = async () => {
-        let res = await _teamService.GetAvailableCollegeTeams();
+        let res = await _teamService.GetAllNFLTeams();
 
-        setAITeams(res);
+        setAITeams(() => res);
     };
 
     const SetFormationNames = (name) => {
         switch (name) {
             case 'Pro':
-                setOffenseFormationLabels(ProFormations);
-                setOffRunToPassRatioMin(35);
-                setOffRunToPassRatioMax(65);
-                setDistributionMaxQB(0);
-                setDistributionMaxBK1(100);
-                setDistributionMaxBK2(20);
-                setDistributionMaxBK3(0);
+                setOffenseFormationLabels(() => ProFormations);
+                setOffRunToPassRatioMin(() => 35);
+                setOffRunToPassRatioMax(() => 65);
+                setDistributionMaxQB(() => 0);
+                setDistributionMaxBK1(() => 100);
+                setDistributionMaxBK2(() => 20);
+                setDistributionMaxBK3(() => 0);
                 break;
 
             case 'Air Raid':
-                setOffenseFormationLabels(AirRaidFormations);
-                setOffRunToPassRatioMin(10);
-                setOffRunToPassRatioMax(40);
-                setDistributionMaxQB(0);
-                setDistributionMaxBK1(100);
-                setDistributionMaxBK2(0);
-                setDistributionMaxBK3(0);
+                setOffenseFormationLabels(() => AirRaidFormations);
+                setOffRunToPassRatioMin(() => 10);
+                setOffRunToPassRatioMax(() => 40);
+                setDistributionMaxQB(() => 0);
+                setDistributionMaxBK1(() => 100);
+                setDistributionMaxBK2(() => 0);
+                setDistributionMaxBK3(() => 0);
                 break;
 
             case 'Spread Option':
-                setOffenseFormationLabels(SpreadOptionFormations);
-                setOffRunToPassRatioMin(45);
-                setOffRunToPassRatioMax(75);
-                setDistributionMaxQB(60);
-                setDistributionMaxBK1(60);
-                setDistributionMaxBK2(30);
-                setDistributionMaxBK3(0);
+                setOffenseFormationLabels(() => SpreadOptionFormations);
+                setOffRunToPassRatioMin(() => 45);
+                setOffRunToPassRatioMax(() => 75);
+                setDistributionMaxQB(() => 60);
+                setDistributionMaxBK1(() => 60);
+                setDistributionMaxBK2(() => 30);
+                setDistributionMaxBK3(() => 0);
                 break;
 
             case 'Double Wing Option':
-                setOffenseFormationLabels(DoubleWingFormations);
-                setOffRunToPassRatioMin(60);
-                setOffRunToPassRatioMax(90);
-                setDistributionMaxQB(60);
-                setDistributionMaxBK1(60);
-                setDistributionMaxBK2(60);
-                setDistributionMaxBK3(60);
+                setOffenseFormationLabels(() => DoubleWingFormations);
+                setOffRunToPassRatioMin(() => 60);
+                setOffRunToPassRatioMax(() => 90);
+                setDistributionMaxQB(() => 60);
+                setDistributionMaxBK1(() => 60);
+                setDistributionMaxBK2(() => 60);
+                setDistributionMaxBK3(() => 60);
                 break;
 
             case '3-4':
-                setDefenseFormationLabels(Defense34Formations);
+                setDefenseFormationLabels(() => Defense34Formations);
                 break;
 
             case '4-3':
-                setDefenseFormationLabels(Defense43Formations);
+                setDefenseFormationLabels(() => Defense43Formations);
                 break;
 
             default:
@@ -471,7 +485,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             SetFormationNames(value);
         }
 
-        setGameplan(gp);
+        setGameplan(() => gp);
     };
 
     const HandleNumberChange = (event) => {
@@ -482,7 +496,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         gp[name] = Number(value);
 
         // If Value IS NOT a Number...
-        setGameplan((x) => gp);
+        setGameplan(() => gp);
     };
 
     const SaveGameplanOptions = async () => {
@@ -491,20 +505,20 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
 
         const UpdateGameplanDTO = {
             GameplanID: gameplan.ID.toString(),
-            UpdatedGameplan: gameplan,
+            UpdatedNFLGameplan: gameplan,
             Username: currentUser.username,
-            TeamName: cfbTeam.TeamName
+            TeamName: nflTeam.TeamName
         };
 
         // Set the Service Message
-        setServiceMessage(SavingMessage);
+        setServiceMessage(() => SavingMessage);
         // Save
-        const save = await gameplanService.SaveGameplan(UpdateGameplanDTO);
+        const save = await gameplanService.SaveNFLGameplan(UpdateGameplanDTO);
 
         if (save.ok) {
             // YAY!
-            setServiceMessage(SuccessfulGameplanSaveMessage);
-            setTimeout(() => setServiceMessage(''), 5000);
+            setServiceMessage(() => SuccessfulGameplanSaveMessage);
+            setTimeout(() => setServiceMessage(() => ''), 5000);
         } else {
             alert('HTTP-Error:', save.status);
         }
@@ -571,14 +585,14 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                             <ul className="dropdown-menu dropdown-content">
                                 <DropdownItem
                                     value={
-                                        currentUser
-                                            ? currentUser.team +
-                                              ' ' +
-                                              currentUser.mascot
-                                            : null
+                                        currentUser ? currentUser.NFLTeam : null
                                     }
                                     click={SelectUserTeam}
-                                    id={currentUser ? currentUser.teamId : null}
+                                    id={
+                                        currentUser
+                                            ? currentUser.NFLTeamID
+                                            : null
+                                    }
                                 />
                                 <hr className="dropdown-divider"></hr>
                                 {aiTeams && aiTeams.length > 0
@@ -1150,9 +1164,9 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
     );
 };
 
-const mapStateToProps = ({ user: { currentUser }, cfbTeam: { cfbTeam } }) => ({
+const mapStateToProps = ({ user: { currentUser }, nflTeam: { nflTeam } }) => ({
     currentUser,
-    cfbTeam
+    nflTeam
 });
 
-export default connect(mapStateToProps)(CFBGameplan);
+export default connect(mapStateToProps)(NFLGameplan);

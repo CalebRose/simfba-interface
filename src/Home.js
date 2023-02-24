@@ -34,6 +34,10 @@ import CBBRecruitingTeamBoard from './Components/BBA/RecruitingBoard/CBBRecruiti
 import CBBSchedule from './Components/BBA/Schedule/CBBSchedule';
 import CBBStatistics from './Components/BBA/Statistics/CBBStatistics';
 import ApproveNFLRequests from './Components/Admin/ApproveNFLRequests/ApproveNFLRequests';
+import NFLRoster from './Components/NFL/Roster/NFLRoster';
+import NFLGameplan from './Components/NFL/Gameplan/NFLGameplan';
+import NFLDepthChart from './Components/NFL/DepthChart/NFLDepthChart';
+import NFLFreeAgency from './Components/NFL/FreeAgency/NFLFreeAgency';
 
 const Home = ({ currentUser }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -48,11 +52,11 @@ const Home = ({ currentUser }) => {
     useEffect(() => {
         if (user) {
             setRole(user.roleID);
-            setBBARole(user.bba_roleID);
-            setCFBTeam(user.teamId);
-            setCBBTeam(user.cbb_id);
-            setNBATeam(user.nba_id);
-            setNFLTeam(user.nfl_id);
+            setBBARole(() => user.bba_roleID);
+            setCFBTeam(() => user.teamId);
+            setCBBTeam(() => user.cbb_id);
+            setNBATeam(() => user.nba_id);
+            setNFLTeam(() => user.NFLTeamID);
         }
     }, [user]);
     return (
@@ -197,6 +201,50 @@ const Home = ({ currentUser }) => {
                 render={() =>
                     CFBTeam > 0 ? (
                         <NewsPage />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
+                path={routes.NFL_ROSTER}
+                render={() =>
+                    NFLTeam > 0 ? (
+                        <NFLRoster />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
+                path={routes.NFL_GAMEPLAN}
+                render={() =>
+                    NFLTeam > 0 ? (
+                        <NFLGameplan />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
+                path={routes.NFL_DEPTHCHART}
+                render={() =>
+                    NFLTeam > 0 ? (
+                        <NFLDepthChart />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
+                path={routes.NFL_FREE_AGENCY}
+                render={() =>
+                    NFLTeam > 0 ? (
+                        <NFLFreeAgency />
                     ) : (
                         <Redirect to={routes.LANDING} />
                     )
