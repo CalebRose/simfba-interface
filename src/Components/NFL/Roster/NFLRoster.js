@@ -187,9 +187,12 @@ const NFLRoster = ({ currentUser, nflTeam, cfb_Timestamp }) => {
     const CutPlayer = async (player) => {
         setViewRoster(() => '');
         const res = await _rosterService.CutNFLPlayerFromRoster(player.ID);
-        console.log({ res });
-        let r = [...roster];
-        r = r.filter((x) => x.ID !== player.ID);
+        let r = [];
+        for (let i = 0; i < roster.length; i++) {
+            if (roster[i].ID !== player.ID) {
+                r.push(roster[i]);
+            }
+        }
         const t = { ...team };
         const contract = player.Contract;
         t.Capsheet.Y1Bonus -= contract.Y1Bonus;
@@ -203,7 +206,7 @@ const NFLRoster = ({ currentUser, nflTeam, cfb_Timestamp }) => {
         t.Capsheet.Y3Salary -= contract.Y3BaseSalary;
         t.Capsheet.Y4Salary -= contract.Y4BaseSalary;
         t.Capsheet.Y5Salary -= contract.Y5BaseSalary;
-        setRoster(r);
+        setRoster(() => r);
         setTeam(() => t);
     };
     const ExtendPlayer = () => {};

@@ -148,7 +148,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp }) => {
         const newCount = [...currentPlayers].concat(
             [...filteredPlayers].slice(count, count + 100)
         );
-        setViewableRecruits(() => newCount);
+        setViewablePlayers(() => newCount);
         SetCount((x) => x + 100);
     };
 
@@ -157,20 +157,33 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp }) => {
     };
 
     const CreateFAOffer = async (player, offer) => {
-        let res = await _rosterService.CancelFAOffer(offer);
+        let res = await _rosterService.CreateFAOffer(offer);
         const viewingFA = freeAgencyView === 'FA';
         const players = viewingFA ? [...allFreeAgents] : [...allWaivedPlayers];
         const playerIDX = players.findIndex((x) => x.ID === player.ID);
+        const ExistingOffers = [...teamOffers];
         if (offer.ID > 0) {
             // Existing Offer
             const offerIDX = players[playerIDX].Offers.findIndex(
                 (x) => x.ID === offer.ID
             );
+
+            const existingOffersIdx = ExistingOffers.findIndex(
+                (x) => x.ID === offer.ID
+            );
+            ExistingOffers[existingOffersIdx] = offer;
             players[playerIDX].Offers[offerIDX] = offer;
         } else {
             const offerObj = { ...offer, ID: res.ID };
-            players[playerIDX].Offers.push(offerObj);
+            const offers = players[playerIDX].Offers;
+            offers.push(offerObj);
+            players[playerIDX].Offers = offers.sort(
+                (a, b) => a.ContractValue - b.ContractValue
+            );
+            ExistingOffers.push(offerObj);
         }
+
+        setTeamOffers(() => ExistingOffers);
 
         if (viewingFA) {
             setAllFreeAgents(() => players);
@@ -284,7 +297,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                 next={loadMoreRecords}
                                 hasMore={
                                     viewablePlayers.length <
-                                        allFreeAgents.length &&
+                                        allFreeAgents.length ||
                                     viewablePlayers.length <
                                         allWaivedPlayers.length
                                 }
@@ -299,8 +312,6 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                     <div className="row justify-content-center">
                                         <h4>
                                             ...that's all the players we have.
-                                            Blame the Commies if you can't find
-                                            the players you want.
                                         </h4>
                                     </div>
                                 }

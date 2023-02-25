@@ -96,31 +96,31 @@ export const FreeAgentOfferModal = ({ team, player, ts, idx, extend }) => {
         const y1Space = GetCapSpace(
             ts.Y1Capspace,
             y1Bonus,
-            capsheet.Y1BaseSalary,
+            capsheet.Y1Salary,
             capsheet.Y1CapHit
         );
         const y2Space = GetCapSpace(
             ts.Y2Capspace,
             y2Bonus,
-            capsheet.Y2BaseSalary,
+            capsheet.Y2Salary,
             capsheet.Y2CapHit
         );
         const y3Space = GetCapSpace(
             ts.Y3Capspace,
             y3Bonus,
-            capsheet.Y3BaseSalary,
+            capsheet.Y3Salary,
             capsheet.Y3CapHit
         );
         const y4Space = GetCapSpace(
             ts.Y4Capspace,
             y4Bonus,
-            capsheet.Y4BaseSalary,
+            capsheet.Y4Salary,
             capsheet.Y4CapHit
         );
         const y5Space = GetCapSpace(
             ts.Y5Capspace,
             y5Bonus,
-            capsheet.Y5BaseSalary,
+            capsheet.Y5Salary,
             capsheet.Y5CapHit
         );
         const contractValue = GetTotalValue(

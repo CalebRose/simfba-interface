@@ -59,6 +59,9 @@ const Home = ({ currentUser }) => {
             setNFLTeam(() => user.NFLTeamID);
         }
     }, [user]);
+
+    const viewingBeta = roleId === Constants.ADMIN || roleId === Constants.BETA;
+
     return (
         <div className="App is-fullheight">
             <NavBar />
@@ -243,7 +246,7 @@ const Home = ({ currentUser }) => {
                 exact
                 path={routes.NFL_FREE_AGENCY}
                 render={() =>
-                    NFLTeam > 0 ? (
+                    NFLTeam > 0 && viewingBeta ? (
                         <NFLFreeAgency />
                     ) : (
                         <Redirect to={routes.LANDING} />

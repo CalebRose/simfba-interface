@@ -32,7 +32,7 @@ const NFLFreeAgencyRow = ({ teamID, player, idx, ts }) => {
             return (
                 <>
                     <img
-                        className="image-nfl-fa"
+                        className="image-nfl-fa mx-1"
                         src={logo}
                         alt="competing-team"
                     />

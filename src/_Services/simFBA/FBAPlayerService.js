@@ -163,7 +163,7 @@ export default class FBAPlayerService {
         return json;
     }
 
-    async CancelFAOffer(dto) {
+    async CreateFAOffer(dto) {
         let response = await fetch(url + 'nfl/freeagency/create/offer', {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token'),

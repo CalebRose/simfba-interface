@@ -42,13 +42,11 @@ export const GetYearlyValue = (bonus, salary) => bonus + salary;
 
 export const GetContractLength = (y1, y2, y3, y4, y5) => {
     if (isNaN(y1)) return 0;
-    let years = 5;
-    if (y5 === 0) years--;
-    if (y4 === 0) years--;
-    if (y3 === 0) years--;
-    if (y2 === 0) years--;
-    if (y1 === 0) years--;
-    return years;
+    if (y5 > 0) return 5;
+    if (y4 > 0) return 4;
+    if (y3 > 0) return 3;
+    if (y2 > 0) return 2;
+    return 1;
 };
 
 export const GetCapSpace = (cap, bonus, salary, hit) => {
@@ -116,7 +114,7 @@ export const ValidateRule4 = (len, y1, y2, y3, y4, y5) => {
     let per2 = y2 / max;
     let per3 = y3 / max;
     let per4 = y4 / max;
-    let per5 = y4 / max;
+    let per5 = y5 / max;
     const dif1 = max - y1;
     const dif2 = max - y2;
     const dif3 = max - y3;
@@ -126,23 +124,23 @@ export const ValidateRule4 = (len, y1, y2, y3, y4, y5) => {
     let maxDiff = -Infinity;
     if (len > 4) {
         min = Math.min(min, per5);
-        maxDiff = Math.max(max, dif5);
+        maxDiff = Math.max(maxDiff, dif5);
     }
     if (len > 3) {
         min = Math.min(min, per4);
-        maxDiff = Math.max(max, dif4);
+        maxDiff = Math.max(maxDiff, dif4);
     }
     if (len > 2) {
         min = Math.min(min, per3);
-        maxDiff = Math.max(max, dif3);
+        maxDiff = Math.max(maxDiff, dif3);
     }
     if (len > 1) {
         min = Math.min(min, per2);
-        maxDiff = Math.max(max, dif2);
+        maxDiff = Math.max(maxDiff, dif2);
     }
     if (len > 0) {
         min = Math.min(min, per1);
-        maxDiff = Math.max(max, dif1);
+        maxDiff = Math.max(maxDiff, dif1);
     }
     return min >= 0.5 || maxDiff <= 6;
 };
