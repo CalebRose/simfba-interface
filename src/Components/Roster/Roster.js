@@ -12,7 +12,7 @@ import PlayerModal from './PlayerModal';
 import MobileRosterRow from './MobileRosterRow';
 import { numberWithCommas } from '../../_Utility/utilHelper';
 
-const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
+const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
     /* 
         API Call to get team data
         Loop through array list to acquire players
@@ -212,6 +212,8 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         setViewRoster(() => playerRoster);
     };
 
+    const tableClass = viewMode === 'light' ? '' : 'table-dark';
+
     return (
         <div className="container-fluid">
             <div className="row userInterface">
@@ -298,12 +300,18 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                     </div>
                     <div className="row">
                         {!isMobile ? (
-                            <div className="table-wrapper table-height">
+                            <div
+                                className={`table-wrapper table-height ${
+                                    viewMode === 'dark'
+                                        ? 'table-height-dark'
+                                        : ''
+                                }`}
+                            >
                                 <table
                                     className={
                                         viewWidth >= 901
-                                            ? 'table table-hover'
-                                            : 'table table-sm'
+                                            ? 'table table-hover ' + tableClass
+                                            : 'table table-sm ' + tableClass
                                     }
                                 >
                                     <thead>
@@ -393,11 +401,13 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                                               setRedshirtStatus
                                                           }
                                                           player={player}
+                                                          viewMode={viewMode}
                                                       />
                                                       <PlayerModal
                                                           player={player}
                                                           team={team}
                                                           idx={idx}
+                                                          viewMode={viewMode}
                                                       />
                                                       <PlayerRow
                                                           key={player.ID}
@@ -409,6 +419,7 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                                           }
                                                           view={viewingUserTeam}
                                                           ts={cfb_Timestamp}
+                                                          theme={viewMode}
                                                       />
                                                   </>
                                               ))
@@ -427,11 +438,13 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                                       setRedshirtStatus
                                                   }
                                                   player={player}
+                                                  viewMode={viewMode}
                                               />
                                               <PlayerModal
                                                   player={player}
                                                   team={team}
                                                   idx={idx}
+                                                  viewMode={viewMode}
                                               />
                                               <MobileRosterRow
                                                   key={player.ID}
@@ -441,6 +454,7 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                                   redshirtCount={redshirtCount}
                                                   view={viewingUserTeam}
                                                   ts={cfb_Timestamp}
+                                                  theme={viewMode}
                                               />
                                           </>
                                       ))
@@ -457,11 +471,13 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
 const mapStateToProps = ({
     user: { currentUser },
     cfbTeam: { cfbTeam },
-    timestamp: { cfb_Timestamp }
+    timestamp: { cfb_Timestamp },
+    viewMode: { viewMode }
 }) => ({
     currentUser,
     cfbTeam,
-    cfb_Timestamp
+    cfb_Timestamp,
+    viewMode
 });
 
 export default connect(mapStateToProps)(Roster);

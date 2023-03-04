@@ -1,7 +1,8 @@
 import React from 'react';
+import { GetMobileCardClass } from '../../Constants/CSSClassHelper';
 import { getLogo } from '../../Constants/getLogo';
 
-const NFLTeamCard = ({ team, request, disable }) => {
+const NFLTeamCard = ({ team, request, disable, viewMode }) => {
     const [requested, setRequested] = React.useState(false);
 
     const logo = getLogo(team.TeamName + ' ' + team.Mascot);
@@ -21,9 +22,13 @@ const NFLTeamCard = ({ team, request, disable }) => {
         borderColor: team.ColorOne ? team.ColorOne : '#6c757d'
     };
 
+    const mobileClass = GetMobileCardClass(viewMode);
+
+    const cardClass = `${mobileClass} text-center h-100`;
+
     return (
         <div className="col">
-            <div className="card text-center team h-100">
+            <div className={cardClass}>
                 <img
                     className="card-img-top imageSize mx-auto"
                     src={logo}

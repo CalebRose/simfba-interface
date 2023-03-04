@@ -1,8 +1,15 @@
 import React from 'react';
+import { GetModalClass } from '../../../Constants/CSSClassHelper';
 
-export const PracticeSquadModal = ({ player, idx, practicesquad }) => {
+export const PracticeSquadModal = ({
+    player,
+    idx,
+    practicesquad,
+    viewMode
+}) => {
     const modalId = `practiceSquad${idx}`;
     const name = `${player.FirstName} ${player.LastName}`;
+    const modalClass = GetModalClass(viewMode);
 
     const confirmChange = () => {
         return practicesquad(player);
@@ -17,7 +24,7 @@ export const PracticeSquadModal = ({ player, idx, practicesquad }) => {
             aria-hidden="true"
         >
             <div className="modal-dialog">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="redshirtModalLabel">
                             Place {name} on the Practice Squad

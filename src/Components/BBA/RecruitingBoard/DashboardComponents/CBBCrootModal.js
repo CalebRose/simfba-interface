@@ -1,10 +1,11 @@
 import React from 'react';
+import { GetModalClass } from '../../../../Constants/CSSClassHelper';
 import { RoundToTwoDecimals } from '../../../../_Utility/utilHelper';
 
 const CBBCrootModal = (props) => {
-    const { crt, idx } = props;
+    const { crt, idx, viewMode } = props;
     const modalId = 'crootModal' + idx;
-
+    const modalClass = GetModalClass(viewMode);
     const LeadingTeam = (props) => {
         const { lt } = props;
         const { TeamAbbr, Odds } = lt;
@@ -63,7 +64,7 @@ const CBBCrootModal = (props) => {
             aria-hidden="true"
         >
             <div className="modal-dialog">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="crootModalLabel">
                             {crt.FirstName} {crt.LastName}

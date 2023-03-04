@@ -27,8 +27,14 @@ import {
 } from '../../../_Utility/utilHelper';
 import CBBDashboardMobileRow from './CBBDashboardMobileRow';
 import RecruitingClassModal from '../../_Common/RecruitingClassModal';
+import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 
-const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
+const CBBRecruitingDashboard = ({
+    currentUser,
+    cbbTeam,
+    cbb_Timestamp,
+    viewMode
+}) => {
     // Services
     let playerService = new BBAPlayerService();
     let _recruitingService = new BBARecruitingService();
@@ -68,6 +74,7 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const [sort, setSort] = React.useState('Rank');
     const [isAsc, setIsAsc] = React.useState(false);
     const luckyTeam = Math.floor(Math.random() * (20 - 1) + 1);
+    const tableHoverClass = GetTableHoverClass(viewMode);
 
     // For mobile
     React.useEffect(() => {
@@ -531,12 +538,20 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                             ''
                         )}
                     </div>
-                    <CBBRankingsModal teamProfiles={teamProfiles} />
+                    <CBBRankingsModal
+                        teamProfiles={teamProfiles}
+                        viewMode={viewMode}
+                    />
                     <RecruitingClassModal
                         teams={teamProfiles}
                         userTeam={cbbTeam}
+                        viewMode={viewMode}
                     />
-                    <div className="row mt-2 dashboard-table-height">
+                    <div
+                        className={`row mt-2 dashboard-table-height${
+                            viewMode === 'dark' ? '-dark' : ''
+                        }`}
+                    >
                         {cbb_Timestamp && !cbb_Timestamp.IsRecruitingLocked ? (
                             <InfiniteScroll
                                 dataLength={viewableRecruits.length}
@@ -566,15 +581,19 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                             add={addPlayerToProfile}
                                             map={crootMap}
                                             timestamp={cbb_Timestamp}
+                                            theme={viewMode}
                                         />
                                     ))
                                 ) : (
-                                    <table className="table table-hover">
+                                    <table className={tableHoverClass}>
                                         <thead
                                             style={{
                                                 position: 'sticky',
                                                 top: 0,
-                                                backgroundColor: 'white',
+                                                backgroundColor:
+                                                    viewMode === 'dark'
+                                                        ? '#202020'
+                                                        : 'white',
                                                 zIndex: 3
                                             }}
                                         >
@@ -694,6 +713,9 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                                               add={
                                                                   addPlayerToProfile
                                                               }
+                                                              viewMode={
+                                                                  viewMode
+                                                              }
                                                           />
                                                       )
                                                   )
@@ -732,11 +754,13 @@ const CBBRecruitingDashboard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
 const mapStateToProps = ({
     user: { currentUser },
     cbbTeam: { cbbTeam },
-    timestamp: { cbb_Timestamp }
+    timestamp: { cbb_Timestamp },
+    viewMode: { viewMode }
 }) => ({
     currentUser,
     cbbTeam,
-    cbb_Timestamp
+    cbb_Timestamp,
+    viewMode
 });
 
 export default connect(mapStateToProps)(CBBRecruitingDashboard);

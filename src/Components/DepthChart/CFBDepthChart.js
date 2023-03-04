@@ -18,7 +18,7 @@ import { GetAvailablePlayers, GetPositionAttributes } from './DepthChartHelper';
 import DepthChartPlayerRow from './DepthChartPlayerRow';
 import DepthChartMobilePlayerRow from './DepthChartMobilePlayerRow';
 
-const CFBDepthChart = ({ currentUser, cfbTeam }) => {
+const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
     // Services
     let depthChartService = new FBADepthChartService();
     let teamService = new FBATeamService();
@@ -531,7 +531,11 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
                                     })}
                             </>
                         ) : (
-                            <table className="table">
+                            <table
+                                className={`table ${
+                                    viewMode === 'dark' ? 'table-dark' : ''
+                                }`}
+                            >
                                 <thead>
                                     <tr>
                                         {positionAttributes &&
@@ -581,9 +585,14 @@ const CFBDepthChart = ({ currentUser, cfbTeam }) => {
     );
 };
 
-const mapStateToProps = ({ user: { currentUser }, cfbTeam: { cfbTeam } }) => ({
+const mapStateToProps = ({
+    user: { currentUser },
+    cfbTeam: { cfbTeam },
+    viewMode: { viewMode }
+}) => ({
     currentUser,
-    cfbTeam
+    cfbTeam,
+    viewMode
 });
 
 export default connect(mapStateToProps)(CFBDepthChart);

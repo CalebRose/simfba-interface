@@ -4,7 +4,7 @@ import { GetOverall } from '../../../_Utility/RosterHelper';
 
 const CFBDashboardPlayerRow = (props) => {
     const [flag, setFlag] = React.useState(false);
-    const { croot, idx, map, timestamp } = props;
+    const { croot, idx, map, timestamp, theme } = props;
     const rank = idx + 1;
     const name = croot.FirstName + ' ' + croot.LastName;
     const affinities = croot.AffinityTwo.length
@@ -56,7 +56,11 @@ const CFBDashboardPlayerRow = (props) => {
                     data-bs-toggle="modal"
                     data-bs-target={modalTarget}
                 >
-                    <i className="bi bi-info-circle" />
+                    <i
+                        className={`bi bi-info-circle ${
+                            theme === 'dark' ? 'text-light' : ''
+                        }`}
+                    />
                 </button>
             </th>
             <td className={customClass} style={{ width: 175 }}>

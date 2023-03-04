@@ -6,8 +6,9 @@ import BBAPlayerService from '../../../_Services/simNBA/BBAPlayerService';
 import BBATeamPlayerRow from './BBATeamPlayerRow';
 import BBATeamDropdownItem from './BBATeamDropdownItem';
 import ConfirmRedshirtModal from '../../Roster/RedshirtModal';
+import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 
-const BBATeam = ({ currentUser, cbb_Timestamp }) => {
+const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
     let teamService = new BBATeamService();
     let playerService = new BBAPlayerService();
     const [userTeam, setUserTeam] = React.useState('');
@@ -15,6 +16,7 @@ const BBATeam = ({ currentUser, cbb_Timestamp }) => {
     const [teams, setTeams] = React.useState('');
     const [filteredTeams, setFilteredTeams] = React.useState('');
     const [roster, setRoster] = React.useState([]);
+    const tableHoverClass = GetTableHoverClass(viewMode);
     let redshirtCount =
         roster && roster.length > 0
             ? roster.filter((player) => player.IsRedshirting).length
@@ -92,6 +94,7 @@ const BBATeam = ({ currentUser, cbb_Timestamp }) => {
                         idx={i}
                         setRedshirtStatus={setRedshirtStatus}
                         player={x}
+                        viewMode={viewMode}
                     />
                     <BBATeamPlayerRow
                         key={x.ID}
@@ -160,7 +163,7 @@ const BBATeam = ({ currentUser, cbb_Timestamp }) => {
                         </div>
                     </div>
                     <div className="row mt-3 mb-5">
-                        <table className="table table-hover">
+                        <table className={tableHoverClass}>
                             <thead>
                                 <tr>
                                     <th scope="col">Name</th>
@@ -192,10 +195,12 @@ const BBATeam = ({ currentUser, cbb_Timestamp }) => {
 
 const mapStateToProps = ({
     user: { currentUser },
-    timestamp: { cbb_Timestamp }
+    timestamp: { cbb_Timestamp },
+    viewMode: { viewMode }
 }) => ({
     currentUser,
-    cbb_Timestamp
+    cbb_Timestamp,
+    viewMode
 });
 
 export default connect(mapStateToProps)(BBATeam);

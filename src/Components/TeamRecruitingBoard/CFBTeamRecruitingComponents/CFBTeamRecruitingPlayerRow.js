@@ -1,6 +1,5 @@
 import React from 'react';
 import { GetOverall } from '../../../_Utility/RosterHelper';
-import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
 import { CalculateAdjustedPoints } from '../../../_Utility/CFBRecruitingHelper';
 import CrootModal from '../../RecruitingOverview/CFBDashboardComponents/CFBDashboardCrootModal';
 import ConfirmRemovePlayerFromBoardModal from './CFBTeamRemovePlayerModal';
@@ -8,7 +7,7 @@ import ConfirmRevokeModal from './CFBTeamRevokeScholarshipModal';
 import { getLogo } from '../../../Constants/getLogo';
 
 const CFBTeamDashboardPlayerRow = (props) => {
-    const { recruitProfile, idx } = props;
+    const { recruitProfile, idx, viewMode } = props;
     const { Recruit } = recruitProfile;
     const logo =
         Recruit && Recruit.College.length > 0 ? getLogo(Recruit.College) : '';
@@ -56,14 +55,16 @@ const CFBTeamDashboardPlayerRow = (props) => {
 
     return (
         <>
-            <CrootModal crt={Recruit} idx={idx} />
+            <CrootModal crt={Recruit} idx={idx} viewMode={viewMode} />
             <ConfirmRevokeModal
                 idx={idx}
                 toggleScholarship={toggleScholarship}
+                viewMode={viewMode}
             />
             <ConfirmRemovePlayerFromBoardModal
                 idx={idx}
                 removePlayer={removePlayerFromBoard}
+                viewMode={viewMode}
             />
             <tr>
                 <th scope="row">
@@ -108,7 +109,11 @@ const CFBTeamDashboardPlayerRow = (props) => {
                         data-bs-toggle="modal"
                         data-bs-target={crootModalTarget}
                     >
-                        <i className="bi bi-info-circle" />
+                        <i
+                            className={`bi bi-info-circle ${
+                                viewMode === 'dark' ? 'text-light' : ''
+                            }`}
+                        />
                     </button>
                 </td>
                 <td className="align-middle">

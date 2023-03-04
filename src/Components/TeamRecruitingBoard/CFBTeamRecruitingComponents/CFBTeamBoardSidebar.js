@@ -3,12 +3,13 @@ import { useMediaQuery } from 'react-responsive';
 import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
 import { Link } from 'react-router-dom';
 import routes from '../../../Constants/routes';
+import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 
 const CFBTeamBoardSidebar = (props) => {
-    const { cfbTeam, recruitingProfile } = props;
+    const { cfbTeam, recruitingProfile, theme } = props;
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
-
+    const mobileClass = GetMobileCardClass(theme);
     React.useEffect(() => {
         if (!viewWidth) {
             setViewWidth(window.innerWidth);
@@ -140,7 +141,7 @@ const CFBTeamBoardSidebar = (props) => {
     const MobileRender = () => {
         return (
             <>
-                <div className="card">
+                <div className={mobileClass}>
                     <div className="card-body">
                         <h4 className="card-title">
                             {cfbTeam ? cfbTeam.TeamName : 'Team'} Profile

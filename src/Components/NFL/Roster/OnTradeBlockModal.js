@@ -1,8 +1,10 @@
 import React from 'react';
+import { GetModalClass } from '../../../Constants/CSSClassHelper';
 
-export const TradeBlockModal = ({ player, idx, tradeblock }) => {
+export const TradeBlockModal = ({ player, idx, tradeblock, viewMode }) => {
     const modalId = `tradeBlock${idx}`;
     const name = `${player.FirstName} ${player.LastName}`;
+    const modalClass = GetModalClass(viewMode);
 
     const confirmChange = () => {
         return tradeblock(player);
@@ -17,7 +19,7 @@ export const TradeBlockModal = ({ player, idx, tradeblock }) => {
             aria-hidden="true"
         >
             <div className="modal-dialog">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="redshirtModalLabel">
                             Place {name} on the Trade Block

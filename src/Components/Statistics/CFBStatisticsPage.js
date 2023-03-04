@@ -18,8 +18,6 @@ import { TeamStatRow } from './CFBStatsComponents/TeamStatRow';
 import {
     ConductSort,
     GetDefaultStatsOrder,
-    MapSeasonalPlayerData,
-    MapSeasonalTeamData,
     uniq_fast
 } from '../../_Utility/utilHelper';
 import TeamOverallHeaders from './CFBStatsComponents/TeamOverallHeaders';
@@ -29,7 +27,7 @@ import HeismanModal from './CFBStatsComponents/HeismanModal';
 import OLineHeaders from './CFBStatsComponents/OLineStats';
 import { SeasonsList } from '../../Constants/CommonConstants';
 
-const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
+const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
     // Services
     let _statsService = new FBAStatsService();
     // Hooks
@@ -618,7 +616,7 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                     <div className="row mt-2">
                         <div className="col-md-auto"></div>
                     </div>
-                    <HeismanModal list={heismanList} />
+                    <HeismanModal list={heismanList} viewMode={viewMode} />
                     <div className="row mt-3 mb-5">
                         <InfiniteScroll
                             dataLength={viewableStats.length}
@@ -643,12 +641,19 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                     Huskies suck.
                                 </>
                             ) : (
-                                <table className="table table-hover">
+                                <table
+                                    className={`table table-hover ${
+                                        viewMode === 'dark' ? 'table-dark' : ''
+                                    }`}
+                                >
                                     <thead
                                         style={{
                                             position: 'sticky',
                                             top: 0,
-                                            backgroundColor: 'white',
+                                            backgroundColor:
+                                                viewMode === 'dark'
+                                                    ? '#202020'
+                                                    : 'white',
                                             zIndex: 3
                                         }}
                                     >
@@ -657,26 +662,20 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                     <tbody className="overflow-auto">
                                         {viewableStats.length > 0
                                             ? viewableStats.map((x, idx) => {
-                                                  {
-                                                      return currentView ===
-                                                          'PLAYER' ? (
-                                                          <PlayerStatRow
-                                                              statType={
-                                                                  statType
-                                                              }
-                                                              idx={idx}
-                                                              player={x}
-                                                          />
-                                                      ) : (
-                                                          <TeamStatRow
-                                                              statType={
-                                                                  statType
-                                                              }
-                                                              idx={idx}
-                                                              team={x}
-                                                          />
-                                                      );
-                                                  }
+                                                  return currentView ===
+                                                      'PLAYER' ? (
+                                                      <PlayerStatRow
+                                                          statType={statType}
+                                                          idx={idx}
+                                                          player={x}
+                                                      />
+                                                  ) : (
+                                                      <TeamStatRow
+                                                          statType={statType}
+                                                          idx={idx}
+                                                          team={x}
+                                                      />
+                                                  );
                                               })
                                             : ''}
                                     </tbody>
@@ -692,12 +691,12 @@ const CFBStatisticsPage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
 
 const mapStateToProps = ({
     user: { currentUser },
-    cfbTeam: { cfbTeam },
-    timestamp: { cfb_Timestamp }
+    timestamp: { cfb_Timestamp },
+    viewMode: { viewMode }
 }) => ({
     currentUser,
-    cfbTeam,
-    cfb_Timestamp
+    cfb_Timestamp,
+    viewMode
 });
 
 export default connect(mapStateToProps)(CFBStatisticsPage);

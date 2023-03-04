@@ -1,5 +1,6 @@
 import React from 'react';
 import AttributeAverages from '../../Constants/AttributeAverages';
+import { GetMobileCardClass } from '../../Constants/CSSClassHelper';
 import {
     GetLetterGrade,
     GetNFLYear,
@@ -15,7 +16,8 @@ const DepthChartMobilePlayerRow = ({
     positionAttributes,
     swapPlayer,
     canModify,
-    isCFB
+    isCFB,
+    theme
 }) => {
     const playerData = isCFB ? player.CollegePlayer : player.NFLPlayer;
     const name = player.FirstName + ' ' + player.LastName;
@@ -24,7 +26,7 @@ const DepthChartMobilePlayerRow = ({
         player.OriginalPosition !== player.Position
             ? player.Position + ' (' + player.OriginalPosition + ')'
             : player.Position;
-
+    const mobileClass = GetMobileCardClass(theme);
     const handleChange = (newPlayer) => {
         if (newPlayer.ID !== playerData.ID) {
             return swapPlayer(player, newPlayer);
@@ -33,7 +35,7 @@ const DepthChartMobilePlayerRow = ({
     };
 
     return (
-        <div className="card mb-2">
+        <div className={`${mobileClass} mb-2`}>
             <div className="card-body">
                 {canModify ? (
                     <div className="drop-start btn-dropdown-width-dc mb-2">

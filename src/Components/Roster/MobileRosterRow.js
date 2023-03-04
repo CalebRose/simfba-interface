@@ -1,9 +1,10 @@
 import React from 'react';
+import { GetMobileCardClass } from '../../Constants/CSSClassHelper';
 import { GetOverall, GetYear } from '../../_Utility/RosterHelper';
 import { HeightToFeetAndInches } from '../../_Utility/utilHelper';
 
 const MobileRosterRow = (props) => {
-    const { idx, redshirtCount, ts, view } = props;
+    const { idx, redshirtCount, ts, view, theme } = props;
     let player = props.data;
     let modalTarget = '#redshirtModal' + idx;
     const playerTarget = '#playerModal' + idx;
@@ -16,10 +17,11 @@ const MobileRosterRow = (props) => {
     } else {
         redshirtLabel = 'Active Player';
     }
+    const mobileCardClass = GetMobileCardClass(theme);
 
     return (
         <>
-            <div className="card mb-2">
+            <div className={`${mobileCardClass} mb-2`}>
                 <div className="card-body">
                     {' '}
                     <h5 className="card-title">

@@ -1,13 +1,15 @@
 import React from 'react';
+import { GetModalClass } from '../../Constants/CSSClassHelper';
 
 const ConfirmRedshirtModal = (props) => {
-    const { idx, player } = props;
+    const { idx, player, viewMode } = props;
     const modalId = 'redshirtModal' + idx;
     const name = player.FirstName + ' ' + player.LastName;
 
     const confirmChange = () => {
         return props.setRedshirtStatus(player);
     };
+    const modalClass = GetModalClass(viewMode);
 
     return (
         <div
@@ -18,7 +20,7 @@ const ConfirmRedshirtModal = (props) => {
             aria-hidden="true"
         >
             <div className="modal-dialog">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="redshirtModalLabel">
                             Confirm Redshirt?

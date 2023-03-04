@@ -7,7 +7,7 @@ import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import GameRow from './CFBGameRow';
 import CFBStandingsModal from './CFBStandingsModal';
 
-const SchedulePage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
+const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode }) => {
     // Services
     let _scheduleService = new FBAScheduleService();
     let _landingService = new FBALandingPageService();
@@ -190,7 +190,7 @@ const SchedulePage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             </button>
                         </div>
                     </div>
-                    <CFBStandingsModal ts={cfb_Timestamp} />
+                    <CFBStandingsModal ts={cfb_Timestamp} viewMode={viewMode} />
                     <div className="col-md-10 px-md-4">
                         <div className="row mt-3 mb-5 justify-content-between">
                             {viewGames.length > 0
@@ -202,6 +202,7 @@ const SchedulePage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                           currentWeek={
                                               cfb_Timestamp.CollegeWeek
                                           }
+                                          viewMode={viewMode}
                                       />
                                   ))
                                 : ''}
@@ -216,11 +217,13 @@ const SchedulePage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
 const mapStateToProps = ({
     user: { currentUser },
     cfbTeam: { cfbTeam },
-    timestamp: { cfb_Timestamp }
+    timestamp: { cfb_Timestamp },
+    viewMode: { viewMode }
 }) => ({
     currentUser,
     cfbTeam,
-    cfb_Timestamp
+    cfb_Timestamp,
+    viewMode
 });
 
 export default connect(mapStateToProps)(SchedulePage);

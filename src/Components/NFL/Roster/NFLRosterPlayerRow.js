@@ -8,7 +8,8 @@ export const NFLRosterPlayerRow = ({
     idx,
     userView,
     ts,
-    canModify
+    canModify,
+    viewMode
 }) => {
     let modalTarget = `#playerModal${idx}`;
     let cutPlayerTarget = `#cutPlayer${idx}`;
@@ -34,7 +35,11 @@ export const NFLRosterPlayerRow = ({
                     data-bs-toggle="modal"
                     data-bs-target={modalTarget}
                 >
-                    <i className="bi bi-info-circle" />
+                    <i
+                        className={`bi bi-info-circle ${
+                            viewMode === 'dark' ? 'text-light' : ''
+                        }`}
+                    />
                 </button>
             </th>
             <td label="Archtype">{player.Archetype}</td>

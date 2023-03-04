@@ -1,11 +1,13 @@
 import React from 'react';
+import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
 import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
 
-export const FreeAgencyPlayerModal = ({ player, idx }) => {
+export const FreeAgencyPlayerModal = ({ player, idx, viewMode }) => {
     const modalId = 'playerModal' + idx;
     const heightObj = HeightToFeetAndInches(player.Height);
     const AllOffers = player && player.Offers;
+    const modalClass = GetModalClass(viewMode);
 
     const OfferingTeam = ({ offer, idx }) => {
         const logo = getLogo(offer.Team);
@@ -13,7 +15,7 @@ export const FreeAgencyPlayerModal = ({ player, idx }) => {
         return (
             <div className="row">
                 <div className="col">
-                    <img src={logo} className="image-nfl-player-modal" />
+                    <img src={logo} className="image-nfl-player-modal" alt="" />
                 </div>
                 <div className="col">
                     <h6>Rank: {rank}</h6>
@@ -34,7 +36,7 @@ export const FreeAgencyPlayerModal = ({ player, idx }) => {
             aria-hidden="true"
         >
             <div className="modal-dialog modal-lg">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="playerModalLabel">
                             {player.Archetype} {player.Position}{' '}

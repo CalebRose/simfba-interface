@@ -1,14 +1,17 @@
 import React from 'react';
+import { GetModalClass } from '../../Constants/CSSClassHelper';
 import { GetOverall, GetYear, SetPriority } from '../../_Utility/RosterHelper';
 import AttributeRow from './AttributeRow';
 
 const PlayerModal = (props) => {
-    const { player, team, idx } = props;
+    const { player, team, idx, viewMode } = props;
     const playerRecord = player;
     playerRecord['priorityAttributes'] = SetPriority(playerRecord);
     const year = GetYear(player);
     const ovr = GetOverall(player.Overall, player.Year);
     const playerModalID = 'playerModal' + idx;
+    const modalClass = GetModalClass(viewMode);
+
     return (
         <div
             className="modal fade"
@@ -18,7 +21,7 @@ const PlayerModal = (props) => {
             aria-hidden="true"
         >
             <div className="modal-dialog">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <header className="modal-header">
                         <h2 className="modal-title">
                             {player.FirstName + ' ' + player.LastName}

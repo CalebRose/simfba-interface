@@ -1,8 +1,10 @@
 import React from 'react';
+import { GetModalClass } from '../../../Constants/CSSClassHelper';
 
-export const CancelOfferModal = ({ player, idx, cancel, teamID }) => {
+export const CancelOfferModal = ({ player, idx, cancel, teamID, viewMode }) => {
     const modalId = `cancelOffer${idx}`;
     const name = `${player.FirstName} ${player.LastName}`;
+    const modalClass = GetModalClass(viewMode);
 
     const confirmChange = () => {
         const offerIdx = player.Offers.findIndex((x) => x.TeamID === teamID);
@@ -21,7 +23,7 @@ export const CancelOfferModal = ({ player, idx, cancel, teamID }) => {
             aria-hidden="true"
         >
             <div className="modal-dialog">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="redshirtModalLabel">
                             Cancel Offer for {name}

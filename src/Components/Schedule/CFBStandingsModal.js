@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { SeasonsList } from '../../Constants/CommonConstants';
+import { GetModalClass } from '../../Constants/CSSClassHelper';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import StandingsCard from '../BBA/Schedule/StandingsModalCard';
 
 const CFBStandingsModal = (props) => {
     let _standingsService = new FBATeamService();
     const modalId = `standingsModal`;
-    const { ts } = props;
+    const { ts, viewMode } = props;
     const [conferences, setConferences] = useState([]);
     const [seasons, setSeasons] = useState(SeasonsList);
     const [allStandings, setAllStandings] = useState([]);
@@ -15,7 +16,7 @@ const CFBStandingsModal = (props) => {
     const [selectedConferences, setSelectedConferences] = useState([]);
     const [selectedSeason, setSelectedSeason] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-
+    const modalClass = GetModalClass(viewMode);
     useEffect(() => {
         if (ts !== undefined || ts !== null) {
             if (selectedSeason === null) {
@@ -95,7 +96,7 @@ const CFBStandingsModal = (props) => {
             aria-hidden="true"
         >
             <div className="modal-dialog modal-xl">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="standingsLabel">
                             {!isLoading

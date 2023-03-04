@@ -51,7 +51,7 @@ class AvailableTeams extends Component {
         let teams = await this.BBATeamService.GetCollegeTeams(SimBBA_url);
         const filterTeams = teams
             .filter((x) => x.IsNBA === false)
-            .sort((a, b) => '' + a.TeamName.localeCompare(b.TeamName));
+            .sort((a, b) => '' + a.Team.localeCompare(b.Team));
         this.setState({ teams: teams, filterTeams: filterTeams });
     };
 
@@ -155,6 +155,7 @@ class AvailableTeams extends Component {
                         disable={this.state.sentRequest}
                         isFBS={team.IsFBS}
                         coach={team.Coach}
+                        viewMode={this.props.viewMode}
                     />
                 );
             } else if (this.state.selectedSport === constants.NFL) {
@@ -164,6 +165,7 @@ class AvailableTeams extends Component {
                         team={team}
                         request={this.sendNFLRequest}
                         disable={this.state.sentRequest}
+                        viewMode={this.props.viewMode}
                     />
                 );
             } else if (this.state.selectedSport === constants.CBB) {
@@ -181,6 +183,7 @@ class AvailableTeams extends Component {
                         off={team.OffenseGrade}
                         def={team.DefenseGrade}
                         coach={team.Coach}
+                        viewMode={this.props.viewMode}
                     />
                 );
             } else if (this.state.selectedSport === constants.NBA) {
@@ -194,6 +197,7 @@ class AvailableTeams extends Component {
                         logo={getLogo(team.Team + ' ' + team.Nickname)}
                         request={this.sendCBBRequest}
                         disable={this.state.sentRequest}
+                        viewMode={this.props.viewMode}
                     />
                 );
             }
@@ -289,8 +293,12 @@ class AvailableTeams extends Component {
     }
 }
 
-const mapStateToProps = ({ user: { currentUser } }) => ({
-    currentUser
+const mapStateToProps = ({
+    user: { currentUser },
+    viewMode: { viewMode }
+}) => ({
+    currentUser,
+    viewMode
 });
 
 export default connect(mapStateToProps)(AvailableTeams);

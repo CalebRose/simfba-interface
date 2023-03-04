@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import routes from '../../Constants/routes';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { getLogo } from '../../Constants/getLogo';
+import { setViewMode } from '../../Redux/viewMode/viewMode.actions';
 
 var TeamTab = ({ user }) => {
     return (
@@ -19,13 +20,19 @@ var AvailableTab = () => {
     );
 };
 const Profile = ({ currentUser, cfbTeam }) => {
-    let team = !!currentUser && !!currentUser.team ? currentUser.team : null;
+    const dispatch = useDispatch();
     let username =
         !!currentUser && !!currentUser.username ? currentUser.username : '';
     let teamAbbr =
         !!currentUser && !!currentUser.teamAbbr ? currentUser.teamAbbr : '';
     const logo = getLogo(teamAbbr);
     const [teamColors, setTeamColors] = React.useState('');
+
+    const ChangeViewMode = (event) => {
+        const { value } = event.target;
+        dispatch(setViewMode(value));
+        localStorage.setItem('theme', value);
+    };
 
     useEffect(() => {
         if (cfbTeam) {
@@ -124,6 +131,27 @@ const Profile = ({ currentUser, cfbTeam }) => {
                         style={teamColors ? teamColors : {}}
                     >
                         Schedule
+                    </button>
+                </div>
+            </div>
+
+            <div className="row mt-2">
+                <div className="btn-group">
+                    <button
+                        type="button"
+                        className="btn btn-primary gap-1"
+                        value="light"
+                        onClick={ChangeViewMode}
+                    >
+                        Light
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-primary gap-1"
+                        value="dark"
+                        onClick={ChangeViewMode}
+                    >
+                        Dark
                     </button>
                 </div>
             </div>

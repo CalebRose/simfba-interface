@@ -1,9 +1,17 @@
 import React from 'react';
+import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 import { baseUrl } from '../../../Constants/logos';
 import { GetNFLOverall } from '../../../_Utility/RosterHelper';
 import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
 
-const NFLMobileRosterRow = ({ player, idx, userView, ts, canModify }) => {
+const NFLMobileRosterRow = ({
+    player,
+    idx,
+    userView,
+    ts,
+    canModify,
+    theme
+}) => {
     let modalTarget = `#playerModal${idx}`;
     let cutPlayerTarget = `#cutPlayer${idx}`;
     let extendPlayerTarget = `#extendPlayer${idx}`;
@@ -22,10 +30,11 @@ const NFLMobileRosterRow = ({ player, idx, userView, ts, canModify }) => {
     const canExtendPlayer =
         (ts.NFLWeek >= 15 || ts.NFLWeek === 0) && userView && canModify;
     const canTradeBlockPlayer = ts.NFLWeek <= 9 && userView && canModify;
+    const mobileCardClass = GetMobileCardClass(theme);
 
     return (
         <>
-            <div className="card mb-2">
+            <div className={`${mobileCardClass} mb-2`}>
                 <div className="card-body">
                     <h5 className="card-title">
                         {player.FirstName} {player.LastName}
@@ -51,7 +60,12 @@ const NFLMobileRosterRow = ({ player, idx, userView, ts, canModify }) => {
                             data-bs-toggle="modal"
                             data-bs-target={modalTarget}
                         >
-                            <i className="bi bi-info-circle" /> Info
+                            <i
+                                className={`bi bi-info-circle ${
+                                    theme === 'dark' ? 'text-light' : ''
+                                }`}
+                            />{' '}
+                            Info
                         </button>
                     </li>
                     <li className="list-group-item">

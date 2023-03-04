@@ -1,12 +1,15 @@
 import React from 'react';
+import { GetModalClass } from '../../../Constants/CSSClassHelper';
 
-export const CutPlayerModal = ({ player, idx, cut }) => {
+export const CutPlayerModal = ({ player, idx, cut, viewMode }) => {
     const modalId = `cutPlayer${idx}`;
     const name = `${player.FirstName} ${player.LastName}`;
 
     const confirmChange = () => {
         return cut(player);
     };
+
+    const modalClass = GetModalClass(viewMode);
 
     return (
         <div
@@ -17,7 +20,7 @@ export const CutPlayerModal = ({ player, idx, cut }) => {
             aria-hidden="true"
         >
             <div className="modal-dialog">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="redshirtModalLabel">
                             Cut {name}

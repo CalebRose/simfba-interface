@@ -1,7 +1,7 @@
 import React from 'react';
 
 const DropdownSingularItem = (props) => {
-    const { value } = props;
+    const { value, theme } = props;
     const dropdownLabel = value;
 
     const selectItem = () => {
@@ -15,6 +15,7 @@ const DropdownSingularItem = (props) => {
                     className="dropdown-item"
                     onClick={selectItem}
                     id={props.id ? props.id : 0}
+                    style={{ color: theme === 'dark' ? '#202020' : 'white' }}
                 >
                     {dropdownLabel}
                 </p>

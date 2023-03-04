@@ -1,6 +1,10 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
+import {
+    GetTableHoverClass,
+    GetTableSmallClass
+} from '../../../Constants/CSSClassHelper';
 import FBAPlayerService from '../../../_Services/simFBA/FBAPlayerService';
 import FBATeamService from '../../../_Services/simFBA/FBATeamService';
 import { GetDefaultOrder } from '../../../_Utility/RosterHelper';
@@ -14,7 +18,7 @@ import { NFLSidebar } from './NFLSidebar';
 import { PracticeSquadModal } from './OnPracticeSquadModal';
 import { TradeBlockModal } from './OnTradeBlockModal';
 
-const NFLRoster = ({ currentUser, nflTeam, cfb_Timestamp }) => {
+const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
     let _teamService = new FBATeamService();
     let _rosterService = new FBAPlayerService();
 
@@ -30,6 +34,9 @@ const NFLRoster = ({ currentUser, nflTeam, cfb_Timestamp }) => {
     const [canModify, setCanModify] = React.useState(false);
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:760px)` });
+    const tableHoverClass = GetTableHoverClass(viewMode);
+    const tableSmallClass = GetTableSmallClass(viewMode);
+
     // For mobile
     React.useEffect(() => {
         if (!viewWidth) {
@@ -284,8 +291,8 @@ const NFLRoster = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                     <table
                                         className={
                                             viewWidth >= 901
-                                                ? 'table table-hover'
-                                                : 'table table-sm'
+                                                ? tableHoverClass
+                                                : tableSmallClass
                                         }
                                     >
                                         <thead>
@@ -389,6 +396,9 @@ const NFLRoster = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                                                 player={player}
                                                                 idx={idx}
                                                                 cut={CutPlayer}
+                                                                viewMode={
+                                                                    viewMode
+                                                                }
                                                             />
                                                             <ExtendPlayerModal
                                                                 key={player.ID}
@@ -396,6 +406,9 @@ const NFLRoster = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                                                 idx={idx}
                                                                 extend={
                                                                     ExtendPlayer
+                                                                }
+                                                                viewMode={
+                                                                    viewMode
                                                                 }
                                                             />
                                                             <TradeBlockModal
@@ -405,6 +418,9 @@ const NFLRoster = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                                                 tradeblock={
                                                                     TradeBlockPlayer
                                                                 }
+                                                                viewMode={
+                                                                    viewMode
+                                                                }
                                                             />
                                                             <PracticeSquadModal
                                                                 key={player.ID}
@@ -412,6 +428,9 @@ const NFLRoster = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                                                 idx={idx}
                                                                 practicesquad={
                                                                     PracticeSquadPlayer
+                                                                }
+                                                                viewMode={
+                                                                    viewMode
                                                                 }
                                                             />
                                                             <NFLRosterPlayerRow
@@ -427,12 +446,18 @@ const NFLRoster = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                                                 canModify={
                                                                     canModify
                                                                 }
+                                                                viewMode={
+                                                                    viewMode
+                                                                }
                                                             />
                                                             <NFLPlayerModal
                                                                 key={player.ID}
                                                                 idx={idx}
                                                                 player={player}
                                                                 team={team}
+                                                                viewMode={
+                                                                    viewMode
+                                                                }
                                                             />
                                                         </>
                                                     )
@@ -462,12 +487,14 @@ const NFLRoster = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                                     player={player}
                                                     idx={idx}
                                                     cut={CutPlayer}
+                                                    viewMode={viewMode}
                                                 />
                                                 <ExtendPlayerModal
                                                     key={player.ID}
                                                     player={player}
                                                     idx={idx}
                                                     extend={ExtendPlayer}
+                                                    viewMode={viewMode}
                                                 />
                                                 <TradeBlockModal
                                                     key={player.ID}
@@ -476,6 +503,7 @@ const NFLRoster = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                                     tradeblock={
                                                         TradeBlockPlayer
                                                     }
+                                                    viewMode={viewMode}
                                                 />
                                                 <PracticeSquadModal
                                                     key={player.ID}
@@ -484,6 +512,7 @@ const NFLRoster = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                                     practicesquad={
                                                         PracticeSquadPlayer
                                                     }
+                                                    viewMode={viewMode}
                                                 />
 
                                                 <NFLMobileRosterRow
@@ -493,6 +522,7 @@ const NFLRoster = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                                     userView={viewingUserTeam}
                                                     ts={cfb_Timestamp}
                                                     canModify={canModify}
+                                                    theme={viewMode}
                                                 />
                                             </>
                                         ))}
@@ -509,11 +539,13 @@ const NFLRoster = ({ currentUser, nflTeam, cfb_Timestamp }) => {
 const mapStateToProps = ({
     user: { currentUser },
     nflTeam: { nflTeam },
-    timestamp: { cfb_Timestamp }
+    timestamp: { cfb_Timestamp },
+    viewMode: { viewMode }
 }) => ({
     currentUser,
     nflTeam,
-    cfb_Timestamp
+    cfb_Timestamp,
+    viewMode
 });
 
 export default connect(mapStateToProps)(NFLRoster);

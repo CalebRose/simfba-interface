@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 // Routes & Components
 import routes from './Constants/routes';
@@ -39,7 +39,7 @@ import NFLGameplan from './Components/NFL/Gameplan/NFLGameplan';
 import NFLDepthChart from './Components/NFL/DepthChart/NFLDepthChart';
 import NFLFreeAgency from './Components/NFL/FreeAgency/NFLFreeAgency';
 
-const Home = ({ currentUser }) => {
+const Home = ({ viewMode }) => {
     const user = useSelector((state) => state.user.currentUser);
     const [roleId, setRole] = React.useState('');
     const [bbaRoleId, setBBARole] = React.useState('');
@@ -48,6 +48,10 @@ const Home = ({ currentUser }) => {
     const [NBATeam, setNBATeam] = React.useState(0);
     const [NFLTeam, setNFLTeam] = React.useState(0);
     const isMobile = useMediaQuery({ query: `(max-width:760px)` });
+
+    useEffect(() => {
+        document.body.className = viewMode;
+    }, [viewMode]);
 
     useEffect(() => {
         if (user) {
@@ -61,9 +65,9 @@ const Home = ({ currentUser }) => {
     }, [user]);
 
     const viewingBeta = roleId === Constants.ADMIN || roleId === Constants.BETA;
-
+    const footerClasses = viewMode === 'light' ? 'bg-light' : 'bg-dark';
     return (
-        <div className="App is-fullheight">
+        <div className={`App ${viewMode}`}>
             <NavBar />
             <Route exact path={routes.LANDING} component={LandingPage} />
             <Route
@@ -345,21 +349,22 @@ const Home = ({ currentUser }) => {
             <footer
                 className={
                     !isMobile
-                        ? 'footer fixed-bottom mt-auto py-3 bg-light'
-                        : 'footer mt-auto py-3 bg-light'
+                        ? `footer fixed-bottom mt-auto py-3 ${footerClasses}`
+                        : `footer mt-auto py-3 ${footerClasses}`
                 }
             >
                 <div className="container">
-                    <span className="text-muted">Simfba, 2021</span>
+                    <span>Simfba, 2021</span>
                 </div>
             </footer>
         </div>
     );
 };
 
-// const mapStateToProps = ({ user }) => ({ // commenting out, not used
-//   setCurrentUser: user.currentUser
-// });
+const mapStateToProps = ({ viewMode: { viewMode } }) => ({
+    // commenting out, not used
+    viewMode
+});
 
-export default Home;
-// export default connect(mapStateToProps)(Home);
+// export default Home;
+export default connect(mapStateToProps)(Home);

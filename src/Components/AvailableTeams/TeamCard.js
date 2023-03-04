@@ -1,21 +1,33 @@
 import React from 'react';
+import { GetMobileCardClass } from '../../Constants/CSSClassHelper';
 
 const TeamCard = (props) => {
-    const { isFBS, team, teamId, mascot, logo, conference, disable, coach } =
-        props;
+    const {
+        isFBS,
+        team,
+        teamId,
+        mascot,
+        logo,
+        conference,
+        disable,
+        coach,
+        viewMode
+    } = props;
     const teamObj = { team: team, id: teamId };
     const [requested, setRequested] = React.useState(false);
 
     const sendRequest = () => {
         if (disable === false) {
-            props.request(team);
+            props.request(teamObj);
             setRequested(true);
         }
     };
+    const mobileClass = GetMobileCardClass(viewMode);
+    const cardClass = `${mobileClass} text-center h-100`;
 
     return (
         <div className="col">
-            <div className="card text-center team h-100">
+            <div className={cardClass}>
                 <img
                     className="card-img-top imageSize mx-auto"
                     src={logo}

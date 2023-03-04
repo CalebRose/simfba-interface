@@ -1,12 +1,15 @@
 import React from 'react';
+import { GetModalClass } from '../../../Constants/CSSClassHelper';
 
-export const ExtendPlayerModal = ({ player, idx, extend }) => {
+export const ExtendPlayerModal = ({ player, idx, extend, viewMode }) => {
     const modalId = `extendPlayer${idx}`;
     const name = `${player.FirstName} ${player.LastName}`;
 
     const confirmChange = () => {
         return extend(player);
     };
+
+    const modalClass = GetModalClass(viewMode);
 
     return (
         <div
@@ -17,7 +20,7 @@ export const ExtendPlayerModal = ({ player, idx, extend }) => {
             aria-hidden="true"
         >
             <div className="modal-dialog">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="redshirtModalLabel">
                             Extend Contract

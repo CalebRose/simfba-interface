@@ -2,13 +2,19 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
+import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 import routes from '../../../Constants/routes';
 import BBARecruitingService from '../../../_Services/simNBA/BBARecruitingService';
 import ServiceMessageBanner from '../../_Common/ServiceMessageBanner';
 import CBBTeamDashboardMobileRow from './DashboardComponents/CBBTeamDashboardMobileRow';
 import CBBTeamDashboardPlayerRow from './DashboardComponents/CBBTeamDashboardPlayerRow';
 
-const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
+const CBBRecruitingTeamBoard = ({
+    currentUser,
+    cbbTeam,
+    cbb_Timestamp,
+    viewMode
+}) => {
     // Services
     let _recruitingService = new BBARecruitingService();
 
@@ -22,6 +28,7 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const successMessage = 'Saved successfully!';
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
+    const tableHoverClass = GetTableHoverClass(viewMode);
 
     React.useEffect(() => {
         if (!viewWidth) {
@@ -290,7 +297,11 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                         serMessage={serviceMessage}
                         errMessage={errorMessage}
                     />
-                    <div className="row mt-2 dashboard-table-height">
+                    <div
+                        className={`row mt-2 dashboard-table-height${
+                            viewMode === 'dark' ? '-dark' : ''
+                        }`}
+                    >
                         {isMobile &&
                         cbb_Timestamp &&
                         !cbb_Timestamp.IsRecruitingLocked ? (
@@ -308,12 +319,13 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                                   toggleScholarship
                                               }
                                               changePoints={allocatePoints}
+                                              theme={viewMode}
                                           />
                                       ))
                                     : ''}
                             </>
                         ) : (
-                            <table className="table table-hover">
+                            <table className={tableHoverClass}>
                                 <thead>
                                     <tr>
                                         <th scope="col" abbr="Scholarship">
@@ -359,6 +371,7 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                                       toggleScholarship
                                                   }
                                                   changePoints={allocatePoints}
+                                                  viewMode={viewMode}
                                               />
                                           ))
                                         : ''}
@@ -407,11 +420,13 @@ const CBBRecruitingTeamBoard = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
 const mapStateToProps = ({
     user: { currentUser },
     cbbTeam: { cbbTeam },
-    timestamp: { cbb_Timestamp }
+    timestamp: { cbb_Timestamp },
+    viewMode: { viewMode }
 }) => ({
     currentUser,
     cbbTeam,
-    cbb_Timestamp
+    cbb_Timestamp,
+    viewMode
 });
 
 export default connect(mapStateToProps)(CBBRecruitingTeamBoard);

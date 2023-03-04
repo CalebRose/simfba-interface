@@ -1,11 +1,14 @@
 import React from 'react';
+import { GetModalClass } from '../../../Constants/CSSClassHelper';
 
 const ConfirmSaveRecruitingBoardModal = (props) => {
+    const { viewMode } = props;
     const modalId = 'saveBoardModal';
 
     const SaveChanges = () => {
         return props.save();
     };
+    const modalClass = GetModalClass(viewMode);
 
     return (
         <div
@@ -16,7 +19,7 @@ const ConfirmSaveRecruitingBoardModal = (props) => {
             aria-hidden="true"
         >
             <div className="modal-dialog">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4
                             className="modal-title"

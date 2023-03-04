@@ -11,7 +11,6 @@ import { setCFBTimestamp } from './Redux/timestamp/timestamp.actions';
 import { auth, createUserProfileDocument } from './Firebase/firebase';
 
 // CSS
-import './App.css';
 import './style.css';
 
 // Routes and Pages

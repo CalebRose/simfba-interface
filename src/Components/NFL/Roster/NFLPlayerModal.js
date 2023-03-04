@@ -1,11 +1,13 @@
 import React from 'react';
+import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
 import { GetNFLRound, SetNFLPriority } from '../../../_Utility/RosterHelper';
 import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
 import AttributeRow from '../../Roster/AttributeRow';
 
-export const NFLPlayerModal = ({ team, player, idx }) => {
+export const NFLPlayerModal = ({ team, player, idx, viewMode }) => {
     const modalId = 'playerModal' + idx;
+    const modalClass = GetModalClass(viewMode);
     const heightObj = HeightToFeetAndInches(player.Height);
     player['priorityAttributes'] = SetNFLPriority(player);
     const logo = getLogo(team.TeamName + ' ' + team.Mascot);
@@ -29,7 +31,7 @@ export const NFLPlayerModal = ({ team, player, idx }) => {
             aria-hidden="true"
         >
             <div className="modal-dialog modal-lg">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="playerModalLabel">
                             {player.Archetype} {player.Position}{' '}

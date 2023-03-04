@@ -4,10 +4,8 @@ import CBBCrootModal from '../RecruitingBoard/DashboardComponents/CBBCrootModal'
 
 const CBBDashboardPlayerRow = (props) => {
     const [flag, setFlag] = React.useState(false);
-    const idx = props.idx;
-    const timestamp = props.timestamp;
+    const { idx, timestamp, map, viewMode } = props;
     const data = props.player;
-    const map = props.map;
     const name = data.FirstName + ' ' + data.LastName;
     const keyCode =
         data.FirstName + data.LastName + data.Stars + data.State + data.Country;
@@ -44,7 +42,7 @@ const CBBDashboardPlayerRow = (props) => {
     const customClass = data.IsCustomCroot ? 'text-primary' : '';
     return (
         <>
-            <CBBCrootModal crt={data} idx={idx} />
+            <CBBCrootModal crt={data} idx={idx} viewMode={viewMode} />
             <tr>
                 <th scope="row">
                     <h4>{props.rank}</h4>
@@ -57,7 +55,11 @@ const CBBDashboardPlayerRow = (props) => {
                         data-bs-toggle="modal"
                         data-bs-target={crootModalTarget}
                     >
-                        <i className="bi bi-info-circle" />
+                        <i
+                            className={`bi bi-info-circle ${
+                                viewMode === 'dark' ? 'text-light' : ''
+                            }`}
+                        />
                     </button>
                 </td>
                 <td className="align-middle">

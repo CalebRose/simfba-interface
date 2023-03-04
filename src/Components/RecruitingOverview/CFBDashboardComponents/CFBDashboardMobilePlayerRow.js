@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
+import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
 import { GetOverall } from '../../../_Utility/RosterHelper';
 
 const CFBDashboardMobilePlayerRow = (props) => {
     const [flag, setFlag] = React.useState(false);
-    const { croot, idx, map, timestamp } = props;
+    const { croot, idx, map, timestamp, theme } = props;
     const rank = idx + 1;
     const name = croot.FirstName + ' ' + croot.LastName;
     const affinities = croot.AffinityTwo.length
@@ -15,7 +16,7 @@ const CFBDashboardMobilePlayerRow = (props) => {
     const mapKey = croot.FirstName + croot.LastName + croot.HighSchool;
     const logo =
         croot && croot.College.length > 0 ? getLogo(croot.College) : '';
-
+    const mobileCardClass = GetMobileCardClass(theme);
     useEffect(() => {
         if (map) {
             setFlag(map[mapKey]);
@@ -60,7 +61,7 @@ const CFBDashboardMobilePlayerRow = (props) => {
 
     return (
         <>
-            <div className="card mb-2">
+            <div className={`${mobileCardClass} mb-2`}>
                 <div className="card-body">
                     <h5 className={customClass}>{name}</h5>
                     <h6 className="card-subtitle mb-2 text-muted">

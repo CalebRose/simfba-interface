@@ -5,16 +5,17 @@ import CrootModal from '../../RecruitingOverview/CFBDashboardComponents/CFBDashb
 import ConfirmRemovePlayerFromBoardModal from './CFBTeamRemovePlayerModal';
 import ConfirmRevokeModal from './CFBTeamRevokeScholarshipModal';
 import { getLogo } from '../../../Constants/getLogo';
+import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 
 const CFBTeamMobilePlayerRow = (props) => {
-    const { recruitProfile, idx } = props;
+    const { recruitProfile, idx, theme } = props;
     const { Recruit } = recruitProfile;
     const logo =
         Recruit && Recruit.College.length > 0 ? getLogo(Recruit.College) : '';
     const crootModalTarget = '#crootModal' + idx;
     const revokeModalTarget = '#revokeModal' + idx;
     const removeModalTarget = '#removeModal' + idx;
-
+    const mobileCardClass = GetMobileCardClass(theme);
     const leadingTeamsMapper = (croot) => {
         // Show list of leading teams
         if (croot.LeadingTeams == null || croot.LeadingTeams.length === 0)
@@ -62,7 +63,7 @@ const CFBTeamMobilePlayerRow = (props) => {
                 idx={idx}
                 removePlayer={removePlayerFromBoard}
             />
-            <div className="card mb-2">
+            <div className={`${mobileCardClass} mb-2`}>
                 <div className="card-body">
                     <h5 className="card-title">{name}</h5>
                     <h6 className="card-subtitle mb-2">

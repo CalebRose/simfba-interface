@@ -1,12 +1,15 @@
 import React from 'react';
+import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
 
 const CFBDashboardRankingsModal = (props) => {
-    const { teamProfiles } = props;
+    const { teamProfiles, viewMode } = props;
     const modalId = 'rankingsModal';
     const sortedProfiles =
         teamProfiles &&
         teamProfiles.sort((a, b) => b.CompositeScore - a.CompositeScore);
+
+    const modalClass = GetModalClass(viewMode);
 
     return (
         <div
@@ -18,7 +21,7 @@ const CFBDashboardRankingsModal = (props) => {
             aria-hidden="true"
         >
             <div className="modal-dialog modal-xl modal-dialog-scrollable">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h2 className="modal-title" id="rankingsModalLabel">
                             Recruiting Rankings

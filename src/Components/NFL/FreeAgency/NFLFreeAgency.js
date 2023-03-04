@@ -8,6 +8,7 @@ import {
     LetterGradesList,
     PositionList
 } from '../../../Constants/CommonConstants';
+import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 import EasterEggService from '../../../_Services/simFBA/EasterEggService';
 import FBAPlayerService from '../../../_Services/simFBA/FBAPlayerService';
 import { MapObjOptions, MapOptions } from '../../../_Utility/filterHelper';
@@ -18,7 +19,7 @@ import { FreeAgencyPlayerModal } from './FreeAgencyPlayerModal';
 import { FreeAgentOfferModal } from './FreeAgentOfferModal';
 import NFLFreeAgencyRow from './NFLFreeAgencyRow';
 
-const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp }) => {
+const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     let _rosterService = new FBAPlayerService();
     let _easterEggService = new EasterEggService();
     const positions = MapObjOptions(PositionList);
@@ -44,6 +45,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp }) => {
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     let luckyTeam = Math.floor(Math.random() * (20 - 1) + 1);
     const statusOptions = MapOptions(['Open', 'Negotiating']);
+    const tableClass = GetTableHoverClass(viewMode);
     // For mobile
     useEffect(() => {
         if (!viewWidth) {
@@ -290,7 +292,11 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                     </div>
                     <div className="row"></div>
                     {/* Modals Here */}
-                    <div className="row mt-3 mb-5 dashboard-table-height">
+                    <div
+                        className={`row mt-3 mb-5 dashboard-table-height${
+                            viewMode === 'dark' ? '-dark' : ''
+                        }`}
+                    >
                         {cfb_Timestamp && !cfb_Timestamp.IsFreeAgencyLocked ? (
                             <InfiniteScroll
                                 dataLength={viewablePlayers.length}
@@ -319,12 +325,15 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                 {isMobile ? (
                                     ''
                                 ) : (
-                                    <table className="table table-hover">
+                                    <table className={tableClass}>
                                         <thead
                                             style={{
                                                 position: 'sticky',
                                                 top: 0,
-                                                backgroundColor: 'white',
+                                                backgroundColor:
+                                                    viewMode === 'dark'
+                                                        ? '#202020'
+                                                        : 'white',
                                                 zIndex: 3
                                             }}
                                         >
@@ -368,6 +377,9 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                                             <FreeAgencyPlayerModal
                                                                 player={x}
                                                                 idx={idx}
+                                                                viewMode={
+                                                                    viewMode
+                                                                }
                                                             />
                                                             <FreeAgentOfferModal
                                                                 team={team}
@@ -379,6 +391,9 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                                                 extend={
                                                                     CreateFAOffer
                                                                 }
+                                                                viewMode={
+                                                                    viewMode
+                                                                }
                                                             />
                                                             <CancelOfferModal
                                                                 player={x}
@@ -387,6 +402,9 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                                                     CancelOffer
                                                                 }
                                                                 teamID={team.ID}
+                                                                viewMode={
+                                                                    viewMode
+                                                                }
                                                             />
                                                             <NFLFreeAgencyRow
                                                                 key={x.ID}
@@ -395,6 +413,9 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                                                 idx={idx}
                                                                 ts={
                                                                     cfb_Timestamp
+                                                                }
+                                                                viewMode={
+                                                                    viewMode
                                                                 }
                                                             />
                                                         </>
@@ -432,11 +453,13 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp }) => {
 const mapStateToProps = ({
     user: { currentUser },
     nflTeam: { nflTeam },
-    timestamp: { cfb_Timestamp }
+    timestamp: { cfb_Timestamp },
+    viewMode: { viewMode }
 }) => ({
     currentUser,
     nflTeam,
-    cfb_Timestamp
+    cfb_Timestamp,
+    viewMode
 });
 
 export default connect(mapStateToProps)(NFLFreeAgency);

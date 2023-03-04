@@ -2,7 +2,7 @@ import React from 'react';
 import { getLogo } from '../../../Constants/getLogo';
 import { baseUrl } from '../../../Constants/logos';
 
-const NFLFreeAgencyRow = ({ teamID, player, idx, ts }) => {
+const NFLFreeAgencyRow = ({ teamID, player, idx, viewMode }) => {
     const rank = idx + 1;
     const NameLabel = player.FirstName + ' ' + player.LastName;
     const modalTarget = '#playerModal' + idx;
@@ -54,7 +54,11 @@ const NFLFreeAgencyRow = ({ teamID, player, idx, ts }) => {
                     data-bs-toggle="modal"
                     data-bs-target={modalTarget}
                 >
-                    <i className="bi bi-info-circle" />
+                    <i
+                        className={`bi bi-info-circle ${
+                            viewMode === 'dark' ? 'text-light' : ''
+                        }`}
+                    />
                 </button>
             </th>
             <td className="align-middle" style={{ width: 175 }}>

@@ -1,10 +1,11 @@
 import React from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
+import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 import routes from '../../../Constants/routes';
 
 const CFBDashboardSidebar = (props) => {
-    const { cfbTeam, teamNeeds, recruitingProfile } = props;
+    const { cfbTeam, teamNeeds, recruitingProfile, theme } = props;
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
 
@@ -72,7 +73,7 @@ const CFBDashboardSidebar = (props) => {
         teamNeeds && teamNeeds['K'] !== undefined ? teamNeeds['K'] : 0;
     const PNeeds =
         teamNeeds && teamNeeds['P'] !== undefined ? teamNeeds['P'] : 0;
-
+    const mobileClass = GetMobileCardClass(theme);
     const DesktopRender = () => {
         return (
             <>
@@ -196,7 +197,7 @@ const CFBDashboardSidebar = (props) => {
     const MobileRender = () => {
         return (
             <>
-                <div className="card">
+                <div className={mobileClass}>
                     <div className="card-body">
                         <h4 className="card-title">
                             {cfbTeam ? cfbTeam.TeamName : 'Team'} Profile

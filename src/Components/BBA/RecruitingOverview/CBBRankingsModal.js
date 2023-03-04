@@ -1,14 +1,15 @@
 import React from 'react';
+import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
 import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
 
 const CBBRankingsModal = (props) => {
-    const { teamProfiles } = props;
+    const { teamProfiles, viewMode } = props;
     const modalId = 'rankingsModal';
     const sortedProfiles =
         teamProfiles &&
         teamProfiles.sort((a, b) => b.CompositeScore - a.CompositeScore);
-
+    const modalClass = GetModalClass(viewMode);
     return (
         <div
             className="modal fade"
@@ -19,7 +20,7 @@ const CBBRankingsModal = (props) => {
             aria-hidden="true"
         >
             <div className="modal-dialog modal-xl modal-dialog-scrollable">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h2 className="modal-title" id="rankingsModalLabel">
                             Recruiting Rankings

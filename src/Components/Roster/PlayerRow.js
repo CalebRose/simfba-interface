@@ -3,7 +3,7 @@ import { GetOverall, GetYear, SetPriority } from '../../_Utility/RosterHelper';
 import { HeightToFeetAndInches } from '../../_Utility/utilHelper';
 
 const PlayerRow = (props) => {
-    const { idx, redshirtCount, ts, view } = props;
+    const { idx, redshirtCount, ts, view, theme } = props;
     let data = props.data;
     let modalTarget = '#redshirtModal' + idx;
     const playerTarget = '#playerModal' + idx;
@@ -27,7 +27,11 @@ const PlayerRow = (props) => {
                     data-bs-toggle="modal"
                     data-bs-target={playerTarget}
                 >
-                    <i className="bi bi-info-circle" />
+                    <i
+                        className={`bi bi-info-circle ${
+                            theme === 'dark' ? 'text-light' : ''
+                        }`}
+                    />
                 </button>
             </th>
             <td label="Archtype">{data.Archetype}</td>

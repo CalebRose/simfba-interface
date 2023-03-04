@@ -21,8 +21,9 @@ import DepthChartMobilePlayerRow from '../../DepthChart/DepthChartMobilePlayerRo
 import FBADepthChartService from '../../../_Services/simFBA/FBADepthChartService';
 import FBATeamService from '../../../_Services/simFBA/FBATeamService';
 import FBAPlayerService from '../../../_Services/simFBA/FBAPlayerService';
+import { GetTableClass } from '../../../Constants/CSSClassHelper';
 
-const NFLDepthChart = ({ currentUser, nflTeam }) => {
+const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
     // Services
     let depthChartService = new FBADepthChartService();
     let teamService = new FBATeamService();
@@ -48,7 +49,7 @@ const NFLDepthChart = ({ currentUser, nflTeam }) => {
     const [serviceMessage, setServiceMessage] = React.useState('');
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
-
+    const tableClass = GetTableClass(viewMode);
     // For mobile
     React.useEffect(() => {
         if (!viewWidth) {
@@ -198,7 +199,7 @@ const NFLDepthChart = ({ currentUser, nflTeam }) => {
         if (ID !== null || ID > 0) {
             let roster = await rosterService.GetNFLPlayersForDepthChartPage(ID);
             setRoster(() => roster);
-            let players = GetAvailablePlayers(abbr, [...roster]);
+            let players = GetAvailablePlayers('QB', [...roster]);
             setAvailablePlayers(() => players);
         }
     };
@@ -533,7 +534,7 @@ const NFLDepthChart = ({ currentUser, nflTeam }) => {
                                     })}
                             </>
                         ) : (
-                            <table className="table">
+                            <table className={tableClass}>
                                 <thead>
                                     <tr>
                                         {positionAttributes &&
@@ -583,9 +584,14 @@ const NFLDepthChart = ({ currentUser, nflTeam }) => {
     );
 };
 
-const mapStateToProps = ({ user: { currentUser }, nflTeam: { nflTeam } }) => ({
+const mapStateToProps = ({
+    user: { currentUser },
+    nflTeam: { nflTeam },
+    viewMode: { viewMode }
+}) => ({
     currentUser,
-    nflTeam
+    nflTeam,
+    viewMode
 });
 
 export default connect(mapStateToProps)(NFLDepthChart);

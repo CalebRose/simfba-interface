@@ -6,14 +6,20 @@ import routes from '../../Constants/routes';
 import NavBarStart from './NavBarStart';
 import { connect } from 'react-redux';
 
-const NavBar = ({ currentUser }) => {
+const NavBar = ({ currentUser, viewMode }) => {
     /*
     Will Need to setup some kind of Modal
   */
     const user = currentUser;
+    const GetViewModeClasses = (theme) => {
+        if (theme === 'light') return 'bg-light';
+        return 'navbar-dark bg-dark';
+    };
+
+    const viewModeClasses = GetViewModeClasses(viewMode);
     return (
         <nav
-            className="navbar navbar-expand-lg navbar-light bg-light"
+            className={`navbar navbar-expand-lg ${viewModeClasses}`}
             role="navigation"
             aria-label="main navigation"
         >
@@ -50,8 +56,12 @@ const NavBar = ({ currentUser }) => {
     // Return
 };
 
-const mapStateToProps = ({ user: { currentUser } }) => ({
-    currentUser
+const mapStateToProps = ({
+    user: { currentUser },
+    viewMode: { viewMode }
+}) => ({
+    currentUser,
+    viewMode
 });
 
 export default connect(mapStateToProps)(NavBar);

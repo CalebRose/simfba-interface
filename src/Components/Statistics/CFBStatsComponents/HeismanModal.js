@@ -1,7 +1,9 @@
 import React from 'react';
+import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
 
-const HeismanModal = ({ list }) => {
+const HeismanModal = ({ list, viewMode }) => {
+    const modalClass = GetModalClass(viewMode);
     return (
         <div
             class="modal fade"
@@ -11,7 +13,7 @@ const HeismanModal = ({ list }) => {
             aria-hidden="true"
         >
             <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                <div class="modal-content">
+                <div class={modalClass}>
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">
                             Heisman Watch List

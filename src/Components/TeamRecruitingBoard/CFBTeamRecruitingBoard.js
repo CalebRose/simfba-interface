@@ -14,7 +14,12 @@ import CFBTeamMobilePlayerRow from './CFBTeamRecruitingComponents/CFBTeamRecruit
 import CFBTeamDashboardPlayerRow from './CFBTeamRecruitingComponents/CFBTeamRecruitingPlayerRow';
 import ConfirmSaveRecruitingBoardModal from './CFBTeamRecruitingComponents/CFBTeamSaveBoardModal';
 
-const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
+const CFBTeamRecruitingBoard = ({
+    currentUser,
+    cfbTeam,
+    cfb_Timestamp,
+    viewMode
+}) => {
     // Services
     let _recruitingService = new FBARecruitingService();
 
@@ -228,6 +233,7 @@ const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                         <CFBTeamBoardSidebar
                             cfbTeam={cfbTeam}
                             recruitingProfile={recruitingProfile}
+                            theme={viewMode}
                         />
                     ) : (
                         ''
@@ -274,7 +280,11 @@ const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                         serMessage={serviceMessage}
                         errMessage={errorMessage}
                     />
-                    <div className="row mt-2 dashboard-table-height">
+                    <div
+                        className={`row mt-2 dashboard-table-height${
+                            viewMode === 'dark' ? '-dark' : ''
+                        }`}
+                    >
                         {isMobile &&
                         cfb_Timestamp &&
                         !cfb_Timestamp.IsRecruitingLocked ? (
@@ -292,12 +302,17 @@ const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                                   ToggleScholarship
                                               }
                                               changePoints={AllocatePoints}
+                                              theme={viewMode}
                                           />
                                       ))
                                     : ''}
                             </>
                         ) : (
-                            <table className="table table-sm table-hover">
+                            <table
+                                className={`table table-sm table-hover ${
+                                    viewMode === 'dark' ? 'table-dark' : ''
+                                }`}
+                            >
                                 <thead>
                                     <tr>
                                         <th scope="col" abbr="Scholarship">
@@ -353,6 +368,7 @@ const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                                       ToggleScholarship
                                                   }
                                                   changePoints={AllocatePoints}
+                                                  viewMode={viewMode}
                                               />
                                           ))
                                         : ''}
@@ -403,11 +419,13 @@ const CFBTeamRecruitingBoard = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
 const mapStateToProps = ({
     user: { currentUser },
     cfbTeam: { cfbTeam },
-    timestamp: { cfb_Timestamp }
+    timestamp: { cfb_Timestamp },
+    viewMode: { viewMode }
 }) => ({
     currentUser,
     cfbTeam,
-    cfb_Timestamp
+    cfb_Timestamp,
+    viewMode
 });
 
 export default connect(mapStateToProps)(CFBTeamRecruitingBoard);

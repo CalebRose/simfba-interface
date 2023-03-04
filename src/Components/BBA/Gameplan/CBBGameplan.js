@@ -4,8 +4,12 @@ import BBAPlayerService from '../../../_Services/simNBA/BBAPlayerService';
 import CBBGameplanRow from './CBBGameplanRow';
 import BBAGameplanService from '../../../_Services/simNBA/BBAGameplanService';
 import GameplanPlayerRow from './CBBGameplanPlayerRow';
+import {
+    GetTableClass,
+    GetTableHoverClass
+} from '../../../Constants/CSSClassHelper';
 
-const CBBGameplan = ({ currentUser }) => {
+const CBBGameplan = ({ currentUser, viewMode }) => {
     let playerService = new BBAPlayerService();
     let gameplanService = new BBAGameplanService();
     const [team, setTeam] = React.useState('');
@@ -16,7 +20,8 @@ const CBBGameplan = ({ currentUser }) => {
     const [serviceMessage, setServiceMessage] = React.useState('');
     const savingMessage = 'Saving...';
     const paceOptions = ['Very Fast', 'Fast', 'Balanced', 'Slow', 'Very Slow'];
-
+    const tableClass = GetTableClass(viewMode);
+    const tableHoverClass = GetTableHoverClass(viewMode);
     useEffect(() => {
         if (currentUser) {
             setTeam(() => currentUser.cbb_team);
@@ -270,7 +275,7 @@ const CBBGameplan = ({ currentUser }) => {
             )}
             <div className="row">
                 <div className="row mt-3">
-                    <table className="table">
+                    <table className={tableClass}>
                         <thead>
                             <tr>
                                 <th scope="col"></th>
@@ -292,8 +297,12 @@ const CBBGameplan = ({ currentUser }) => {
                         </tbody>
                     </table>
                 </div>
-                <div className="row mt-3 overflow-auto gameplan-table-height">
-                    <table className="table table-hover">
+                <div
+                    className={`row mt-3 overflow-auto gameplan-table-height${
+                        viewMode === 'dark' ? '-dark' : ''
+                    }`}
+                >
+                    <table className={tableHoverClass}>
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -335,8 +344,12 @@ const CBBGameplan = ({ currentUser }) => {
     );
 };
 
-const mapStateToProps = ({ user: { currentUser } }) => ({
-    currentUser
+const mapStateToProps = ({
+    user: { currentUser },
+    viewMode: { viewMode }
+}) => ({
+    currentUser,
+    viewMode
 });
 
 export default connect(mapStateToProps)(CBBGameplan);

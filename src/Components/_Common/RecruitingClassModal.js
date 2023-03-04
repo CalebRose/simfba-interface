@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import Select from 'react-select';
+import { GetModalClass } from '../../Constants/CSSClassHelper';
 import { getLogo } from '../../Constants/getLogo';
 import FBARecruitingService from '../../_Services/simFBA/FBARecruitingService';
 import BBARecruitingService from '../../_Services/simNBA/BBARecruitingService';
 import { GetOverall } from '../../_Utility/RosterHelper';
 
-const RecruitingClassModal = ({ isCFB, teams, userTeam }) => {
+const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode }) => {
     let _recruitingService = new FBARecruitingService();
     let _bbaRecruitingService = new BBARecruitingService();
     const modalId = `recruitingClassModal`;
@@ -211,6 +212,8 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam }) => {
         );
     };
 
+    const modalClass = GetModalClass(viewMode);
+
     return (
         <div
             className="modal fade"
@@ -220,7 +223,7 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam }) => {
             aria-hidden="true"
         >
             <div className="modal-dialog modal-xl">
-                <div className="modal-content">
+                <div className={viewMode}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="standingsLabel">
                             <img

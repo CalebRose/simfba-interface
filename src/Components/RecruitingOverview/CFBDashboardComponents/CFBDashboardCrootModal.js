@@ -1,8 +1,9 @@
 import React from 'react';
+import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
 
 const CrootModal = (props) => {
-    const { crt, idx } = props;
+    const { crt, idx, viewMode } = props;
     const modalId = 'crootModal' + idx;
     const heightObj = HeightToFeetAndInches(crt.Height);
     // const leadingTeams = crt.LeadingTeams;
@@ -72,6 +73,8 @@ const CrootModal = (props) => {
 
     const tendency = getTendency(crt.RecruitModifier);
 
+    const modalClass = GetModalClass(viewMode);
+
     return (
         <div
             className="modal fade"
@@ -81,7 +84,7 @@ const CrootModal = (props) => {
             aria-hidden="true"
         >
             <div className="modal-dialog">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="crootModalLabel">
                             {crt.FirstName} {crt.LastName}

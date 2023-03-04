@@ -10,14 +10,14 @@ import App from './App';
 // import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-  <Provider store={store}>
-    <Router basename={process.env.PUBLIC_URL}>
-      <PersistGate persistor={persistor}>
-        <App />
-      </PersistGate>
-    </Router>
-  </Provider>,
-  document.getElementById('root')
+    <Provider store={store}>
+        <Router basename={process.env.PUBLIC_URL}>
+            <PersistGate persistor={persistor}>
+                <App />
+            </PersistGate>
+        </Router>
+    </Provider>,
+    document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change

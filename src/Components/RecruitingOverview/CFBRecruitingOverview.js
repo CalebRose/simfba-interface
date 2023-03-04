@@ -27,7 +27,12 @@ import { GetCollusionStatements } from '../../Constants/CollusionStatements';
 import CFBDashboardMobilePlayerRow from './CFBDashboardComponents/CFBDashboardMobilePlayerRow';
 import RecruitingClassModal from '../_Common/RecruitingClassModal';
 
-const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
+const CFBRecruitingOverview = ({
+    currentUser,
+    cfbTeam,
+    cfb_Timestamp,
+    viewMode
+}) => {
     // Services
     let _recruitingService = new FBARecruitingService();
     let _easterEggService = new EasterEggService();
@@ -298,9 +303,9 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     };
 
     const CollusionButton = async () => {
-        const randomInt = Math.floor(Math.random() * recruits.length - 1);
+        let randomInt = Math.floor(Math.random() * recruits.length - 1);
         if (randomInt >= recruits.length) {
-            randomInt -= recruits.length - 1;
+            randomInt = recruits.length - 1;
         }
         const randomCroot =
             randomInt > -1 && randomInt < recruits.length
@@ -352,6 +357,7 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             cfbTeam={cfbTeam}
                             teamNeeds={recruitingNeeds}
                             recruitingProfile={recruitingProfile}
+                            theme={viewMode}
                         />
                     ) : (
                         ''
@@ -522,13 +528,21 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             ''
                         )}
                     </div>
-                    <CFBDashboardRankingsModal teamProfiles={teamProfiles} />
+                    <CFBDashboardRankingsModal
+                        teamProfiles={teamProfiles}
+                        viewMode={viewMode}
+                    />
                     <RecruitingClassModal
                         teams={teamProfiles}
                         userTeam={cfbTeam}
                         isCFB
+                        viewMode={viewMode}
                     />
-                    <div className="row mt-3 mb-5 dashboard-table-height">
+                    <div
+                        className={`row mt-3 mb-5 dashboard-table-height${
+                            viewMode === 'dark' ? '-dark' : ''
+                        }`}
+                    >
                         {cfb_Timestamp && !cfb_Timestamp.IsRecruitingLocked ? (
                             <InfiniteScroll
                                 dataLength={viewableRecruits.length}
@@ -560,12 +574,19 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                                       add={AddRecruitToBoard}
                                                       map={crootMap}
                                                       timestamp={cfb_Timestamp}
+                                                      theme={viewMode}
                                                   />
                                               ))
                                             : ''}
                                     </>
                                 ) : (
-                                    <table className="table table-hover">
+                                    <table
+                                        className={`table table-hover ${
+                                            viewMode === 'dark'
+                                                ? 'table-dark'
+                                                : ''
+                                        }`}
+                                    >
                                         <thead
                                             style={{
                                                 position: 'sticky',
@@ -622,6 +643,9 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                                               <CrootModal
                                                                   crt={x}
                                                                   idx={idx}
+                                                                  viewMode={
+                                                                      viewMode
+                                                                  }
                                                               />
                                                               <CFBDashboardPlayerRow
                                                                   key={x.ID}
@@ -633,6 +657,9 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                                                   map={crootMap}
                                                                   timestamp={
                                                                       cfb_Timestamp
+                                                                  }
+                                                                  theme={
+                                                                      viewMode
                                                                   }
                                                               />
                                                           </>
@@ -671,11 +698,13 @@ const CFBRecruitingOverview = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
 const mapStateToProps = ({
     user: { currentUser },
     cfbTeam: { cfbTeam },
-    timestamp: { cfb_Timestamp }
+    timestamp: { cfb_Timestamp },
+    viewMode: { viewMode }
 }) => ({
     currentUser,
     cfbTeam,
-    cfb_Timestamp
+    cfb_Timestamp,
+    viewMode
 });
 
 export default connect(mapStateToProps)(CFBRecruitingOverview);

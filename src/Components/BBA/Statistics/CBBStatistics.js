@@ -3,11 +3,11 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import Select from 'react-select';
+import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 import BBAStatsService from '../../../_Services/simNBA/BBAStatsService';
 import {
     MapCBBTeamOptions,
-    MapConferenceOptions,
-    MapTeamOptions
+    MapConferenceOptions
 } from '../../../_Utility/filterHelper';
 import {
     ConductSort,
@@ -22,7 +22,7 @@ import { CBBPerGameHeader } from './CBBPerGameHeader';
 import CBBPlayerStatRow from './CBBPlayerStatRow';
 import CBBTeamStatRow from './CBBTeamStatRow';
 
-const CBBStatsPage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
+const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
     // Services
     let _statsService = new BBAStatsService();
 
@@ -41,6 +41,7 @@ const CBBStatsPage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const [sort, setSort] = React.useState('PPG');
     const [isAsc, setIsAsc] = React.useState(false);
     const [viewWidth, setViewWidth] = useState(window.innerWidth);
+    const tableHoverClass = GetTableHoverClass(viewMode);
     useEffect(() => {
         if (!viewWidth) {
             setViewWidth(window.innerWidth);
@@ -452,12 +453,15 @@ const CBBStatsPage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                     shooting 3's
                                 </>
                             ) : (
-                                <table className="table table-hover">
+                                <table className={tableHoverClass}>
                                     <thead
                                         style={{
                                             position: 'sticky',
                                             top: 0,
-                                            backgroundColor: 'white',
+                                            backgroundColor:
+                                                viewMode === 'dark'
+                                                    ? '#1a1a1a'
+                                                    : 'white',
                                             zIndex: 3
                                         }}
                                     >
@@ -501,11 +505,11 @@ const CBBStatsPage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
 
 const mapStateToProps = ({
     user: { currentUser },
-    cbbTeam: { cbbTeam },
+    viewMode: { viewMode },
     timestamp: { cbb_Timestamp }
 }) => ({
     currentUser,
-    cbbTeam,
+    viewMode,
     cbb_Timestamp
 });
 

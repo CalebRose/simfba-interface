@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
 import {
     GetCapSpace,
@@ -12,8 +13,16 @@ import {
 } from './FreeAgencyHelper';
 import { OfferInput, TotalInput } from './FreeAgencyOfferInput';
 
-export const FreeAgentOfferModal = ({ team, player, ts, idx, extend }) => {
+export const FreeAgentOfferModal = ({
+    team,
+    player,
+    ts,
+    idx,
+    extend,
+    viewMode
+}) => {
     const modalId = `offerModal${idx}`;
+    const modalClass = GetModalClass(viewMode);
     const name = `${player.FirstName} ${player.LastName}`;
     const [existingOffer, setExistingOffer] = useState(null);
     const [offer, setOffer] = useState(() => {
@@ -250,7 +259,7 @@ export const FreeAgentOfferModal = ({ team, player, ts, idx, extend }) => {
             aria-hidden="true"
         >
             <div className="modal-dialog modal-xl">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="redshirtModalLabel">
                             {team.TeamName}: Make Offer to {name},{' '}

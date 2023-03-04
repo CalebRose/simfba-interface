@@ -5,6 +5,7 @@ import ConfirmRevokeModal from '../../../TeamRecruitingBoard/CFBTeamRecruitingCo
 import CBBCrootModal from './CBBCrootModal';
 
 const CBBTeamDashboardPlayerRow = (props) => {
+    const viewMode = props.viewMode;
     const data = props.player;
     const idx = props.idx;
     const recruit = data.Recruit;
@@ -42,14 +43,16 @@ const CBBTeamDashboardPlayerRow = (props) => {
 
     return (
         <>
-            <CBBCrootModal crt={recruit} idx={idx} />
+            <CBBCrootModal crt={recruit} idx={idx} viewMode={viewMode} />
             <ConfirmRevokeModal
                 idx={idx}
                 toggleScholarship={toggleScholarship}
+                viewMode={viewMode}
             />
             <ConfirmRemovePlayerFromBoardModal
                 idx={idx}
                 removePlayer={removePlayerFromBoard}
+                viewMode={viewMode}
             />
             <tr>
                 <th scope="row">
@@ -94,7 +97,11 @@ const CBBTeamDashboardPlayerRow = (props) => {
                         data-bs-toggle="modal"
                         data-bs-target={crootModalTarget}
                     >
-                        <i className="bi bi-info-circle" />
+                        <i
+                            className={`bi bi-info-circle ${
+                                viewMode === 'dark' ? 'text-light' : ''
+                            }`}
+                        />
                     </button>
                 </td>
                 <td className="align-middle">

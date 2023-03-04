@@ -1,11 +1,12 @@
 import React from 'react';
+import { GetMobileCardClass } from '../../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../../Constants/getLogo';
 import ConfirmRemovePlayerFromBoardModal from '../../../TeamRecruitingBoard/CFBTeamRecruitingComponents/CFBTeamRemovePlayerModal';
 import ConfirmRevokeModal from '../../../TeamRecruitingBoard/CFBTeamRecruitingComponents/CFBTeamRevokeScholarshipModal';
 import CBBCrootModal from './CBBCrootModal';
 
 const CBBTeamDashboardMobileRow = (props) => {
-    const { recruitProfile, idx } = props;
+    const { recruitProfile, idx, theme } = props;
     const recruit = recruitProfile.Recruit;
     const logo =
         recruit && recruit.College.length > 0 ? getLogo(recruit.College) : '';
@@ -14,6 +15,7 @@ const CBBTeamDashboardMobileRow = (props) => {
     const removeModalTarget = '#removeModal' + idx;
     const name = recruit.FirstName + ' ' + recruit.LastName;
     const loc = recruit.Country === 'USA' ? recruit.State : recruit.Country;
+    const mobileCardClass = GetMobileCardClass(theme);
     const leadingTeamsMapper = (data) => {
         if (data.LeadingTeams == null || data.LeadingTeams.length === 0)
             return 'None';
@@ -51,7 +53,7 @@ const CBBTeamDashboardMobileRow = (props) => {
                 idx={idx}
                 removePlayer={removePlayerFromBoard}
             />
-            <div className="card mb-2">
+            <div className={`${mobileCardClass} mb-2`}>
                 <div className="card-body">
                     <h5
                         className={

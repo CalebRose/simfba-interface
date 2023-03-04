@@ -1,12 +1,14 @@
 import React from 'react';
+import { GetModalClass } from '../../../Constants/CSSClassHelper';
 
 const ConfirmRevokeModal = (props) => {
-    const { idx } = props;
+    const { idx, viewMode } = props;
     const modalId = 'revokeModal' + idx;
 
     const confirmChange = () => {
         return props.toggleScholarship();
     };
+    const modalClass = GetModalClass(viewMode);
 
     return (
         <div
@@ -17,7 +19,7 @@ const ConfirmRevokeModal = (props) => {
             aria-hidden="true"
         >
             <div className="modal-dialog">
-                <div className="modal-content">
+                <div className={viewMode}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="revokeModalLabel">
                             Confirm Revoke Scholarship

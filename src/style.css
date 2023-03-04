@@ -1,5 +1,46 @@
 /* Hero Container + Nav for all pages */
 /* Background Image */
+.App {
+    text-align: center;
+}
+.dark {
+    background-color: #202020;
+    color: #fff;
+    --sfa-background-color: #202020;
+    --select-bar-background: rgba(33, 37, 41, 1) !important;
+    --sfa-text-color: rgba(255, 255, 255, 0.55);
+    --sfa-hover-color: rgba(255, 255, 255, 0.5);
+    --select-bar-border-color: rgba(255, 255, 255, 0.1);
+    --bs-body-bg: #202020;
+    --bs-form-control-bg: #202020;
+    --bs-body-color: #fff;
+    --bs-secondary-color: rgba(255, 255, 255, 0.5);
+    --bs-border-color-translucent: rgba(255, 255, 255, 0.75);
+    /* --bs-dropdown-link-hover-color: #202020 !important; */
+    /* --bs-dropdown-link-hover-bg: var(--bs-tertiary-bg); */
+}
+
+.dark .dropdown-item:focus,
+.dark .dropdown-item:hover {
+    color: #202020 !important;
+}
+.light {
+    background-color: #fff;
+    color: #333;
+    --sfa-background-color: #fff;
+    --select-bar-background: rgba(255, 255, 255, 1) !important;
+    --sfa-text-color: #333;
+    --sfa-hover-color: #5492ee;
+    --select-bar-border-color: rgba(204, 204, 204);
+    --bs-body-bg: #fff;
+    --bs-form-control-bg: #fff;
+    --bs-body-color: #212529;
+}
+.navy {
+    background-color: #151957;
+    color: #fff;
+}
+
 .landing-image {
     max-height: 200px !important;
 }
@@ -79,7 +120,6 @@
 }
 
 .userInterface {
-    background-color: rgba(255, 255, 255, 0.9) !important;
     padding: 24px;
     border-radius: 10px;
 }
@@ -238,7 +278,12 @@
 }
 
 .table-height th {
-    background: white;
+    background-color: white;
+    box-shadow: 0px 1px 0px 0px #000000;
+}
+
+.table-height-dark th {
+    background-color: #202020;
     box-shadow: 0px 1px 0px 0px #000000;
 }
 
@@ -470,7 +515,8 @@ td {
 /*
   CBB Gameplan
 */
-.gameplan-table-height {
+.gameplan-table-height,
+.gameplan-table-height-dark {
     height: 55vh;
     overflow: auto;
 }
@@ -480,7 +526,13 @@ td {
     box-shadow: 0px 1px 0px 0px #000000;
 }
 
-.gameplan-table-height thead th {
+.gameplan-table-height-dark th {
+    background: #202020;
+    box-shadow: 0px 1px 0px 0px #000000;
+}
+
+.gameplan-table-height thead th,
+.gameplan-table-height-dark thead th {
     position: sticky;
     top: 0;
     z-index: 1;
@@ -515,7 +567,23 @@ td {
     box-shadow: 0px 1px 0px 0px #000000;
 }
 
-.dashboard-table-height thead th {
+.dashboard-table-height-dark thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.dashboard-table-height-dark {
+    max-height: 65vh;
+    overflow-y: auto;
+}
+
+.dashboard-table-height-dark th {
+    background: #202020;
+    box-shadow: 0px 1px 0px 0px #fff;
+}
+
+.dashboard-table-height-dark thead th {
     position: sticky;
     top: 0;
     z-index: 1;
@@ -587,4 +655,45 @@ td {
     table td::before {
         min-width: 5rem;
     }
+}
+
+.select__control {
+    /*
+    --sfa-background-color: #202020;
+    --select-bar-background: rgba(33, 37, 41, 1) !important;
+    --sfa-text-color: rgba(255, 255, 255, 0.55);
+    --sfa-hover-color: rgba(255, 255, 255, 0.75);
+    --select-bar-border-color: rgba(255, 255, 255, 0.1);
+*/
+
+    background-color: var(--select-bar-background) !important;
+    border-color: var(--select-bar-border-color) !important;
+    transition: none !important;
+}
+
+.select__control:hover {
+    border-color: var(--select-bar-border-color) !important;
+}
+
+.select__menu {
+    background-color: var(--select-bar-background) !important;
+    border: 1px solid var(--select-bar-border-color) !important;
+}
+
+.select__option {
+    background-color: var(--select-bar-background) !important;
+}
+
+.select__option:hover {
+    background-color: var(--sfa-hover-color) !important;
+    color: var(--sfa-background-color) !important;
+}
+
+.select__indicator-separator {
+    background-color: var(--select-bar-background) !important;
+}
+
+.select__placeholder,
+.select__single-value {
+    color: var(--sfa-text-color) !important;
 }

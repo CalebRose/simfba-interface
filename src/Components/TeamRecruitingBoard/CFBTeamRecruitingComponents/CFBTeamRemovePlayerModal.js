@@ -1,12 +1,15 @@
 import React from 'react';
+import { GetModalClass } from '../../../Constants/CSSClassHelper';
 
 const ConfirmRemovePlayerFromBoardModal = (props) => {
-    const { idx } = props;
+    const { idx, viewMode } = props;
     const modalId = 'removeModal' + idx;
 
     const confirmChange = () => {
         return props.removePlayer();
     };
+    const modalClass = GetModalClass(viewMode);
+
     return (
         <div
             className="modal fade"
@@ -16,7 +19,7 @@ const ConfirmRemovePlayerFromBoardModal = (props) => {
             aria-hidden="true"
         >
             <div className="modal-dialog">
-                <div className="modal-content">
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="removeModalLabel">
                             Confirm Remove Recruit

@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
+import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
 
 const CBBDashboardMobileRow = (props) => {
     const [flag, setFlag] = React.useState(false);
-    const { croot, idx, map, timestamp } = props;
+    const { croot, idx, map, timestamp, theme } = props;
     const rank = idx + 1;
     const name = croot.FirstName + ' ' + croot.LastName;
     const keyCode =
@@ -17,7 +18,7 @@ const CBBDashboardMobileRow = (props) => {
         croot.Country;
     const logo =
         croot && croot.College.length > 0 ? getLogo(croot.College) : '';
-
+    const mobileClass = GetMobileCardClass(theme);
     useEffect(() => {
         if (map) setFlag(map[keyCode]);
     }, [map, keyCode]);
@@ -46,7 +47,7 @@ const CBBDashboardMobileRow = (props) => {
 
     return (
         <>
-            <div className="card mb-2">
+            <div className={`${mobileClass} mb-2`}>
                 <div className="card-body">
                     <h5
                         className={

@@ -2,7 +2,7 @@ import React from 'react';
 import { getLogo } from '../../Constants/getLogo';
 
 const GameRow = (props) => {
-    const { idx, game, currentWeek } = props;
+    const { idx, game, currentWeek, viewMode } = props;
 
     const homeTeam = {
         Team: game.HomeTeam,
@@ -36,7 +36,7 @@ const GameRow = (props) => {
     if (game.IsNeutral) {
         detailsLabel += ' | Neutral Site';
     }
-    let cardClass = 'card mb-3';
+    let cardClass = `card mb-3 ${viewMode === 'dark' ? 'text-bg-dark' : ''}`;
     return (
         <div className={cardClass} style={{ maxWidth: '75vw' }}>
             <div className="row g-0">
