@@ -149,3 +149,14 @@ export const ValidateRule5 = (bonus, total, isOffseason) => {
     if (!isOffseason) return true;
     return bonus / total >= 0.3;
 };
+
+export const ValidateRule6 = (s1, s2, s3, s4, s5) => {
+    const arr = [s1, s2, s3, s4, s5];
+    let valid = true;
+    for (let i = 0; i < arr.length; i++) {
+        const salary = arr[i];
+        if (salary > 0) valid = salary > 0.5;
+        if (!valid) return valid;
+    }
+    return valid;
+};

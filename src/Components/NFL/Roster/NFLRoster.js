@@ -217,7 +217,18 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
         setTeam(() => t);
     };
     const ExtendPlayer = () => {};
-    const TradeBlockPlayer = () => {};
+    const TradeBlockPlayer = (player) => {
+        // const res = await _rosterService.PlacePlayerOnTradeBlock(player.ID);
+        const currentRoster = [...roster];
+        const rosterIdx = currentRoster.findIndex((x) => x.ID === player.ID);
+        currentRoster[rosterIdx].IsOnTradeBlock = true;
+        const currentViewRoster = [...viewRoster];
+        const viewIdx = currentViewRoster.findIndex((x) => x.ID === player.ID);
+        currentViewRoster[viewIdx].IsOnTradeBlock = true;
+
+        setRoster(() => currentRoster);
+        setViewRoster(() => currentViewRoster);
+    };
     const PracticeSquadPlayer = () => {};
 
     return (

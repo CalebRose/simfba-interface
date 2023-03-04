@@ -9,7 +9,8 @@ import {
     ValidateRule2,
     ValidateRule3,
     ValidateRule4,
-    ValidateRule5
+    ValidateRule5,
+    ValidateRule6
 } from './FreeAgencyHelper';
 import { OfferInput, TotalInput } from './FreeAgencyOfferInput';
 
@@ -46,6 +47,7 @@ export const FreeAgentOfferModal = ({
     const [rule3Valid, setRule3] = useState(true);
     const [rule4Valid, setRule4] = useState(true);
     const [rule5Valid, setRule5] = useState(true);
+    const [rule6Valid, setRule6] = useState(true);
     const { MinimumValue } = player;
 
     const confirmChange = () => {
@@ -202,6 +204,14 @@ export const FreeAgentOfferModal = ({
             ts.IsNFLOffSeason
         );
 
+        const isRule6Valid = ValidateRule6(
+            offer.Y1BaseSalary,
+            offer.Y2BaseSalary,
+            offer.Y3BaseSalary,
+            offer.Y4BaseSalary,
+            offer.Y5BaseSalary
+        );
+
         const canMakeOffer =
             player.IsAcceptingOffers ||
             (player.IsNegotiating && hasExistingOffer);
@@ -217,6 +227,7 @@ export const FreeAgentOfferModal = ({
             isRule3Valid &&
             isRule4Valid &&
             isRule5Valid &&
+            isRule6Valid &&
             canMakeOffer &&
             validToExistingOffer;
 
@@ -225,6 +236,7 @@ export const FreeAgentOfferModal = ({
         setRule3(() => isRule3Valid);
         setRule4(() => isRule4Valid);
         setRule5(() => isRule5Valid);
+        setRule6(() => isRule6Valid);
         setValidOffer(() => isValid);
         setOffer(() => updatedOffer);
     };
@@ -343,6 +355,14 @@ export const FreeAgentOfferModal = ({
                                         >
                                             4: Highest year cannot be more than
                                             100% of the lowest year (or $6M)
+                                        </p>
+                                        <p
+                                            className={
+                                                !rule4Valid ? 'text-danger' : ''
+                                            }
+                                        >
+                                            6: An input for salary that isn't
+                                            zero must be greater than 0.5.
                                         </p>
                                     </div>
                                 </div>
