@@ -18,10 +18,19 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
 
     // Hooks
     const newsOptions = MapObjOptions(NewsTypeList);
-    const [allNews, setAllNews] = useState([]);
+    //retired this hook to not retrieve all newslog and instead seperate the sports out
+    // const [allNews, setAllNews] = useState([]);
+    //added in 4 seperate hooks to retrieve individual logs of sports
+    const [cbbNews,setCbbNews] = useState([]);
+    const [cfbNews,setCfbNews] = useState([]);
+    //commented out as these will be implemented later
+    // const [nbaNews,setNbaNews] = useState([]);
+    // const [nflNews,setNflNews] = useState([]);
     const [currentNews, setCurrentNews] = useState([]);
     const [selectedNewsTypes, setSelectedNewsTypes] = useState([]);
-    const [selectedLeagues, setSelectedLeagues] = useState([]);
+    //retired comment below to choose 1 league at a time
+    // const [selectedLeagues, setSelectedLeagues] = useState([]);
+    const [selectedLeague, setSelectedLeague] = useState("");
     const [selectedSeason, setSelectedSeason] = useState([]);
     const [selectedWeeks, setSelectedWeeks] = useState([]);
     const [seasonOptions, setSeasonOptions] = useState(SeasonsList);
@@ -37,9 +46,17 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
     }, [cfb_Timestamp]);
 
     useEffect(() => {
-        const filterLogs = FilterLogs(allNews);
+        //retired code below as it relates to allNews 
+        // const filterLogs = FilterLogs(allNews);
+        let news = [];
+        if (selectedLeague == 'CFB') {
+            news = [...cfbNews];
+        } else if (selectedLeague == 'CBB') {
+            news = [...cbbNews];
+        }
+        const filterLogs = FilterLogs(news)
         setCurrentNews(() => filterLogs);
-    }, [selectedWeeks, selectedNewsTypes, selectedLeagues, selectedSeason]);
+    }, [selectedWeeks, selectedNewsTypes, selectedLeague, selectedSeason]);
 
     // Api Functions
     const GetAllNews = async () => {
@@ -59,11 +76,41 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
             return { ...x, League: 'CBB' };
         });
 
-        setAllNews(() => [...cfbNews, ...cbbNews]);
-        const currentWeekNews = res.filter(
+        // commented out as this will be implemented later
+        // setNflNews([]);
+        // setNbaNews([]);
+
+        //this one needs to be retired to set seperate logs for sports
+        // setAllNews(() => [...cfbNews, ...cbbNews]);
+        // const currentWeekNews = res.filter(
+        //     (x) => x.WeekID === cfb_Timestamp.CollegeWeekID
+        // );
+        // setCurrentNews(() => currentWeekNews);
+
+        setCbbNews(() => [...cbbNews]);
+        // const currentCbbWeekNews = res.filter(
+        //     (x) => x.WeekID === cbb_Timestamp.CollegeWeekID
+        // );
+        // setCurrentNews(() => currentCbbWeekNews);
+
+        setCfbNews(() => [...cfbNews]);
+        const currentCfbWeekNews = res.filter(
             (x) => x.WeekID === cfb_Timestamp.CollegeWeekID
         );
-        setCurrentNews(() => currentWeekNews);
+        setCurrentNews(() => currentCfbWeekNews);
+
+        //commented out as these will be implemented later
+        // setNbaNews(() => [...nbaNews]);
+        // const currentNbaWeekNews = res.filter(
+        //     (x) => x.WeekID === nba_Timestamp.CollegeWeekID
+        // );
+        // setCurrentNews(() => currentNbaWeekNews);
+
+        // setNflNews(() => [...nflNews]);
+        // const currentNflWeekNews = res.filter(
+        //     (x) => x.WeekID === nfl_Timestamp.CollegeWeekID
+        // );
+        // setCurrentNews(() => currentNflWeekNews);
     };
     const GetWeeksInASeason = async () => {
         let response = await _landingService.GetWeeksInSeason(
@@ -86,9 +133,10 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
     const FilterLogs = (news) => {
         let fl = [...news];
         if (fl.length > 0) {
-            if (selectedLeagues.length > 0) {
-                fl = fl.filter((x) => selectedLeagues.includes(x.League));
-            }
+            //retired due to selecting certain leagues and used effect will take over
+            // if (selectedLeagues.length > 0) {
+            //     fl = fl.filter((x) => selectedLeagues.includes(x.League));
+            // }
             if (selectedNewsTypes.length > 0) {
                 fl = fl.filter((x) =>
                     selectedNewsTypes.includes(x.MessageType)
@@ -123,8 +171,10 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
     };
 
     const ChangeLeagues = (options) => {
-        const opts = [...options.map((x) => x.value)];
-        setSelectedLeagues(() => opts);
+        //retired due to filtering and commenting out line 131-132
+        // const opts = [...options.map((x) => x.value)];
+        const opts = options.value;
+        setSelectedLeague(() => opts);
     };
 
     return (
@@ -142,7 +192,6 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
                             <h6>League</h6>
                             <Select
                                 options={leagueOptions}
-                                isMulti={true}
                                 className="basic-multi-select"
                                 classNamePrefix="select"
                                 onChange={ChangeLeagues}
