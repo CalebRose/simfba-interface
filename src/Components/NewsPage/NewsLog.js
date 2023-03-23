@@ -2,7 +2,7 @@ import React from 'react';
 
 const NewsLog = (props) => {
     const { news, season, idx } = props;
-    
+
     return (
         <div className="card mb-2 text-start">
             <div className="card-body">

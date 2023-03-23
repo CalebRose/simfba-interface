@@ -21,8 +21,8 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
     //retired this hook to not retrieve all newslog and instead seperate the sports out
     // const [allNews, setAllNews] = useState([]);
     //added in 4 seperate hooks to retrieve individual logs of sports
-    const [cbbNews,setCbbNews] = useState([]);
-    const [cfbNews,setCfbNews] = useState([]);
+    const [cbbNews, setCbbNews] = useState([]);
+    const [cfbNews, setCfbNews] = useState([]);
     //commented out as these will be implemented later
     // const [nbaNews,setNbaNews] = useState([]);
     // const [nflNews,setNflNews] = useState([]);
@@ -30,7 +30,7 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
     const [selectedNewsTypes, setSelectedNewsTypes] = useState([]);
     //retired comment below to choose 1 league at a time
     // const [selectedLeagues, setSelectedLeagues] = useState([]);
-    const [selectedLeague, setSelectedLeague] = useState("");
+    const [selectedLeague, setSelectedLeague] = useState('');
     const [selectedSeason, setSelectedSeason] = useState([]);
     const [selectedWeeks, setSelectedWeeks] = useState([]);
     const [seasonOptions, setSeasonOptions] = useState(SeasonsList);
@@ -46,7 +46,7 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
     }, [cfb_Timestamp]);
 
     useEffect(() => {
-        //retired code below as it relates to allNews 
+        //retired code below as it relates to allNews
         // const filterLogs = FilterLogs(allNews);
         let news = [];
         if (selectedLeague == 'CFB') {
@@ -54,7 +54,7 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
         } else if (selectedLeague == 'CBB') {
             news = [...cbbNews];
         }
-        const filterLogs = FilterLogs(news)
+        const filterLogs = FilterLogs(news);
         setCurrentNews(() => filterLogs);
     }, [selectedWeeks, selectedNewsTypes, selectedLeague, selectedSeason]);
 
