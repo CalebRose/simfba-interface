@@ -27,7 +27,7 @@ export const FilterFreeAgencyPlayers = (
         }
     }
 
-    return pr;
+    return pr.slice(0);
 };
 
 export const GetTotalValue = (y1, y2, y3, y4, y5) => {
@@ -41,7 +41,7 @@ export const GetTotalValue = (y1, y2, y3, y4, y5) => {
 export const GetYearlyValue = (bonus, salary) => bonus + salary;
 
 export const GetContractLength = (y1, y2, y3, y4, y5) => {
-    if (isNaN(y1)) return 0;
+    if (isNaN(y1)) return 1;
     if (y5 > 0) return 5;
     if (y4 > 0) return 4;
     if (y3 > 0) return 3;
@@ -155,7 +155,7 @@ export const ValidateRule6 = (s1, s2, s3, s4, s5) => {
     let valid = true;
     for (let i = 0; i < arr.length; i++) {
         const salary = arr[i];
-        if (salary > 0) valid = salary > 0.5;
+        if (salary > 0) valid = salary >= 0.5;
         if (!valid) return valid;
     }
     return valid;

@@ -79,13 +79,7 @@ export const FreeAgentOfferModal = ({
             offer.Y4BaseSalary,
             offer.Y5BaseSalary
         );
-        let contractLength = GetContractLength(
-            offer.Y1BaseSalary,
-            offer.Y2BaseSalary,
-            offer.Y3BaseSalary,
-            offer.Y4BaseSalary,
-            offer.Y5BaseSalary
-        );
+        const contractLength = offer.ContractLength;
         const bonusByYear = BonusTotal / contractLength;
         y1Bonus = contractLength > 0 ? bonusByYear : 0;
         y2Bonus = contractLength > 1 ? bonusByYear : 0;
@@ -262,6 +256,59 @@ export const FreeAgentOfferModal = ({
         }
     };
 
+    const OfferButton = () => {
+        if (validOffer) {
+            if (!hasExistingOffer && player.IsAcceptingOffers) {
+                return (
+                    <button
+                        type="button"
+                        className="btn btn-danger"
+                        data-bs-dismiss="modal"
+                        onClick={confirmChange}
+                    >
+                        Yes
+                    </button>
+                );
+            } else if (
+                hasExistingOffer &&
+                (player.IsAcceptingOffers || player.IsNegotiating)
+            ) {
+                return (
+                    <button
+                        type="button"
+                        className="btn btn-warning"
+                        data-bs-dismiss="modal"
+                        onClick={confirmChange}
+                    >
+                        Update
+                    </button>
+                );
+            }
+        }
+        if (!hasExistingOffer) {
+            return (
+                <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                    disabled
+                >
+                    Yes
+                </button>
+            );
+        }
+        return (
+            <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+                disabled
+            >
+                Update
+            </button>
+        );
+    };
+
     return (
         <div
             className="modal fade"
@@ -358,7 +405,7 @@ export const FreeAgentOfferModal = ({
                                         </p>
                                         <p
                                             className={
-                                                !rule4Valid ? 'text-danger' : ''
+                                                !rule6Valid ? 'text-danger' : ''
                                             }
                                         >
                                             6: An input for salary that isn't
@@ -366,6 +413,22 @@ export const FreeAgentOfferModal = ({
                                         </p>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div className="row mt-2 text-start">
+                            <h5>Contract Length</h5>
+                        </div>
+                        <div className="row mt-1">
+                            <div className="col-auto">
+                                <input
+                                    name="ContractLength"
+                                    type="number"
+                                    className="form-control"
+                                    id="ContractLength"
+                                    aria-describedby="ContractLength"
+                                    value={offer ? offer.ContractLength : 0}
+                                    onChange={handleInputChange}
+                                />
                             </div>
                         </div>
                         <div className="row mt-2 text-start">
@@ -613,45 +676,7 @@ export const FreeAgentOfferModal = ({
                         >
                             No
                         </button>
-                        {validOffer ? (
-                            !hasExistingOffer ? (
-                                <button
-                                    type="button"
-                                    className="btn btn-danger"
-                                    data-bs-dismiss="modal"
-                                    onClick={confirmChange}
-                                >
-                                    Yes
-                                </button>
-                            ) : (
-                                <button
-                                    type="button"
-                                    className="btn btn-warning"
-                                    data-bs-dismiss="modal"
-                                    onClick={confirmChange}
-                                >
-                                    Update
-                                </button>
-                            )
-                        ) : !hasExistingOffer ? (
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                data-bs-dismiss="modal"
-                                disabled
-                            >
-                                Yes
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                data-bs-dismiss="modal"
-                                disabled
-                            >
-                                Update
-                            </button>
-                        )}
+                        <OfferButton />
                     </div>
                 </div>
             </div>

@@ -640,13 +640,6 @@ const CFBRecruitingOverview = ({
                                                 ? viewableRecruits.map(
                                                       (x, idx) => (
                                                           <>
-                                                              <CrootModal
-                                                                  crt={x}
-                                                                  idx={idx}
-                                                                  viewMode={
-                                                                      viewMode
-                                                                  }
-                                                              />
                                                               <CFBDashboardPlayerRow
                                                                   key={x.ID}
                                                                   croot={x}

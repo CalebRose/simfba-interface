@@ -4,7 +4,6 @@ import { useMediaQuery } from 'react-responsive';
 import FBADepthChartService from '../../_Services/simFBA/FBADepthChartService';
 import FBAPlayerService from '../../_Services/simFBA/FBAPlayerService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
-import DropdownItem from '../Roster/DropdownItem';
 import {
     SavingMessage,
     SuccessfulDepthChartSaveMessage,
@@ -17,6 +16,7 @@ import DepthChartHeader from './DepthChartHeader';
 import { GetAvailablePlayers, GetPositionAttributes } from './DepthChartHelper';
 import DepthChartPlayerRow from './DepthChartPlayerRow';
 import DepthChartMobilePlayerRow from './DepthChartMobilePlayerRow';
+import { DropdownItemObj } from '../Roster/DropdownItem';
 
 const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
     // Services
@@ -295,6 +295,13 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
                 );
                 return;
             }
+            if (row.CollegePlayer.IsInjured) {
+                setValidation(() => false);
+                setErrorMessage(
+                    `${row.FirstName} ${row.LastName} is injured with ${row.CollegePlayer.InjuryType}. They are unable to play for ${row.CollegePlayer.WeeksOfRecovery} Weeks. Please swap them from their ${row.Position} position level.`
+                );
+                return;
+            }
             let isSpecialTeamsPosition =
                 pos === 'P' ||
                 pos === 'K' ||
@@ -430,7 +437,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
                                     <span>{team ? team.TeamName : ''}</span>
                                 </button>
                                 <ul className="dropdown-menu dropdown-content">
-                                    <DropdownItem
+                                    <DropdownItemObj
                                         value={
                                             currentUser
                                                 ? currentUser.team +
@@ -448,7 +455,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
                                     <hr className="dropdown-divider"></hr>
                                     {collegeTeams && collegeTeams.length > 0
                                         ? collegeTeams.map((x) => (
-                                              <DropdownItem
+                                              <DropdownItemObj
                                                   key={x.ID}
                                                   value={
                                                       x.TeamName +

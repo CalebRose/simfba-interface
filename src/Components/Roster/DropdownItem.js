@@ -1,29 +1,33 @@
 import React from 'react';
 
-const DropdownItem = (props) => {
-    let team = props.team;
+export const DropdownItemObj = ({
+    id,
+    team,
+    value,
+    positionSwitch,
+    pos,
+    click
+}) => {
     const selectItem = () => {
-        if (props.positionSwitch) {
-            props.click(props.pos);
+        if (positionSwitch) {
+            click(pos);
         }
     };
 
     const handleChange = () => {
-        return props.click(team);
+        return click(team);
     };
 
     return (
         <li className="clickable" style={{ textAlign: 'left' }}>
             <p
                 className="dropdown-item"
-                value={props.value}
-                onClick={props.positionSwitch ? selectItem : handleChange}
-                id={props.id}
+                value={value}
+                onClick={positionSwitch ? selectItem : handleChange}
+                id={id}
             >
-                {props.value}
+                {value}
             </p>
         </li>
     );
 };
-
-export default DropdownItem;

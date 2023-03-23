@@ -29,7 +29,7 @@ const TeamCard = (props) => {
         <div className="col">
             <div className={cardClass}>
                 <img
-                    className="card-img-top imageSize mx-auto"
+                    className="card-img-top imageSize mx-auto mt-2"
                     src={logo}
                     alt="logo"
                 />

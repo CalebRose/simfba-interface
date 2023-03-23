@@ -79,7 +79,7 @@ const CBBGameRow = (props) => {
                                         }
                                     >
                                         {game.HomeTeamScore}
-                                    </span>{' '}
+                                    </span>
                                     -{' '}
                                     <span
                                         className={

@@ -28,6 +28,7 @@ import {
 import CBBDashboardMobileRow from './CBBDashboardMobileRow';
 import RecruitingClassModal from '../../_Common/RecruitingClassModal';
 import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
+import { Spinner } from '../../_Common/Spinner';
 
 const CBBRecruitingDashboard = ({
     currentUser,
@@ -738,9 +739,7 @@ const CBBRecruitingDashboard = ({
                                 </div>
 
                                 <div className="row justify-content-center pt-2 mt-4 mb-2">
-                                    <div class="spinner-border" role="status">
-                                        <span class="sr-only">Loading...</span>
-                                    </div>
+                                    <Spinner />
                                 </div>
                             </>
                         )}

@@ -1,4 +1,5 @@
 import url from '../../Constants/url';
+import { GetActionCall } from './FetchHelper';
 export default class AdminService {
     async GetCurrentTimestamp() {
         let json;
@@ -38,5 +39,9 @@ export default class AdminService {
             );
         }
         return await response.json();
+    }
+
+    async SyncOffseasonFreeAgency() {
+        return await GetActionCall(`${url}simfba/sync/freeagency/round`);
     }
 }

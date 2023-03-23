@@ -2,7 +2,7 @@ import React from 'react';
 import { getLogo } from '../../Constants/getLogo';
 
 const GameRow = (props) => {
-    const { idx, game, currentWeek, viewMode } = props;
+    const { idx, game, currentWeek, viewMode, isAdmin } = props;
 
     const homeTeam = {
         Team: game.HomeTeam,

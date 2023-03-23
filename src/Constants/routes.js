@@ -4,6 +4,7 @@ export default {
     APPROVE_NFL: '/admin-nfl-approve',
     MANAGE_USERS: '/admin-users',
     MANAGE_SIM: '/admin-fba',
+    NFL_ADMIN_TRADE: '/admin-nfl-trade',
     USER: '/user',
     TEAM: '/team',
     ROSTER: '/team/roster',

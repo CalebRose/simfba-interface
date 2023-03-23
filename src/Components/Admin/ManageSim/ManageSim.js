@@ -32,10 +32,6 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
     };
 
     const SyncRES = async () => {
-        const ts = { ...timestamp };
-
-        ts.RecruitingEfficiencySynced = true;
-
         const UpdateTimestampDTO = {
             MoveUpCollegeWeek: false,
             MoveUpCollegeSeason: false,
@@ -58,7 +54,7 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             alert('RES Could not be Synced!');
         } else {
             const newTs = { ...res };
-            setTimestamp((x) => newTs);
+            setTimestamp(() => newTs);
             dispatch(setCFBTimestamp(newTs));
         }
     };
@@ -117,10 +113,6 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
     };
 
     const LockRecruiting = async () => {
-        const ts = { ...timestamp };
-
-        ts.IsRecruitingLocked = !ts.IsRecruitingLocked;
-
         const UpdateTimestampDTO = {
             MoveUpCollegeWeek: false,
             MoveUpCollegeSeason: false,
@@ -149,10 +141,26 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
         }
     };
 
-    const SyncToNextWeek = async () => {
+    const SyncOffseasonFreeAgency = async () => {
         const ts = { ...timestamp };
 
-        if (!ts.RecruitingEfficiencySynced && !ts.IsRecruitingLocked) {
+        ts.FreeAgencyRound++;
+
+        let res = await _adminService.SyncOffseasonFreeAgency();
+
+        if (!res) {
+            alert('Could not sync free agency!');
+        } else {
+            setTimestamp(() => ts);
+            dispatch(setCFBTimestamp(ts));
+        }
+    };
+
+    const SyncToNextWeek = async () => {
+        if (
+            !timestamp.RecruitingEfficiencySynced &&
+            !timestamp.IsRecruitingLocked
+        ) {
             alert(
                 'You must sync Recruiting Efficiency first and lock recruiting before conducting the Recruiting sync.'
             );
@@ -182,7 +190,7 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             alert('Could not sync to next week!');
         } else {
             const newTs = { ...res };
-            setTimestamp((x) => newTs);
+            setTimestamp(() => newTs);
             dispatch(setCFBTimestamp(newTs));
         }
     };
@@ -195,26 +203,16 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                 </div>
                 <div className="row mt-4">
                     <div className="col col-md-3">
-                        <h3>
-                            Season:{' '}
-                            {timestamp && timestamp.Season
-                                ? timestamp.Season
-                                : 'Loading...'}
-                        </h3>
+                        <h3>Season: {timestamp.Season}</h3>
                     </div>
                     <div className="col col-md-3">
-                        <h3>
-                            CFB Week:{' '}
-                            {timestamp && timestamp.CollegeWeek
-                                ? timestamp.CollegeWeek
-                                : 'Loading...'}
-                        </h3>
+                        <h3>CFB Week: {timestamp.CollegeWeek}</h3>
                     </div>
                     <div className="col col-md-3">
-                        <h3>NFL Week: </h3>
+                        <h3>NFL Week: {timestamp.NFLWeek}</h3>
                     </div>
                     <div className="col col-md-3">
-                        <h3>Actions Remaining: </h3>
+                        <h3>Free Agency Round: {timestamp.FreeAgencyRound}</h3>
                     </div>
                 </div>
                 <ConfirmRecruitSyncModal save={SyncRecruiting} />
@@ -230,296 +228,6 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {/* <tr>
-                                <th scope="row">
-                                    <h5>Thursday Games</h5>
-                                </th>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className={
-                                            timestamp.IsOffSeason ||
-                                            timestamp.ThursdayGames
-                                                ? 'btn btn-secondary btn-sm'
-                                                : 'btn btn-primary btn-sm'
-                                        }
-                                    >
-                                        Sync
-                                    </button>
-                                </td>
-                                <td>
-                                    <h5>
-                                        {timestamp.ThursdayGames
-                                            ? 'Synced'
-                                            : 'Incomplete'}
-                                    </h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <h5>Friday Games</h5>
-                                </th>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className={
-                                            timestamp.ThursdayGames &&
-                                            !timestamp.FridayGames
-                                                ? 'btn btn-primary btn-sm'
-                                                : 'btn btn-secondary btn-sm'
-                                        }
-                                    >
-                                        Sync
-                                    </button>
-                                </td>
-                                <td>
-                                    <h5>
-                                        {timestamp.FridayGames
-                                            ? 'Synced'
-                                            : 'Incomplete'}
-                                    </h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <h5>Saturday Morning Games</h5>
-                                </th>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className={
-                                            timestamp.ThursdayGames &&
-                                            timestamp.FridayGames &&
-                                            !timestamp.SaturdayMorning
-                                                ? 'btn btn-primary btn-sm'
-                                                : 'btn btn-secondary btn-sm'
-                                        }
-                                    >
-                                        Sync
-                                    </button>
-                                </td>
-                                <td>
-                                    <h5>
-                                        {timestamp.SaturdayMorning
-                                            ? 'Synced'
-                                            : 'Incomplete'}
-                                    </h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <h5>Saturday Noon Games</h5>
-                                </th>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className={
-                                            timestamp.ThursdayGames &&
-                                            timestamp.FridayGames &&
-                                            timestamp.SaturdayMorning &&
-                                            !timestamp.SaturdayNoon
-                                                ? 'btn btn-primary btn-sm'
-                                                : 'btn btn-secondary btn-sm'
-                                        }
-                                    >
-                                        Sync
-                                    </button>
-                                </td>
-                                <td>
-                                    <h5>
-                                        {timestamp.SaturdayNoon
-                                            ? 'Synced'
-                                            : 'Incomplete'}
-                                    </h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <h5>Saturday Evening Games</h5>
-                                </th>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className={
-                                            timestamp.ThursdayGames &&
-                                            timestamp.FridayGames &&
-                                            timestamp.SaturdayMorning &&
-                                            timestamp.SaturdayNoon &&
-                                            !timestamp.SaturdayEvening
-                                                ? 'btn btn-primary btn-sm'
-                                                : 'btn btn-secondary btn-sm'
-                                        }
-                                    >
-                                        Sync
-                                    </button>
-                                </td>
-                                <td>
-                                    <h5>
-                                        {timestamp.SaturdayEvening
-                                            ? 'Synced'
-                                            : 'Incomplete'}
-                                    </h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <h5>Saturday Night Games</h5>
-                                </th>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className={
-                                            timestamp.ThursdayGames &&
-                                            timestamp.FridayGames &&
-                                            timestamp.SaturdayMorning &&
-                                            timestamp.SaturdayNoon &&
-                                            timestamp.SaturdayEvening &&
-                                            !timestamp.SaturdayNight
-                                                ? 'btn btn-primary btn-sm'
-                                                : 'btn btn-secondary btn-sm'
-                                        }
-                                    >
-                                        Sync
-                                    </button>
-                                </td>
-                                <td>
-                                    <h5>
-                                        {timestamp.SaturdayNight
-                                            ? 'Synced'
-                                            : 'Incomplete'}
-                                    </h5>
-                                </td>
-                            </tr> */}
-                            {/* <tr>
-                                <th scope="row">
-                                    <h5>NFL Thursday Games</h5>
-                                </th>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className={
-                                            !timestamp.NFLThursday
-                                                ? 'btn btn-primary btn-sm'
-                                                : 'btn btn-secondary btn-sm'
-                                        }
-                                    >
-                                        Sync
-                                    </button>
-                                </td>
-                                <td>
-                                    <h5>
-                                        {timestamp.NFLThursday
-                                            ? 'Synced'
-                                            : 'Incomplete'}
-                                    </h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <h5>NFL Sunday Noon Games</h5>
-                                </th>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className={
-                                            timestamp.NFLThursday &&
-                                            !timestamp.NFLSundayNoon
-                                                ? 'btn btn-primary btn-sm'
-                                                : 'btn btn-secondary btn-sm'
-                                        }
-                                    >
-                                        Sync
-                                    </button>
-                                </td>
-                                <td>
-                                    <h5>
-                                        {timestamp.NFLSundayNoon
-                                            ? 'Synced'
-                                            : 'Incomplete'}
-                                    </h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <h5>NFL Sunday Afternoon Games</h5>
-                                </th>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className={
-                                            timestamp.NFLThursday &&
-                                            timestamp.NFLSundayNoon &&
-                                            !timestamp.NFLSundayAfternoon
-                                                ? 'btn btn-primary btn-sm'
-                                                : 'btn btn-secondary btn-sm'
-                                        }
-                                    >
-                                        Sync
-                                    </button>
-                                </td>
-                                <td>
-                                    <h5>
-                                        {timestamp.NFLSundayAfternoon
-                                            ? 'Synced'
-                                            : 'Incomplete'}
-                                    </h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <h5>NFL Sunday Evening Games</h5>
-                                </th>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className={
-                                            timestamp.NFLThursday &&
-                                            timestamp.NFLSundayNoon &&
-                                            timestamp.NFLSundayAfternoon &&
-                                            !timestamp.NFLSundayEvening
-                                                ? 'btn btn-primary btn-sm'
-                                                : 'btn btn-secondary btn-sm'
-                                        }
-                                    >
-                                        Sync
-                                    </button>
-                                </td>
-                                <td>
-                                    <h5>
-                                        {timestamp.NFLSundayEvening
-                                            ? 'Synced'
-                                            : 'Incomplete'}
-                                    </h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <h5>NFL Monday Night Games</h5>
-                                </th>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className={
-                                            timestamp.NFLThursday &&
-                                            timestamp.NFLSundayNoon &&
-                                            timestamp.NFLSundayAfternoon &&
-                                            timestamp.NFLSundayEvening &&
-                                            !timestamp.NFLMondayEvening
-                                                ? 'btn btn-primary btn-sm'
-                                                : 'btn btn-secondary btn-sm'
-                                        }
-                                    >
-                                        Sync
-                                    </button>
-                                </td>
-                                <td>
-                                    <h5>
-                                        {timestamp.NFLMondayEvening
-                                            ? 'Synced'
-                                            : 'Incomplete'}
-                                    </h5>
-                                </td>
-                            </tr> */}
                             <tr>
                                 <th scope="row">
                                     <h5>Recruiting Efficiency Sync</h5>
@@ -605,30 +313,33 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                                     </h5>
                                 </td>
                             </tr>
-                            {/* <tr>
+                            <tr>
                                 <th scope="row">
-                                    <h5>GM Actions</h5>
+                                    <h5>Offseason-Free Agency</h5>
                                 </th>
                                 <td>
-                                    <button
-                                        type="button"
-                                        className={
-                                            timestamp.GMActionsComplete
-                                                ? 'btn btn-secondary btn-sm'
-                                                : 'btn btn-primary btn-sm'
-                                        }
-                                    >
-                                        Sync
-                                    </button>
+                                    {timestamp.IsNFLOffSeason ? (
+                                        <button
+                                            type="button"
+                                            className="btn btn-primary btn-sm"
+                                            onClick={SyncOffseasonFreeAgency}
+                                        >
+                                            Sync
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            className="btn btn-secondary btn-sm"
+                                            disabled
+                                        >
+                                            Sync
+                                        </button>
+                                    )}
                                 </td>
                                 <td>
-                                    <h5>
-                                        {timestamp.GMActionsComplete
-                                            ? 'Synced'
-                                            : 'Incomplete'}
-                                    </h5>
+                                    <h5>Run Every 3 Days</h5>
                                 </td>
-                            </tr> */}
+                            </tr>
                             <tr>
                                 <th scope="row">
                                     <h5>Sync to Next Week</h5>

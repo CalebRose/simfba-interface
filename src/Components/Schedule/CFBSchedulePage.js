@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
+import acronyms from '../../Constants/acronyms';
 import FBALandingPageService from '../../_Services/simFBA/FBALandingPageService';
 import FBAScheduleService from '../../_Services/simFBA/FBAScheduleService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import GameRow from './CFBGameRow';
 import CFBStandingsModal from './CFBStandingsModal';
 
-const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode }) => {
+const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
     // Services
     let _scheduleService = new FBAScheduleService();
     let _landingService = new FBALandingPageService();
@@ -21,6 +22,7 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode }) => {
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [selectedWeek, setSelectedWeek] = useState(null);
     const [viewType, setViewType] = useState('TEAM');
+    const isAdmin = currentUser && currentUser.roleID === acronyms.ADMIN;
 
     // Use Effects
     useEffect(() => {
@@ -203,6 +205,7 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode }) => {
                                               cfb_Timestamp.CollegeWeek
                                           }
                                           viewMode={viewMode}
+                                          isAdmin={isAdmin}
                                       />
                                   ))
                                 : ''}

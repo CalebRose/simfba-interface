@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
-
-import DropdownItem from '../../Roster/DropdownItem';
 import {
     SavingMessage,
     SuccessfulDepthChartSaveMessage,
@@ -22,6 +20,7 @@ import FBADepthChartService from '../../../_Services/simFBA/FBADepthChartService
 import FBATeamService from '../../../_Services/simFBA/FBATeamService';
 import FBAPlayerService from '../../../_Services/simFBA/FBAPlayerService';
 import { GetTableClass } from '../../../Constants/CSSClassHelper';
+import { DropdownItemObj } from '../../Roster/DropdownItem';
 
 const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
     // Services
@@ -295,6 +294,13 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
         // It is not possible to have duplicate records under the same position
         for (let i = 0; i < dc.length; i++) {
             let row = dc[i];
+            if (row.NFLPlayer.IsInjured) {
+                setValidation(() => false);
+                setErrorMessage(
+                    `${row.FirstName} ${row.LastName} is injured with ${row.NFLPlayer.InjuryType}. They are unable to play for ${row.NFLPlayer.WeeksOfRecovery} Weeks. Please swap them from their ${row.Position} position level.`
+                );
+                return;
+            }
             const pos = row.Position;
             let NameKey = row.FirstName + row.LastName + row.PlayerID;
             let isSpecialTeamsPosition =
@@ -435,7 +441,7 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
                                     <span>{team ? team.TeamName : ''}</span>
                                 </button>
                                 <ul className="dropdown-menu dropdown-content">
-                                    <DropdownItem
+                                    <DropdownItemObj
                                         value={
                                             currentUser
                                                 ? currentUser.NFLTeam
@@ -451,7 +457,7 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
                                     <hr className="dropdown-divider"></hr>
                                     {collegeTeams && collegeTeams.length > 0
                                         ? collegeTeams.map((x) => (
-                                              <DropdownItem
+                                              <DropdownItemObj
                                                   key={x.ID}
                                                   value={
                                                       x.TeamName +

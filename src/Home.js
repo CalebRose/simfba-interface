@@ -38,6 +38,8 @@ import NFLRoster from './Components/NFL/Roster/NFLRoster';
 import NFLGameplan from './Components/NFL/Gameplan/NFLGameplan';
 import NFLDepthChart from './Components/NFL/DepthChart/NFLDepthChart';
 import NFLFreeAgency from './Components/NFL/FreeAgency/NFLFreeAgency';
+import NFLTradeBlock from './Components/NFL/TradeBlock/NFLTradeBlock';
+import AdminTradePortal from './Components/Admin/AdminTradePortal/AdminTradePortal';
 
 const Home = ({ viewMode }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -138,6 +140,13 @@ const Home = ({ viewMode }) => {
             <Route exact path={routes.APPROVE_NFL}>
                 {roleId === Constants.ADMIN ? (
                     <ApproveNFLRequests />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
+            <Route exact path={routes.NFL_ADMIN_TRADE}>
+                {roleId === Constants.ADMIN ? (
+                    <AdminTradePortal />
                 ) : (
                     <Redirect to={routes.LANDING} />
                 )}
@@ -250,8 +259,19 @@ const Home = ({ viewMode }) => {
                 exact
                 path={routes.NFL_FREE_AGENCY}
                 render={() =>
-                    NFLTeam > 0 && viewingBeta ? (
+                    NFLTeam > 0 ? (
                         <NFLFreeAgency />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
+                path={routes.NFL_TRADEBLOCK}
+                render={() =>
+                    NFLTeam > 0 ? (
+                        <NFLTradeBlock />
                     ) : (
                         <Redirect to={routes.LANDING} />
                     )

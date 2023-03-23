@@ -1,16 +1,23 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import constants from '../../Constants/acronyms';
 import CBBHomePage from './Jumbotron/cbb/CBBHomepage';
 import CFBHomepage from './Jumbotron/cfb/CFBHomepage';
 import NBAHomepage from './Jumbotron/nba/NBAHomepage';
 import NFLHomepage from './Jumbotron/nfl/NFLHomepage';
+import { setNFLTeam } from '../../Redux/nflTeam/nflTeam.actions';
+import { setCBBTeam } from '../../Redux/cbbTeam/cbbTeam.actions';
+import BBATeamService from '../../_Services/simNBA/BBATeamService';
+import FBATeamService from '../../_Services/simFBA/FBATeamService';
 
 const LandingPage = ({ currentUser }) => {
+    let _teamService = new BBATeamService();
+    let teamService = new FBATeamService();
     const [sport, setSport] = React.useState('');
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:845px)` });
+    const dispatch = useDispatch();
 
     // For mobile
     React.useEffect(() => {
@@ -25,9 +32,9 @@ const LandingPage = ({ currentUser }) => {
 
     useEffect(() => {
         if (currentUser) {
-            if (currentUser.teamId) {
+            if (currentUser.teamId && currentUser.teamId > 0) {
                 setSport('CFB');
-            } else if (currentUser.nfl_id) {
+            } else if (currentUser.NFLTeamID) {
                 setSport('NFL');
             } else if (currentUser.cbb_id) {
                 setSport('CBB');
@@ -36,8 +43,36 @@ const LandingPage = ({ currentUser }) => {
             } else {
                 setSport('');
             }
+
+            if (
+                currentUser.NFLTeam !== undefined &&
+                currentUser.NFLTeam.length > 0 &&
+                currentUser.NFLTeamID > 0
+            ) {
+                GetNFLTeam();
+            }
+
+            if (
+                (currentUser.cbb_team !== undefined &&
+                    currentUser.cbb_team.length > 0) ||
+                currentUser.cbb_id > 0
+            ) {
+                GetCBBTeam();
+            }
         }
     }, [currentUser]);
+
+    const GetCBBTeam = async () => {
+        let response = await _teamService.GetTeamByTeamId(currentUser.cbb_id);
+        dispatch(setCBBTeam(response));
+    };
+
+    const GetNFLTeam = async () => {
+        let response = await teamService.GetNFLTeamByTeamID(
+            currentUser.NFLTeamID
+        );
+        dispatch(setNFLTeam(response));
+    };
 
     return (
         <div className="container-fluid">

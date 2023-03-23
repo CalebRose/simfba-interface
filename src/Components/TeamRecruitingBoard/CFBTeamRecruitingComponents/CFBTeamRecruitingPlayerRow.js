@@ -9,6 +9,7 @@ import { getLogo } from '../../../Constants/getLogo';
 const CFBTeamDashboardPlayerRow = (props) => {
     const { recruitProfile, idx, viewMode } = props;
     const { Recruit } = recruitProfile;
+    const customClass = Recruit.IsCustomCroot ? 'text-primary' : '';
     const logo =
         Recruit && Recruit.College.length > 0 ? getLogo(Recruit.College) : '';
     const crootModalTarget = '#crootModal' + idx;
@@ -102,7 +103,7 @@ const CFBTeamDashboardPlayerRow = (props) => {
                     )}
                 </th>
                 <td className="align-middle" style={{ width: 175 }}>
-                    <h6>{name}</h6>
+                    <h6 className={customClass}>{name}</h6>
                     <button
                         type="button"
                         className="btn btn-sm"

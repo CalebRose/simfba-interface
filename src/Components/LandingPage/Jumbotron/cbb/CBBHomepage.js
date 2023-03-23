@@ -7,6 +7,7 @@ import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
 import { setCBBTeam } from '../../../../Redux/cbbTeam/cbbTeam.actions';
 import { useMediaQuery } from 'react-responsive';
 import StandingsCard from '../../../BBA/Schedule/StandingsModalCard';
+import { Spinner } from '../../../_Common/Spinner';
 
 const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     let _teamService = new BBATeamService();
@@ -154,9 +155,7 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                             </>
                         ) : (
                             <div className="row justify-content-center pt-2 mt-4 mb-2">
-                                <div className="spinner-border" role="status">
-                                    <span className="sr-only">Loading...</span>
-                                </div>
+                                <Spinner />
                             </div>
                         )}
                     </div>

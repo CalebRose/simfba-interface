@@ -52,6 +52,14 @@ const authorizedUser = (props) => {
                             Approve NFL Requests <span className="caret"></span>
                         </Link>
                     </li>
+                    <li className="dropdown-item">
+                        <Link
+                            to={routes.NFL_ADMIN_TRADE}
+                            className="dropdown-item"
+                        >
+                            NFL Trade Portal <span className="caret"></span>
+                        </Link>
+                    </li>
                 </ul>
             </li>
         );

@@ -25,7 +25,6 @@ class AvailableTeams extends Component {
 
     async componentDidMount() {
         // FETCH FOR TEAMS
-        // const url = 'https://simfba-interface.azurewebsites.net/api';
         await this.CFBGetAvailableTeams();
     }
 

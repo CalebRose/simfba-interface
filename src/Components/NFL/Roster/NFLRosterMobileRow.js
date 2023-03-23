@@ -3,6 +3,10 @@ import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 import { baseUrl } from '../../../Constants/logos';
 import { GetNFLOverall } from '../../../_Utility/RosterHelper';
 import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
+import { CutPlayerModal } from './CutPlayerModal';
+import { ExtendPlayerModal } from './ExtendPlayerModal';
+import { PracticeSquadModal } from './OnPracticeSquadModal';
+import { TradeBlockModal } from './OnTradeBlockModal';
 
 const NFLMobileRosterRow = ({
     player,
@@ -10,7 +14,12 @@ const NFLMobileRosterRow = ({
     userView,
     ts,
     canModify,
-    theme
+    theme,
+    team,
+    practicesquad,
+    tradeblock,
+    extend,
+    cut
 }) => {
     let modalTarget = `#playerModal${idx}`;
     let cutPlayerTarget = `#cutPlayer${idx}`;
@@ -34,6 +43,34 @@ const NFLMobileRosterRow = ({
 
     return (
         <>
+            <CutPlayerModal
+                key={player.ID}
+                player={player}
+                idx={idx}
+                cut={cut}
+                viewMode={theme}
+            />
+            <ExtendPlayerModal
+                key={player.ID}
+                player={player}
+                idx={idx}
+                extend={extend}
+                viewMode={theme}
+            />
+            <TradeBlockModal
+                key={player.ID}
+                player={player}
+                idx={idx}
+                tradeblock={tradeblock}
+                viewMode={theme}
+            />
+            <PracticeSquadModal
+                key={player.ID}
+                player={player}
+                idx={idx}
+                practicesquad={practicesquad}
+                viewMode={theme}
+            />
             <div className={`${mobileCardClass} mb-2`}>
                 <div className="card-body">
                     <h5 className="card-title">
@@ -111,7 +148,9 @@ const NFLMobileRosterRow = ({
                         {canTradeBlockPlayer ? (
                             <button
                                 type="button"
-                                className="btn"
+                                className={`btn ${
+                                    player.IsOnTradeBlock ? 'btn-danger' : ''
+                                }`}
                                 title={tradeBlockTitle}
                                 data-bs-toggle="modal"
                                 data-bs-target={tradeBlockTarget}
@@ -122,7 +161,18 @@ const NFLMobileRosterRow = ({
                                 />
                             </button>
                         ) : (
-                            'Unavailable'
+                            <button
+                                type="button"
+                                className={`btn ${
+                                    player.IsOnTradeBlock
+                                        ? 'btn-danger'
+                                        : 'btn-secondary'
+                                }`}
+                                title={tradeBlockTitle}
+                                disabled
+                            >
+                                <i class="bi bi-arrow-down-up" />
+                            </button>
                         )}
                     </li>
                     <li className="list-group-item">

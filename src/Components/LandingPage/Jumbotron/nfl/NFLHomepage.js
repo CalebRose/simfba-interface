@@ -8,6 +8,7 @@ import { setNFLTeam } from '../../../../Redux/nflTeam/nflTeam.actions';
 import FBAScheduleService from '../../../../_Services/simFBA/FBAScheduleService';
 import FBATeamService from '../../../../_Services/simFBA/FBATeamService';
 import NFLStandingsCard from '../../../_Common/NFLStandingsModalCard';
+import { Spinner } from '../../../_Common/Spinner';
 import CFBMatchCard from '../cfb/CFBMatchCard';
 
 const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
@@ -141,9 +142,7 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                         </h2>
                     ) : (
                         <div className="row justify-content-center pt-2 mt-4 mb-2">
-                            <div className="spinner-border" role="status">
-                                <span className="sr-only">Loading...</span>
-                            </div>
+                            <Spinner />
                         </div>
                     )}
                 </div>
@@ -246,9 +245,7 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                         </>
                     ) : (
                         <div className="row justify-content-center pt-2 mt-4 mb-2">
-                            <div className="spinner-border" role="status">
-                                <span className="sr-only">Loading...</span>
-                            </div>
+                            <Spinner />
                         </div>
                     )}
                 </div>

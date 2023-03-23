@@ -52,6 +52,10 @@ const CFBTeamMobilePlayerRow = (props) => {
         return props.remove(idx, recruitProfile);
     };
 
+    const customClass = Recruit.IsCustomClass
+        ? 'card-title text-primary'
+        : 'card-title';
+
     return (
         <>
             <CrootModal crt={Recruit} idx={idx} />
@@ -65,7 +69,7 @@ const CFBTeamMobilePlayerRow = (props) => {
             />
             <div className={`${mobileCardClass} mb-2`}>
                 <div className="card-body">
-                    <h5 className="card-title">{name}</h5>
+                    <h5 className={customClass}>{name}</h5>
                     <h6 className="card-subtitle mb-2">
                         <button
                             type="button"

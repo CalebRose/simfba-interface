@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import BBAMatchService from '../../../_Services/simNBA/BBAMatchService';
+import { Spinner } from '../../_Common/Spinner';
 import GameModalRow from './GameModalRow';
 
 const CBBGameModal = (props) => {
@@ -170,9 +171,7 @@ const CBBGameModal = (props) => {
                             </>
                         ) : (
                             <div className="row justify-content-center pt-2 mt-4 mb-2">
-                                <div className="spinner-border" role="status">
-                                    <span className="sr-only">Loading...</span>
-                                </div>
+                                <Spinner />
                             </div>
                         )}
                     </div>

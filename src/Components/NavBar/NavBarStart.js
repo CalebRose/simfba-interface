@@ -137,6 +137,14 @@ const NavBar_Start = ({ currentUser }) => {
                             Free Agency
                         </Link>
                     </li>
+                    <li>
+                        <Link
+                            to={routes.NFL_TRADEBLOCK}
+                            className="dropdown-item"
+                        >
+                            Trade Block
+                        </Link>
+                    </li>
                 </ul>
             </li>
         );

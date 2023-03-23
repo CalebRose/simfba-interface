@@ -2,7 +2,10 @@ import React from 'react';
 import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
 import { GetNFLRound, SetNFLPriority } from '../../../_Utility/RosterHelper';
-import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
+import {
+    HeightToFeetAndInches,
+    RoundToTwoDecimals
+} from '../../../_Utility/utilHelper';
 import AttributeRow from '../../Roster/AttributeRow';
 
 export const NFLPlayerModal = ({ team, player, idx, viewMode }) => {
@@ -117,14 +120,15 @@ export const NFLPlayerModal = ({ team, player, idx, viewMode }) => {
                                                   <AttributeRow
                                                       key={attribute.Name}
                                                       data={attribute}
+                                                      theme={viewMode}
                                                   />
                                               )
                                           )
                                         : ''}
                                 </div>
                             </div>
-                            <div className="col">
-                                <div className="row g-2 mb-2">
+                            <div className="col-auto">
+                                <div className="row g-1 mb-2">
                                     <div className="col">
                                         <h5>Contract</h5>
                                         <p>
@@ -135,24 +139,117 @@ export const NFLPlayerModal = ({ team, player, idx, viewMode }) => {
                                         <p>${CurrentYearSalary}M</p>
                                     </div>
                                 </div>
-                                <div className="row g-2 mb-2">
+                                <div className="row g-1 mb-2">
                                     <div className="col">
                                         <h5>Work Ethic</h5>
                                         <p>{player.WorkEthic}</p>
                                     </div>
                                 </div>
-                                <div className="row g-2 mb-2">
+                                <div className="row g-1 mb-2">
                                     <div className="col">
                                         <h5>Free Agency Bias</h5>
                                         <p>{player.FreeAgency}</p>
                                     </div>
                                 </div>
-                                <div className="row g-2 mb-2">
+                                <div className="row g-1 mb-2">
                                     <div className="col">
                                         <h5>Personality</h5>
                                         <p>{player.Personality}</p>
                                     </div>
                                 </div>
+                            </div>
+                            <div className="col-3">
+                                <div className="row mb-1">
+                                    <h6>Year 1</h6>
+                                    <p className="fs-6">
+                                        Bonus:{' '}
+                                        {RoundToTwoDecimals(
+                                            player.Contract.Y1Bonus
+                                        )}
+                                    </p>
+                                    <p className="fs-6">
+                                        Salary:{' '}
+                                        {RoundToTwoDecimals(
+                                            player.Contract.Y1BaseSalary
+                                        )}
+                                    </p>
+                                </div>
+                                {player.Contract.ContractLength > 1 && (
+                                    <>
+                                        <div className="row mb-1">
+                                            <h6>Year 2</h6>
+                                            <p className="fs-6">
+                                                Bonus:{' '}
+                                                {RoundToTwoDecimals(
+                                                    player.Contract.Y2Bonus
+                                                )}{' '}
+                                            </p>
+                                            <p className="fs-6">
+                                                Salary:{' '}
+                                                {RoundToTwoDecimals(
+                                                    player.Contract.Y2BaseSalary
+                                                )}
+                                            </p>
+                                        </div>
+                                    </>
+                                )}
+                                {player.Contract.ContractLength > 2 && (
+                                    <>
+                                        <div className="row mb-1">
+                                            <h6>Year 3</h6>
+                                            <p className="fs-6">
+                                                Bonus:{' '}
+                                                {RoundToTwoDecimals(
+                                                    player.Contract.Y3Bonus
+                                                )}{' '}
+                                            </p>
+                                            <p className="fs-6">
+                                                Salary:{' '}
+                                                {RoundToTwoDecimals(
+                                                    player.Contract.Y3BaseSalary
+                                                )}
+                                            </p>
+                                        </div>
+                                    </>
+                                )}
+                                {player.Contract.ContractLength > 3 && (
+                                    <>
+                                        <div className="row mb-1">
+                                            <h6>Year 4</h6>
+                                            <p className="fs-6">
+                                                Bonus:{' '}
+                                                {RoundToTwoDecimals(
+                                                    player.Contract.Y4Bonus
+                                                )}{' '}
+                                            </p>
+                                            <p className="fs-6">
+                                                Salary:{' '}
+                                                {RoundToTwoDecimals(
+                                                    player.Contract.Y4BaseSalary
+                                                )}
+                                            </p>
+                                        </div>
+                                    </>
+                                )}
+                                {player.Contract.ContractLength > 4 && (
+                                    <>
+                                        <div className="row mb-1">
+                                            <h6>Year 5</h6>
+                                            <p className="fs-6">
+                                                Bonus:{' '}
+                                                {RoundToTwoDecimals(
+                                                    player.Contract.Y5Bonus
+                                                )}{' '}
+                                            </p>
+                                            <p className="fs-6">
+                                                Salary:{' '}
+                                                {RoundToTwoDecimals(
+                                                    player.Contract.Y5BaseSalary
+                                                )}
+                                            </p>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>

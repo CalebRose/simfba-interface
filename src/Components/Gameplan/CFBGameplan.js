@@ -25,7 +25,6 @@ import {
     TargetingLabels,
     YesNoOptions
 } from './GameplanConstants';
-import GameplanDropdownItem from './GameplanDropdownItem';
 import GameplanInputItem from './GameplanInputItem';
 import {
     GetDefenseFormationLabel,
@@ -33,8 +32,9 @@ import {
     ValidatePassPlayDistribution,
     ValidateRunPlayDistribution
 } from './GameplanHelper';
-import DropdownItem from '../Roster/DropdownItem';
 import SchemeModal from './SchemeModal';
+import { DropdownItemObj } from '../Roster/DropdownItem';
+import { DropdownItem } from '../_Common/Dropdown';
 
 const CFBGameplan = ({ currentUser, cfbTeam }) => {
     // GameplanService
@@ -456,7 +456,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
     };
 
     // Event Functions
-    const HandleTextChange = ({ name, value }) => {
+    const HandleTextChange = (name, value) => {
         let gp = { ...gameplan };
 
         if (value === 'Yes') {
@@ -476,7 +476,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
 
     const HandleNumberChange = (event) => {
         let gp = { ...gameplan };
-        let { name, value, min, max } = event.target;
+        let { name, value } = event.target;
         // If Value IS a Number
         // gp[name] = Math.max(Number(min), Math.min(Number(max), Number(value)));
         gp[name] = Number(value);
@@ -569,7 +569,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                 <span>{team ? team.TeamName : ''}</span>
                             </button>
                             <ul className="dropdown-menu dropdown-content">
-                                <DropdownItem
+                                <DropdownItemObj
                                     value={
                                         currentUser
                                             ? currentUser.team +
@@ -583,7 +583,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                 <hr className="dropdown-divider"></hr>
                                 {aiTeams && aiTeams.length > 0
                                     ? aiTeams.map((x) => (
-                                          <DropdownItem
+                                          <DropdownItemObj
                                               key={x.ID}
                                               value={
                                                   x.TeamName + ' ' + x.Mascot
@@ -640,10 +640,11 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                     aria-labelledby="dropdownMenuButton1"
                                 >
                                     {OffensiveSchemeOptions.map((x) => (
-                                        <GameplanDropdownItem
+                                        <DropdownItem
                                             name="OffensiveScheme"
+                                            id="OffensiveScheme"
                                             value={x}
-                                            handleChange={HandleTextChange}
+                                            click={HandleTextChange}
                                         />
                                     ))}
                                 </ul>
@@ -853,10 +854,11 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                     aria-labelledby="dropdownMenuButton1"
                                 >
                                     {DefensiveSchemeOptions.map((x) => (
-                                        <GameplanDropdownItem
+                                        <DropdownItem
                                             name="DefensiveScheme"
+                                            id="DefensiveScheme"
                                             value={x}
-                                            handleChange={HandleTextChange}
+                                            click={HandleTextChange}
                                         />
                                     ))}
                                 </ul>
@@ -937,10 +939,11 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                 >
                                     {gameplan &&
                                         BlitzAggressivenessOptions.map((x) => (
-                                            <GameplanDropdownItem
+                                            <DropdownItem
                                                 name="BlitzAggressiveness"
+                                                id="BlitzAggressiveness"
                                                 value={x}
-                                                handleChange={HandleTextChange}
+                                                click={HandleTextChange}
                                             />
                                         ))}
                                 </ul>
@@ -969,10 +972,11 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                 >
                                     {gameplan &&
                                         YesNoOptions.map((x) => (
-                                            <GameplanDropdownItem
+                                            <DropdownItem
                                                 name="BlitzSafeties"
+                                                id="BlitzSafeties"
                                                 value={x}
-                                                handleChange={HandleTextChange}
+                                                click={HandleTextChange}
                                             />
                                         ))}
                                 </ul>
@@ -1001,10 +1005,11 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                 >
                                     {gameplan &&
                                         YesNoOptions.map((x) => (
-                                            <GameplanDropdownItem
+                                            <DropdownItem
                                                 name="BlitzCorners"
+                                                id="BlitzCorners"
                                                 value={x}
-                                                handleChange={HandleTextChange}
+                                                click={HandleTextChange}
                                             />
                                         ))}
                                 </ul>
@@ -1033,10 +1038,11 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                 >
                                     {gameplan &&
                                         CoverageOptions.map((x) => (
-                                            <GameplanDropdownItem
+                                            <DropdownItem
                                                 name="LinebackerCoverage"
+                                                id="LinebackerCoverage"
                                                 value={x}
-                                                handleChange={HandleTextChange}
+                                                click={HandleTextChange}
                                             />
                                         ))}
                                 </ul>
@@ -1063,10 +1069,11 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                 >
                                     {gameplan &&
                                         CoverageOptions.map((x) => (
-                                            <GameplanDropdownItem
+                                            <DropdownItem
                                                 name="CornersCoverage"
+                                                id="CornersCoverage"
                                                 value={x}
-                                                handleChange={HandleTextChange}
+                                                click={HandleTextChange}
                                             />
                                         ))}
                                 </ul>
@@ -1093,10 +1100,11 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                 >
                                     {gameplan &&
                                         CoverageOptions.map((x) => (
-                                            <GameplanDropdownItem
+                                            <DropdownItem
                                                 name="SafetiesCoverage"
+                                                id="SafetiesCoverage"
                                                 value={x}
-                                                handleChange={HandleTextChange}
+                                                click={HandleTextChange}
                                             />
                                         ))}
                                 </ul>

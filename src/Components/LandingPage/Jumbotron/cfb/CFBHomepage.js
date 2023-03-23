@@ -1,23 +1,19 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
 import { getLogo } from '../../../../Constants/getLogo';
 import routes from '../../../../Constants/routes';
-import { setCBBTeam } from '../../../../Redux/cbbTeam/cbbTeam.actions';
 import { setCFBTeam } from '../../../../Redux/cfbTeam/cfbTeam.actions';
-import { setNFLTeam } from '../../../../Redux/nflTeam/nflTeam.actions';
 import FBAScheduleService from '../../../../_Services/simFBA/FBAScheduleService';
 import FBATeamService from '../../../../_Services/simFBA/FBATeamService';
-import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
 import StandingsCard from '../../../BBA/Schedule/StandingsModalCard';
+import { Spinner } from '../../../_Common/Spinner';
 import CFBMatchCard from './CFBMatchCard';
 
 const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     let teamService = new FBATeamService();
     let _scheduleService = new FBAScheduleService();
-    let _teamService = new BBATeamService();
     const dispatch = useDispatch();
     const [team, setTeam] = React.useState('');
     const [logo, setLogo] = React.useState('');
@@ -40,20 +36,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         if (currentUser) {
             setTeam(currentUser.team);
             setLogo(getLogo(currentUser.teamAbbr));
-        }
-        if (
-            (currentUser.cbb_team !== undefined &&
-                currentUser.cbb_team.length > 0) ||
-            currentUser.cbb_id > 0
-        ) {
-            GetCBBTeam();
-        }
-        if (
-            currentUser.NFLTeam !== undefined &&
-            currentUser.NFLTeam.length > 0 &&
-            currentUser.NFLTeamID > 0
-        ) {
-            GetNFLTeam();
         }
         if (!cfbTeam) {
             getTeam();
@@ -109,18 +91,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         }
     }, [teamData]);
 
-    const GetCBBTeam = async () => {
-        let response = await _teamService.GetTeamByTeamId(currentUser.cbb_id);
-        dispatch(setCBBTeam(response));
-    };
-
-    const GetNFLTeam = async () => {
-        let response = await teamService.GetNFLTeamByTeamID(
-            currentUser.NFLTeamID
-        );
-        dispatch(setNFLTeam(response));
-    };
-
     const getTeam = async () => {
         let response = await teamService.GetTeamByTeamId(currentUser.teamId);
         setTeamData(response);
@@ -171,9 +141,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                         </h2>
                     ) : (
                         <div className="row justify-content-center pt-2 mt-4 mb-2">
-                            <div className="spinner-border" role="status">
-                                <span className="sr-only">Loading...</span>
-                            </div>
+                            <Spinner />
                         </div>
                     )}
                 </div>
@@ -353,9 +321,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             </>
                         ) : (
                             <div className="row justify-content-center pt-2 mt-4 mb-2">
-                                <div className="spinner-border" role="status">
-                                    <span className="sr-only">Loading...</span>
-                                </div>
+                                <Spinner />
                             </div>
                         )}
                     </div>

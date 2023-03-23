@@ -79,6 +79,7 @@ const PlayerModal = (props) => {
                                       <AttributeRow
                                           key={attribute.Name}
                                           data={attribute}
+                                          theme={viewMode}
                                       />
                                   ))
                                 : ''}
