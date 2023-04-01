@@ -22,11 +22,14 @@ export default {
     NFL_FREE_AGENCY: '/nfl/team/freeagency',
     NFL_GAMEPLAN: '/nfl/team/gameplan',
     NFL_ROSTER: '/nfl/team/roster',
+    NFL_SCHEDULE: '/nfl/schedule',
+    NFL_STATS: '/nfl/statistics',
     NEWS: '/cfb/news',
     LOGIN: '/login',
     SIGNUP: '/signup',
     BBA_ADMIN: '/admin-bba',
     BBA_APPROVE: '/admin-bba/approve',
+    NBA_APPROVE: '/admin-bba/nba/approve',
     BBA_USERS: '/admin-bba/users',
     CBB_TEAM: '/bba/team/',
     CBB_ROSTER: '/bba/team/roster',
@@ -36,5 +39,12 @@ export default {
     CBB_SCHEDULE: '/bba/schedule',
     CBB_STATS: '/bba/stats',
     CBB_HOME: 'cbb/home',
-    NBA_HOME: 'nba/home'
+    NBA_HOME: 'nba/home',
+    NBA_ROSTER: '/nba/team/roster',
+    NBA_GAMEPLAN: '/nba/team/gameplan',
+    NBA_FREE_AGENCY: '/nba/team/freeagency',
+    NBA_TRADEBLOCK: '/nba/team/tradeblock',
+    NBA_SCHEDULE: '/nba/schedule',
+    NBA_DRAFT_ROOM: '/nba/draft/room',
+    NBA_STATS: '/nba/stats'
 };

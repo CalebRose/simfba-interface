@@ -7,6 +7,7 @@ import FBATradeService from '../../../_Services/simFBA/FBATradeService';
 import { Spinner } from '../../_Common/Spinner';
 import { TeamDropdown } from '../../_Common/TeamDropdown';
 import { NFLSidebar } from '../Roster/NFLSidebar';
+import { NFLMobileTradeBlockRow } from './NFLMobileTradeBlockRow';
 import { NFLTradePreferencesModal } from './NFLTradePreferencesModal';
 import { ReceivedProposalsModal } from './ReceivedProposalsModal';
 import { NFLTradeBlockHeader } from './TradeBlockHeader';
@@ -129,12 +130,10 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
     };
 
     const ProposeTrade = async (dto, modalDTO) => {
-        console.log({ dto, modalDTO });
         const res = _tradeService.CreateTradeProposal(dto);
         const sentProposals = [...sentTradeProposals];
         sentProposals.push(modalDTO);
         setSentTradeProposals(() => sentProposals);
-        console.log(dto);
     };
 
     const AcceptTrade = async (id) => {
@@ -169,7 +168,7 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
                         ) : (
                             `${currentTeam.TeamName} Trade Block`
                         )}{' '}
-                        {canModify && (
+                        {canModify && !isMobile && (
                             <button
                                 type="button"
                                 className="btn"
@@ -227,6 +226,7 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
                             team={currentTeam}
                             ts={cfb_Timestamp}
                             canModify={canModify}
+                            isMobile={isMobile}
                         />
                     )}
                     <div className="col-sm-10">
@@ -267,7 +267,7 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
                                     >
                                         Draft Picks
                                     </button>
-                                    {canPropose ? (
+                                    {canPropose && !isMobile ? (
                                         <button
                                             type="button"
                                             className="btn btn-outline-success"
@@ -294,7 +294,18 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
                             style={{ maxHeight: '570px', overflow: 'auto' }}
                         >
                             {isMobile ? (
-                                ''
+                                <>
+                                    {list.length > 0 &&
+                                        list.map((x) => (
+                                            <>
+                                                <NFLMobileTradeBlockRow
+                                                    viewMode={currentView}
+                                                    obj={x}
+                                                    theme={viewMode}
+                                                />
+                                            </>
+                                        ))}
+                                </>
                             ) : (
                                 <table
                                     className={tableClass}

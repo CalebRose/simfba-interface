@@ -148,8 +148,6 @@ export const OptionCard = ({
         return remove(opt, isUser);
     };
 
-    console.log({ opt });
-
     return (
         <div className="card mt-1 mb-2">
             <div className="row g-0">

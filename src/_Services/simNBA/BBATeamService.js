@@ -1,141 +1,46 @@
 import url from '../../Constants/SimBBA_url';
+import { GetCall } from '../simFBA/FetchHelper';
 
 export default class BBATeamService {
     async GetTeams() {
-        let response = await fetch(url + 'teams', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}teams`);
     }
 
     async GetActiveTeams() {
-        let response = await fetch(url + 'teams/active', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}teams/active`);
     }
 
     async GetActiveCollegeTeams() {
-        let response = await fetch(url + 'teams/active/college', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}teams/active/college`);
     }
 
     async GetAvailableTeams() {
-        let response = await fetch(url + 'teams/available', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}teams/available`);
     }
 
     async GetCoachedTeams() {
-        let response = await fetch(url + 'teams/coached', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}teams/coached`);
     }
 
     async GetCollegeTeams() {
-        let response = await fetch(url + 'teams/active/college', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}teams/active/college`);
     }
 
     async GetNBATeams() {
-        let response = await fetch(url + 'teams/nba', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return GetCall(`${url}teams/nba`);
     }
 
     async GetTeamByTeamId(teamId) {
-        let response = await fetch(url + 'team/' + teamId, {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}team/${teamId}`);
+    }
+
+    async GetNBATeamByTeamID(teamID) {
+        return await GetCall(`${url}team/nba/${teamID}`);
     }
 
     async GetTeamStandingsByConferenceID(confId, seasonId) {
-        let response = await fetch(
-            url + `standings/college/conf/${confId}/${seasonId}`,
-            {
-                headers: {
-                    authorization: 'Bearer ' + localStorage.getItem('token')
-                }
-            }
+        return await GetCall(
+            `${url}standings/college/conf/${confId}/${seasonId}`
         );
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
     }
 }

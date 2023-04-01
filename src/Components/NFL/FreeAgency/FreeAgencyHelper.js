@@ -53,6 +53,10 @@ export const GetCapSpace = (cap, bonus, salary, hit) => {
     return cap - bonus - salary - hit;
 };
 
+export const GetNBACapSpace = (cap, bonus, hit) => {
+    return cap - bonus - hit;
+};
+
 export const GetProjectedCapsheet = (capsheet, offers) => {
     if (!offers || offers.length === 0) return capsheet;
     for (let i = 0; i < offers.length; i++) {
@@ -159,4 +163,14 @@ export const ValidateRule6 = (s1, s2, s3, s4, s5) => {
         if (!valid) return valid;
     }
     return valid;
+};
+
+export const CheckForOffer = (player, teamID) => {
+    if (player.Offers.length > 0) {
+        const offerIdx = player.Offers.findIndex((x) => x.TeamID === teamID);
+        if (offerIdx > -1) {
+            return true;
+        }
+    }
+    return false;
 };

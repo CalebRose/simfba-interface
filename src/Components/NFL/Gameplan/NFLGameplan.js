@@ -470,8 +470,10 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
     };
 
     // Event Functions
-    const HandleTextChange = ({ name, value }) => {
+    const HandleTextChange = (name, value) => {
         let gp = { ...gameplan };
+
+        console.log({ name, value, gp });
 
         if (value === 'Yes') {
             gp[name] = true;

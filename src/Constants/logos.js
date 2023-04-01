@@ -10,10 +10,10 @@ const logos = {
     Albany: `${baseUrl}/logos/Albany_Great_Danes_logo.png`,
     Alcorn_State: baseUrl + '/logos/Alcorn_State_athletics_logo.png',
     American: `${baseUrl}/logos/American_Eagles_logo.png`,
-    App_State: baseUrl + '/logos/appstate_logo.png',
+    App_State: baseUrl + '/logos/App_state_2.png',
     Arizona_State: baseUrl + '/logos/Arizona_State_Sun_Devils_2.png',
     Arizona: baseUrl + '/logos/Arizona_Wildcats_logo.png',
-    Arkansas: baseUrl + '/logos/arkansas_logo.png',
+    Arkansas: baseUrl + '/logos/Arkansas_Logo_2.png',
     Arkansas_State: baseUrl + '/logos/Arkansas_State_Red_Wolves_logo.png',
     Arkansas_Pine_Bluff:
         baseUrl + '/logos/Arkansas_Pine_Bluff_Golden_Lions_logo.png',
@@ -214,7 +214,7 @@ const logos = {
     North_Texas: baseUrl + '/logos/North_Texas_Mean_Green_logo.png',
     Northeastern: `${baseUrl}/logos/Northeastern_Huskies_logo.png`,
     Northern_Colorado: baseUrl + '/logos/Northern_Colorado_Bears_logo.png',
-    Northern_Iowa: baseUrl + '/logos/Northern_iowa_Panthers_logo.png',
+    Northern_Iowa: baseUrl + '/logos/Northern_Iowa_Panthers_logo.png',
     Northern_Kentucky: `${baseUrl}/logos/Northern_Kentucky_Norse_logo.png`,
     NIU: baseUrl + '/logos/Northern_Illinois_Huskies_logo.png',
     Northwestern: baseUrl + '/logos/Northwestern_Wildcats_logo.png',
@@ -384,7 +384,7 @@ const logos = {
     HOU_Texans: baseUrl + '/logos/HOU_Texans.png',
     IND_Colts: baseUrl + '/logos/IND_Colts.png',
     JAX_Jaguars: baseUrl + '/logos/JAX_Jaguars.png',
-    TEN_Titans: baseUrl + '/logos/TEN_Titans.png',
+    TEN_Titans: baseUrl + '/logos/Tennessee_Titans_logo.png',
     DEN_Broncos: baseUrl + '/logos/DEN_Broncos.png',
     KC_Chiefs: baseUrl + '/logos/KC_Chiefs.png',
     LV_Raiders: baseUrl + '/logos/LV_Raiders.png',
@@ -436,7 +436,8 @@ const logos = {
     HOU_Rockets: baseUrl + '/logos/HOU_Rockets.png',
     MEM_Grizzlies: baseUrl + '/logos/MEM_Grizzlies.png',
     NO_Pelicans: baseUrl + '/logos/NO_Pelicans.png',
-    SA_Spurs: baseUrl + '/logos/SA_Spurs.png'
+    SA_Spurs: baseUrl + '/logos/SA_Spurs.png',
+    SD_Clippers: `${baseUrl}/logos/san_diego_clippers_logo.png`
 };
 
 export default logos;

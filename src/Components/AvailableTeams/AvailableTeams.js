@@ -10,6 +10,7 @@ import BBARequestService from '../../_Services/simNBA/BBARequestService.js';
 import constants from '../../Constants/acronyms.js';
 import BBATeamCard from '../BBA/TeamCard/BBATeamCard.js';
 import NFLTeamCard from './NFLTeamCard.js';
+import NBATeamCard from './NBATeamCard.js';
 
 class AvailableTeams extends Component {
     state = {
@@ -55,11 +56,11 @@ class AvailableTeams extends Component {
     };
 
     NBAGetAvailableTeams = async () => {
-        let teams = await this.BBATeamService.GetNBATeams(SimBBA_url);
-
-        const filterTeams = teams.filter((x) => x.FirstSeason !== '');
-
-        this.setState({ teams: teams, filterTeams: filterTeams });
+        let teams = await this.BBATeamService.GetNBATeams();
+        const sortedTeams = teams.sort(
+            (a, b) => '' + a.Team.localeCompare(b.Team)
+        );
+        this.setState({ teams: teams, filterTeams: sortedTeams });
     };
 
     sendCFBRequest = async (team) => {
@@ -113,9 +114,38 @@ class AvailableTeams extends Component {
         this.setState({ sentRequest: true });
     };
 
+    sendNBARequest = async (team, role) => {
+        if (this.state.sentRequest === false) {
+            const isOwner = role === 'o';
+            const isManager = role === 'gm';
+            const isCoach = role === 'hc';
+            const isAssistant = role === 'a';
+            const requestDTO = {
+                Username: this.props.currentUser.username,
+                NBATeamID: team.ID,
+                NBATeam: team.Team + ' ' + team.Nickname,
+                NBATeamAbbreviation: team.Abbr,
+                IsOwner: isOwner,
+                IsManager: isManager,
+                IsCoach: isCoach,
+                IsAssistant: isAssistant,
+                IsApproved: false
+            };
+
+            const res = await this.BBARequestService.CreateNBATeamRequest(
+                requestDTO
+            );
+            this.setState({ sentRequest: true });
+        } else {
+            alert(
+                "It appears you've already requested a team. Please wait for an admin to approve the request."
+            );
+        }
+    };
+
     selectSport = async (event) => {
         const sport = event.target.value;
-        this.setState({ selectedSport: sport });
+        this.setState({ filterTeams: [], selectedSport: sport });
         switch (sport) {
             case constants.CFB:
                 await this.CFBGetAvailableTeams();
@@ -187,16 +217,17 @@ class AvailableTeams extends Component {
                 );
             } else if (this.state.selectedSport === constants.NBA) {
                 return (
-                    <BBATeamCard
+                    <NBATeamCard
                         key={team.ID}
                         teamId={team.ID}
-                        team={team.Team}
-                        mascot={team.Nickname}
-                        conference={team.Conference}
+                        team={team}
                         logo={getLogo(team.Team + ' ' + team.Nickname)}
-                        request={this.sendCBBRequest}
+                        request={this.sendNBARequest}
                         disable={this.state.sentRequest}
                         viewMode={this.props.viewMode}
+                        ovr={team.OverallGrade}
+                        off={team.OffenseGrade}
+                        def={team.DefenseGrade}
                     />
                 );
             }
@@ -269,19 +300,19 @@ class AvailableTeams extends Component {
                             >
                                 CBB Team
                             </button>
-                            {/* <button
+                            <button
                                 type="button"
                                 class="btn btn-primary btn-sm"
                                 value="NBA"
                                 onClick={this.selectSport}
                             >
                                 NBA Team
-                            </button> */}
+                            </button>
                         </div>
                     </div>
                     <div className="col-md-10">
                         <div className="availableScrollbar available-ui-height availableTeams">
-                            <div className="row  row-cols-1 row-cols-md-3 g-4">
+                            <div className="row row-cols-1 row-cols-md-3 g-4 mb-2">
                                 {teamCards}
                             </div>
                         </div>

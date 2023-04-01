@@ -1,11 +1,9 @@
 import React from 'react';
-import { getLogo } from '../../../Constants/getLogo';
-import { CancelOfferModal } from './CancelOfferModal';
-import { CheckForOffer } from './FreeAgencyHelper';
-import { FreeAgencyPlayerModal } from './FreeAgencyPlayerModal';
-import { FreeAgentOfferModal } from './FreeAgentOfferModal';
+import { CheckForOffer } from '../../../NFL/FreeAgency/FreeAgencyHelper';
 
-const NFLFreeAgencyRow = ({
+export const NBAFreeAgencyMobileRow = ({}) => {};
+
+export const NBAFreeAgencyRow = ({
     teamID,
     player,
     idx,
@@ -21,7 +19,6 @@ const NFLFreeAgencyRow = ({
     const modalTarget = '#playerModal' + idx;
     const offerTarget = '#offerModal' + idx;
     const cancelTarget = '#cancelOffer' + idx;
-
     const hasOffer = CheckForOffer(player, teamID);
 
     const leadingTeamsMapper = (player) => {
@@ -93,9 +90,6 @@ const NFLFreeAgencyRow = ({
                 </th>
                 <td className="align-middle" style={{ width: 175 }}>
                     <h6>{NameLabel}</h6>
-                </td>
-                <td className="align-middle">
-                    <h6>{player.Position}</h6>
                 </td>
                 <td className="align-middle" style={{ width: 175 }}>
                     <h6>{player.Archetype}</h6>
@@ -171,5 +165,3 @@ const NFLFreeAgencyRow = ({
         </>
     );
 };
-
-export default NFLFreeAgencyRow;

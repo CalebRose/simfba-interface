@@ -21,7 +21,6 @@ export const GetOptionList = (players, picks, options) => {
 
 export const LoadTradeOptions = (options, teamID, forModal) => {
     const list = [];
-    console.log({ options });
     for (let i = 0; i < options.length; i++) {
         const item = options[i];
         let obj = {};

@@ -208,7 +208,7 @@
 
 /* Specific UI height for Available Teams UI */
 .available-ui-height {
-    max-height: 75vh;
+    max-height: 67vh;
 }
 
 .scrollbar::-webkit-scrollbar {
