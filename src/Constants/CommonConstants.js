@@ -327,7 +327,9 @@ export const NewsTypeList = [
     { name: 'Collusion', abbr: 'Collusion' },
     { name: 'Coaching Job', abbr: 'CoachJob' },
     { name: 'Recruiting', abbr: 'Recruiting' },
-    { name: 'Commitment', abbr: 'Commitment' }
+    { name: 'Commitment', abbr: 'Commitment' },
+    { name: 'Free Agency', abbr: 'FreeAgency' },
+    { name: 'Trade Block', abbr: 'TradeBlock' }
 ];
 
 export const SeasonsList = [
