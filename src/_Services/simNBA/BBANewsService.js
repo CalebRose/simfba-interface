@@ -1,4 +1,5 @@
 import url from '../../Constants/SimBBA_url';
+import { GetCall } from '../simFBA/FetchHelper';
 
 export default class BBANewsService {
     async GetAllNewsLogsForACbbSeason(cbbSeason) {

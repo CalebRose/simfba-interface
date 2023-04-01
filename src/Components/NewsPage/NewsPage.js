@@ -23,8 +23,8 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
     //added in 4 seperate hooks to retrieve individual logs of sports
     const [cbbNews, setCbbNews] = useState([]);
     const [cfbNews, setCfbNews] = useState([]);
-    const [nbaNews,setNbaNews] = useState([]);
-    const [nflNews,setNflNews] = useState([]);
+    const [nbaNews, setNbaNews] = useState([]);
+    const [nflNews, setNflNews] = useState([]);
     const [currentNews, setCurrentNews] = useState([]);
     const [selectedNewsTypes, setSelectedNewsTypes] = useState([]);
     //retired comment below to choose 1 league at a time
@@ -60,7 +60,7 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
         const filterLogs = FilterLogs(news);
         setCurrentNews(() => filterLogs);
     }, [selectedWeeks, selectedNewsTypes, selectedLeague, selectedSeason]);
-    
+
     // Api Functions
     const GetAllNews = async () => {
         const res = await _landingService.GetAllNewsLogsForACfbSeason(
@@ -115,9 +115,8 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
         setCurrentNews(() => currentCfbWeekNews);
 
         setNbaNews(() => [...nbaNews]);
-        
-        setNflNews(() => [...nflNews]);
 
+        setNflNews(() => [...nflNews]);
     };
     const GetWeeksInASeason = async () => {
         let response = await _landingService.GetWeeksInSeason(
@@ -190,12 +189,13 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
                 <h2>SimFBA News</h2>
                 <h4 className="align-end">
                     CFB Week: {cfb_Timestamp.CollegeWeek} | CBB Week:{' '}
-                    {cbb_Timestamp.CollegeWeek} | NFL Week: {cfb_Timestamp.NFLWeek} | NBA Week: {cbb_Timestamp.NBAWeek}
+                    {cbb_Timestamp.CollegeWeek} | NFL Week:{' '}
+                    {cfb_Timestamp.NFLWeek} | NBA Week: {cbb_Timestamp.NBAWeek}
                 </h4>
                 <div className="row">
                     <div className="col-md-2">
                         <h5>News Filters</h5>
-                        <div className="row">
+                        <div className="row mb-1">
                             <h6>League</h6>
                             <Select
                                 options={leagueOptions}

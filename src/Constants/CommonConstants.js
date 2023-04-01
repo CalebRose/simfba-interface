@@ -340,5 +340,7 @@ export const SeasonsList = [
 
 export const LeaguesList = [
     { label: 'College Football', value: 'CFB' },
-    { label: 'College Basketball', value: 'CBB' }
+    { label: 'College Basketball', value: 'CBB' },
+    { label: 'NFL', value: 'NFL' },
+    { label: 'NBA', value: 'NBA' }
 ];
