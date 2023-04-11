@@ -1,5 +1,11 @@
 import React from 'react';
+import { CancelOfferModal } from '../../../NFL/FreeAgency/CancelOfferModal';
 import { CheckForOffer } from '../../../NFL/FreeAgency/FreeAgencyHelper';
+import {
+    NBAFreeAgencyPlayerModal,
+    NBAFreeAgentOfferModal
+} from './NBAFreeAgencyModals';
+import { getLogo } from '../../../../Constants/getLogo';
 
 export const NBAFreeAgencyMobileRow = ({}) => {};
 
@@ -49,13 +55,13 @@ export const NBAFreeAgencyRow = ({
 
     return (
         <>
-            <FreeAgencyPlayerModal
+            <NBAFreeAgencyPlayerModal
                 key={player.ID}
                 player={player}
                 idx={idx}
                 viewMode={viewMode}
             />
-            <FreeAgentOfferModal
+            <NBAFreeAgentOfferModal
                 key={player.ID}
                 team={team}
                 player={player}
@@ -96,7 +102,7 @@ export const NBAFreeAgencyRow = ({
                 </td>
                 <td className="align-middle">
                     <h6>
-                        {player.Age} | {player.Experience}
+                        {player.Age} | {player.Year}
                     </h6>
                 </td>
                 <td className="align-middle">
@@ -112,7 +118,7 @@ export const NBAFreeAgencyRow = ({
                     <h6>{StatusLabel}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{player.MinimumValue}</h6>
+                    <h6>${player.MinimumValue}M</h6>
                 </td>
                 <td className="align-middle">
                     <h6>{leadingTeams}</h6>

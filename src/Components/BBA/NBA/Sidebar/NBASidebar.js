@@ -24,6 +24,7 @@ export const NBASidebar = ({ team, ts, isRoster, canModify, isMobile }) => {
         NBACoachName,
         NBAAssistantName
     } = team;
+    console.log({ Capsheet });
     const {
         Y1Capspace,
         Y2Capspace,

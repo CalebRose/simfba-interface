@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage';
 import cbbTeamReducer from './cbbTeam/cbbTeam.reducer';
 import cfbTeamReducer from './cfbTeam/cfbTeam.reducer';
 import nflTeamReducer from './nflTeam/nflTeam.reducer';
+import nbaTeamReducer from './nbaTeam/nbaTeam.reducer';
 import timestampReducer from './timestamp/timestamp.reducer';
 import userReducer from './user/user.reducer';
 import viewReducer from './viewMode/viewMode.reducer';
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
     cfbTeam: cfbTeamReducer,
     cbbTeam: cbbTeamReducer,
     nflTeam: nflTeamReducer,
+    nbaTeam: nbaTeamReducer,
     viewMode: viewReducer
 });
 

@@ -7,15 +7,20 @@ import {
     LetterGradesList,
     PositionList
 } from '../../../../Constants/BBAConstants';
+import { NBAArchetypesList } from '../../../../Constants/CommonConstants';
 import { GetTableHoverClass } from '../../../../Constants/CSSClassHelper';
 import BBAPlayerService from '../../../../_Services/simNBA/BBAPlayerService';
 import { MapObjOptions, MapOptions } from '../../../../_Utility/filterHelper';
+import { FilterFreeAgencyPlayers } from '../../../NFL/FreeAgency/FreeAgencyHelper';
 import { NBASidebar } from '../Sidebar/NBASidebar';
+import { NBAFreeAgencyRow } from './NBAFreeAgencyRow';
+import { Spinner } from '../../../_Common/Spinner';
 
 const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     const _playerService = new BBAPlayerService();
     const positions = MapObjOptions(PositionList);
     const letterGrades = MapOptions(LetterGradesList);
+    const archetypes = MapObjOptions(NBAArchetypesList);
     const statusOptions = MapOptions(['Open', 'Negotiating']);
     const [selectedPositions, setSelectedPositions] = useState('');
     const [selectedArchetypes, setSelectedArchetypes] = useState('');
@@ -67,20 +72,62 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
 
     useEffect(() => {
         if (cbb_Timestamp) {
-            const isOffseason = cbb_Timestamp.IsNFLOffSeason;
+            const isOffseason = cbb_Timestamp.IsNBAOffSeason;
             let label = '';
             if (isOffseason) {
                 label = `Current Round: ${cbb_Timestamp.FreeAgencyRound}`;
             } else {
-                label = `Current Week: ${cbb_Timestamp.NFLWeek}`;
+                label = `Current Week: ${cbb_Timestamp.NBAWeek}`;
             }
             setWeekLabel(() => label);
         }
     }, [cbb_Timestamp]);
 
+    useEffect(() => {
+        const players =
+            freeAgencyView === 'FA'
+                ? [...allFreeAgents]
+                : [...allWaivedPlayers];
+        const filter = FilterFreeAgencyPlayers(
+            players,
+            selectedPositions,
+            selectedArchetypes,
+            selectedStatuses,
+            selectedPotentialLetterGrades
+        );
+
+        // To view players with team offers
+        if (viewOfferedPlayers) {
+            const filterOnlyOfferedPlayers = [];
+            for (let i = 0; i < filter.length; i++) {
+                const item = filter[i];
+                if (item.Offers !== null && item.Offers.length > 0) {
+                    const check = item.Offers.some(
+                        (x) => x.TeamID === currentUser.NBATeamID
+                    );
+                    if (check) filterOnlyOfferedPlayers.push(item);
+                }
+            }
+            setFilteredPlayers(() => filterOnlyOfferedPlayers);
+            setViewablePlayers(() => filterOnlyOfferedPlayers.slice(0, count));
+        } else {
+            setFilteredPlayers(() => filter);
+            setViewablePlayers(() => filter.slice(0, count));
+        }
+    }, [
+        freeAgencyView,
+        allFreeAgents,
+        allWaivedPlayers,
+        selectedPositions,
+        selectedArchetypes,
+        selectedStatuses,
+        selectedPotentialLetterGrades,
+        viewOfferedPlayers
+    ]);
+
     // Api Calls
     const GetAvailablePlayers = async (TeamID) => {
-        const res = await _rosterService.GetFreeAgencyData(TeamID);
+        const res = await _playerService.GetFreeAgencyData(TeamID);
         const FAs = res.FreeAgents.map((x) => {
             return { ...x };
         });
@@ -92,9 +139,9 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         });
         const all = [...FAs, ...Waivers];
         setAllPlayers(() => all);
-        setAllFreeAgents(() => FAs);
-        setAllWaivedPlayers(() => Waivers);
-        setTeamOffers(() => ExistingOffers);
+        setAllFreeAgents(() => [...FAs]);
+        setAllWaivedPlayers(() => [...Waivers]);
+        setTeamOffers(() => [...ExistingOffers]);
     };
 
     // Click Functions
@@ -122,6 +169,11 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         setViewOfferedPlayers(() => toggle);
     };
 
+    const ToggleFreeAgencyView = () => {
+        const toggle = freeAgencyView === 'FA' ? 'WAIVER' : 'FA';
+        setFreeAgencyView(() => toggle);
+    };
+
     // Needed functions
     const loadRecords = () => {
         const currentPlayers = [...viewablePlayers];
@@ -138,7 +190,7 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     };
 
     const CreateFAOffer = async (player, offer) => {
-        let res = await _rosterService.CreateFAOffer(offer);
+        let res = await _playerService.CreateFAOffer(offer);
         const viewingFA = freeAgencyView === 'FA';
         const players = viewingFA ? [...allFreeAgents] : [...allWaivedPlayers];
         const playerIDX = players.findIndex((x) => x.ID === player.ID);
@@ -174,7 +226,7 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     };
 
     const CancelOffer = async (player, offer) => {
-        let res = await _rosterService.CancelFAOffer(offer);
+        let res = await _playerService.CancelFAOffer(offer);
         if (res) {
             const viewingFA = freeAgencyView === 'FA';
             const players = viewingFA
@@ -282,6 +334,22 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                     : 'View Offered Players'}
                             </button>
                         </div>
+                        <div className="col-md-auto">
+                            <h5 className="text-start align-middle">View</h5>
+                            <button
+                                type="button"
+                                className={`btn ${
+                                    viewOfferedPlayers
+                                        ? 'btn-outline-danger'
+                                        : 'btn-outline-success'
+                                }`}
+                                onClick={ToggleFreeAgencyView}
+                            >
+                                {freeAgencyView === 'FA'
+                                    ? 'Waiver Wire'
+                                    : 'Free Agency'}
+                            </button>
+                        </div>
                     </div>
                     <div className="row"></div>
                     {/* Modals Here */}
@@ -319,7 +387,7 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                     viewablePlayers.length > 0 &&
                                     viewablePlayers.map((x, idx) => (
                                         <>
-                                            <NFLFreeAgencyMobileRow
+                                            {/* <NFLFreeAgencyMobileRow
                                                 key={x.ID}
                                                 player={x}
                                                 teamID={team.ID}
@@ -330,7 +398,7 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                                 team={team}
                                                 cancel={CancelOffer}
                                                 extend={CreateFAOffer}
-                                            />
+                                            /> */}
                                         </>
                                     ))
                                 ) : (
@@ -381,7 +449,7 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                                 viewablePlayers.length > 0 &&
                                                 viewablePlayers.map(
                                                     (x, idx) => (
-                                                        <NFLFreeAgencyRow
+                                                        <NBAFreeAgencyRow
                                                             key={x.ID}
                                                             player={x}
                                                             teamID={team.ID}

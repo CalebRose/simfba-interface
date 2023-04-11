@@ -247,7 +247,26 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
             setViewRoster(() => currentViewRoster);
         }
     };
-    const PracticeSquadPlayer = () => {};
+
+    const PracticeSquadPlayer = async (player) => {
+        const res = await _tradeService.PlaceNFLPlayerOnTradeBlock(player.ID);
+        if (res) {
+            const currentRoster = [...roster];
+            const rosterIdx = currentRoster.findIndex(
+                (x) => x.ID === player.ID
+            );
+            const toggle = !currentRoster[rosterIdx].IsOnPracticeSquad;
+            currentRoster[rosterIdx].IsOnPracticeSquad = toggle;
+            const currentViewRoster = [...viewRoster];
+            const viewIdx = currentViewRoster.findIndex(
+                (x) => x.ID === player.ID
+            );
+            currentViewRoster[viewIdx].IsOnPracticeSquad = toggle;
+
+            setRoster(() => currentRoster);
+            setViewRoster(() => currentViewRoster);
+        }
+    };
 
     return (
         <>
@@ -275,7 +294,8 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                         clickUserTeam={selectUserTeam}
                                         click={selectTeam}
                                         currentUser={currentUser}
-                                        isNFL
+                                        isNFL={true}
+                                        isNBA={false}
                                     />
                                     {!isMobile && (
                                         <div className="export ms-2">

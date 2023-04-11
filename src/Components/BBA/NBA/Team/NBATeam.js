@@ -6,10 +6,12 @@ import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
 import BBATeamDropdownItem from '../../Team/BBATeamDropdownItem';
 import { NBASidebar } from '../Sidebar/NBASidebar';
 import NBATeamPlayerRow from './NBATeamPlayerRow';
+import BBATradeService from '../../../../_Services/simNBA/BBATradeService';
 
 const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
     let _teamService = new BBATeamService();
     let _playerService = new BBAPlayerService();
+    const _tradeService = new BBATradeService();
     const [userTeam, setUserTeam] = React.useState('');
     const [team, setTeam] = React.useState('');
     const [teams, setTeams] = React.useState('');
@@ -66,11 +68,56 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
 
     const ExtendPlayer = () => {};
 
-    const PlacePlayerOnTradeBlock = () => {};
+    const PlacePlayerOnTradeBlock = async (player) => {
+        const res = await _tradeService.PlaceNBAPlayerOnTradeBlock(player.ID);
+        if (res) {
+            const currentRoster = [...roster];
+            const rosterIdx = currentRoster.findIndex(
+                (x) => x.ID === player.ID
+            );
+            const toggle = !currentRoster[rosterIdx].IsOnTradeBlock;
+            currentRoster[rosterIdx].IsOnTradeBlock = toggle;
 
-    const SetToGLeague = () => {};
+            setRoster(() => currentRoster);
+        }
+    };
 
-    const SetToTwoWay = () => {};
+    const SetToGLeague = async (player) => {
+        const res = await _playerService.PlaceNBAPlayerInGLeague(player.ID);
+        if (res) {
+            const currentRoster = [...roster];
+            const rosterIdx = currentRoster.findIndex(
+                (x) => x.ID === player.ID
+            );
+            const toggle = !currentRoster[rosterIdx].IsGLeague;
+            currentRoster[rosterIdx].IsGLeague = toggle;
+
+            setRoster(() => currentRoster);
+
+            const t = { ...team };
+            const contract = player.Contract;
+            t.Capsheet.Year1Total -= contract.Year1Total;
+            t.Capsheet.Year2Total -= contract.Year2Total;
+            t.Capsheet.Year3Total -= contract.Year3Total;
+            t.Capsheet.Year4Total -= contract.Year4Total;
+            t.Capsheet.Year5Total -= contract.Year5Total;
+            setTeam(() => t);
+        }
+    };
+
+    const SetToTwoWay = async (player) => {
+        const res = await _playerService.AssignPlayerAsTwoWay(player.ID);
+        if (res) {
+            const currentRoster = [...roster];
+            const rosterIdx = currentRoster.findIndex(
+                (x) => x.ID === player.ID
+            );
+            const toggle = !currentRoster[rosterIdx].IsTwoWay;
+            currentRoster[rosterIdx].IsTwoWay = toggle;
+
+            setRoster(() => currentRoster);
+        }
+    };
 
     const playerRows = roster ? (
         roster.map((x, i) => {

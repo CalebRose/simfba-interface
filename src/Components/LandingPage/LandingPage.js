@@ -8,6 +8,7 @@ import NBAHomepage from './Jumbotron/nba/NBAHomepage';
 import NFLHomepage from './Jumbotron/nfl/NFLHomepage';
 import { setNFLTeam } from '../../Redux/nflTeam/nflTeam.actions';
 import { setCBBTeam } from '../../Redux/cbbTeam/cbbTeam.actions';
+import { setNBATeam } from '../../Redux/nbaTeam/nbaTeam.actions';
 import BBATeamService from '../../_Services/simNBA/BBATeamService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 
@@ -59,6 +60,14 @@ const LandingPage = ({ currentUser }) => {
             ) {
                 GetCBBTeam();
             }
+
+            if (
+                currentUser.NBATeam !== undefined &&
+                currentUser.NBATeam.length > 0 &&
+                currentUser.NBATeamID > 0
+            ) {
+                GetNBATeam();
+            }
         }
     }, [currentUser]);
 
@@ -72,6 +81,13 @@ const LandingPage = ({ currentUser }) => {
             currentUser.NFLTeamID
         );
         dispatch(setNFLTeam(response));
+    };
+
+    const GetNBATeam = async () => {
+        let response = await _teamService.GetNBATeamByTeamID(
+            currentUser.NBATeamID
+        );
+        dispatch(setNBATeam(response));
     };
 
     return (
@@ -118,7 +134,7 @@ const LandingPage = ({ currentUser }) => {
                             ) : (
                                 ''
                             )}
-                            {/* {currentUser && currentUser.nba_id ? (
+                            {currentUser && currentUser.nba_id ? (
                                 <button
                                     type="button"
                                     className="btn btn-primary btn-sm"
@@ -129,7 +145,7 @@ const LandingPage = ({ currentUser }) => {
                                 </button>
                             ) : (
                                 ''
-                            )} */}
+                            )}
                         </div>
                     </div>
                 )}

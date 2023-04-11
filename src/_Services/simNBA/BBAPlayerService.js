@@ -48,4 +48,16 @@ export default class BBAPlayerService {
     async CancelFAOffer(dto) {
         return await PostCall(`${BBAURL}nba/freeagency/cancel/offer`, dto);
     }
+
+    async PlaceNBAPlayerInGLeague(playerID) {
+        return await GetCall(`${BBAURL}nba/players/place/gleague/${playerID}`);
+    }
+
+    async AssignPlayerAsTwoWay(playerID) {
+        return await GetCall(`${BBAURL}nba/players/place/twoway/${playerID}`);
+    }
+
+    async CutNBAPlayerFromRoster(playerID) {
+        return await GetCall(`${BBAURL}nba/players/place/twoway/${playerID}`);
+    }
 }

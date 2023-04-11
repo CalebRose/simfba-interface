@@ -69,15 +69,12 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                 </div>
                 <div className="col-md-4">
                     <h2 className="text-start">
-                        {cbb_Timestamp ? cbb_Timestamp.Season : ''}, Week{' '}
-                        {cbb_Timestamp !== null &&
-                        cbb_Timestamp.CollegeWeek !== null
-                            ? cbb_Timestamp.CollegeWeek
-                            : ''}
+                        {cbb_Timestamp && cbb_Timestamp.Season}, Week{' '}
+                        {cbb_Timestamp && cbb_Timestamp.CollegeWeek}
                     </h2>
                 </div>
                 <div className="col-md-auto justify-content-start">
-                    <h2>{team ? `${team.Conference} Conference` : ''}</h2>
+                    <h2>{team && `${team.Conference} Conference`}</h2>
                 </div>
             </div>
             <div className="row mt-2">

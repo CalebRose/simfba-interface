@@ -429,7 +429,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                             </tr>
                                         </thead>
                                         <tbody className="overflow-auto">
-                                            {!ts.IsFreeAgencyLocked &&
+                                            {!cfb_Timestamp.IsFreeAgencyLocked &&
                                                 team &&
                                                 viewablePlayers.length > 0 &&
                                                 viewablePlayers.map(
@@ -453,7 +453,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                                     )
                                                 )}
 
-                                            {ts.IsFreeAgencyLocked && (
+                                            {cfb_Timestamp.IsFreeAgencyLocked && (
                                                 <>
                                                     <tr className="mt -2">
                                                         Free Agency is currently

@@ -1,42 +1,42 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
-import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
-import FBATeamService from '../../../_Services/simFBA/FBATeamService';
-import FBATradeService from '../../../_Services/simFBA/FBATradeService';
-import { Spinner } from '../../_Common/Spinner';
-import { TeamDropdown } from '../../_Common/TeamDropdown';
-import { NFLSidebar } from '../Roster/NFLSidebar';
-import { NFLMobileTradeBlockRow } from './NFLMobileTradeBlockRow';
-import { NFLTradePreferencesModal } from './NFLTradePreferencesModal';
-import { ReceivedProposalsModal } from './ReceivedProposalsModal';
-import { TradeBlockHeader } from './TradeBlockHeader';
-import { TradeBlockRow } from './TradeBlockRow';
-import { TradeProposalModal } from './TradeProposalModal';
+import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
+import BBATradeService from '../../../../_Services/simNBA/BBATradeService';
+import { Spinner } from '../../../_Common/Spinner';
+import { GetTableHoverClass } from '../../../../Constants/CSSClassHelper';
+import { TeamDropdown } from '../../../_Common/TeamDropdown';
+import {
+    NBATradePreferencesModal,
+    NBATradeProposalModal
+} from './NBATradeblockModals';
+import { ReceivedProposalsModal } from '../../../NFL/TradeBlock/ReceivedProposalsModal';
+import { TradeBlockHeader } from '../../../NFL/TradeBlock/TradeBlockHeader';
+import { NBATradeBlockRow } from '../../../NFL/TradeBlock/TradeBlockRow';
+import { NBASidebar } from '../Sidebar/NBASidebar';
 
-const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
+const NBATradeBlock = ({ currentUser, cbb_Timestamp, viewMode, nbaTeam }) => {
     // Services
-    const _tradeService = new FBATradeService();
-    const _teamService = new FBATeamService();
+    const _tradeService = new BBATradeService();
+    const _teamService = new BBATeamService();
     // Hooks
-    const [teams, setTeams] = React.useState(null);
-    const [userTeam, setUserTeam] = React.useState(null);
-    const [teamID, setTeamID] = React.useState(null);
-    const [currentTeam, setCurrentTeam] = React.useState(null);
-    const [sentTradeProposals, setSentTradeProposals] = React.useState([]);
-    const [receivedTradeProposals, setReceivedTradeProposals] = React.useState(
-        []
-    );
-    const [userPlayers, setUserPlayers] = React.useState([]);
-    const [userPicks, setUserPicks] = React.useState([]);
-    const [tradablePlayers, setTradablePlayers] = React.useState([]);
-    const [tradablePicks, setTradablePicks] = React.useState([]);
-    const [list, setList] = React.useState([]);
-    const [tradePreferences, setTradePreferences] = React.useState(null);
-    const [canModify, setCanModify] = React.useState(true);
-    const [canPropose, setCanPropose] = React.useState(false);
-    const [currentView, setCurrentView] = React.useState('Players');
-    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const [teams, setTeams] = useState(null);
+    const [userTeam, setUserTeam] = useState(null);
+    const [teamID, setTeamID] = useState(null);
+    const [currentTeam, setCurrentTeam] = useState(null);
+    const [sentTradeProposals, setSentTradeProposals] = useState([]);
+    const [receivedTradeProposals, setReceivedTradeProposals] = useState([]);
+    const [userPlayers, setUserPlayers] = useState([]);
+    const [userPicks, setUserPicks] = useState([]);
+    const [tradablePlayers, setTradablePlayers] = useState([]);
+    const [tradablePicks, setTradablePicks] = useState([]);
+    const [list, setList] = useState([]);
+    const [tradePreferences, setTradePreferences] = useState(null);
+    const [canModify, setCanModify] = useState(true);
+    const [canPropose, setCanPropose] = useState(false);
+    const [currentView, setCurrentView] = useState('Players');
+    const [requests, setRequests] = useState([]);
+    const [viewWidth, setViewWidth] = useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:760px)` });
     const tableClass = GetTableHoverClass(viewMode);
 
@@ -50,8 +50,8 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
     // useEffects
     useEffect(() => {
         if (currentUser) {
-            GetTradeBlockData(currentUser.NFLTeamID);
-            GetAllNFLTeams();
+            GetTradeBlockData(currentUser.NBATeamID);
+            GetAllNBATeams();
         }
     }, [currentUser]);
 
@@ -78,13 +78,13 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
         const tp = { ...res.TradePreferences };
         setTradePreferences(() => tp);
         const modifiable =
-            res.Team.ID === currentUser.NFLTeamID &&
-            (currentUser.NFLRole === 'Owner' ||
-                currentUser.NFLRole === 'Manager');
+            res.Team.ID === currentUser.NBATeamID &&
+            (currentUser.NBARole === 'Owner' ||
+                currentUser.NBARole === 'Manager');
         const proposable =
-            res.Team.ID !== currentUser.NFLTeamID &&
-            (currentUser.NFLRole === 'Owner' ||
-                currentUser.NFLRole === 'Manager');
+            res.Team.ID !== currentUser.NBATeamID &&
+            (currentUser.NBARole === 'Owner' ||
+                currentUser.NBARole === 'Manager');
         if (modifiable) {
             setUserTeam(() => res.Team);
         }
@@ -96,8 +96,8 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
         setCanPropose(() => proposable);
     };
 
-    const GetAllNFLTeams = async () => {
-        const res = await _teamService.GetAllNFLTeams();
+    const GetAllNBATeams = async () => {
+        const res = await _teamService.GetNBATeams();
         setTeams(() => [...res]);
     };
 
@@ -165,7 +165,7 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
                         {!currentTeam ? (
                             <Spinner />
                         ) : (
-                            `${currentTeam.TeamName} Trade Block`
+                            `${currentTeam.Team} Trade Block`
                         )}{' '}
                         {canModify && !isMobile && (
                             <button
@@ -187,16 +187,16 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
                 </div>
                 <>
                     {tradePreferences && (
-                        <NFLTradePreferencesModal
+                        <NBATradePreferencesModal
                             tp={tradePreferences}
                             theme={viewMode}
                             saveTradePreferences={SaveTradePreferences}
                         />
                     )}
-                    {userTeam && currentTeam && cfb_Timestamp && (
-                        <TradeProposalModal
+                    {userTeam && currentTeam && cbb_Timestamp && (
+                        <NBATradeProposalModal
                             theme={viewMode}
-                            ts={cfb_Timestamp}
+                            ts={cbb_Timestamp}
                             userTeam={userTeam}
                             currentTeam={currentTeam}
                             tradablePlayers={tradablePlayers}
@@ -219,11 +219,11 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
                 </>
                 <div className="row">
                     {currentTeam && (
-                        <NFLSidebar
+                        <NBASidebar
                             isTradeBlock
                             tp={tradePreferences}
                             team={currentTeam}
-                            ts={cfb_Timestamp}
+                            ts={cbb_Timestamp}
                             canModify={canModify}
                             isMobile={isMobile}
                         />
@@ -241,14 +241,16 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
                                         role="group"
                                         style={{ width: '50%' }}
                                     >
-                                        <TeamDropdown
-                                            teams={teams}
-                                            currentTeam={currentTeam}
-                                            clickUserTeam={selectUserTeam}
-                                            click={selectTeam}
-                                            currentUser={currentUser}
-                                            isNFL
-                                        />
+                                        {currentTeam && (
+                                            <TeamDropdown
+                                                teams={teams}
+                                                currentTeam={currentTeam}
+                                                clickUserTeam={selectUserTeam}
+                                                click={selectTeam}
+                                                currentUser={currentUser}
+                                                isNBA={true}
+                                            />
+                                        )}
                                     </div>
                                     <button
                                         type="button"
@@ -297,11 +299,11 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
                                     {list.length > 0 &&
                                         list.map((x) => (
                                             <>
-                                                <NFLMobileTradeBlockRow
+                                                {/* <NBAMobileTradeBlockRow
                                                     viewMode={currentView}
                                                     obj={x}
                                                     theme={viewMode}
-                                                />
+                                                /> */}
                                             </>
                                         ))}
                                 </>
@@ -323,13 +325,14 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
                                     >
                                         <TradeBlockHeader
                                             currentView={currentView}
+                                            isNBA={true}
                                         />
                                     </thead>
                                     <tbody className="overflow-auto">
                                         {list.length > 0 &&
                                             list.map((x) => (
                                                 <>
-                                                    <TradeBlockRow
+                                                    <NBATradeBlockRow
                                                         viewMode={currentView}
                                                         obj={x}
                                                     />
@@ -362,14 +365,14 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
 
 const mapStateToProps = ({
     user: { currentUser },
-    nflTeam: { nflTeam },
-    timestamp: { cfb_Timestamp },
+    nbaTeam: { nbaTeam },
+    timestamp: { cbb_Timestamp },
     viewMode: { viewMode }
 }) => ({
     currentUser,
-    nflTeam,
-    cfb_Timestamp,
+    nbaTeam,
+    cbb_Timestamp,
     viewMode
 });
 
-export default connect(mapStateToProps)(NFLTradeBlock);
+export default connect(mapStateToProps)(NBATradeBlock);

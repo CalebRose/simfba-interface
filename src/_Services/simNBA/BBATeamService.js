@@ -43,4 +43,8 @@ export default class BBATeamService {
             `${url}standings/college/conf/${confId}/${seasonId}`
         );
     }
+
+    async GetNBAStandingsByConferenceID(confId, seasonId) {
+        return await GetCall(`${url}standings/nba/conf/${confId}/${seasonId}`);
+    }
 }

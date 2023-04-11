@@ -42,6 +42,8 @@ import NFLTradeBlock from './Components/NFL/TradeBlock/NFLTradeBlock';
 import AdminTradePortal from './Components/Admin/AdminTradePortal/AdminTradePortal';
 import NBAApproveRequests from './Components/BBA/Admin/ApproveNBARequests/NBAApproveRequests';
 import NBARosterPage from './Components/BBA/NBA/Team/NBATeam';
+import NBAFreeAgency from './Components/BBA/NBA/Free Agency/NBAFreeAgency';
+import NBATradeblock from './Components/BBA/NBA/Trade Block/NBATradeblock';
 
 const Home = ({ viewMode }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -334,6 +336,22 @@ const Home = ({ viewMode }) => {
             <Route exact path={routes.NBA_ROSTER}>
                 {NBATeam > 0 ? (
                     <NBARosterPage />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
+
+            <Route exact path={routes.NBA_FREE_AGENCY}>
+                {NBATeam > 0 && viewingBeta ? (
+                    <NBAFreeAgency />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
+
+            <Route exact path={routes.NBA_TRADEBLOCK}>
+                {NBATeam > 0 && viewingBeta ? (
+                    <NBATradeblock />
                 ) : (
                     <Redirect to={routes.LANDING} />
                 )}
