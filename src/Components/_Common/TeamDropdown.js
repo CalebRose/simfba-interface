@@ -7,23 +7,41 @@ export const TeamDropdown = ({
     clickUserTeam,
     click,
     currentUser,
-    isNFL
+    isNFL,
+    isNBA
 }) => {
-    const teamVal = isNFL ? currentUser.NFLTeam : currentUser.team;
-    const teamID = isNFL ? currentUser.NFLTeamID : currentUser.teamId;
+    let teamVal = currentUser.team;
+    let teamID = currentUser.teamId;
 
+    if (isNFL) {
+        teamVal = currentUser.NFLTeam;
+        teamID = currentUser.NFLTeamID;
+    } else if (isNBA) {
+        teamVal = currentUser.NBATeam;
+        teamID = currentUser.NBATeamID;
+    }
     const teamDropDowns =
         teams && teams.length > 0
             ? teams.map((x) => (
                   <DropdownItemObj
                       key={x.ID}
-                      value={x.TeamName + ' ' + x.Mascot}
+                      value={
+                          isNBA
+                              ? `${x.Team} ${x.Nickname}`
+                              : `${x.TeamName} ${x.Mascot}`
+                      }
                       team={x}
                       id={x.ID}
                       click={click}
                   />
               ))
             : '';
+    let currentTeamLabel = '';
+    if (isNBA && currentTeam) {
+        currentTeamLabel = currentTeam.Team;
+    } else if (isNFL && currentTeam) {
+        currentTeamLabel = currentTeam.TeamName;
+    }
 
     return (
         <div className="drop-start btn-dropdown-width-auto">
@@ -34,7 +52,7 @@ export const TeamDropdown = ({
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
             >
-                <span>{currentTeam && currentTeam.TeamName}</span>
+                <span>{currentTeam && currentTeamLabel}</span>
             </button>
             <ul className="dropdown-menu dropdown-content">
                 <DropdownItemObj

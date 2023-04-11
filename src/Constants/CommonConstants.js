@@ -48,6 +48,23 @@ export const ArchetypesListForFA = [
     { name: 'Accuracy', abbr: 'Accuracy' }
 ];
 
+export const NBAArchetypesList = [
+    { name: 'All-Around', abbr: 'All-Around' },
+    { name: 'Finisher', abbr: 'Finisher' },
+    { name: 'Floor General', abbr: 'Floor General' },
+    { name: 'Lob Threat', abbr: 'Lob Threat' },
+    { name: 'Point Forward', abbr: 'Point Forward' },
+    { name: 'Pure Defender', abbr: 'Pure Defender' },
+    { name: 'Rim Protector', abbr: 'Rim Protector' },
+    { name: 'Sharpshooter', abbr: 'Sharpshooter' },
+    { name: 'Slasher', abbr: 'Slasher' },
+    { name: 'Stretch Bigs', abbr: 'Stretch Bigs' },
+    { name: 'Swingman', abbr: 'Swingman' },
+    { name: 'Traditional Forward', abbr: 'Traditional Forward' },
+    { name: 'Two-Way Wing', abbr: 'Two-Way Wing' },
+    { name: '3-and-D', abbr: '3-and-D' }
+];
+
 export const ArchetypeList = [
     { pos: 'QB', archetype: 'Pocket' },
     { pos: 'QB', archetype: 'Scrambling' },

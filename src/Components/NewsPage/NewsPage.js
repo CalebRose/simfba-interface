@@ -107,7 +107,6 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
         //     (x) => x.WeekID === cbb_Timestamp.CollegeWeekID
         // );
         // setCurrentNews(() => currentCbbWeekNews);
-
         setCfbNews(() => [...cfbNews]);
         const currentCfbWeekNews = res.filter(
             (x) => x.WeekID === cfb_Timestamp.CollegeWeekID
@@ -138,6 +137,7 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
 
     const FilterLogs = (news) => {
         let fl = [...news];
+
         if (fl.length > 0) {
             //retired due to selecting certain leagues and used effect will take over
             // if (selectedLeagues.length > 0) {

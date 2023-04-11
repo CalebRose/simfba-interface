@@ -1,11 +1,14 @@
 import React from 'react';
+import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
+import { baseUrl } from '../../../Constants/logos';
+import { GetNFLOverall } from '../../../_Utility/RosterHelper';
+import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
 import { CancelOfferModal } from './CancelOfferModal';
-import { CheckForOffer } from './FreeAgencyHelper';
 import { FreeAgencyPlayerModal } from './FreeAgencyPlayerModal';
 import { FreeAgentOfferModal } from './FreeAgentOfferModal';
 
-const NFLFreeAgencyRow = ({
+export const NFLFreeAgencyMobileRow = ({
     teamID,
     player,
     idx,
@@ -21,8 +24,23 @@ const NFLFreeAgencyRow = ({
     const modalTarget = '#playerModal' + idx;
     const offerTarget = '#offerModal' + idx;
     const cancelTarget = '#cancelOffer' + idx;
+    const mobileCardClass = GetMobileCardClass(viewMode);
+    let ovr = GetNFLOverall(player.Overall, player.Experience);
+    const year = player.Experience === 0 ? 'R' : player.Experience;
+    const heightObj = HeightToFeetAndInches(player.Height);
+    const checkForOffer = (player) => {
+        if (player.Offers.length > 0) {
+            const offerIdx = player.Offers.findIndex(
+                (x) => x.TeamID === teamID
+            );
+            if (offerIdx > -1) {
+                return true;
+            }
+        }
+        return false;
+    };
 
-    const hasOffer = CheckForOffer(player, teamID);
+    const hasOffer = checkForOffer(player);
 
     const leadingTeamsMapper = (player) => {
         if (player.Offers === null || player.Offers.length === 0) {
@@ -75,56 +93,34 @@ const NFLFreeAgencyRow = ({
                 teamID={team.ID}
                 viewMode={viewMode}
             />
-            <tr style={{ backgroundColor: 'white', zIndex: -1 }}>
-                <th scope="row">
-                    <h4>{rank}</h4>
-                    <button
-                        type="button"
-                        className="btn btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target={modalTarget}
-                    >
-                        <i
-                            className={`bi bi-info-circle ${
-                                viewMode === 'dark' ? 'text-light' : ''
-                            }`}
-                        />
-                    </button>
-                </th>
-                <td className="align-middle" style={{ width: 175 }}>
-                    <h6>{NameLabel}</h6>
-                </td>
-                <td className="align-middle">
-                    <h6>{player.Position}</h6>
-                </td>
-                <td className="align-middle" style={{ width: 175 }}>
-                    <h6>{player.Archetype}</h6>
-                </td>
-                <td className="align-middle">
-                    <h6>
-                        {player.Age} | {player.Experience}
+            <div className={`${mobileCardClass} mb-2`}>
+                <div className="card-body">
+                    <h5 className="card-title">
+                        Rank:{rank} | {player.FirstName} {player.LastName}
+                    </h5>
+                    <h6 className="card-subtitle mb-2 text-muted">
+                        {year === 'R' ? 'Rookie' : `${year} Year`}{' '}
+                        {player.Archetype} {player.Position} from{' '}
+                        {player.Hometown}, {player.State}
                     </h6>
-                </td>
-                <td className="align-middle">
-                    <h6>{player.Overall}</h6>
-                </td>
-                <td className="align-middle">
-                    <h6>{player.PotentialGrade}</h6>
-                </td>
-                <td className="align-middle">
-                    <h6>{player.PreviousTeam}</h6>
-                </td>
-                <td className="align-middle">
-                    <h6>{StatusLabel}</h6>
-                </td>
-                <td className="align-middle">
-                    <h6>{player.MinimumValue}</h6>
-                </td>
-                <td className="align-middle">
-                    <h6>{leadingTeams}</h6>
-                </td>
-                <td className="align-middle">
-                    <div className="btn-group">
+                    <p className="card-text">
+                        {heightObj.feet}' {heightObj.inches}", {player.Weight}{' '}
+                        lbs
+                    </p>
+                </div>
+                <ul className="list-group list-group-flush">
+                    <li className="list-group-item">
+                        Overall: {ovr}, Potential: {player.PotentialGrade}
+                    </li>
+                    <li className="list-group-item">
+                        Status: {StatusLabel} | Minimum Value:{' '}
+                        {player.MinimumValue}
+                    </li>
+                    <li className="list-group-item">{leadingTeams}</li>
+                    <li className="list-group-item">
+                        Make an Offer | Cancel Offer
+                    </li>
+                    <li className="list-group-item">
                         {canMakeOffer ? (
                             <button
                                 type="button"
@@ -144,7 +140,8 @@ const NFLFreeAgencyRow = ({
                             >
                                 <i className="bi bi-cash-coin image-nfl-roster" />
                             </button>
-                        )}
+                        )}{' '}
+                        |{' '}
                         {hasOffer && canModify ? (
                             <button
                                 type="button"
@@ -165,11 +162,9 @@ const NFLFreeAgencyRow = ({
                                 <i class="bi bi-x-circle image-nfl-roster" />
                             </button>
                         )}
-                    </div>
-                </td>
-            </tr>
+                    </li>
+                </ul>
+            </div>
         </>
     );
 };
-
-export default NFLFreeAgencyRow;

@@ -1,200 +1,159 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { getLogo } from '../../../../Constants/getLogo';
+import { Link } from 'react-router-dom';
+import routes from '../../../../Constants/routes';
+import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
+import StandingsCard from '../../../BBA/Schedule/StandingsModalCard';
+import { Spinner } from '../../../_Common/Spinner';
+import { useMediaQuery } from 'react-responsive';
 
-const NBAHomePage = ({ currentUser }) => {
-    const [team, setTeam] = React.useState('');
-    const [logo, setLogo] = React.useState('');
+const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
+    let _teamService = new BBATeamService();
+    const [teamName, setTeamName] = useState('');
+    const [team, setTeam] = useState(false);
+    const [logo, setLogo] = useState('');
+    const [standings, setStandings] = useState([]);
+    const [viewWidth, setViewWidth] = useState(window.innerWidth);
+    const isMobile = useMediaQuery({ query: `(max-width:845px)` });
+
+    useEffect(() => {
+        if (!viewWidth) {
+            setViewWidth(window.innerWidth);
+        }
+    }, [viewWidth]);
 
     useEffect(() => {
         if (currentUser) {
-            setTeam(currentUser.nba_team);
-            setLogo(getLogo(currentUser.nba_team));
+            setTeamName(currentUser.NBATeam);
+            setLogo(getLogo(currentUser.NBATeam));
         }
-    }, [currentUser]);
-
-    const standingsRecords = [
-        {
-            team: 'Seattle Supersonics',
-            conferenceWins: 0,
-            conferenceLosses: 0,
-            totalWins: 0,
-            totalLosses: 0
-        },
-        {
-            team: 'Vancouver Sea Lions',
-            conferenceWins: 0,
-            conferenceLosses: 0,
-            totalWins: 0,
-            totalLosses: 0
-        },
-        {
-            team: 'Minnesota Timberwolves',
-            conferenceWins: 0,
-            conferenceLosses: 0,
-            totalWins: 0,
-            totalLosses: 0
-        },
-        {
-            team: 'Sacramento Kings',
-            conferenceWins: 0,
-            conferenceLosses: 0,
-            totalWins: 0,
-            totalLosses: 0
+        if (nbaTeam) {
+            setTeam(() => nbaTeam);
         }
-    ];
+        if (cbb_Timestamp && nbaTeam) {
+            GetConferenceStandings();
+        }
+    }, [currentUser, nbaTeam, cbb_Timestamp]);
 
-    // const standingsRow = standingsRecords.map((x, i) => {
-    //     return <StandingsTableRow key={x.team} record={x} rank={i + 1} />;
-    // });
+    const GetConferenceStandings = async () => {
+        const res = await _teamService.GetNBAStandingsByConferenceID(
+            nbaTeam.ConferenceID,
+            cbb_Timestamp.SeasonID
+        );
+
+        console.log({ res, nbaTeam, cbb_Timestamp });
+
+        setStandings(() => res);
+    };
+
     return (
-        <div>
+        <>
             <div className="row mt-2">
                 <div className="col-md-auto justify-content-start">
-                    <h2>{team}</h2>
+                    <h2>{teamName}</h2>
                 </div>
-                <div className="col-3"></div>
-                <div className="col-3"></div>
-            </div>
-            <div className="row mt-2">
-                <div className="col-md-auto col-sm justify-content-start">
-                    <h3>Western Conference, North Division</h3>
+                <div className="col-4">
+                    <h2 className="text-start">
+                        {cbb_Timestamp && cbb_Timestamp.Season}, Week{' '}
+                        {cbb_Timestamp && cbb_Timestamp.NBAWeek}
+                    </h2>
                 </div>
-                <div className="col-md-auto"></div>
-                <div className="col-3"></div>
+                <div className="col-md-auto justify-content-start">
+                    <h2>
+                        {team &&
+                            `${team.Conference} Conference, ${team.Division} Division`}
+                    </h2>
+                </div>
             </div>
+            <div className="row mt-2"></div>
             <div className="row mt-2">
-                <div className="col-md-auto">
+                <div className="col-md-2">
                     <div className="image">
-                        <img src={logo} alt="Go Cougs" />
+                        <img src={logo} alt="Go Supersonics" />
                     </div>
                 </div>
-                <div className="col-6">
-                    <div className="row justify-content-start">
-                        <h3 className="text-start">2021, Week 1</h3>
+                <div className="col-md-4">
+                    <div className="row mt-2 mb-2">
+                        <div className="btn-group btn-group-sm d-flex">
+                            <Link
+                                to={routes.NBA_GAMEPLAN}
+                                role="button"
+                                className="btn btn-primary btn-md me-2 shadow"
+                            >
+                                Gameplan
+                            </Link>
+                            <Link
+                                to={routes.NBA_FREE_AGENCY}
+                                role="button"
+                                className="btn btn-primary btn-md me-2 shadow"
+                            >
+                                Free Agency
+                            </Link>
+                            <Link
+                                to={routes.NBA_TRADEBLOCK}
+                                role="button"
+                                className="btn btn-primary btn-md me-2 shadow"
+                            >
+                                Trade Block
+                            </Link>
+                            <Link
+                                to={routes.NBA_SCHEDULE}
+                                role="button"
+                                className="btn btn-primary btn-md me-2 shadow"
+                            >
+                                Schedule
+                            </Link>
+                            <Link
+                                to={routes.NBA_STATS}
+                                role="button"
+                                className="btn btn-primary btn-md me-2 shadow"
+                            >
+                                Stats
+                            </Link>
+                        </div>
                     </div>
                     <div className="row">
                         <h4 className="text-start">Previous Week</h4>
-                        <table class="table jumbotron-shadow rounded-3">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Game</th>
-                                    <th scope="col">Home Team</th>
-                                    <th scope="col">Home Points</th>
-                                    <th scope="col">Away Points</th>
-                                    <th scope="col">Away Team</th>
-                                    <th scope="col">Result</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr className="">
-                                    <th scope="row">A</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr className="">
-                                    <th scope="row">B</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr className="">
-                                    <th scope="row">C</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
                     <div className="row mt-2">
                         <h4 className="text-start">Current Week</h4>
-                        <table class="table jumbotron-shadow rounded-3">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Game</th>
-                                    <th scope="col">Home Team</th>
-                                    <th scope="col"></th>
-                                    <th scope="col">Away Team</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">A</th>
-                                    <td>Seattle Supersonics</td>
-                                    <td>vs</td>
-                                    <td>Vancouver Sea Lions</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">B</th>
-                                    <td>Seattle Supersonics</td>
-                                    <td>vs</td>
-                                    <td>San Antonio Spurs</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">C</th>
-                                    <td>San Diego Clippers</td>
-                                    <td>vs</td>
-                                    <td>Seattle Supersonics</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div className="row mt-3">
-                        <div className="btn-group">
-                            <button
-                                type="button"
-                                class="btn btn-primary btn-md me-2 shadow"
-                            >
-                                Gameplan
-                            </button>
-                            <button
-                                type="button"
-                                class="btn btn-primary btn-md me-2 shadow"
-                            >
-                                Management
-                            </button>
-                            <button
-                                type="button"
-                                class="btn btn-primary btn-md shadow"
-                            >
-                                Stats
-                            </button>
-                        </div>
                     </div>
                 </div>
-                <div className="col-3 ms-md-auto">
-                    <div className="row justify-content-start">
-                        <h3 className="text-start">Standings</h3>
-                        <table class="table jumbotron-shadow rounded-3">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Rank</th>
-                                    <th scope="col">Team</th>
-                                    <th scope="col">Conf Wins</th>
-                                    <th scope="col">Conf Losses</th>
-                                    <th scope="col">Total Wins</th>
-                                    <th scope="col">Total Losses</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                <div className="col-md-6">
+                    <div className="row justify-content-start ms-1">
+                        {standings && standings.length > 0 ? (
+                            <>
+                                {isMobile ? (
+                                    <div className="mobile-card-viewer">
+                                        <StandingsCard standings={standings} />
+                                    </div>
+                                ) : (
+                                    <>
+                                        <StandingsCard standings={standings} />
+                                    </>
+                                )}
+                            </>
+                        ) : (
+                            <div className="row justify-content-center pt-2 mt-4 mb-2">
+                                <Spinner />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
-const mapStateToProps = ({ user: { currentUser } }) => ({
-    currentUser
+const mapStateToProps = ({
+    user: { currentUser },
+    nbaTeam: { nbaTeam },
+    timestamp: { cbb_Timestamp }
+}) => ({
+    currentUser,
+    nbaTeam,
+    cbb_Timestamp
 });
 
 export default connect(mapStateToProps)(NBAHomePage);

@@ -4,7 +4,7 @@ import routes from '../../Constants/routes';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 
-const NavBar_Start = ({ currentUser }) => {
+const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
     const user = currentUser;
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     const DesktopBarrier = () => {
@@ -214,6 +214,80 @@ const NavBar_Start = ({ currentUser }) => {
         );
     };
 
+    const NBATeam = () => {
+        return (
+            <li className="nav-item dropdown">
+                <a
+                    class="nav-link dropdown-toggle"
+                    href="#"
+                    id="navbarDropdownMenuLink"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                >
+                    {user.NBATeam}
+                </a>
+                <ul
+                    className="dropdown-menu"
+                    aria-labelledby="navbarDropdownMenuLink"
+                >
+                    <li>
+                        <Link to={routes.NBA_ROSTER} className="dropdown-item">
+                            Team Page
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
+                            to={routes.NBA_GAMEPLAN}
+                            className="dropdown-item"
+                        >
+                            Gameplan
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to={routes.NBA_STATS} className="dropdown-item">
+                            Team Statistics
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
+                            to={routes.NBA_SCHEDULE}
+                            className="dropdown-item"
+                        >
+                            Schedule
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
+                            className="dropdown-item"
+                            to={routes.NBA_FREE_AGENCY}
+                        >
+                            Free Agency
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
+                            to={routes.NBA_TRADEBLOCK}
+                            className="dropdown-item"
+                        >
+                            Trade Block
+                        </Link>
+                    </li>
+                    {cbb_Timestamp && cbb_Timestamp.IsNBAOffseason && (
+                        <li>
+                            <Link
+                                to={routes.NBA_DRAFT_ROOM}
+                                className="dropdown-item"
+                            >
+                                NBA Draft Room
+                            </Link>
+                        </li>
+                    )}
+                </ul>
+            </li>
+        );
+    };
+
     var AvailableTeams = () => {
         return (
             <div className="nav-item">
@@ -258,32 +332,29 @@ const NavBar_Start = ({ currentUser }) => {
                         </li>
                     )}
                 </li>
-                {/* <DesktopBarrier />
+                <DesktopBarrier />
                 <li className="nav-item">
-                    <span className="nav-link">NBA (Soon)</span>
-                </li> */}
-                {/* <DesktopBarrier /> */}
-                {currentUser.teamId === null ||
-                currentUser.nfl_id === null ||
-                currentUser.cbb_teamId === null ||
-                currentUser.nba_teamID === null ? (
-                    <>
-                        <DesktopBarrier />
-                        <AvailableTeams />
-                    </>
-                ) : (
-                    <>
-                        <DesktopBarrier />
-                        <AvailableTeams />
-                    </>
-                )}
+                    {currentUser.NBATeamID > 0 ? (
+                        <NBATeam />
+                    ) : (
+                        <span className="nav-link">NBA (None)</span>
+                    )}
+                </li>
+                <>
+                    <DesktopBarrier />
+                    <AvailableTeams />
+                </>
             </ul>
         </div>
     );
 };
 
-const mapStateToProps = ({ user: { currentUser } }) => ({
-    currentUser
+const mapStateToProps = ({
+    user: { currentUser },
+    timestamp: { cbb_Timestamp }
+}) => ({
+    currentUser,
+    cbb_Timestamp
 });
 
 export default connect(mapStateToProps)(NavBar_Start);

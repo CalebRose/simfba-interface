@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PlayerView = () => (
+const PlayerView = ({ isNBA }) => (
     <>
         <tr>
             <th scope="col" style={{ width: 175 }}>
@@ -15,8 +15,16 @@ const PlayerView = () => (
             <th scope="col">Experience</th>
             <th scope="col">Potential</th>
             <th scope="col">Contract Value</th>
-            <th scope="col">Year 1 Bonus</th>
-            <th scope="col">Year 1 Salary</th>
+            {isNBA ? (
+                <>
+                    <th scope="col">Year 1 Total</th>
+                </>
+            ) : (
+                <>
+                    <th scope="col">Year 1 Bonus</th>
+                    <th scope="col">Year 1 Salary</th>
+                </>
+            )}
         </tr>
     </>
 );
@@ -33,5 +41,9 @@ const DraftPickView = () => (
     </>
 );
 
-export const NFLTradeBlockHeader = ({ currentView }) =>
-    currentView === 'Players' ? <PlayerView /> : <DraftPickView />;
+export const TradeBlockHeader = ({ currentView, isNBA }) =>
+    currentView === 'Players' ? (
+        <PlayerView isNBA={isNBA} />
+    ) : (
+        <DraftPickView />
+    );

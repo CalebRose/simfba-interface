@@ -101,6 +101,11 @@ const authorizedUser = (props) => {
                             Approve Requests <span className="caret"></span>
                         </Link>
                     </li>
+                    <li className="dropdown-item">
+                        <Link to={routes.NBA_APPROVE} className="dropdown-item">
+                            Approve NBA Requests <span className="caret"></span>
+                        </Link>
+                    </li>
                 </ul>
             </li>
         );

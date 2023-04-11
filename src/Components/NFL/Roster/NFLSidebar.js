@@ -32,7 +32,8 @@ export const NFLSidebar = ({
     TeamOffers,
     isTradeBlock,
     tp,
-    canModify
+    canModify,
+    isMobile
 }) => {
     const capsheet = team.Capsheet;
     const y1Cap = ts.Y1Capspace;
@@ -243,7 +244,7 @@ export const NFLSidebar = ({
                         <h3>Trade Preferences</h3>
                     </div>
                     <div className="row mb-2 ps-3 pe-3">
-                        {canModify ? (
+                        {canModify && !isMobile ? (
                             <button
                                 type="button"
                                 className="btn btn-success"

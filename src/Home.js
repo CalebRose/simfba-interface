@@ -40,6 +40,10 @@ import NFLDepthChart from './Components/NFL/DepthChart/NFLDepthChart';
 import NFLFreeAgency from './Components/NFL/FreeAgency/NFLFreeAgency';
 import NFLTradeBlock from './Components/NFL/TradeBlock/NFLTradeBlock';
 import AdminTradePortal from './Components/Admin/AdminTradePortal/AdminTradePortal';
+import NBAApproveRequests from './Components/BBA/Admin/ApproveNBARequests/NBAApproveRequests';
+import NBARosterPage from './Components/BBA/NBA/Team/NBATeam';
+import NBAFreeAgency from './Components/BBA/NBA/Free Agency/NBAFreeAgency';
+import NBATradeblock from './Components/BBA/NBA/Trade Block/NBATradeblock';
 
 const Home = ({ viewMode }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -61,7 +65,7 @@ const Home = ({ viewMode }) => {
             setBBARole(() => user.bba_roleID);
             setCFBTeam(() => user.teamId);
             setCBBTeam(() => user.cbb_id);
-            setNBATeam(() => user.nba_id);
+            setNBATeam(() => user.NBATeamID);
             setNFLTeam(() => user.NFLTeamID);
         }
     }, [user]);
@@ -297,6 +301,13 @@ const Home = ({ viewMode }) => {
                     <Redirect to={routes.LANDING} />
                 )}
             </Route>
+            <Route exact path={routes.NBA_APPROVE}>
+                {bbaRoleId === Constants.ADMIN ? (
+                    <NBAApproveRequests />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
             <Route exact path={routes.BBA_USERS}>
                 {bbaRoleId === Constants.ADMIN ? (
                     <BBAManageTeams />
@@ -322,6 +333,30 @@ const Home = ({ viewMode }) => {
                     CBBTeam > 0 ? <BBATeam /> : <Redirect to={routes.LANDING} />
                 }
             />
+            <Route exact path={routes.NBA_ROSTER}>
+                {NBATeam > 0 ? (
+                    <NBARosterPage />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
+
+            <Route exact path={routes.NBA_FREE_AGENCY}>
+                {NBATeam > 0 && viewingBeta ? (
+                    <NBAFreeAgency />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
+
+            <Route exact path={routes.NBA_TRADEBLOCK}>
+                {NBATeam > 0 && viewingBeta ? (
+                    <NBATradeblock />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
+
             <Route
                 exact
                 path={routes.CBB_RECRUITING}

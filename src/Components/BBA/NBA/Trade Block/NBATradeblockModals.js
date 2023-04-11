@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { GetModalClass } from '../../../Constants/CSSClassHelper';
-import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
-import { TradeDropdown } from '../../_Common/Dropdown';
-import { NumberInput } from '../../_Common/Input';
-import { GetCapSpace } from '../FreeAgency/FreeAgencyHelper';
-import { CapsheetRow } from '../Roster/NFLSidebar';
-import { GetOptionList, LoadTradeOptions } from './TradeBlockHelper';
+import { GetModalClass } from '../../../../Constants/CSSClassHelper';
+import { GetOptionList } from '../../../NFL/TradeBlock/TradeBlockHelper';
+import { GetNBACapSpace } from '../../../NFL/FreeAgency/FreeAgencyHelper';
+import { Dropdown, TradeDropdown } from '../../../_Common/Dropdown';
+import { NumberInput } from '../../../_Common/Input';
+import { SwitchToggle } from '../../../_Common/SwitchToggle';
+import { NBACapsheetRow } from '../Sidebar/NBASidebar';
 
 const CapspaceColumn = ({ team, ts }) => {
     const {
@@ -17,41 +17,36 @@ const CapspaceColumn = ({ team, ts }) => {
         Y5Capspace
     } = ts;
     const capsheet = team.Capsheet;
-    const y1Space = GetCapSpace(
+    const y1Space = GetNBACapSpace(
         Y1Capspace,
-        capsheet.Y1Bonus,
-        capsheet.Y1Salary,
-        capsheet.Y1CapHit
+        capsheet.Year1Total,
+        capsheet.Year1Cap
     );
-    const y2Space = GetCapSpace(
+    const y2Space = GetNBACapSpace(
         Y2Capspace,
-        capsheet.Y2Bonus,
-        capsheet.Y2Salary,
-        capsheet.Y2CapHit
+        capsheet.Year2Total,
+        capsheet.Year2Cap
     );
-    const y3Space = GetCapSpace(
+    const y3Space = GetNBACapSpace(
         Y3Capspace,
-        capsheet.Y3Bonus,
-        capsheet.Y3Salary,
-        capsheet.Y3CapHit
+        capsheet.Year3Total,
+        capsheet.Year3Cap
     );
-    const y4Space = GetCapSpace(
+    const y4Space = GetNBACapSpace(
         Y4Capspace,
-        capsheet.Y4Bonus,
-        capsheet.Y4Salary,
-        capsheet.Y4CapHit
+        capsheet.Year4Total,
+        capsheet.Year3Cap
     );
-    const y5Space = GetCapSpace(
+    const y5Space = GetNBACapSpace(
         Y5Capspace,
-        capsheet.Y5Bonus,
-        capsheet.Y5Salary,
-        capsheet.Y5CapHit
+        capsheet.Year5Total,
+        capsheet.Year5Cap
     );
 
     return (
         <div className="col-2">
             <div className="row mb-1 pe-2">
-                <h3>{team.TeamName} Cap Space</h3>
+                <h3>{team.Team} Cap Space</h3>
             </div>
             <div className="row mb-1 pe-2">
                 <div className="col-3">
@@ -67,41 +62,36 @@ const CapspaceColumn = ({ team, ts }) => {
                     <h5>Space</h5>
                 </div>
             </div>
-            <CapsheetRow
+            <NBACapsheetRow
                 year={Season}
-                bonus={capsheet.Y1Bonus}
-                salary={capsheet.Y1Salary}
+                bonus={capsheet.Year1Total}
                 space={y1Space}
             />
-            <CapsheetRow
+            <NBACapsheetRow
                 year={Season + 1}
-                bonus={capsheet.Y2Bonus}
-                salary={capsheet.Y2Salary}
+                bonus={capsheet.Year2Total}
                 space={y2Space}
             />
-            <CapsheetRow
+            <NBACapsheetRow
                 year={Season + 2}
-                bonus={capsheet.Y3Bonus}
-                salary={capsheet.Y3Salary}
+                bonus={capsheet.Year3Total}
                 space={y3Space}
             />
-            <CapsheetRow
+            <NBACapsheetRow
                 year={Season + 3}
-                bonus={capsheet.Y4Bonus}
-                salary={capsheet.Y4Salary}
+                bonus={capsheet.Year4Total}
                 space={y4Space}
             />
-            <CapsheetRow
+            <NBACapsheetRow
                 year={Season + 4}
-                bonus={capsheet.Y5Bonus}
-                salary={capsheet.Y5Salary}
+                bonus={capsheet.Year5Total}
                 space={y5Space}
             />
         </div>
     );
 };
 
-export const OptionCard = ({
+export const NBAOptionCard = ({
     optionType,
     opt,
     change,
@@ -222,41 +212,31 @@ export const OptionCard = ({
                     <div className="col">
                         <p className="card-text mb-0">
                             Year 1:{' '}
-                            {RoundToTwoDecimals(
-                                opt.Contract.Y1BaseSalary + opt.Contract.Y1Bonus
-                            )}
+                            {RoundToTwoDecimals(opt.Contract.Year1Total)}
                         </p>
                     </div>
                     <div className="col">
                         <p className="card-text mb-0">
                             Year 2:{' '}
-                            {RoundToTwoDecimals(
-                                opt.Contract.Y2BaseSalary + opt.Contract.Y2Bonus
-                            )}
+                            {RoundToTwoDecimals(opt.Contract.Year2Total)}
                         </p>
                     </div>
                     <div className="col">
                         <p className="card-text mb-0">
                             Year 3:{' '}
-                            {RoundToTwoDecimals(
-                                opt.Contract.Y3BaseSalary + opt.Contract.Y3Bonus
-                            )}
+                            {RoundToTwoDecimals(opt.Contract.Year3Total)}
                         </p>
                     </div>
                     <div className="col">
                         <p className="card-text mb-0">
                             Year 4:{' '}
-                            {RoundToTwoDecimals(
-                                opt.Contract.Y4BaseSalary + opt.Contract.Y4Bonus
-                            )}
+                            {RoundToTwoDecimals(opt.Contract.Year4Total)}
                         </p>
                     </div>
                     <div className="col">
                         <p className="card-text mb-0">
                             Year 5:{' '}
-                            {RoundToTwoDecimals(
-                                opt.Contract.Y5BaseSalary + opt.Contract.Y5Bonus
-                            )}
+                            {RoundToTwoDecimals(opt.Contract.Year5Total)}
                         </p>
                     </div>
                 </div>
@@ -265,7 +245,7 @@ export const OptionCard = ({
     );
 };
 
-export const TradeProposalModal = ({
+export const NBATradeProposalModal = ({
     theme,
     ts,
     userTeam,
@@ -320,18 +300,18 @@ export const TradeProposalModal = ({
     };
 
     const click = () => {
-        const NFLTeamID = userTeam.ID;
+        const NBATeamID = userTeam.ID;
         const RecepientTeamID = currentTeam.ID;
-        const NFLTeam = userTeam.TeamName + ' ' + userTeam.Mascot;
-        const RecepientTeam = currentTeam.TeamName + ' ' + currentTeam.Mascot;
-        const tradeOptions = LoadTradeOptions(userOptions, NFLTeamID, false);
+        const NBATeam = userTeam.Team + ' ' + userTeam.Nickname;
+        const RecepientTeam = currentTeam.Team + ' ' + currentTeam.Nickname;
+        const tradeOptions = LoadTradeOptions(userOptions, NBATeamID, false);
         const recepientTradeOptions = LoadTradeOptions(
             receiverOptions,
             RecepientTeamID,
             false
         );
 
-        const modalSentOptions = LoadTradeOptions(userOptions, NFLTeamID, true);
+        const modalSentOptions = LoadTradeOptions(userOptions, NBATeamID, true);
         const modalRecepientTradeOptions = LoadTradeOptions(
             receiverOptions,
             RecepientTeamID,
@@ -339,16 +319,16 @@ export const TradeProposalModal = ({
         );
 
         const dto = {
-            NFLTeamID,
+            NBATeamID: NBATeamID,
             RecepientTeamID,
-            NFLTeam,
+            NBATeam: NBATeam,
             RecepientTeam,
-            NFLTeamTradeOptions: tradeOptions,
+            NBATeamTradeOptions: tradeOptions,
             RecepientTeamTradeOptions: recepientTradeOptions
         };
         const modalDTO = {
             ...dto,
-            NFLTeamTradeOptions: modalSentOptions,
+            NBATeamTradeOptions: modalSentOptions,
             RecepientTeamTradeOptions: modalRecepientTradeOptions
         };
         setUserOptions(() => []);
@@ -381,7 +361,7 @@ export const TradeProposalModal = ({
                 <div className={modalClass} style={{ minHeight: '530px' }}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="redshirtModalLabel">
-                            Propose trade with {currentTeam.TeamName}
+                            Propose trade with {currentTeam.Team}
                         </h4>
                         <button
                             type="button"
@@ -407,7 +387,7 @@ export const TradeProposalModal = ({
                                 </div>
                                 {userOptions.length > 0 &&
                                     userOptions.map((x, idx) => (
-                                        <OptionCard
+                                        <NBAOptionCard
                                             optionType={x.OptionType}
                                             opt={x}
                                             idx={idx}
@@ -431,7 +411,7 @@ export const TradeProposalModal = ({
                                 </div>
                                 {receiverOptions.length > 0 &&
                                     receiverOptions.map((x, idx) => (
-                                        <OptionCard
+                                        <NBAOptionCard
                                             optionType={x.OptionType}
                                             opt={x}
                                             idx={idx}
@@ -460,6 +440,214 @@ export const TradeProposalModal = ({
                             onClick={click}
                         >
                             Propose
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export const NBATradePreferencesModal = ({
+    tp,
+    theme,
+    saveTradePreferences
+}) => {
+    const [tradePreferences, setTradePreferences] = useState(() => {
+        return { ...tp };
+    });
+    const modalId = `tradePreferencesModal`;
+    const modalClass = GetModalClass(theme);
+
+    const UpdatePreferences = (event) => {
+        const { value } = event.target;
+        const pref = { ...tradePreferences };
+        pref[value] = !pref[value];
+        setTradePreferences(() => pref);
+    };
+
+    const UpdateType = (name, value) => {
+        const pref = { ...tradePreferences };
+        pref[name] = value;
+        setTradePreferences(() => pref);
+    };
+
+    const Save = () => {
+        return saveTradePreferences(tradePreferences);
+    };
+
+    const PositionSection = ({
+        position,
+        check,
+        toggle,
+        click,
+        value,
+        positionType,
+        list
+    }) => {
+        return (
+            <>
+                <div className="col-3">
+                    <SwitchToggle
+                        value={position}
+                        checkValue={check}
+                        change={toggle}
+                    />
+                </div>
+                <div className="col-3">
+                    <Dropdown
+                        name={positionType}
+                        click={click}
+                        value={value}
+                        list={list}
+                        id={position}
+                    />
+                </div>
+            </>
+        );
+    };
+
+    return (
+        <div
+            className="modal fade"
+            id={modalId}
+            tabindex="-1"
+            aria-labelledby="extendPlayerModalLabel"
+            aria-hidden="true"
+        >
+            <div className="modal-dialog modal-xl">
+                <div className={modalClass}>
+                    <div className="modal-header">
+                        <h4 className="modal-title" id="redshirtModalLabel">
+                            Update Trade Preferences
+                        </h4>
+                        <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        />
+                    </div>
+                    <div className="modal-body">
+                        <div className="row mb-2">
+                            <PositionSection
+                                position="PointGuards"
+                                check={tradePreferences.PointGuards}
+                                toggle={UpdatePreferences}
+                                positionType="PointGuardType"
+                                click={UpdateType}
+                                value={tradePreferences.PointGuardType}
+                                list={[
+                                    'Any',
+                                    'Floor General',
+                                    'Sharpshooter',
+                                    'Slasher',
+                                    '3-and-D',
+                                    'All-Around'
+                                ]}
+                            />
+                            <PositionSection
+                                position="PowerForwards"
+                                check={tradePreferences.PowerForwards}
+                                toggle={UpdatePreferences}
+                                positionType="PowerForwardType"
+                                click={UpdateType}
+                                value={tradePreferences.PowerForwardType}
+                                list={[
+                                    'Any',
+                                    'Point Forward',
+                                    'Two-Way Wing',
+                                    'Traditional Forward',
+                                    'All-Around'
+                                ]}
+                            />
+                        </div>
+                        <div className="row mb-2">
+                            <PositionSection
+                                position="ShootingGuards"
+                                check={tradePreferences.ShootingGuards}
+                                toggle={UpdatePreferences}
+                                positionType="ShootingGuardType"
+                                click={UpdateType}
+                                value={tradePreferences.ShootingGuardType}
+                                list={[
+                                    'Any',
+                                    'Floor General',
+                                    'Pure Defender',
+                                    'Sharpshooter',
+                                    'Slasher',
+                                    'Finisher',
+                                    'Swingman',
+                                    '3-and-D',
+                                    'All-Around'
+                                ]}
+                            />
+                            <PositionSection
+                                position="SmallForwards"
+                                check={tradePreferences.SmallForwards}
+                                toggle={UpdatePreferences}
+                                positionType="SmallForwardType"
+                                click={UpdateType}
+                                value={tradePreferences.SmallForwardType}
+                                list={[
+                                    'Any',
+                                    'Point Forward',
+                                    'Pure Defender',
+                                    'Slasher',
+                                    'Swingman',
+                                    'Two-Way Wing',
+                                    'All-Around'
+                                ]}
+                            />
+                        </div>
+                        <div className="row mb-2">
+                            <PositionSection
+                                position="Centers"
+                                check={tradePreferences.Centers}
+                                toggle={UpdatePreferences}
+                                positionType="CenterType"
+                                click={UpdateType}
+                                value={tradePreferences.CenterType}
+                                list={[
+                                    'Any',
+                                    'Rim Protector',
+                                    'Stretch Bigs',
+                                    'Lob Threat',
+                                    'All-Around'
+                                ]}
+                            />
+                            <PositionSection
+                                position="DraftPicks"
+                                check={tradePreferences.DraftPicks}
+                                toggle={UpdatePreferences}
+                                positionType="DraftPickType"
+                                click={UpdateType}
+                                value={tradePreferences.DraftPickType}
+                                list={[
+                                    'Any',
+                                    'Early Round',
+                                    'Mid-Round',
+                                    'Late Round'
+                                ]}
+                            />
+                        </div>
+                    </div>
+                    <div className="modal-footer">
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                        >
+                            No
+                        </button>
+
+                        <button
+                            type="button"
+                            className="btn btn-warning"
+                            data-bs-dismiss="modal"
+                            onClick={Save}
+                        >
+                            Save
                         </button>
                     </div>
                 </div>

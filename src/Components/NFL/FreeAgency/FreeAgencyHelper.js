@@ -53,6 +53,10 @@ export const GetCapSpace = (cap, bonus, salary, hit) => {
     return cap - bonus - salary - hit;
 };
 
+export const GetNBACapSpace = (cap, bonus, hit) => {
+    return cap - bonus - hit;
+};
+
 export const GetProjectedCapsheet = (capsheet, offers) => {
     if (!offers || offers.length === 0) return capsheet;
     for (let i = 0; i < offers.length; i++) {
@@ -159,4 +163,53 @@ export const ValidateRule6 = (s1, s2, s3, s4, s5) => {
         if (!valid) return valid;
     }
     return valid;
+};
+
+export const ValidateNBARule2 = (len, y1, y2, y3, y4, y5) => {
+    if (len === 5 && y5 >= y4 && y4 >= y3 && y3 >= y2 && y2 >= y1) return true;
+    if (len === 4 && y4 >= y3 && y3 >= y2 && y2 >= y1 && y5 === 0) return true;
+    if (len === 3 && y3 >= y2 && y2 >= y1 && y4 === 0 && y5 === 0) return true;
+    if (len === 2 && y2 >= y1 && y3 === 0 && y4 === 0 && y5 === 0) return true;
+    if (len === 1 && y2 === 0 && y3 === 0 && y4 === 0 && y5 === 0) return true;
+    return false;
+};
+
+export const ValidateNBARule3 = (len, y1, y2, y3, y4, y5) => {
+    if (len === 1 && !y2 && !y3 && !y4 && !y5) return true;
+    if (len === 2 && !y3 && !y4 && !y5 && !y1) return true;
+    if (len === 3 && !y2 && !y4 && !y5 && !y1) return true;
+    if (len === 4 && !y2 && !y3 && !y5 && !y1) return true;
+    if (len === 5 && !y2 && !y4 && !y4 && !y1) return true;
+    return false;
+};
+
+export const CheckForOffer = (player, teamID) => {
+    if (player.Offers.length > 0) {
+        const offerIdx = player.Offers.findIndex((x) => x.TeamID === teamID);
+        if (offerIdx > -1) {
+            return true;
+        }
+    }
+    return false;
+};
+
+export const GetMaxPercentage = (year, isMax, isSupermax) => {
+    if (!isMax && !isSupermax) return 0;
+    if (isSupermax) {
+        if (year > 9) {
+            return 0.35;
+        } else if (year > 6) {
+            return 0.3;
+        } else {
+            return 0.25;
+        }
+    } else if (isMax) {
+        if (year > 9) {
+            return 0.3;
+        } else if (year > 6) {
+            return 0.25;
+        } else {
+            return 0.2;
+        }
+    }
 };

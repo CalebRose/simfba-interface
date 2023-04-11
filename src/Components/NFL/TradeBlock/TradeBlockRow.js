@@ -24,6 +24,28 @@ const PlayerRow = ({ player }) => {
     );
 };
 
+const NBAPlayerRow = ({ player }) => {
+    const { Contract } = player;
+    const NameLabel = `${player.FirstName} ${player.LastName}`;
+    return (
+        <>
+            <tr style={{ zIndex: -1 }}>
+                <th scope="row">{NameLabel}</th>
+                <td className="align-middle">{player.Position}</td>
+                <td className="align-middle">{player.Archetype}</td>
+                <td className="align-middle">{player.Overall}</td>
+                <td className="align-middle">{player.Age}</td>
+                <td className="align-middle">{player.Year}</td>
+                <td className="align-middle">{player.PotentialGrade}</td>
+                <td className="align-middle">
+                    {RoundToTwoDecimals(Contract.ContractValue)}
+                </td>
+                <td className="align-middle">{Contract.Year1Total}</td>
+            </tr>
+        </>
+    );
+};
+
 const DraftPickRow = ({ pick }) => {
     return (
         <>
@@ -41,6 +63,14 @@ const DraftPickRow = ({ pick }) => {
 export const TradeBlockRow = ({ viewMode, obj }) => {
     return viewMode === 'Players' ? (
         <PlayerRow player={obj} />
+    ) : (
+        <DraftPickRow pick={obj} />
+    );
+};
+
+export const NBATradeBlockRow = ({ viewMode, obj }) => {
+    return viewMode === 'Players' ? (
+        <NBAPlayerRow player={obj} />
     ) : (
         <DraftPickRow pick={obj} />
     );

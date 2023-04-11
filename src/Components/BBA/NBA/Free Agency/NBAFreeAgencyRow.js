@@ -1,11 +1,15 @@
 import React from 'react';
-import { getLogo } from '../../../Constants/getLogo';
-import { CancelOfferModal } from './CancelOfferModal';
-import { CheckForOffer } from './FreeAgencyHelper';
-import { FreeAgencyPlayerModal } from './FreeAgencyPlayerModal';
-import { FreeAgentOfferModal } from './FreeAgentOfferModal';
+import { CancelOfferModal } from '../../../NFL/FreeAgency/CancelOfferModal';
+import { CheckForOffer } from '../../../NFL/FreeAgency/FreeAgencyHelper';
+import {
+    NBAFreeAgencyPlayerModal,
+    NBAFreeAgentOfferModal
+} from './NBAFreeAgencyModals';
+import { getLogo } from '../../../../Constants/getLogo';
 
-const NFLFreeAgencyRow = ({
+export const NBAFreeAgencyMobileRow = ({}) => {};
+
+export const NBAFreeAgencyRow = ({
     teamID,
     player,
     idx,
@@ -21,7 +25,6 @@ const NFLFreeAgencyRow = ({
     const modalTarget = '#playerModal' + idx;
     const offerTarget = '#offerModal' + idx;
     const cancelTarget = '#cancelOffer' + idx;
-
     const hasOffer = CheckForOffer(player, teamID);
 
     const leadingTeamsMapper = (player) => {
@@ -52,13 +55,13 @@ const NFLFreeAgencyRow = ({
 
     return (
         <>
-            <FreeAgencyPlayerModal
+            <NBAFreeAgencyPlayerModal
                 key={player.ID}
                 player={player}
                 idx={idx}
                 viewMode={viewMode}
             />
-            <FreeAgentOfferModal
+            <NBAFreeAgentOfferModal
                 key={player.ID}
                 team={team}
                 player={player}
@@ -94,15 +97,12 @@ const NFLFreeAgencyRow = ({
                 <td className="align-middle" style={{ width: 175 }}>
                     <h6>{NameLabel}</h6>
                 </td>
-                <td className="align-middle">
-                    <h6>{player.Position}</h6>
-                </td>
                 <td className="align-middle" style={{ width: 175 }}>
                     <h6>{player.Archetype}</h6>
                 </td>
                 <td className="align-middle">
                     <h6>
-                        {player.Age} | {player.Experience}
+                        {player.Age} | {player.Year}
                     </h6>
                 </td>
                 <td className="align-middle">
@@ -118,7 +118,7 @@ const NFLFreeAgencyRow = ({
                     <h6>{StatusLabel}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{player.MinimumValue}</h6>
+                    <h6>${player.MinimumValue}M</h6>
                 </td>
                 <td className="align-middle">
                     <h6>{leadingTeams}</h6>
@@ -171,5 +171,3 @@ const NFLFreeAgencyRow = ({
         </>
     );
 };
-
-export default NFLFreeAgencyRow;

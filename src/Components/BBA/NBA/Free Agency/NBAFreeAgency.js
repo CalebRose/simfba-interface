@@ -1,52 +1,50 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import Select from 'react-select';
 import {
-    ArchetypesListForFA,
     LetterGradesList,
     PositionList
-} from '../../../Constants/CommonConstants';
-import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
-import EasterEggService from '../../../_Services/simFBA/EasterEggService';
-import FBAPlayerService from '../../../_Services/simFBA/FBAPlayerService';
-import { MapObjOptions, MapOptions } from '../../../_Utility/filterHelper';
-import { Spinner } from '../../_Common/Spinner';
-import { NFLSidebar } from '../Roster/NFLSidebar';
-import { FilterFreeAgencyPlayers } from './FreeAgencyHelper';
-import { NFLFreeAgencyMobileRow } from './NFLFreeAgencyMobileRow';
-import NFLFreeAgencyRow from './NFLFreeAgencyRow';
+} from '../../../../Constants/BBAConstants';
+import { NBAArchetypesList } from '../../../../Constants/CommonConstants';
+import { GetTableHoverClass } from '../../../../Constants/CSSClassHelper';
+import BBAPlayerService from '../../../../_Services/simNBA/BBAPlayerService';
+import { MapObjOptions, MapOptions } from '../../../../_Utility/filterHelper';
+import { FilterFreeAgencyPlayers } from '../../../NFL/FreeAgency/FreeAgencyHelper';
+import { NBASidebar } from '../Sidebar/NBASidebar';
+import { NBAFreeAgencyRow } from './NBAFreeAgencyRow';
+import { Spinner } from '../../../_Common/Spinner';
 
-const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
-    let _rosterService = new FBAPlayerService();
-    let _easterEggService = new EasterEggService();
+const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
+    const _playerService = new BBAPlayerService();
     const positions = MapObjOptions(PositionList);
-    const archetypes = MapObjOptions(ArchetypesListForFA);
     const letterGrades = MapOptions(LetterGradesList);
-    const [selectedPositions, setSelectedPositions] = React.useState('');
-    const [selectedArchetypes, setSelectedArchetypes] = React.useState('');
-    const [selectedStatuses, setSelectedStatuses] = React.useState('');
+    const archetypes = MapObjOptions(NBAArchetypesList);
+    const statusOptions = MapOptions(['Open', 'Negotiating']);
+    const [selectedPositions, setSelectedPositions] = useState('');
+    const [selectedArchetypes, setSelectedArchetypes] = useState('');
+    const [selectedStatuses, setSelectedStatuses] = useState('');
     const [selectedPotentialLetterGrades, setSelectedPotentialGrades] =
-        React.useState('');
-    const [team, setTeam] = React.useState(null);
-    const [viewablePlayers, setViewablePlayers] = React.useState('');
-    const [filteredPlayers, setFilteredPlayers] = React.useState('');
-    const [viewOfferedPlayers, setViewOfferedPlayers] = React.useState(false);
-    const [canModify, setCanModify] = React.useState(true);
-    const [allPlayers, setAllPlayers] = React.useState('');
-    const [allFreeAgents, setAllFreeAgents] = React.useState('');
-    const [allWaivedPlayers, setAllWaivedPlayers] = React.useState('');
-    const [freeAgencyView, setFreeAgencyView] = React.useState('FA');
-    const [teamOffers, setTeamOffers] = React.useState([]);
-    const [showTamperingButton, setShowButton] = React.useState(true);
-    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
-    const [count, SetCount] = React.useState(100);
-    const [weekLabel, setWeekLabel] = React.useState('');
+        useState('');
+    const [team, setTeam] = useState(null);
+    const [viewablePlayers, setViewablePlayers] = useState('');
+    const [filteredPlayers, setFilteredPlayers] = useState('');
+    const [viewOfferedPlayers, setViewOfferedPlayers] = useState(false);
+    const [canModify, setCanModify] = useState(true);
+    const [allPlayers, setAllPlayers] = useState('');
+    const [allFreeAgents, setAllFreeAgents] = useState('');
+    const [allWaivedPlayers, setAllWaivedPlayers] = useState('');
+    const [freeAgencyView, setFreeAgencyView] = useState('FA');
+    const [teamOffers, setTeamOffers] = useState([]);
+    const [showTamperingButton, setShowButton] = useState(true);
+    const [viewWidth, setViewWidth] = useState(window.innerWidth);
+    const [count, SetCount] = useState(100);
+    const [weekLabel, setWeekLabel] = useState('');
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     let luckyTeam = Math.floor(Math.random() * (20 - 1) + 1);
-    const statusOptions = MapOptions(['Open', 'Negotiating']);
     const tableClass = GetTableHoverClass(viewMode);
+
     // For mobile
     useEffect(() => {
         if (!viewWidth) {
@@ -56,21 +54,34 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
 
     useEffect(() => {
         if (allPlayers.length === 0 && currentUser) {
-            GetAvailablePlayers(currentUser.NFLTeamID);
+            GetAvailablePlayers(currentUser.NBATeamID);
             // setCanModify(
             //     () =>
-            //         currentUser.NFLRole === 'Owner' ||
-            //         currentUser.NFLRole === 'Manager' ||
+            //         currentUser.NBARole === 'Owner' ||
+            //         currentUser.NBARole === 'Manager' ||
             //         currentUser.roleID === 'Admin'
             // );
         }
     }, [allPlayers, currentUser]);
 
     useEffect(() => {
-        if (nflTeam && !team) {
-            setTeam(() => nflTeam);
+        if (nbaTeam && !team) {
+            setTeam(() => nbaTeam);
         }
-    }, [nflTeam, team]);
+    }, [nbaTeam, team]);
+
+    useEffect(() => {
+        if (cbb_Timestamp) {
+            const isOffseason = cbb_Timestamp.IsNBAOffSeason;
+            let label = '';
+            if (isOffseason) {
+                label = `Current Round: ${cbb_Timestamp.FreeAgencyRound}`;
+            } else {
+                label = `Current Week: ${cbb_Timestamp.NBAWeek}`;
+            }
+            setWeekLabel(() => label);
+        }
+    }, [cbb_Timestamp]);
 
     useEffect(() => {
         const players =
@@ -92,7 +103,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                 const item = filter[i];
                 if (item.Offers !== null && item.Offers.length > 0) {
                     const check = item.Offers.some(
-                        (x) => x.TeamID === currentUser.NFLTeamID
+                        (x) => x.TeamID === currentUser.NBATeamID
                     );
                     if (check) filterOnlyOfferedPlayers.push(item);
                 }
@@ -114,22 +125,9 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
         viewOfferedPlayers
     ]);
 
-    useEffect(() => {
-        if (cfb_Timestamp) {
-            const isOffseason = cfb_Timestamp.IsNFLOffSeason;
-            let label = '';
-            if (isOffseason) {
-                label = `Current Round: ${cfb_Timestamp.FreeAgencyRound}`;
-            } else {
-                label = `Current Week: ${cfb_Timestamp.NFLWeek}`;
-            }
-            setWeekLabel(() => label);
-        }
-    }, [cfb_Timestamp]);
-
-    // API Calls
+    // Api Calls
     const GetAvailablePlayers = async (TeamID) => {
-        const res = await _rosterService.GetFreeAgencyData(TeamID);
+        const res = await _playerService.GetFreeAgencyData(TeamID);
         const FAs = res.FreeAgents.map((x) => {
             return { ...x };
         });
@@ -141,9 +139,9 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
         });
         const all = [...FAs, ...Waivers];
         setAllPlayers(() => all);
-        setAllFreeAgents(() => FAs);
-        setAllWaivedPlayers(() => Waivers);
-        setTeamOffers(() => ExistingOffers);
+        setAllFreeAgents(() => [...FAs]);
+        setAllWaivedPlayers(() => [...Waivers]);
+        setTeamOffers(() => [...ExistingOffers]);
     };
 
     // Click Functions
@@ -161,17 +159,22 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
         const opts = [...options.map((x) => x.value)];
         setSelectedPotentialGrades(() => opts);
     };
-
     const ChangeStatuses = (options) => {
         const opts = [...options.map((x) => x.value)];
         setSelectedStatuses(() => opts);
     };
+
     const ToggleViewOfferedPlayers = () => {
         const toggle = !viewOfferedPlayers;
         setViewOfferedPlayers(() => toggle);
     };
 
-    // Needed Functions
+    const ToggleFreeAgencyView = () => {
+        const toggle = freeAgencyView === 'FA' ? 'WAIVER' : 'FA';
+        setFreeAgencyView(() => toggle);
+    };
+
+    // Needed functions
     const loadRecords = () => {
         const currentPlayers = [...viewablePlayers];
 
@@ -187,7 +190,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     };
 
     const CreateFAOffer = async (player, offer) => {
-        let res = await _rosterService.CreateFAOffer(offer);
+        let res = await _playerService.CreateFAOffer(offer);
         const viewingFA = freeAgencyView === 'FA';
         const players = viewingFA ? [...allFreeAgents] : [...allWaivedPlayers];
         const playerIDX = players.findIndex((x) => x.ID === player.ID);
@@ -223,7 +226,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     };
 
     const CancelOffer = async (player, offer) => {
-        let res = await _rosterService.CancelFAOffer(offer);
+        let res = await _playerService.CancelFAOffer(offer);
         if (res) {
             const viewingFA = freeAgencyView === 'FA';
             const players = viewingFA
@@ -240,18 +243,16 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
         }
     };
 
-    // Sorts
-
     return (
         <div className="container-fluid">
             <div className="justify-content-start">
-                <h2>SimNFL Free Agency</h2>
+                <h2>SimNBA Free Agency</h2>
             </div>
             <div className="row">
-                {team && cfb_Timestamp && (
-                    <NFLSidebar
+                {team && cbb_Timestamp && (
+                    <NBASidebar
                         team={team}
-                        ts={cfb_Timestamp}
+                        ts={cbb_Timestamp}
                         isRoster={false}
                         TeamOffers={teamOffers}
                     />
@@ -333,6 +334,22 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                     : 'View Offered Players'}
                             </button>
                         </div>
+                        <div className="col-md-auto">
+                            <h5 className="text-start align-middle">View</h5>
+                            <button
+                                type="button"
+                                className={`btn ${
+                                    viewOfferedPlayers
+                                        ? 'btn-outline-danger'
+                                        : 'btn-outline-success'
+                                }`}
+                                onClick={ToggleFreeAgencyView}
+                            >
+                                {freeAgencyView === 'FA'
+                                    ? 'Waiver Wire'
+                                    : 'Free Agency'}
+                            </button>
+                        </div>
                     </div>
                     <div className="row"></div>
                     {/* Modals Here */}
@@ -341,7 +358,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                             viewMode === 'dark' ? '-dark' : ''
                         }`}
                     >
-                        {cfb_Timestamp && !cfb_Timestamp.IsFreeAgencyLocked ? (
+                        {cbb_Timestamp && !cbb_Timestamp.IsFreeAgencyLocked ? (
                             <InfiniteScroll
                                 dataLength={viewablePlayers.length}
                                 next={loadMoreRecords}
@@ -370,18 +387,18 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                     viewablePlayers.length > 0 &&
                                     viewablePlayers.map((x, idx) => (
                                         <>
-                                            <NFLFreeAgencyMobileRow
+                                            {/* <NFLFreeAgencyMobileRow
                                                 key={x.ID}
                                                 player={x}
                                                 teamID={team.ID}
                                                 idx={idx}
-                                                ts={cfb_Timestamp}
+                                                ts={cbb_Timestamp}
                                                 viewMode={viewMode}
                                                 canModify={canModify}
                                                 team={team}
                                                 cancel={CancelOffer}
                                                 extend={CreateFAOffer}
-                                            />
+                                            /> */}
                                         </>
                                     ))
                                 ) : (
@@ -405,7 +422,6 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                                 >
                                                     Name
                                                 </th>
-                                                <th scope="col">Position</th>
                                                 <th
                                                     scope="col"
                                                     style={{ width: 175 }}
@@ -429,17 +445,16 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                             </tr>
                                         </thead>
                                         <tbody className="overflow-auto">
-                                            {!cfb_Timestamp.IsFreeAgencyLocked &&
-                                                team &&
+                                            {team &&
                                                 viewablePlayers.length > 0 &&
                                                 viewablePlayers.map(
                                                     (x, idx) => (
-                                                        <NFLFreeAgencyRow
+                                                        <NBAFreeAgencyRow
                                                             key={x.ID}
                                                             player={x}
                                                             teamID={team.ID}
                                                             idx={idx}
-                                                            ts={cfb_Timestamp}
+                                                            ts={cbb_Timestamp}
                                                             viewMode={viewMode}
                                                             canModify={
                                                                 canModify
@@ -452,18 +467,6 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                                         />
                                                     )
                                                 )}
-
-                                            {cfb_Timestamp.IsFreeAgencyLocked && (
-                                                <>
-                                                    <tr className="mt -2">
-                                                        Free Agency is currently
-                                                        syncing. Please be
-                                                        patient and make
-                                                        yourself a cup of tea.
-                                                        You deserve it.
-                                                    </tr>
-                                                </>
-                                            )}
                                         </tbody>
                                     </table>
                                 )}
@@ -493,14 +496,14 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
 
 const mapStateToProps = ({
     user: { currentUser },
-    nflTeam: { nflTeam },
-    timestamp: { cfb_Timestamp },
+    nbaTeam: { nbaTeam },
+    timestamp: { cbb_Timestamp },
     viewMode: { viewMode }
 }) => ({
     currentUser,
-    nflTeam,
-    cfb_Timestamp,
+    nbaTeam,
+    cbb_Timestamp,
     viewMode
 });
 
-export default connect(mapStateToProps)(NFLFreeAgency);
+export default connect(mapStateToProps)(NBAFreeAgency);

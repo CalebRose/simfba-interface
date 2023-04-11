@@ -736,6 +736,8 @@ export const getLogo = (team) => {
             return logos.ATL_Falcons;
         case 'Baltimore Ravens':
             return logos.BAL_Ravens;
+        case 'Boston Celtics':
+            return logos.BOS_Celtics;
         case 'Brooklyn Nets':
             return logos.BRK_Nets;
         case 'Buffalo Bills':
@@ -834,6 +836,8 @@ export const getLogo = (team) => {
             return logos.SAC_Kings;
         case 'San Antonio Spurs':
             return logos.SA_Spurs;
+        case 'San Diego Clippers':
+            return logos.SD_Clippers;
         case 'San Francisco 49ers':
             return logos.SF_49ers;
         case 'Seattle Supersonics':

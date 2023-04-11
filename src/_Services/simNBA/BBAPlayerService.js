@@ -1,124 +1,63 @@
 import BBAURL from '../../Constants/SimBBA_url';
+import { GetCall, PostCall } from '../simFBA/FetchHelper';
 export default class BBAPlayerService {
     async GetPlayerByPlayerId(playerId) {
-        let response = await fetch(BBAURL + 'GetPlayer/' + playerId, {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('HTTP-Error:', response.status);
-        }
-        return json;
+        return await GetCall(`${BBAURL}GetPlayer/${playerId}`);
     }
 
     async GetPlayersByTeam(teamId) {
         let json;
         if (teamId > 0) {
-            let response = await fetch(BBAURL + 'players/' + teamId, {
-                headers: {
-                    authorization: 'Bearer ' + localStorage.getItem('token')
-                }
-            });
-
-            if (response.ok) {
-                json = await response.json();
-            } else {
-                alert('HTTP-Error:', response.status);
-            }
+            return await GetCall(`${BBAURL}players/${teamId}`);
         }
         return json;
     }
 
     async GetAllCollegePlayers() {
-        let response = await fetch(BBAURL + 'players/college', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('HTTP-Error:', response.status);
-        }
-        return json;
+        return await GetCall(`${BBAURL}players/college`);
     }
 
     async GetRecruits() {
-        let response = await fetch(BBAURL + 'players/college/recruits', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('HTTP-Error:', response.status);
-        }
-        return json;
+        return await GetCall(`${BBAURL}players/college/recruits`);
     }
 
     async GetAllNBAPlayers() {
-        let response = await fetch(BBAURL + 'players/nba', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('HTTP-Error:', response.status);
-        }
-        return json;
+        return await GetCall(`${BBAURL}players/nba`);
     }
 
     async GetAllNBAFreeAgents() {
-        let response = await fetch(BBAURL + 'players/nba/freeAgents', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('HTTP-Error:', response.status);
-        }
-        return json;
+        return await GetCall(`${BBAURL}players/nba/freeAgents`);
     }
 
     async AssignRedshirt(payload) {
-        let response = await fetch(BBAURL + 'cbb/player/assign/redshirt/', {
-            headers: {
-                authorization: localStorage.getItem('token'),
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify(payload)
-        });
+        return await PostCall(`${BBAURL}cbb/player/assign/redshirt/`, payload);
+    }
 
-        if (response.ok) {
-            console.log(
-                'Successfully added redshirt to player',
-                payload.PlayerID
-            );
-        } else {
-            throw (
-                ('HTTP-Error: Could not add redshirt to player',
-                response.status)
-            );
-        }
-        return true;
+    async GetNBARosterByTeamID(teamID) {
+        return await GetCall(`${BBAURL}nba/players/${teamID}`);
+    }
+
+    async GetFreeAgencyData(teamID) {
+        return await GetCall(`${BBAURL}nba/freeagency/available/${teamID}`);
+    }
+
+    async CreateFAOffer(dto) {
+        return await PostCall(`${BBAURL}nba/freeagency/create/offer`, dto);
+    }
+
+    async CancelFAOffer(dto) {
+        return await PostCall(`${BBAURL}nba/freeagency/cancel/offer`, dto);
+    }
+
+    async PlaceNBAPlayerInGLeague(playerID) {
+        return await GetCall(`${BBAURL}nba/players/place/gleague/${playerID}`);
+    }
+
+    async AssignPlayerAsTwoWay(playerID) {
+        return await GetCall(`${BBAURL}nba/players/place/twoway/${playerID}`);
+    }
+
+    async CutNBAPlayerFromRoster(playerID) {
+        return await GetCall(`${BBAURL}nba/players/place/twoway/${playerID}`);
     }
 }
