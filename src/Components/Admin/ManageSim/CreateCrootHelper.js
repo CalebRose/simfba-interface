@@ -485,10 +485,12 @@ export const GetCBBValidation = (croot) => {
         croot.Stamina &&
         croot.Shooting2 &&
         croot.Shooting3 &&
+        croot.FreeThrow &&
         croot.Finishing &&
         croot.Ballwork &&
         croot.Rebounding &&
-        croot.Defense &&
+        croot.InteriorDefense &&
+        croot.PerimeterDefense &&
         croot.Potential &&
         croot.FreeAgency &&
         croot.Personality &&
@@ -502,11 +504,11 @@ export const GetCBBValidation = (croot) => {
 
 export const GetCBBOverall = (croot) => {
     return (
-        Math.floor((croot.Shooting2 + croot.Shooting3) / 2) +
+        Math.floor((croot.Shooting2 + croot.Shooting3 + croot.FreeThrow) / 3) +
         croot.Finishing +
         croot.Ballwork +
         croot.Rebounding +
-        croot.Defense
+        Math.floor((croot.InteriorDefense + croot.PerimeterDefense) / 2)
     );
 };
 

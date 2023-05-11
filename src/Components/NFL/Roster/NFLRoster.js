@@ -111,10 +111,11 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
         switch (newSort) {
             case 'ovr':
                 setViewRoster(() =>
-                    [...roster].sort(
-                        (a, b) =>
-                            (a.Overall - b.Overall) * (isAscending ? 1 : -1)
-                    )
+                    [...roster].sort((a, b) => {
+                        if (a.ShowLetterGrade) return 1;
+                        if (b.ShowLetterGrade) return -1;
+                        return (a.Overall - b.Overall) * (isAscending ? 1 : -1);
+                    })
                 );
                 break;
             case 'name':

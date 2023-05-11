@@ -2,7 +2,7 @@ import React from 'react';
 import { CutPlayerModal } from '../../../NFL/Roster/CutPlayerModal';
 import { ExtendPlayerModal } from '../../../NFL/Roster/ExtendPlayerModal';
 import { TradeBlockModal } from '../../../NFL/Roster/OnTradeBlockModal';
-import { GLeagueModal, TwoWayModal } from './NBATeamModals';
+import { GLeagueModal, PlayerModal, TwoWayModal } from './NBATeamModals';
 
 const NBATeamPlayerRow = ({
     player,
@@ -14,7 +14,8 @@ const NBATeamPlayerRow = ({
     setToTwoWay,
     cut,
     extend,
-    tradeblock
+    tradeblock,
+    team
 }) => {
     let modalTarget = `#playerModal${idx}`;
     let tradeBlockTarget = `#tradeBlock${idx}`;
@@ -33,6 +34,13 @@ const NBATeamPlayerRow = ({
 
     return (
         <>
+            <PlayerModal
+                key={player.ID}
+                player={player}
+                viewMode={theme}
+                team={team}
+                idx={idx}
+            />
             <CutPlayerModal
                 key={player.ID}
                 player={player}

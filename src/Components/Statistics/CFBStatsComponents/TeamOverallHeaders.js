@@ -1,12 +1,12 @@
 import React from 'react';
 
-const TeamOverallHeaders = ({ sortFunc, cv }) => {
+const TeamOverallHeaders = ({ sortFunc, cv, viewType }) => {
     const returnSort = (val) => {
         return sortFunc(val, cv);
     };
     return (
         <tr>
-            <th scope="col">Games</th>
+            {viewType === 'SEASON' && <th scope="col">Games</th>}
             <th scope="col">Team</th>
             <th scope="col">
                 <abbr title="Conference">Conf</abbr>

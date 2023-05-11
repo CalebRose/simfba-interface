@@ -639,7 +639,7 @@ const CBBRecruitingDashboard = ({
                                                         ChangeSort('Shooting2')
                                                     }
                                                 >
-                                                    2pt. Shooting
+                                                    2pt.
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -647,7 +647,15 @@ const CBBRecruitingDashboard = ({
                                                         ChangeSort('Shooting3')
                                                     }
                                                 >
-                                                    3pt Shooting.
+                                                    3pt.
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort('FreeThrow')
+                                                    }
+                                                >
+                                                    FT
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -676,10 +684,22 @@ const CBBRecruitingDashboard = ({
                                                 <th
                                                     scope="col"
                                                     onClick={() =>
-                                                        ChangeSort('Defense')
+                                                        ChangeSort(
+                                                            'InteriorDefense'
+                                                        )
                                                     }
                                                 >
-                                                    Defense
+                                                    Int. Defense
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort(
+                                                            'PerimeterDefense'
+                                                        )
+                                                    }
+                                                >
+                                                    Per. Defense
                                                 </th>
                                                 <th
                                                     scope="col"

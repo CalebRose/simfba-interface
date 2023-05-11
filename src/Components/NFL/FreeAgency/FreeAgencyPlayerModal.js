@@ -5,12 +5,14 @@ import {
     HeightToFeetAndInches,
     RoundToTwoDecimals
 } from '../../../_Utility/utilHelper';
+import { GetNFLOverall } from '../../../_Utility/RosterHelper';
 
 export const FreeAgencyPlayerModal = ({ player, idx, viewMode }) => {
     const modalId = 'playerModal' + idx;
     const heightObj = HeightToFeetAndInches(player.Height);
     const AllOffers = player && player.Offers;
     const modalClass = GetModalClass(viewMode);
+    const ovr = GetNFLOverall(player.Overall, player.ShowLetterGrade);
 
     const OfferingTeam = ({ offer, idx }) => {
         const logo = getLogo(offer.Team);
@@ -80,7 +82,7 @@ export const FreeAgencyPlayerModal = ({ player, idx, viewMode }) => {
                         </div>
                         <div className="row g-2 gy-2 mb-3">
                             <div className="col">
-                                <h5>Overall:</h5> {player.Overall}
+                                <h5>Overall:</h5> {ovr}
                             </div>
                             <div className="col">
                                 <h5>Potential:</h5> {player.PotentialGrade}

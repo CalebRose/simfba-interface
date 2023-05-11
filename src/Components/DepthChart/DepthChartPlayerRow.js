@@ -2,6 +2,8 @@ import React from 'react';
 import AttributeAverages from '../../Constants/AttributeAverages';
 import {
     GetLetterGrade,
+    GetNFLLetterGrade,
+    GetNFLOverall,
     GetNFLYear,
     GetOverall,
     GetYear
@@ -92,13 +94,20 @@ const DepthChartPlayerRow = (props) => {
                         if (label === 'Archetype') {
                             attr = playerData[label];
                         } else if (label === 'Overall') {
-                            if (isCFB || playerData.Experience < 2) {
+                            if (isCFB) {
                                 attr = GetOverall(
                                     playerData.Overall,
                                     playerData.Year
                                 );
                             } else {
-                                attr = playerData.Overall;
+                                if (playerData.ShowLetterGrade) {
+                                    attr = GetNFLOverall(
+                                        playerData.Overall,
+                                        playerData.ShowLetterGrade
+                                    );
+                                } else {
+                                    attr = playerData.Overall;
+                                }
                             }
                         } else if (label === 'Year') {
                             attr = isCFB
@@ -111,14 +120,22 @@ const DepthChartPlayerRow = (props) => {
                             // May want to go off of the original position values
                             const average = AttributeAverages[label][pos];
                             // If player is either in college or is a rookie, show letter attribute
-                            if (isCFB || playerData.Experience < 2) {
+                            if (isCFB) {
                                 attr = GetLetterGrade(
                                     average,
                                     val,
                                     playerData.Year
                                 );
                             } else {
-                                attr = val;
+                                if (playerData.ShowLetterGrade) {
+                                    attr = GetLetterGrade(
+                                        average,
+                                        val,
+                                        playerData.Experience
+                                    );
+                                } else {
+                                    attr = val;
+                                }
                             }
                         }
                         return <td>{attr}</td>;

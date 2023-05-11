@@ -436,20 +436,54 @@ const BBACreateCrootModal = (props) => {
                             <div className="row">
                                 <div className="col-md-6">
                                     <label className="col-form-label">
-                                        Defense:
+                                        Interior Defense:
                                     </label>
                                     <input
                                         type="text"
                                         className="form-control"
                                         onChange={NumberChange}
-                                        name="Defense"
+                                        name="InteriorDefense"
                                         value={
-                                            Recruit && Recruit.Defense
-                                                ? Recruit.Defense
+                                            Recruit && Recruit.InteriorDefense
+                                                ? Recruit.InteriorDefense
                                                 : ''
                                         }
                                     />
                                 </div>
+                                <div className="col-md-6">
+                                    <label className="col-form-label">
+                                        Perimeter Defense:
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        onChange={NumberChange}
+                                        name="PerimeterDefense"
+                                        value={
+                                            Recruit && Recruit.PerimeterDefense
+                                                ? Recruit.PerimeterDefense
+                                                : ''
+                                        }
+                                    />
+                                </div>
+                                <div className="col-md-6">
+                                    <label className="col-form-label">
+                                        Free Throw:
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        onChange={NumberChange}
+                                        name="FreeThrow"
+                                        value={
+                                            Recruit && Recruit.FreeThrow
+                                                ? Recruit.FreeThrow
+                                                : ''
+                                        }
+                                    />
+                                </div>
+                            </div>
+                            <div className="row">
                                 <div className="col-md-6">
                                     <label className="col-form-label">
                                         Potential:
@@ -466,9 +500,7 @@ const BBACreateCrootModal = (props) => {
                                         }
                                     />
                                 </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-12">
+                                <div className="col-md-6">
                                     <label className="col-form-label">
                                         Personality:
                                     </label>

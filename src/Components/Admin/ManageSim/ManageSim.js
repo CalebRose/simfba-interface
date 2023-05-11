@@ -315,26 +315,16 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <h5>Offseason-Free Agency</h5>
+                                    <h5>Free Agency</h5>
                                 </th>
                                 <td>
-                                    {timestamp.IsNFLOffSeason ? (
-                                        <button
-                                            type="button"
-                                            className="btn btn-primary btn-sm"
-                                            onClick={SyncOffseasonFreeAgency}
-                                        >
-                                            Sync
-                                        </button>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            className="btn btn-secondary btn-sm"
-                                            disabled
-                                        >
-                                            Sync
-                                        </button>
-                                    )}
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary btn-sm"
+                                        onClick={SyncOffseasonFreeAgency}
+                                    >
+                                        Sync
+                                    </button>
                                 </td>
                                 <td>
                                     <h5>Run Every 3 Days</h5>

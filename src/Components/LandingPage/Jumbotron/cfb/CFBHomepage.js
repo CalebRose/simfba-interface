@@ -68,8 +68,16 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             }
             prevIdx = games.findIndex((x) => x.Week === prevWeek);
             nextIdx = games.findIndex((x) => x.Week === nextWeek);
+            while (prevIdx === -1) {
+                prevWeek += 1;
+                prevIdx = games.findIndex((x) => x.Week === prevWeek);
+            }
+            while (nextIdx === -1) {
+                nextWeek -= 1;
+                nextIdx = games.findIndex((x) => x.Week === nextWeek);
+            }
 
-            let gameRange = games.slice(prevIdx, nextIdx);
+            let gameRange = games.slice(prevIdx, nextIdx + 1);
             setViewableMatches(() => gameRange);
         }
     }, [cfb_Timestamp, games]);
@@ -209,14 +217,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                     >
                                         Schedule
                                     </Link>
-                                    <Link
-                                        to={routes.NEWS}
-                                        type="button"
-                                        className="btn btn-primary btn-sm me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
-                                    >
-                                        News
-                                    </Link>
                                 </div>
                             </div>
                         </>
@@ -290,10 +290,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                         <div className="row">
                             <div className="card text-dark bg-light mb-3">
                                 <div className="card-body">
-                                    <h5 className="card-title">
-                                        This season's schedule is still in
-                                        progress. Please be patient...
-                                    </h5>
+                                    <h5 className="card-title">Loading...</h5>
                                 </div>
                             </div>
                         </div>

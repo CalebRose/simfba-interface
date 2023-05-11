@@ -25,7 +25,7 @@ export const NFLRosterPlayerRow = ({
     let extendPlayerTarget = `#extendPlayer${idx}`;
     let tradeBlockTarget = `#tradeBlock${idx}`;
     let practiceSquadTarget = `#practiceSquad${idx}`;
-    let ovr = GetNFLOverall(player.Overall, player.Experience);
+    let ovr = GetNFLOverall(player.Overall, player.ShowLetterGrade);
     const year = player.Experience === 0 ? 'R' : player.Experience;
     const heightObj = HeightToFeetAndInches(player.Height);
     const contract = player.Contract;

@@ -44,6 +44,9 @@ import NBAApproveRequests from './Components/BBA/Admin/ApproveNBARequests/NBAApp
 import NBARosterPage from './Components/BBA/NBA/Team/NBATeam';
 import NBAFreeAgency from './Components/BBA/NBA/Free Agency/NBAFreeAgency';
 import NBATradeblock from './Components/BBA/NBA/Trade Block/NBATradeblock';
+import NFLSchedulePage from './Components/NFL/Schedule/NFLSchedulePage';
+import NFLStatisticsPage from './Components/NFL/Statistics/NFLStatisticsPage';
+import NBAGameplan from './Components/BBA/NBA/Gameplan/NBAGameplan';
 
 const Home = ({ viewMode }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -281,6 +284,29 @@ const Home = ({ viewMode }) => {
                     )
                 }
             />
+            <Route
+                exact
+                path={routes.NFL_SCHEDULE}
+                render={() =>
+                    NFLTeam > 0 ? (
+                        <NFLSchedulePage />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
+                path={routes.NFL_STATS}
+                render={() =>
+                    NFLTeam > 0 ? (
+                        <NFLStatisticsPage />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+
             <Route exact path={routes.SIGNUP} component={SignUp} />
             <Route exact path={routes.LOGIN} component={Login} />
             <Route
@@ -336,6 +362,13 @@ const Home = ({ viewMode }) => {
             <Route exact path={routes.NBA_ROSTER}>
                 {NBATeam > 0 ? (
                     <NBARosterPage />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
+            <Route exact path={routes.NBA_GAMEPLAN}>
+                {NBATeam > 0 ? (
+                    <NBAGameplan />
                 ) : (
                     <Redirect to={routes.LANDING} />
                 )}
@@ -409,7 +442,7 @@ const Home = ({ viewMode }) => {
                 }
             >
                 <div className="container">
-                    <span>Simfba, 2021</span>
+                    <span>Simfba, {new Date().getFullYear()}</span>
                 </div>
             </footer>
         </div>

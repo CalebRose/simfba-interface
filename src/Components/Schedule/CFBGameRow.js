@@ -1,8 +1,29 @@
 import React from 'react';
 import { getLogo } from '../../Constants/getLogo';
+import { RoundToTwoDecimals, TitleCase } from '../../_Utility/utilHelper';
+import { Dropdown } from '../_Common/Dropdown';
+import {
+    CFBTimeSlotList,
+    NFLTimeSlotList
+} from '../../Constants/CommonConstants';
 
 const GameRow = (props) => {
-    const { idx, game, currentWeek, viewMode, isAdmin } = props;
+    const {
+        idx,
+        game,
+        currentWeek,
+        viewMode,
+        isAdmin,
+        change,
+        currentSeason,
+        isNFL
+    } = props;
+    let TimeSlotList = CFBTimeSlotList;
+    if (isNFL) {
+        TimeSlotList = NFLTimeSlotList;
+    }
+    const { HighTemp, LowTemp, Precip, WindCategory, WindSpeed, TimeSlot } =
+        game;
 
     const homeTeam = {
         Team: game.HomeTeam,
@@ -37,63 +58,106 @@ const GameRow = (props) => {
         detailsLabel += ' | Neutral Site';
     }
     let cardClass = `card mb-3 ${viewMode === 'dark' ? 'text-bg-dark' : ''}`;
+
+    const ChangeTimeslot = async (name, value) => {
+        return await change(value, game);
+    };
+
     return (
         <div className={cardClass} style={{ maxWidth: '75vw' }}>
             <div className="row g-0">
-                <div className="col-md-3 d-flex align-items-center justify-content-center">
-                    <img
-                        src={HomeTeamLogo}
-                        className="img-fluid rounded-start img-match-schedule p-1"
-                        alt="homeTeam"
-                    />
+                <div className="col-md-3 mt-3 align-middle">
+                    <div className="row mb-1 justify-content-center">
+                        <img
+                            src={HomeTeamLogo}
+                            className="img-fluid rounded-start img-match-schedule p-1"
+                            alt="homeTeam"
+                        />
+                    </div>
+                    <div className="row mb-1">
+                        <h6 className="card-subtitle">
+                            Home Team Coach: {homeTeam.Coach}
+                        </h6>
+                    </div>
                 </div>
                 <div className="col-md-6">
                     <div className="card-body">
                         <h5 className="card-title">
                             Week {GameWeek} {homeTeam.Team} vs {awayTeam.Team}
                         </h5>
-                        <h6 className="card-subtitle">
-                            Home Team Coach: {homeTeam.Coach} | Away Team Coach:{' '}
-                            {awayTeam.Coach}
-                        </h6>
-                        <p className="card-text">{detailsLabel}</p>
-                        {game.GameComplete && game.Week < currentWeek ? (
-                            <p className="card-text">
-                                <span
-                                    className={
-                                        homeTeam.TeamWin
-                                            ? 'text-success'
-                                            : 'text-danger'
-                                    }
-                                >
-                                    {game.HomeTeamScore}
-                                </span>{' '}
-                                -{' '}
-                                <span
-                                    className={
-                                        awayTeam.TeamWin
-                                            ? 'text-success'
-                                            : 'text-danger'
-                                    }
-                                >
-                                    {game.AwayTeamScore}
-                                </span>
-                            </p>
-                        ) : (
-                            ''
-                        )}
-                        <small className="card-text">
-                            Location: {game.Stadium} in {game.City},{' '}
-                            {game.State}
-                        </small>
+                        <div className="row">
+                            <div className="col">
+                                <p className="card-text">{detailsLabel}</p>
+                            </div>
+                            <div className="col">
+                                {!isAdmin || game.GameComplete ? (
+                                    <p className="card-text">{TimeSlot}</p>
+                                ) : (
+                                    <Dropdown
+                                        value={TimeSlot}
+                                        name="Time Slot"
+                                        list={TimeSlotList}
+                                        click={ChangeTimeslot}
+                                    />
+                                )}
+                            </div>
+                        </div>
+                        <div className="row mb-1">
+                            {game.GameComplete &&
+                                (GameWeek < currentWeek ||
+                                    game.SeasonID < currentSeason) && (
+                                    <p className="card-text">
+                                        <span
+                                            className={
+                                                homeTeam.TeamWin
+                                                    ? 'text-success'
+                                                    : 'text-danger'
+                                            }
+                                        >
+                                            {game.HomeTeamScore}
+                                        </span>{' '}
+                                        -{' '}
+                                        <span
+                                            className={
+                                                awayTeam.TeamWin
+                                                    ? 'text-success'
+                                                    : 'text-danger'
+                                            }
+                                        >
+                                            {game.AwayTeamScore}
+                                        </span>
+                                    </p>
+                                )}
+                        </div>
+                        <div className="row">
+                            <small className="card-text">
+                                Location: {game.Stadium} in {game.City},{' '}
+                                {game.State}
+                            </small>
+                            {currentWeek >= GameWeek - 1 && (
+                                <small className="card-text">
+                                    Weather Prediction: {Math.floor(LowTemp)}-
+                                    {Math.floor(HighTemp)} deg,{' '}
+                                    {TitleCase(Precip)}, {WindCategory}{' '}
+                                    {Math.floor(WindSpeed)}mph winds
+                                </small>
+                            )}
+                        </div>
                     </div>
                 </div>
-                <div className="col-md-3 d-flex align-items-center justify-content-center">
-                    <img
-                        src={AwayTeamLogo}
-                        className="img-fluid rounded-start img-match-schedule p-1"
-                        alt="AwayTeam"
-                    />
+                <div className="col-md-3 mt-1 align-middle">
+                    <div className="row mb-1 justify-content-center">
+                        <img
+                            src={AwayTeamLogo}
+                            className="img-fluid rounded-start img-match-schedule p-1"
+                            alt="AwayTeam"
+                        />
+                    </div>
+                    <div className="row mb-1">
+                        <h6 className="card-subtitle">
+                            Away Team Coach: {awayTeam.Coach}
+                        </h6>
+                    </div>
                 </div>
             </div>
         </div>

@@ -53,11 +53,12 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
         }
     };
 
-    const selectTeam = (team) => {
+    const selectTeam = async (team) => {
         let teamsList = [...teams];
         teamsList = teamsList.filter((x) => x.ID !== team.ID);
-        setTeam(team);
-        setFilteredTeams(teamsList);
+        const res = await _teamService.GetNBATeamByTeamID(team.ID);
+        setTeam(() => res);
+        setFilteredTeams(() => teamsList);
     };
 
     const selectUserTeam = () => {
@@ -135,6 +136,7 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
                         tradeblock={PlacePlayerOnTradeBlock}
                         setToGLeague={SetToGLeague}
                         setToTwoWay={SetToTwoWay}
+                        team={team}
                     />
                 </>
             );

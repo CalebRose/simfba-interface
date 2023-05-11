@@ -1,7 +1,11 @@
 import React from 'react';
 import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
-import { GetNFLRound, SetNFLPriority } from '../../../_Utility/RosterHelper';
+import {
+    GetNFLOverall,
+    GetNFLRound,
+    SetNFLPriority
+} from '../../../_Utility/RosterHelper';
 import {
     HeightToFeetAndInches,
     RoundToTwoDecimals
@@ -18,6 +22,7 @@ export const NFLPlayerModal = ({ team, player, idx, viewMode }) => {
     const CurrentYearSalary =
         player.Contract.Y1BaseSalary + player.Contract.Y1Bonus;
     const draftedRound = GetNFLRound(player.DraftedRound);
+    const ovr = GetNFLOverall(player.Overall, player.ShowLetterGrade);
     let status = 'Active Player';
     if (player.IsPracticeSquad) {
         status = 'Practice Squad';
@@ -67,7 +72,7 @@ export const NFLPlayerModal = ({ team, player, idx, viewMode }) => {
                         </div>
                         <div className="row g-2 gy-2 mb-3">
                             <div className="col">
-                                <h5>Overall:</h5> {player.Overall}
+                                <h5>Overall:</h5> {ovr}
                             </div>
                             <div className="col">
                                 <h5>Potential:</h5> {player.PotentialGrade}

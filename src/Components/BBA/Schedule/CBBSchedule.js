@@ -6,6 +6,7 @@ import BBATeamService from '../../../_Services/simNBA/BBATeamService';
 import CBBGameModal from './CBBGameModal';
 import CBBGameRow from './CBBGameRow';
 import CBBStandingsModal from './CBBStandingsModal';
+import { SeasonsList } from '../../../Constants/CommonConstants';
 
 const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     // Services
@@ -17,8 +18,10 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const [viewMatches, setViewMatches] = useState([]);
     const [weekOptions, setWeekOptions] = useState(null);
     const [teamOptions, setTeamOptions] = useState(null);
+    const [seasons, setSeasons] = useState(SeasonsList);
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [selectedWeek, setSelectedWeek] = useState(null);
+    const [selectedSeason, setSelectedSeason] = useState(null);
     const [viewType, setViewType] = useState('WEEK');
     const [viewGame, setViewGame] = useState(null);
     const [showAGames, setShowAGames] = useState(true);
@@ -29,7 +32,7 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
         if (cbbTeam && cbb_Timestamp) {
             GetAllWeeks();
             GetAllTeams();
-            GetAllMatches();
+            GetAllMatches(cbb_Timestamp.SeasonID);
         }
     }, [cbbTeam, cbb_Timestamp]);
 
@@ -88,11 +91,8 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
         setSelectedWeek(() => cbb_Timestamp.CollegeWeek);
     };
 
-    const GetAllMatches = async () => {
-        const response = await _matchService.GetMatchesBySeason(
-            cbb_Timestamp.SeasonID
-        );
-
+    const GetAllMatches = async (seasonID) => {
+        const response = await _matchService.GetMatchesBySeason(seasonID);
         setAllMatches(() => [...response]);
     };
 
@@ -123,6 +123,12 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const ChangeWeek = (options) => {
         const opts = options.value;
         setSelectedWeek(() => opts);
+    };
+
+    const ChangeSeason = (options) => {
+        const opts = { label: options.label, value: options.value };
+        setSelectedSeason(() => opts);
+        GetAllMatches(options.value);
     };
 
     const SetGame = (game) => {
@@ -227,6 +233,17 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                 />
                             </div>
                         )}
+                        <div className="row mt-2 mb-2">
+                            <h6 className="">Seasons</h6>
+                            <Select
+                                options={seasons}
+                                isMulti={false}
+                                className="basic-multi-select"
+                                classNamePrefix="select"
+                                onChange={ChangeSeason}
+                            />
+                        </div>
+
                         <div className="row mt-2 justify-content-center">
                             <button
                                 type="button"

@@ -83,7 +83,7 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                             to={routes.CFB_SCHEDULE}
                             className="dropdown-item"
                         >
-                            Scheduling
+                            Schedule
                         </Link>
                     </li>
                 </ul>
@@ -127,6 +127,19 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                             className="dropdown-item"
                         >
                             Depth Chart
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
+                            to={routes.NFL_SCHEDULE}
+                            className="dropdown-item"
+                        >
+                            Schedule
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to={routes.NFL_STATS} className="dropdown-item">
+                            Stats
                         </Link>
                     </li>
                     <li>
@@ -288,16 +301,21 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
         );
     };
 
-    var AvailableTeams = () => {
-        return (
-            <div className="nav-item">
-                <Link className="nav-link" to={routes.AVAILABLE_TEAMS}>
-                    <span className="glyphicon glyphicon-open"></span> Request
-                    Team
-                </Link>
-            </div>
-        );
-    };
+    const AvailableTeams = () => (
+        <div className="nav-item">
+            <Link className="nav-link" to={routes.AVAILABLE_TEAMS}>
+                <span className="glyphicon glyphicon-open"></span> Request Team
+            </Link>
+        </div>
+    );
+
+    const NewsTab = () => (
+        <div className="nav-item">
+            <Link className="nav-link" to={routes.NEWS}>
+                <span className="glyphicon glyphicon-open" /> News
+            </Link>
+        </div>
+    );
     return (
         <div className="">
             <ul className="navbar-nav">
@@ -343,6 +361,8 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                 <>
                     <DesktopBarrier />
                     <AvailableTeams />
+                    <DesktopBarrier />
+                    <NewsTab />
                 </>
             </ul>
         </div>

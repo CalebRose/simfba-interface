@@ -25,11 +25,11 @@ export const NFLFreeAgencyMobileRow = ({
     const offerTarget = '#offerModal' + idx;
     const cancelTarget = '#cancelOffer' + idx;
     const mobileCardClass = GetMobileCardClass(viewMode);
-    let ovr = GetNFLOverall(player.Overall, player.Experience);
+    let ovr = GetNFLOverall(player.Overall, player.ShowLetterGrade);
     const year = player.Experience === 0 ? 'R' : player.Experience;
     const heightObj = HeightToFeetAndInches(player.Height);
     const checkForOffer = (player) => {
-        if (player.Offers.length > 0) {
+        if (player.Offers !== null && player.Offers.length > 0) {
             const offerIdx = player.Offers.findIndex(
                 (x) => x.TeamID === teamID
             );

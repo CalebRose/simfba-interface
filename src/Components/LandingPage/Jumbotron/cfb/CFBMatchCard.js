@@ -53,23 +53,18 @@ const CFBMatchCard = ({ game, team, currentWeek }) => {
                 <div className="col-md-4 d-flex align-items-center justify-content-center">
                     <img
                         src={opposingTeamLogo}
-                        className="img-fluid rounded-start img-match p-1"
+                        className="img-fluid rounded-start img-lp-match p-1"
                         alt="opposingTeam"
                     />
                 </div>
                 <div className="col-md-8">
                     <div className="card-body">
-                        <h5 className="card-title">{cardTitle}</h5>
-                        <h6 className="card-subtitle">
-                            Opposing Coach: {opposingCoach}
-                        </h6>
-                        {game.GameComplete && game.Week < currentWeek ? (
-                            <p className="card-text">
+                        <h6 className="card-title">{cardTitle}</h6>
+                        {game.GameComplete && game.Week < currentWeek && (
+                            <small className="card-text">
                                 {game.HomeTeamScore} - {game.AwayTeamScore}
-                            </p>
-                        ) : (
-                            <p className="card-text">{detailsLabel}</p>
-                        )}
+                            </small>
+                        )}{' '}
                         <small className="card-text">
                             Location: {game.Stadium} in {game.City},{' '}
                             {game.State}

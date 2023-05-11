@@ -309,6 +309,8 @@ export const Religion = 'Religion';
 export const LargeCrowds = 'Large Crowds';
 export const SmallSchool = 'Small School';
 export const Frontrunner = 'Frontrunner';
+export const SmallTown = 'Small Town';
+export const BigCity = 'Big City';
 export const NoAffinity = '';
 
 export const AffinitiesList = [
@@ -319,6 +321,8 @@ export const AffinitiesList = [
     LargeCrowds,
     SmallSchool,
     Frontrunner,
+    SmallTown,
+    BigCity,
     NoAffinity
 ];
 
@@ -346,7 +350,8 @@ export const NewsTypeList = [
     { name: 'Recruiting', abbr: 'Recruiting' },
     { name: 'Commitment', abbr: 'Commitment' },
     { name: 'Free Agency', abbr: 'FreeAgency' },
-    { name: 'Trade Block', abbr: 'TradeBlock' }
+    { name: 'Trade Block', abbr: 'TradeBlock' },
+    { name: 'Graduation', abbr: 'Graduation' }
 ];
 
 export const SeasonsList = [
@@ -355,9 +360,47 @@ export const SeasonsList = [
     { label: '2023', value: 3 }
 ];
 
+export const NFLSeasonsList = [
+    { label: '2022', value: 1 },
+    { label: '2023', value: 2 }
+];
+
+export const NFLConferenceList = [
+    { label: 'AFC', value: 1 },
+    { label: 'NFC', value: 2 }
+];
+
+export const NFLDivisionList = [
+    { label: 'AFC East', value: 1 },
+    { label: 'AFC North', value: 2 },
+    { label: 'AFC South', value: 3 },
+    { label: 'AFC West', value: 4 },
+    { label: 'NFC East', value: 5 },
+    { label: 'NFC North', value: 6 },
+    { label: 'NFC South', value: 7 },
+    { label: 'NFC West', value: 8 }
+];
+
 export const LeaguesList = [
     { label: 'College Football', value: 'CFB' },
     { label: 'College Basketball', value: 'CBB' },
     { label: 'NFL', value: 'NFL' },
     { label: 'NBA', value: 'NBA' }
+];
+
+export const CFBTimeSlotList = [
+    'Thursday Night',
+    'Friday Night',
+    'Saturday Morning',
+    'Saturday Afternoon',
+    'Saturday Evening',
+    'Saturday Night'
+];
+
+export const NFLTimeSlotList = [
+    'Thursday Night Football',
+    'Sunday Noon',
+    'Sunday Afternoon',
+    'Sunday Night Football',
+    'Monday Night Football'
 ];

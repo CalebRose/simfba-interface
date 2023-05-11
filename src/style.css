@@ -97,6 +97,11 @@
     width: 92vw !important;
 }
 
+.img-lp-match {
+    max-height: 75px;
+    max-width: 75px;
+}
+
 .img-match {
     max-height: 100px;
     max-width: 100px;
@@ -140,7 +145,7 @@
 
 .nfl-standings-container {
     font-size: 14px !important;
-    max-width: 35rem !important;
+    max-width: 34rem !important;
 }
 
 .standings-container {

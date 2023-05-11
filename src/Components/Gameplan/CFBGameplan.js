@@ -341,6 +341,14 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             return;
         }
 
+        if (gp.BlitzRatio > 60 || gp.BlitzRatio < 15) {
+            message = `The current Blitz Ratio is set to ${gp.BlitzRatio}%. Please set the ratio between 15% and 60%`;
+            valid = false;
+            setValidation(valid);
+            setErrorMessage(message);
+            return;
+        }
+
         currentDistribution =
             gp.TargetingWR1 +
             gp.TargetingWR2 +
@@ -489,9 +497,16 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         CheckValidation();
         if (!isValid) return;
 
+        const fullGP = {
+            ...gameplan,
+            OffFormation1Name: offenseFormationLabels[0],
+            OffFormation2Name: offenseFormationLabels[1],
+            OffFormation3Name: offenseFormationLabels[2]
+        };
+
         const UpdateGameplanDTO = {
             GameplanID: gameplan.ID.toString(),
-            UpdatedGameplan: gameplan,
+            UpdatedGameplan: fullGP,
             Username: currentUser.username,
             TeamName: cfbTeam.TeamName
         };
@@ -911,7 +926,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                     value={
                                         gameplan ? gameplan['BlitzRatio'] : 0
                                     }
-                                    min={'0'}
+                                    min={'15'}
                                     max={'60'}
                                     handleChange={HandleNumberChange}
                                 />

@@ -4,28 +4,27 @@ import { getLogo } from '../../../Constants/getLogo';
 const CBBGameRow = (props) => {
     const { idx, game, ts } = props;
 
+    const currentSeason = ts.SeasonID;
+    const pastSeason = game.SeasonID < currentSeason;
     const modalTarget = `#gameModal`;
-
-    const SetGame = () => {
-        return props.SetGame(game);
-    };
-
+    let cardClass = 'card mb-3';
+    const ShowAGame =
+        ts.GamesARan && game.Week === currentWeek && game.MatchOfWeek === 'A';
+    const ShowBGame =
+        ts.GamesBRan && game.Week === currentWeek && game.MatchOfWeek === 'B';
     const currentWeek = ts.CollegeWeek;
-
     const homeTeam = {
         Team: game.HomeTeam,
         TeamScore: game.HomeTeamScore,
         TeamWin: game.HomeTeamWin,
         Coach: game.HomeTeamCoach
     };
-
     const awayTeam = {
         Team: game.AwayTeam,
         TeamScore: game.AwayTeamScore,
         TeamWin: game.AwayTeamWin,
         Coach: game.AwayTeamCoach
     };
-
     const HomeTeamLogo = getLogo(homeTeam.Team);
     const AwayTeamLogo = getLogo(awayTeam.Team);
     const GameWeek = game.Week;
@@ -41,12 +40,10 @@ const CBBGameRow = (props) => {
     if (game.IsNeutral) {
         detailsLabel += ' | Neutral Site';
     }
-    let cardClass = 'card mb-3';
 
-    const ShowAGame =
-        ts.GamesARan && game.Week === currentWeek && game.MatchOfWeek === 'A';
-    const ShowBGame =
-        ts.GamesBRan && game.Week === currentWeek && game.MatchOfWeek === 'B';
+    const SetGame = () => {
+        return props.SetGame(game);
+    };
     return (
         <div className={cardClass} style={{ maxWidth: '75vw' }}>
             <div className="row g-0">
@@ -68,42 +65,43 @@ const CBBGameRow = (props) => {
                         </h6>
                         <p className="card-text">{detailsLabel}</p>
                         {game.GameComplete &&
-                        (game.Week < currentWeek || ShowAGame || ShowBGame) ? (
-                            <>
-                                <p className="card-text">
-                                    <span
-                                        className={
-                                            homeTeam.TeamWin
-                                                ? 'text-success'
-                                                : 'text-danger'
-                                        }
+                            (game.Week < currentWeek ||
+                                ShowAGame ||
+                                ShowBGame ||
+                                pastSeason) && (
+                                <>
+                                    <p className="card-text">
+                                        <span
+                                            className={
+                                                homeTeam.TeamWin
+                                                    ? 'text-success'
+                                                    : 'text-danger'
+                                            }
+                                        >
+                                            {game.HomeTeamScore}
+                                        </span>
+                                        -{' '}
+                                        <span
+                                            className={
+                                                awayTeam.TeamWin
+                                                    ? 'text-success'
+                                                    : 'text-danger'
+                                            }
+                                        >
+                                            {game.AwayTeamScore}
+                                        </span>
+                                    </p>
+                                    <button
+                                        type="button"
+                                        className="btn btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target={modalTarget}
+                                        onClick={SetGame}
                                     >
-                                        {game.HomeTeamScore}
-                                    </span>
-                                    -{' '}
-                                    <span
-                                        className={
-                                            awayTeam.TeamWin
-                                                ? 'text-success'
-                                                : 'text-danger'
-                                        }
-                                    >
-                                        {game.AwayTeamScore}
-                                    </span>
-                                </p>
-                                <button
-                                    type="button"
-                                    className="btn btn-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target={modalTarget}
-                                    onClick={SetGame}
-                                >
-                                    <i className="bi bi-info-circle" />
-                                </button>
-                            </>
-                        ) : (
-                            ''
-                        )}
+                                        <i className="bi bi-info-circle" />
+                                    </button>
+                                </>
+                            )}
                         <small className="card-text">
                             Location: {game.Arena} in {game.City}, {game.State}
                         </small>

@@ -177,7 +177,8 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
                                     <th scope="col">Finishing</th>
                                     <th scope="col">Ballwork</th>
                                     <th scope="col">Rebounding</th>
-                                    <th scope="col">Defense</th>
+                                    <th scope="col">Interior Defense</th>
+                                    <th scope="col">Perimeter Defense</th>
                                     <th scope="col">Stamina</th>
                                     <th scope="col">Potential</th>
                                     <th scope="col">Min. Expectations</th>

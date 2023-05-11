@@ -49,7 +49,7 @@ const PlayerRow = (props) => {
                     <i className="bi bi-check-circle-fill rounded-circle link-danger"></i>
                 ) : redshirtCount < 15 &&
                   !data.IsRedshirt &&
-                  ts.CollegeWeek < 1 &&
+                  ts.CollegeWeek < 5 &&
                   view ? (
                     <button
                         type="button"

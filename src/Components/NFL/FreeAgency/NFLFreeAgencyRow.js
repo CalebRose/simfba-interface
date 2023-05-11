@@ -3,7 +3,9 @@ import { getLogo } from '../../../Constants/getLogo';
 import { CancelOfferModal } from './CancelOfferModal';
 import { CheckForOffer } from './FreeAgencyHelper';
 import { FreeAgencyPlayerModal } from './FreeAgencyPlayerModal';
-import { FreeAgentOfferModal } from './FreeAgentOfferModal';
+import { FreeAgentOfferModal, WaiverOfferModal } from './FreeAgentOfferModal';
+import { GetNFLOverall } from '../../../_Utility/RosterHelper';
+import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
 
 const NFLFreeAgencyRow = ({
     teamID,
@@ -14,14 +16,17 @@ const NFLFreeAgencyRow = ({
     extend,
     cancel,
     ts,
-    team
+    team,
+    freeAgencyView
 }) => {
     const rank = idx + 1;
     const NameLabel = player.FirstName + ' ' + player.LastName;
     const modalTarget = '#playerModal' + idx;
     const offerTarget = '#offerModal' + idx;
+    const waiverTarget = '#waiverModal' + idx;
     const cancelTarget = '#cancelOffer' + idx;
-
+    const viewFA = freeAgencyView === 'FA';
+    let ovr = GetNFLOverall(player.Overall, player.ShowLetterGrade);
     const hasOffer = CheckForOffer(player, teamID);
 
     const leadingTeamsMapper = (player) => {
@@ -58,15 +63,28 @@ const NFLFreeAgencyRow = ({
                 idx={idx}
                 viewMode={viewMode}
             />
-            <FreeAgentOfferModal
-                key={player.ID}
-                team={team}
-                player={player}
-                idx={idx}
-                ts={ts}
-                extend={extend}
-                viewMode={viewMode}
-            />
+            {viewFA ? (
+                <FreeAgentOfferModal
+                    key={player.ID}
+                    team={team}
+                    player={player}
+                    idx={idx}
+                    ts={ts}
+                    extend={extend}
+                    viewMode={viewMode}
+                />
+            ) : (
+                <WaiverOfferModal
+                    key={player.ID}
+                    team={team}
+                    player={player}
+                    idx={idx}
+                    ts={ts}
+                    extend={extend}
+                    viewMode={viewMode}
+                />
+            )}
+
             <CancelOfferModal
                 key={player.ID}
                 player={player}
@@ -74,6 +92,7 @@ const NFLFreeAgencyRow = ({
                 cancel={cancel}
                 teamID={team.ID}
                 viewMode={viewMode}
+                viewFA={viewFA}
             />
             <tr style={{ backgroundColor: 'white', zIndex: -1 }}>
                 <th scope="row">
@@ -106,7 +125,7 @@ const NFLFreeAgencyRow = ({
                     </h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{player.Overall}</h6>
+                    <h6>{ovr}</h6>
                 </td>
                 <td className="align-middle">
                     <h6>{player.PotentialGrade}</h6>
@@ -118,33 +137,61 @@ const NFLFreeAgencyRow = ({
                     <h6>{StatusLabel}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{player.MinimumValue}</h6>
+                    <h6>{RoundToTwoDecimals(player.MinimumValue)}</h6>
                 </td>
                 <td className="align-middle">
                     <h6>{leadingTeams}</h6>
                 </td>
                 <td className="align-middle">
                     <div className="btn-group">
-                        {canMakeOffer ? (
-                            <button
-                                type="button"
-                                className="btn"
-                                title="Make An Offer"
-                                data-bs-toggle="modal"
-                                data-bs-target={offerTarget}
-                            >
-                                <i className="bi bi-cash-coin image-nfl-roster" />
-                            </button>
+                        {viewFA ? (
+                            <>
+                                {canMakeOffer ? (
+                                    <button
+                                        type="button"
+                                        className="btn"
+                                        title="Make An Offer"
+                                        data-bs-toggle="modal"
+                                        data-bs-target={offerTarget}
+                                    >
+                                        <i className="bi bi-cash-coin image-nfl-roster" />
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        className="btn"
+                                        title="Make An Offer"
+                                        disabled
+                                    >
+                                        <i className="bi bi-cash-coin image-nfl-roster" />
+                                    </button>
+                                )}
+                            </>
                         ) : (
-                            <button
-                                type="button"
-                                className="btn"
-                                title="Make An Offer"
-                                disabled
-                            >
-                                <i className="bi bi-cash-coin image-nfl-roster" />
-                            </button>
+                            <>
+                                {canMakeOffer ? (
+                                    <button
+                                        type="button"
+                                        className="btn"
+                                        title="Pick Up Waiver"
+                                        data-bs-toggle="modal"
+                                        data-bs-target={offerTarget}
+                                    >
+                                        <i className="bi bi-cash-coin image-nfl-roster" />
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        className="btn"
+                                        title="Make An Offer"
+                                        disabled
+                                    >
+                                        <i className="bi bi-cash-coin image-nfl-roster" />
+                                    </button>
+                                )}
+                            </>
                         )}
+
                         {hasOffer && canModify ? (
                             <button
                                 type="button"

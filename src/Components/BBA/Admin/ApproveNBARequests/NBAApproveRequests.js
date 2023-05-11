@@ -19,7 +19,6 @@ const NBAApproveRequests = ({ currentUser }) => {
     // Use Effects End
     const getRequests = async () => {
         let requests = await _requestService.GetNBATeamRequests();
-        console.log({ requests });
         setRequests(() => requests);
     };
 

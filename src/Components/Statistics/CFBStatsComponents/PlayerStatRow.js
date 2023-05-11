@@ -1,104 +1,128 @@
 import React from 'react';
-import { GetStatsYear, GetYear } from '../../../_Utility/RosterHelper';
+import { GetStatsYear } from '../../../_Utility/RosterHelper';
 const _ = require('lodash');
 
-export const PlayerStatRow = ({ statType, idx, player }) => {
+export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
     const name = player.FirstName + ' ' + player.LastName;
-    const seasonStats = player.SeasonStats;
+    const s = viewType === 'SEASON' ? player.SeasonStats : player.Stats;
     const games = player.SeasonStats ? player.SeasonStats.GamesPlayed : 0;
-    const year = GetStatsYear(player);
-
+    const year = GetStatsYear(player, viewType);
     const PassingRow = () => {
         const percentLabel =
-            parseFloat(seasonStats.Completion * 100).toFixed(2) + '%';
+            viewType === 'SEASON'
+                ? parseFloat(s.Completion * 100).toFixed(2) + '%'
+                : parseFloat(
+                      (s.PassCompletions / s.PassAttempts) * 100
+                  ).toFixed(2) + '%';
 
-        const passAvg = parseFloat(seasonStats.PassingAvg).toFixed(2);
+        let passAvg = s.PassingAvg ? parseFloat(s.PassingAvg).toFixed(2) : 0;
 
-        const qbr = parseFloat(seasonStats.QBRating).toFixed(2);
+        let qbr = 0;
+        if (viewType === 'SEASON') {
+            qbr = parseFloat(s.QBRating).toFixed(2);
+        } else {
+            const pY = 8.4 * s.PassingYards;
+            const ptd = 330 * s.PassingTDs;
+            const pc = 100 * s.PassCompletions;
+            const ints = 200 * s.Interceptions;
+            const numerator = pY + ptd + pc - ints;
+            qbr = parseFloat(numerator / s.PassAttempts).toFixed(2);
+            passAvg = parseFloat(s.PassingYards / s.PassAttempts).toFixed(2);
+        }
 
         return (
             <tr>
-                <th className="">{games}</th>
+                {viewType === 'SEASON' && <th className="">{games}</th>}
                 <th className="">{name}</th>
-                <td label="year">{year}</td>
+                <th className="">{year}</th>
                 <td label="team">{player.TeamAbbr}</td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
-                <td label="PassingYards">{seasonStats.PassingYards}</td>
-                <td label="PassingCompletions">
-                    {seasonStats.PassCompletions}
-                </td>
-                <td label="PassingAttempts">{seasonStats.PassAttempts}</td>
+                <td label="PassingYards">{s.PassingYards}</td>
+                <td label="PassingCompletions">{s.PassCompletions}</td>
+                <td label="PassingAttempts">{s.PassAttempts}</td>
                 <td label="Completion">{percentLabel}</td>
                 <td label="PassingAvg">{passAvg}</td>
-                <td label="PassingTDs">{seasonStats.PassingTDs}</td>
-                <td label="Interceptions">{seasonStats.Interceptions}</td>
-                <td label="Sacks">{seasonStats.Sacks}</td>
+                <td label="PassingTDs">{s.PassingTDs}</td>
+                <td label="Interceptions">{s.Interceptions}</td>
+                <td label="Sacks">{s.Sacks}</td>
                 <td label="QBR">{qbr}</td>
-                <td label="LongestPass">{seasonStats.LongestPass}</td>
+                <td label="LongestPass">{s.LongestPass}</td>
+                {viewType === 'WEEK' && <td className="">{s.OpposingTeam}</td>}
             </tr>
         );
     };
 
     const RushingRow = () => {
-        const rushingAvg = parseFloat(seasonStats.RushingAvg).toFixed(2);
+        const rushingAvg = s.RushingAvg
+            ? parseFloat(s.RushingAvg).toFixed(2)
+            : parseFloat(s.RushingYards / s.RushAttempts).toFixed(2);
         return (
             <tr>
-                <th className="">{games}</th>
+                {viewType === 'SEASON' && <th className="">{games}</th>}
                 <th className="">{name}</th>
-                <td label="year">{year}</td>
+                <th className="">{year}</th>
                 <td label="team">{player.TeamAbbr}</td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
-                <td label="RushingYards">{seasonStats.RushingYards}</td>
-                <td label="RushingAttempts">{seasonStats.RushAttempts}</td>
+                <td label="RushingYards">{s.RushingYards}</td>
+                <td label="RushingAttempts">{s.RushAttempts}</td>
                 <td label="RushingAvg">{rushingAvg}</td>
-                <td label="RushingTDs">{seasonStats.RushingTDs}</td>
-                <td label="Fumbles">{seasonStats.Fumbles}</td>
-                <td label="LongestRush">{seasonStats.LongestRush}</td>
+                <td label="RushingTDs">{s.RushingTDs}</td>
+                <td label="Fumbles">{s.Fumbles}</td>
+                <td label="LongestRush">{s.LongestRush}</td>
+                {viewType === 'WEEK' && <td className="">{s.OpposingTeam}</td>}
             </tr>
         );
     };
 
     const ReceivingRow = () => {
-        const receivingAvg = parseFloat(seasonStats.ReceivingAvg).toFixed(2);
+        const receivingAvg = s.ReceivingAvg
+            ? parseFloat(s.ReceivingAvg).toFixed(2)
+            : parseFloat(s.ReceivingYards / s.Catches).toFixed(2);
         return (
             <tr>
-                <th className="">{games}</th>
+                {viewType === 'SEASON' && <th className="">{games}</th>}
                 <th className="">{name}</th>
-                <td label="year">{year}</td>
+                <th className="">{year}</th>
                 <td label="team">{player.TeamAbbr}</td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
-                <td label="Catches">{seasonStats.Catches}</td>
-                <td label="Targets">{seasonStats.Targets}</td>
-                <td label="ReceivingYards">{seasonStats.ReceivingYards}</td>
+                <td label="Catches">{s.Catches}</td>
+                <td label="Targets">{s.Targets}</td>
+                <td label="ReceivingYards">{s.ReceivingYards}</td>
                 <td label="ReceivingAvg">{receivingAvg}</td>
-                <td label="ReceivingTDs">{seasonStats.ReceivingTDs}</td>
-                <td label="Fumbles">{seasonStats.Fumbles}</td>
-                <td label="LongestReception">{seasonStats.LongestReception}</td>
+                <td label="ReceivingTDs">{s.ReceivingTDs}</td>
+                <td label="Fumbles">{s.Fumbles}</td>
+                <td label="LongestReception">{s.LongestReception}</td>
+                {viewType === 'WEEK' && <td className="">{s.OpposingTeam}</td>}
             </tr>
         );
     };
 
     const DefensiveRow = () => {
+        const tck =
+            viewType === 'SEASON'
+                ? s.Tackles
+                : s.SoloTackles + parseFloat(s.AssistedTackles / 2);
         return (
             <tr>
-                <th className="">{games}</th>
+                {viewType === 'SEASON' && <th className="">{games}</th>}
                 <th className="">{name}</th>
-                <td label="year">{year}</td>
+                <th className="">{year}</th>
                 <td label="team">{player.TeamAbbr}</td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
-                <td label="Tackles">{seasonStats.Tackles}</td>
-                <td label="TacklesForLoss">{seasonStats.TacklesForLoss}</td>
-                <td label="Sacks">{seasonStats.SacksMade}</td>
-                <td label="ForcedFumbles">{seasonStats.ForcedFumbles}</td>
-                <td label="RecoveredFumbles">{seasonStats.RecoveredFumbles}</td>
-                <td label="PassDeflections">{seasonStats.PassDeflections}</td>
-                <td label="Interceptions">{seasonStats.InterceptionsCaught}</td>
-                <td label="Safeties">{seasonStats.Safeties}</td>
-                <td label="DefensiveTDs">{seasonStats.DefensiveTDs}</td>
+                <td label="Tackles">{tck}</td>
+                <td label="TacklesForLoss">{s.TacklesForLoss}</td>
+                <td label="Sacks">{s.SacksMade}</td>
+                <td label="ForcedFumbles">{s.ForcedFumbles}</td>
+                <td label="RecoveredFumbles">{s.RecoveredFumbles}</td>
+                <td label="PassDeflections">{s.PassDeflections}</td>
+                <td label="Interceptions">{s.InterceptionsCaught}</td>
+                <td label="Safeties">{s.Safeties}</td>
+                <td label="DefensiveTDs">{s.DefensiveTDs}</td>
+                {viewType === 'WEEK' && <td className="">{s.OpposingTeam}</td>}
             </tr>
         );
     };
@@ -106,21 +130,20 @@ export const PlayerStatRow = ({ statType, idx, player }) => {
     const KickingRow = () => {
         return (
             <tr>
-                <th className="">{games}</th>
+                {viewType === 'SEASON' && <th className="">{games}</th>}
                 <th className="">{name}</th>
-                <td label="year">{year}</td>
+                <th className="">{year}</th>
                 <td label="team">{player.TeamAbbr}</td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
-                <td label="FGMade">{seasonStats.FGMade}</td>
-                <td label="FGAttempts">{seasonStats.FGAttempts}</td>
-                <td label="LongestFG">{seasonStats.LongestFG}</td>
-                <td label="ExtraPointsMade">{seasonStats.ExtraPointsMade}</td>
-                <td label="ExtraPointsAttempted">
-                    {seasonStats.ExtraPointsAttempted}
-                </td>
-                <td label="Punts">{seasonStats.Punts}</td>
-                <td label="PuntsInside20">{seasonStats.PuntsInside20}</td>
+                <td label="FGMade">{s.FGMade}</td>
+                <td label="FGAttempts">{s.FGAttempts}</td>
+                <td label="LongestFG">{s.LongestFG}</td>
+                <td label="ExtraPointsMade">{s.ExtraPointsMade}</td>
+                <td label="ExtraPointsAttempted">{s.ExtraPointsAttempted}</td>
+                <td label="Punts">{s.Punts}</td>
+                <td label="PuntsInside20">{s.PuntsInside20}</td>
+                {viewType === 'WEEK' && <td className="">{s.OpposingTeam}</td>}
             </tr>
         );
     };
@@ -128,14 +151,15 @@ export const PlayerStatRow = ({ statType, idx, player }) => {
     const OLineRow = () => {
         return (
             <tr>
-                <th className="">{games}</th>
+                {viewType === 'SEASON' && <th className="">{games}</th>}
                 <th className="">{name}</th>
-                <td label="year">{year}</td>
+                <th className="">{year}</th>
                 <td label="team">{player.TeamAbbr}</td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
-                <td label="Pancakes">{seasonStats.Pancakes}</td>
-                <td label="SacksAllowed">{seasonStats.SacksAllowed}</td>
+                <td label="Pancakes">{s.Pancakes}</td>
+                <td label="SacksAllowed">{s.SacksAllowed}</td>
+                {viewType === 'WEEK' && <td className="">{s.OpposingTeam}</td>}
             </tr>
         );
     };

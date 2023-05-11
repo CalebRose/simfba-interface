@@ -1,13 +1,13 @@
 import React from 'react';
 
-const ReceivingHeaders = ({ sortFunc, cv }) => {
+const ReceivingHeaders = ({ sortFunc, cv, viewType }) => {
     const returnSort = (val) => {
         return sortFunc(val, cv);
     };
 
     return (
         <tr>
-            <th scope="col">Games</th>
+            {viewType === 'SEASON' && <th scope="col">Games</th>}
             <th scope="col">Name</th>
             <th scope="col">Year</th>
             <th scope="col">Team</th>
@@ -34,6 +34,7 @@ const ReceivingHeaders = ({ sortFunc, cv }) => {
             <th scope="col" onClick={() => returnSort('LongestReception', cv)}>
                 Longest Reception
             </th>
+            {viewType === 'WEEK' && <th scope="col">Opponent</th>}
         </tr>
     );
 };

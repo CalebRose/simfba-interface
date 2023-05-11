@@ -4,7 +4,8 @@ export const FilterFreeAgencyPlayers = (
     pos,
     archs,
     statuses,
-    potentials
+    potentials,
+    viewUDFAs
 ) => {
     let pr = [...players];
 
@@ -24,6 +25,9 @@ export const FilterFreeAgencyPlayers = (
         }
         if (potentials.length > 0) {
             pr = pr.filter((x) => potentials.includes(x.PotentialGrade));
+        }
+        if (viewUDFAs) {
+            pr = pr.filter((x) => x.Experience === 1);
         }
     }
 
@@ -184,7 +188,7 @@ export const ValidateNBARule3 = (len, y1, y2, y3, y4, y5) => {
 };
 
 export const CheckForOffer = (player, teamID) => {
-    if (player.Offers.length > 0) {
+    if (player.Offers !== null && player.Offers.length > 0) {
         const offerIdx = player.Offers.findIndex((x) => x.TeamID === teamID);
         if (offerIdx > -1) {
             return true;

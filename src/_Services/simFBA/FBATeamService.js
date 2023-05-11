@@ -1,214 +1,62 @@
 import url from '../../Constants/url.js';
+import { GetCall } from './FetchHelper.js';
 
 export default class FBATeamService {
     async GetAllCollegeTeams() {
-        let response = await fetch(url + 'teams/college/all', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}teams/college/all`);
     }
 
     async GetAllNFLTeams() {
-        let response = await fetch(url + 'teams/nfl/all', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}teams/nfl/all`);
     }
 
     async GetAllActiveCollegeTeams() {
-        let response = await fetch(url + 'teams/college/active', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}teams/college/active`);
     }
 
     async GetAvailableCollegeTeams() {
-        let response = await fetch(url + 'teams/college/available', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}teams/college/available`);
     }
 
     async GetTeamByTeamId(teamID) {
-        let response = await fetch(url + 'teams/college/team/' + teamID, {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}teams/college/team/${teamID}`);
     }
 
     async GetNFLTeamByTeamID(teamID) {
-        let response = await fetch(url + 'teams/nfl/team/' + teamID, {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}teams/nfl/team/${teamID}`);
     }
 
     async GetTeamsByConference(conferenceID) {
-        let response = await fetch(
-            url + 'teams/college/conference/' + conferenceID,
-            {
-                headers: {
-                    authorization: 'Bearer ' + localStorage.getItem('token')
-                }
-            }
-        );
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}teams/college/conference/${conferenceID}`);
     }
 
     async GetTeamsByDivision(divisionID) {
-        let response = await fetch(
-            url + 'teams/college/division/' + divisionID,
-            {
-                headers: {
-                    authorization: 'Bearer ' + localStorage.getItem('token')
-                }
-            }
-        );
-
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}teams/college/division/${divisionID}`);
     }
 
     async GetTeamStandingsByConference(conferenceID, seasonID) {
-        let response = await fetch(
-            url + `standings/cfb/${conferenceID}/${seasonID}/`,
-            {
-                headers: {
-                    authorization: 'Bearer ' + localStorage.getItem('token')
-                }
-            }
+        return await GetCall(
+            `${url}standings/cfb/${conferenceID}/${seasonID}/`
         );
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
     }
 
     async GetNFLTeamStandingsByDivision(divisionID, seasonID) {
-        let response = await fetch(
-            url + `standings/nfl/${divisionID}/${seasonID}/`,
-            {
-                headers: {
-                    authorization: 'Bearer ' + localStorage.getItem('token')
-                }
-            }
-        );
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}standings/nfl/${divisionID}/${seasonID}/`);
     }
 
     async GetHistoricalTeamStandingsByTeamID(teamID) {
-        let response = await fetch(
-            url + `standings/cfb/history/team/${teamID}/`,
-            {
-                headers: {
-                    authorization: 'Bearer ' + localStorage.getItem('token')
-                }
-            }
-        );
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}standings/cfb/history/team/${teamID}/`);
     }
 
     async GetAllCollegeStandingsBySeasonID(seasonID) {
-        let response = await fetch(`${url}/standings/cfb/season/${seasonID}/`, {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('HTTP-Error:', response.status);
-        }
-        return json;
+        return await GetCall(`${url}standings/cfb/season/${seasonID}/`);
+    }
+
+    async GetAllNFLStandingsBySeasonID(seasonID) {
+        return await GetCall(`${url}standings/nfl/season/${seasonID}/`);
     }
 
     async GetNFLRosterData(teamID) {
-        let response = await fetch(url + `teams/nfl/roster/${teamID}`, {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}teams/nfl/roster/${teamID}`);
     }
 }

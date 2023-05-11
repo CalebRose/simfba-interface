@@ -42,8 +42,6 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
             cbb_Timestamp.SeasonID
         );
 
-        console.log({ res, nbaTeam, cbb_Timestamp });
-
         setStandings(() => res);
     };
 

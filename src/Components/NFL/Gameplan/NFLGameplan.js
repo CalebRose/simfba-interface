@@ -350,6 +350,14 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
             return;
         }
 
+        if (gp.BlitzRatio > 60 || gp.BlitzRatio < 15) {
+            message = `The current Blitz Ratio is set to ${gp.BlitzRatio}%. Please set the ratio between 15% and 60%`;
+            valid = false;
+            setValidation(valid);
+            setErrorMessage(message);
+            return;
+        }
+
         currentDistribution =
             gp.TargetingWR1 +
             gp.TargetingWR2 +
@@ -473,8 +481,6 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
     const HandleTextChange = (name, value) => {
         let gp = { ...gameplan };
 
-        console.log({ name, value, gp });
-
         if (value === 'Yes') {
             gp[name] = true;
         } else if (value === 'No') {
@@ -505,9 +511,16 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
         CheckValidation();
         if (!isValid) return;
 
+        const fullGP = {
+            ...gameplan,
+            OffFormation1Name: offenseFormationLabels[0],
+            OffFormation2Name: offenseFormationLabels[1],
+            OffFormation3Name: offenseFormationLabels[2]
+        };
+
         const UpdateGameplanDTO = {
             GameplanID: gameplan.ID.toString(),
-            UpdatedNFLGameplan: gameplan,
+            UpdatedNFLGameplan: fullGP,
             Username: currentUser.username,
             TeamName: nflTeam.TeamName
         };

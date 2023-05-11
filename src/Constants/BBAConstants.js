@@ -1,6 +1,8 @@
 export const PositionList = [
-    { name: 'Guards', abbr: 'G' },
-    { name: 'Forwards', abbr: 'F' },
+    { name: 'Point Guards', abbr: 'PG' },
+    { name: 'Shooting Guards', abbr: 'SG' },
+    { name: 'Power Forwards', abbr: 'PF' },
+    { name: 'Small Forwards', abbr: 'SF' },
     { name: 'Centers', abbr: 'C' }
 ];
 

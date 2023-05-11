@@ -202,7 +202,7 @@ export const getLogo = (team) => {
             return logos.Gonzaga;
         case 'HAMP':
             return logos.Hampton;
-        case 'Hartford':
+        case 'HART':
             return logos.Hartford;
         case 'HARV':
             return logos.Harvard;
@@ -656,6 +656,8 @@ export const getLogo = (team) => {
             return logos.VMI;
         case 'VT':
             return logos.Virginia_Tech;
+        case 'WAG':
+            return logos.Wagner;
         case 'WAKE':
             return logos.Wake_Forest;
         case 'WASH':

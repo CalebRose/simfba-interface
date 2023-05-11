@@ -65,6 +65,12 @@ export const GetDefaultStatsOrder = (
     }
 };
 
+export const TitleCase = (str) => {
+    return str.replace(/\w\S*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+};
+
 export const GetDefaultOrderForCBBOverview = (newSortValue, sort, isAsc) => {
     if (newSortValue.toLowerCase() === sort.toLowerCase()) return !isAsc;
     switch (newSortValue) {
@@ -74,10 +80,12 @@ export const GetDefaultOrderForCBBOverview = (newSortValue, sort, isAsc) => {
         case 'Country':
         case 'Shooting2':
         case 'Shooting3':
+        case 'FreeThrow':
         case 'Finishing':
         case 'Ballwork':
         case 'Rebounding':
-        case 'Defense':
+        case 'InteriorDefense':
+        case 'PerimeterDefense':
         case 'PotentialGrade':
             return true;
         default:
@@ -85,33 +93,42 @@ export const GetDefaultOrderForCBBOverview = (newSortValue, sort, isAsc) => {
     }
 };
 
-export const ConductSort = (data, sortVal, isAsc) => {
+export const ConductSort = (data, sortVal, isAsc, viewType) => {
     switch (sortVal) {
         case 'PassingYards':
-            return data.sort(
-                (a, b) =>
-                    (a.SeasonStats.PassingYards - b.SeasonStats.PassingYards) *
-                    (isAsc ? 1 : -1)
-            );
+            return data.sort((a, b) => {
+                return viewType === 'SEASON'
+                    ? (a.SeasonStats.PassingYards -
+                          b.SeasonStats.PassingYards) *
+                          (isAsc ? 1 : -1)
+                    : (a.Stats.PassingYards - b.Stats.PassingYards) *
+                          (isAsc ? 1 : -1);
+            });
         case 'RushingYards':
-            return data.sort(
-                (a, b) =>
-                    (a.SeasonStats.RushingYards - b.SeasonStats.RushingYards) *
-                    (isAsc ? 1 : -1)
-            );
+            return data.sort((a, b) => {
+                return viewType === 'SEASON'
+                    ? (a.SeasonStats.RushingYards -
+                          b.SeasonStats.RushingYards) *
+                          (isAsc ? 1 : -1)
+                    : (a.Stats.RushingYards - b.Stats.RushingYards) *
+                          (isAsc ? 1 : -1);
+            });
         case 'ReceivingYards':
-            return data.sort(
-                (a, b) =>
-                    (a.SeasonStats.ReceivingYards -
-                        b.SeasonStats.ReceivingYards) *
-                    (isAsc ? 1 : -1)
+            return data.sort((a, b) =>
+                viewType === 'SEASON'
+                    ? (a.SeasonStats.ReceivingYards -
+                          b.SeasonStats.ReceivingYards) *
+                      (isAsc ? 1 : -1)
+                    : (a.Stats.ReceivingYards - b.Stats.ReceivingYards) *
+                      (isAsc ? 1 : -1)
             );
 
         default:
-            return data.sort(
-                (a, b) =>
-                    (a.SeasonStats[sortVal] - b.SeasonStats[sortVal]) *
-                    (isAsc ? 1 : -1)
+            return data.sort((a, b) =>
+                viewType === 'SEASON'
+                    ? (a.SeasonStats[sortVal] - b.SeasonStats[sortVal]) *
+                      (isAsc ? 1 : -1)
+                    : (a.Stats[sortVal] - b.Stats[sortVal]) * (isAsc ? 1 : -1)
             );
     }
 };
@@ -171,4 +188,60 @@ export const uniq_fast = (a) => {
 export const numberWithCommas = (x) => {
     if (!x) return '';
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
+export const GetBBAMinutesRequired = (position, style, isNBA) => {
+    if (style === 'Traditional') {
+        if (position === 'PG') return isNBA ? 48 : 40;
+        else if (position === 'SG') return isNBA ? 48 : 40;
+        else if (position === 'SF') return isNBA ? 48 : 40;
+        else if (position === 'PF') return isNBA ? 48 : 40;
+        else if (position === 'C') return isNBA ? 48 : 40;
+    } else if (style === 'Small Ball') {
+        if (position === 'PG') return isNBA ? 48 : 40;
+        else if (position === 'SG') return isNBA ? 96 : 80;
+        else if (position === 'SF') return isNBA ? 48 : 40;
+        else if (position === 'PF') return isNBA ? 48 : 40;
+        else if (position === 'C') return isNBA ? 0 : 0;
+    } else if (style === 'Microball') {
+        if (position === 'PG') return isNBA ? 96 : 80;
+        else if (position === 'SG') return isNBA ? 96 : 80;
+        else if (position === 'SF') return isNBA ? 48 : 40;
+        else if (position === 'PF') return isNBA ? 0 : 0;
+        else if (position === 'C') return isNBA ? 0 : 0;
+    } else {
+        // JUMBO
+        if (position === 'PG') return isNBA ? 0 : 0;
+        else if (position === 'SG') return isNBA ? 48 : 40;
+        else if (position === 'SF') return isNBA ? 48 : 40;
+        else if (position === 'PF') return isNBA ? 96 : 80;
+        else if (position === 'C') return isNBA ? 48 : 40;
+    }
+};
+
+export const getProportionLimits = (formation, shot, isMin) => {
+    if (formation === 'Balanced' || formation === 'Pick-and-Roll')
+        return isMin ? 20 : 60;
+    else if (formation === 'Motion') {
+        if (shot === 'Inside') return isMin ? 10 : 20;
+        if (shot === 'Mid') return isMin ? 10 : 20;
+        if (shot === 'Three') return isMin ? 30 : 70;
+    } else if (formation === 'Post-Up') {
+        if (shot === 'Inside') return isMin ? 40 : 80;
+        if (shot === 'Mid') return isMin ? 5 : 15;
+        if (shot === 'Three') return isMin ? 5 : 15;
+    } else if (formation === 'Space-and-Post') {
+        if (shot === 'Inside') return isMin ? 10 : 20;
+        if (shot === 'Mid') return isMin ? 30 : 70;
+        if (shot === 'Three') return isMin ? 30 : 70;
+    }
+    return 0;
+};
+
+export const getCBBPositionList = (pos) => {
+    if (pos === 'PG') return ['PG', 'SG'];
+    if (pos === 'SG') return ['SG', 'PG', 'SF'];
+    if (pos === 'SF') return ['SF', 'SG', 'PF'];
+    if (pos === 'PF') return ['PF', 'SF', 'C'];
+    return ['C', 'PF'];
 };

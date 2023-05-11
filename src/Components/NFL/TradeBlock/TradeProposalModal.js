@@ -118,7 +118,9 @@ export const OptionCard = ({
     const description =
         optionType === 'Player' ? (
             <>
-                <p className="card-text mb-0">Overall: {opt.Overall}</p>
+                <p className="card-text mb-0">
+                    Overall: {GetNFLOverall(opt.Overall, opt.ShowLetterGrade)}
+                </p>
                 <p className="card-text mb-0">Year {opt.Experience}</p>
                 <p className="card-text mb-0">{opt.Age} years old</p>
                 <p className="card-text mb-0">

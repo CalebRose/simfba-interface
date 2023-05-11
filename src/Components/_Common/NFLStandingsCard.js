@@ -13,10 +13,10 @@ const StandingsRow = (props) => {
             </div>
             <div className="col">{row.ConferenceWins}</div>
             <div className="col">{row.ConferenceLosses}</div>
-            <div className="col">{row.ConferenceTies}</div>
+            {/* <div className="col">{row.ConferenceTies}</div> */}
             <div className="col">{row.DivisionWins}</div>
             <div className="col">{row.DivisionLosses}</div>
-            <div className="col">{row.DivisionTies}</div>
+            {/* <div className="col">{row.DivisionTies}</div> */}
             <div className="col">{row.TotalWins}</div>
             <div className="col">{row.TotalLosses}</div>
             <div className="col">{row.TotalTies}</div>
@@ -27,23 +27,22 @@ const StandingsRow = (props) => {
 const NFLStandingsCard = ({ standings }) => {
     const [standingsOne, setStandingsOne] = React.useState([]);
 
+    const label =
+        standings.length > 0 &&
+        `${standings[0].ConferenceName} ${standings[0].DivisionName}`;
+    if (standings.length > 0) {
+    }
+
     useEffect(() => {
         if (standings !== undefined || standings !== null) {
-            if (standings[0].DivisionID > 0) {
-                const division1Standings = standings.filter(
-                    (x) => x.DivisionID === standings[0].DivisionID
-                );
-                setStandingsOne(() => division1Standings);
-            } else {
-                setStandingsOne(() => standings);
-            }
+            setStandingsOne(() => standings);
         }
     }, [standings]);
 
     return (
         <div className="d-flex flex-column nfl-standings-container me-1 p-2 border rounded">
             <div className="row">
-                <h6>Division Standings</h6>
+                <h6>{label} Standings</h6>
             </div>
             <div className="row">
                 <div className="col">Rank</div>
@@ -54,17 +53,11 @@ const NFLStandingsCard = ({ standings }) => {
                 <div className="col" title="Conference Losses">
                     C.L.
                 </div>
-                <div className="col" title="Conference Ties">
-                    C.T.
-                </div>
                 <div className="col" title="Division Wins">
                     D.W.
                 </div>
                 <div className="col" title="Division Losses">
                     D.L.
-                </div>
-                <div className="col" title="Division Ties">
-                    D.T.
                 </div>
                 <div className="col" title="Total Wins">
                     T.W.

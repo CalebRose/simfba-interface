@@ -7,9 +7,9 @@ import routes from '../../../../Constants/routes';
 import { setNFLTeam } from '../../../../Redux/nflTeam/nflTeam.actions';
 import FBAScheduleService from '../../../../_Services/simFBA/FBAScheduleService';
 import FBATeamService from '../../../../_Services/simFBA/FBATeamService';
-import NFLStandingsCard from '../../../_Common/NFLStandingsModalCard';
 import { Spinner } from '../../../_Common/Spinner';
 import CFBMatchCard from '../cfb/CFBMatchCard';
+import NFLStandingsCard from '../../../_Common/NFLStandingsCard';
 
 const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
     let _teamService = new FBATeamService();
@@ -74,8 +74,8 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
             games.length > 0
         ) {
             const currentWeek = cfb_Timestamp.NFLWeek;
-            let prevWeek = currentWeek - 1;
-            let nextWeek = currentWeek + 1;
+            let prevWeek = isMobile ? currentWeek - 1 : currentWeek - 2;
+            let nextWeek = isMobile ? currentWeek + 1 : currentWeek + 2;
             let prevIdx = 0;
             let nextIdx = 0;
             if (prevWeek < 0) {
@@ -84,8 +84,16 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
             }
             prevIdx = games.findIndex((x) => x.Week === prevWeek);
             nextIdx = games.findIndex((x) => x.Week === nextWeek);
+            while (prevIdx === -1) {
+                prevWeek += 1;
+                prevIdx = games.findIndex((x) => x.Week === prevWeek);
+            }
+            while (nextIdx === -1) {
+                nextWeek -= 1;
+                nextIdx = games.findIndex((x) => x.Week === nextWeek);
+            }
 
-            let gameRange = games.slice(prevIdx, nextIdx);
+            let gameRange = games.slice(prevIdx, nextIdx + 1);
             setViewableMatches(() => gameRange);
         }
     }, [cfb_Timestamp, games]);
@@ -154,8 +162,8 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                     </div>
                 </div>
                 <div className="col-4">
-                    <div className="row mt-3 mb-2">
-                        <div className="btn-group">
+                    <div className="row mt-2 mb-2">
+                        <div className="btn-group btn-group-sm d-flex">
                             <Link
                                 to={routes.NFL_ROSTER}
                                 role="button"
@@ -188,20 +196,22 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                             >
                                 Free Agency
                             </Link>
-                            <button
-                                type="button"
+                            <Link
+                                to={routes.NFL_SCHEDULE}
+                                role="button"
                                 className="btn btn-primary btn-md me-2 shadow"
                                 style={teamColors ? teamColors : {}}
                             >
                                 Schedule
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-primary btn-md shadow"
+                            </Link>
+                            <Link
+                                to={routes.NFL_STATS}
+                                role="button"
+                                className="btn btn-primary btn-md me-2 shadow"
                                 style={teamColors ? teamColors : {}}
                             >
                                 Stats
-                            </button>
+                            </Link>
                         </div>
                     </div>
                     {viewableMatches && viewableMatches.length > 0 ? (
@@ -220,11 +230,7 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                         <div className="row">
                             <div className="card text-dark bg-light mb-3">
                                 <div className="card-body">
-                                    <h5 className="card-title">
-                                        Someone please get me next year's NFL
-                                        schedule so we can get that and
-                                        pre-season games in.
-                                    </h5>
+                                    <h5 className="card-title">Loading...</h5>
                                 </div>
                             </div>
                         </div>

@@ -44,13 +44,17 @@ const BBATeamCard = (props) => {
                 </div>
                 <ul className="list-group list-group-flush">
                     <li className="list-group-item card-text">
-                        <strong>Overall:</strong> {ovr}
-                    </li>
-                    <li className="list-group-item card-text">
-                        <strong>Offense:</strong> {off}
-                    </li>
-                    <li className="list-group-item card-text">
-                        <strong>Defense:</strong> {def}
+                        <div className="row">
+                            <div className="col-4 border-end">
+                                <strong>OVR:</strong> <p>{ovr}</p>
+                            </div>
+                            <div className="col-4">
+                                <strong>OFF:</strong> <p>{off}</p>
+                            </div>
+                            <div className="col-4 border-start">
+                                <strong>DEF:</strong> <p>{def}</p>
+                            </div>
+                        </div>
                     </li>
                 </ul>
                 {coach.length === 0 || coach === 'AI' ? (
