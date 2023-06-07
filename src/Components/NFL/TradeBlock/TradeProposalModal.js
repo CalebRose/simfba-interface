@@ -6,6 +6,7 @@ import { NumberInput } from '../../_Common/Input';
 import { GetCapSpace } from '../FreeAgency/FreeAgencyHelper';
 import { CapsheetRow } from '../Roster/NFLSidebar';
 import { GetOptionList, LoadTradeOptions } from './TradeBlockHelper';
+import { GetNFLOverall } from '../../../_Utility/RosterHelper';
 
 const CapspaceColumn = ({ team, ts }) => {
     const {

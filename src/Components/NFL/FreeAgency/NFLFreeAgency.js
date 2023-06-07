@@ -17,6 +17,7 @@ import { NFLSidebar } from '../Roster/NFLSidebar';
 import { FilterFreeAgencyPlayers } from './FreeAgencyHelper';
 import { NFLFreeAgencyMobileRow } from './NFLFreeAgencyMobileRow';
 import NFLFreeAgencyRow from './NFLFreeAgencyRow';
+import { ShortMessage } from '../../_Common/ServiceMessageBanner';
 
 const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     let _rosterService = new FBAPlayerService();
@@ -32,12 +33,14 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     const [team, setTeam] = useState(null);
     const [viewablePlayers, setViewablePlayers] = useState('');
     const [filteredPlayers, setFilteredPlayers] = useState('');
+    const [rosterCount, setRosterCount] = useState(0);
     const [viewOfferedPlayers, setViewOfferedPlayers] = useState(false);
     const [viewUDFAs, setViewUDFAs] = useState(false);
     const [canModify, setCanModify] = useState(true);
-    const [allPlayers, setAllPlayers] = useState('');
-    const [allFreeAgents, setAllFreeAgents] = useState('');
-    const [allWaivedPlayers, setAllWaivedPlayers] = useState('');
+    const [allPlayers, setAllPlayers] = useState([]);
+    const [allFreeAgents, setAllFreeAgents] = useState([]);
+    const [allWaivedPlayers, setAllWaivedPlayers] = useState([]);
+    const [practiceSquadPlayers, setPracticeSquadPlayers] = useState([]);
     const [freeAgencyView, setFreeAgencyView] = useState('FA');
     const [teamOffers, setTeamOffers] = useState([]);
     const [showTamperingButton, setShowButton] = useState(true);
@@ -48,6 +51,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     let luckyTeam = Math.floor(Math.random() * (20 - 1) + 1);
     const statusOptions = MapOptions(['Open', 'Negotiating']);
     const tableClass = GetTableHoverClass(viewMode);
+    const errorMessage = `You have ${rosterCount} players on your roster. Please reduce the size of your team to under 55 (either cut or place on practice squad) in order to sign a player.`;
     // For mobile
     useEffect(() => {
         if (!viewWidth) {
@@ -74,10 +78,14 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     }, [nflTeam, team]);
 
     useEffect(() => {
-        const players =
-            freeAgencyView === 'FA'
-                ? [...allFreeAgents]
-                : [...allWaivedPlayers];
+        let players = [];
+        if (freeAgencyView === 'FA') {
+            players = [...allFreeAgents];
+        } else if (freeAgencyView === 'WW') {
+            players = [...allWaivedPlayers];
+        } else {
+            players = [...practiceSquadPlayers];
+        }
 
         const filter = FilterFreeAgencyPlayers(
             players,
@@ -155,11 +163,16 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
         const ExistingOffers = res.TeamOffers.map((x) => {
             return { ...x };
         });
+        const practiceSquadPlayers = res.PracticeSquad.map((x) => {
+            return { ...x };
+        });
         const all = [...FAs, ...Waivers];
         setAllPlayers(() => all);
         setAllFreeAgents(() => FAs);
         setAllWaivedPlayers(() => Waivers);
+        setPracticeSquadPlayers(() => practiceSquadPlayers);
         setTeamOffers(() => ExistingOffers);
+        setRosterCount(() => res.RosterCount);
     };
 
     // Click Functions
@@ -193,10 +206,10 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
         setViewUDFAs(() => toggle);
     };
 
-    const ToggleFAView = () => {
+    const ToggleFAView = (event) => {
+        const { value } = event.target;
         setViewablePlayers(() => []);
-        const nextView = freeAgencyView === 'FA' ? 'WW' : 'FA';
-        setFreeAgencyView(() => nextView);
+        setFreeAgencyView(() => value);
     };
 
     // Needed Functions
@@ -215,53 +228,103 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     };
 
     const CreateFAOffer = async (player, offer) => {
-        let res = await _rosterService.CreateFAOffer(offer);
         const viewingFA = freeAgencyView === 'FA';
-        const players = viewingFA ? [...allFreeAgents] : [...allWaivedPlayers];
-        const playerIDX = players.findIndex((x) => x.ID === player.ID);
-        const ExistingOffers = [...teamOffers];
-        if (offer.ID > 0) {
-            // Existing Offer
-            const offerIDX = players[playerIDX].Offers.findIndex(
-                (x) => x.ID === offer.ID
-            );
-
-            const existingOffersIdx = ExistingOffers.findIndex(
-                (x) => x.ID === offer.ID
-            );
-            ExistingOffers[existingOffersIdx] = offer;
-            players[playerIDX].Offers[offerIDX] = offer;
+        const viewingPS = freeAgencyView === 'PS';
+        let res;
+        if (viewingFA || viewingPS) {
+            res = await _rosterService.CreateFAOffer(offer);
         } else {
-            const offerObj = { ...offer, ID: res.ID };
-            const offers = players[playerIDX].Offers;
-            offers.push(offerObj);
-            players[playerIDX].Offers = offers.sort(
-                (a, b) => a.ContractValue - b.ContractValue
-            );
-            ExistingOffers.push(offerObj);
+            res = await _rosterService.CreateWaiverOffer(offer);
         }
+        let players = [];
+        if (viewingFA) {
+            players = [...allFreeAgents];
+        } else if (viewingPS) {
+            players = [...practiceSquadPlayers];
+        } else {
+            players = [...allWaivedPlayers];
+        }
+        if (player.IsPracticeSquad && player.TeamID === offer.TeamID) {
+            players = players.filter((x) => x.ID !== player.ID);
+        } else {
+            const playerIDX = players.findIndex((x) => x.ID === player.ID);
+            const ExistingOffers = [...teamOffers];
+            if (offer.ID > 0 && (viewingFA || viewingPS)) {
+                // Existing Offer
+                const offerIDX = players[playerIDX].Offers.findIndex(
+                    (x) => x.ID === offer.ID
+                );
 
-        setTeamOffers(() => ExistingOffers);
+                const existingOffersIdx = ExistingOffers.findIndex(
+                    (x) => x.ID === offer.ID
+                );
+                ExistingOffers[existingOffersIdx] = offer;
+                players[playerIDX].Offers[offerIDX] = offer;
+            } else {
+                const offerObj = { ...offer, ID: res.ID };
+                if (viewingFA || viewingPS) {
+                    const offers = players[playerIDX].Offers;
+                    offers.push(offerObj);
+                    players[playerIDX].Offers = offers.sort(
+                        (a, b) => a.ContractValue - b.ContractValue
+                    );
+                    ExistingOffers.push(offerObj);
+                } else {
+                    const offers = players[playerIDX].WaiverOffers;
+                    offers.push(offerObj);
+                    players[playerIDX].WaiverOffers = offers.sort(
+                        (a, b) => a.ContractValue - b.ContractValue
+                    );
+                    ExistingOffers.push(offerObj);
+                }
+            }
+            setTeamOffers(() => ExistingOffers);
+        }
 
         if (viewingFA) {
             setAllFreeAgents(() => players);
+        } else if (viewingPS) {
+            setPracticeSquadPlayers(() => players);
         } else {
             setAllWaivedPlayers(() => players);
         }
     };
 
     const CancelOffer = async (player, offer) => {
-        let res = await _rosterService.CancelFAOffer(offer);
+        const viewingFA = freeAgencyView === 'FA';
+        const viewingPS = freeAgencyView === 'PS';
+        let res;
+        if (viewingFA || viewingPS) {
+            res = await _rosterService.CancelFAOffer(offer);
+        } else {
+            res = await _rosterService.CancelWaiverOffer(offer);
+        }
         if (res) {
-            const viewingFA = freeAgencyView === 'FA';
-            const players = viewingFA
-                ? [...allFreeAgents]
-                : [...allWaivedPlayers];
+            let players = [];
+            if (viewingFA) {
+                players = [...allFreeAgents];
+            } else if (viewingPS) {
+                players = [...practiceSquadPlayers];
+            } else {
+                players = [...allWaivedPlayers];
+            }
             const playerIDX = players.findIndex((x) => x.ID === player.ID);
-            const offers = [...players[playerIDX].Offers];
-            players[playerIDX].Offers = offers.filter((x) => x.ID !== offer.ID);
+            if (viewingFA || viewingPS) {
+                const offers = [...players[playerIDX].Offers];
+                players[playerIDX].Offers = offers.filter(
+                    (x) => x.ID !== offer.ID
+                );
+            } else {
+                const offers = [...players[playerIDX].WaiverOffers];
+                players[playerIDX].WaiverOffers = offers.filter(
+                    (x) => x.ID !== offer.ID
+                );
+            }
+
             if (viewingFA) {
                 setAllFreeAgents(() => players);
+            } else if (viewingPS) {
+                setPracticeSquadPlayers(() => players);
             } else {
                 setAllWaivedPlayers(() => players);
             }
@@ -347,22 +410,63 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                         </div>
                     </div>
                     <div className="row mt-1">
-                        <div className="col-md-auto">
-                            <h5 className="text-start align-middle">FA View</h5>
-                            <button
-                                type="button"
-                                className={`btn ${
-                                    freeAgencyView
-                                        ? 'btn-outline-info'
-                                        : 'btn-outline-success'
-                                }`}
-                                onClick={ToggleFAView}
-                            >
-                                {freeAgencyView == 'FA'
-                                    ? 'Waiver Wire'
-                                    : 'Free Agency'}
-                            </button>
-                        </div>
+                        {freeAgencyView !== 'FA' && (
+                            <div className="col-md-auto">
+                                <h5 className="text-start align-middle">
+                                    Free Agents
+                                </h5>
+                                <button
+                                    type="button"
+                                    className={`btn ${
+                                        freeAgencyView
+                                            ? 'btn-outline-info'
+                                            : 'btn-outline-success'
+                                    }`}
+                                    onClick={ToggleFAView}
+                                    value="FA"
+                                >
+                                    Free Agents
+                                </button>
+                            </div>
+                        )}
+                        {freeAgencyView !== 'WW' && (
+                            <div className="col-md-auto">
+                                <h5 className="text-start align-middle">
+                                    Waiver Wire
+                                </h5>
+                                <button
+                                    type="button"
+                                    className={`btn ${
+                                        freeAgencyView
+                                            ? 'btn-outline-info'
+                                            : 'btn-outline-success'
+                                    }`}
+                                    onClick={ToggleFAView}
+                                    value="WW"
+                                >
+                                    Waiver Wire
+                                </button>
+                            </div>
+                        )}
+                        {freeAgencyView !== 'PS' && (
+                            <div className="col-md-auto">
+                                <h5 className="text-start align-middle">
+                                    Practice Squad
+                                </h5>
+                                <button
+                                    type="button"
+                                    className={`btn ${
+                                        freeAgencyView
+                                            ? 'btn-outline-info'
+                                            : 'btn-outline-success'
+                                    }`}
+                                    onClick={ToggleFAView}
+                                    value="PS"
+                                >
+                                    Practice Squad
+                                </button>
+                            </div>
+                        )}
                         <div className="col-md-auto">
                             <h5 className="text-start align-middle">Toggle</h5>
                             <button
@@ -393,6 +497,14 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                 {viewUDFAs ? 'View Full List' : 'View UDFAs'}
                             </button>
                         </div>
+                        {rosterCount > 55 &&
+                            !cfb_Timestamp.IsNFLOffSeason &&
+                            !cfb_Timestamp.NFLPreseason && (
+                                <ShortMessage
+                                    errMessage={errorMessage}
+                                    serMessage=""
+                                />
+                            )}
                     </div>
                     {/* Modals Here */}
                     <div
@@ -440,6 +552,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                                 team={team}
                                                 cancel={CancelOffer}
                                                 extend={CreateFAOffer}
+                                                rosterCount={rosterCount}
                                                 freeAgencyView={freeAgencyView}
                                             />
                                         </>
@@ -508,6 +621,9 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                                             cancel={CancelOffer}
                                                             extend={
                                                                 CreateFAOffer
+                                                            }
+                                                            rosterCount={
+                                                                rosterCount
                                                             }
                                                             freeAgencyView={
                                                                 freeAgencyView

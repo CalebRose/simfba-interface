@@ -53,7 +53,6 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
                 )
             ];
         } else {
-            console.log('PING!');
             gamesView = [...allGames.filter((x) => x.Week === selectedWeek)];
             let t = 0;
             let f = 0;
@@ -286,13 +285,10 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
                                         idx={idx}
                                         key={x.ID}
                                         game={x}
-                                        currentWeek={cfb_Timestamp.CollegeWeek}
                                         viewMode={viewMode}
                                         isAdmin={isAdmin}
                                         change={ChangeTimeSlot}
-                                        currentSeason={
-                                            cfb_Timestamp.CollegeSeasonID
-                                        }
+                                        ts={cfb_Timestamp}
                                         isNFL={false}
                                     />
                                 ))}

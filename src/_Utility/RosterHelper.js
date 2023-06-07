@@ -973,7 +973,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Strength'][player.Position],
                         player.Strength,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -986,7 +987,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Agility'][player.Position],
                         player.Agility,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -995,7 +997,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Speed'][player.Position],
                         player.Speed,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1004,7 +1007,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Carrying'][player.Position],
                         player.Carrying,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1013,7 +1017,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Catching'][player.Position],
                         player.Catching,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1022,7 +1027,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['RouteRunning'][player.Position],
                         player.RouteRunning,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1031,7 +1037,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Strength'][player.Position],
                         player.Strength,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1044,7 +1051,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Agility'][player.Position],
                         player.Agility,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1053,7 +1061,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Speed'][player.Position],
                         player.Speed,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1062,7 +1071,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Carrying'][player.Position],
                         player.Carrying,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1071,7 +1081,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Catching'][player.Position],
                         player.Catching,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1080,7 +1091,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['RouteRunning'][player.Position],
                         player.RouteRunning,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1089,7 +1101,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Strength'][player.Position],
                         player.Strength,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1098,7 +1111,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['PassBlock'][player.Position],
                         player.PassBlock,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1107,7 +1121,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['RunBlock'][player.Position],
                         player.RunBlock,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1122,7 +1137,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Agility'][player.Position],
                         player.Agility,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1131,7 +1147,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Strength'][player.Position],
                         player.Strength,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1140,7 +1157,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['PassBlock'][player.Position],
                         player.PassBlock,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1149,7 +1167,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['RunBlock'][player.Position],
                         player.RunBlock,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1162,7 +1181,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Agility'][player.Position],
                         player.Agility,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1171,7 +1191,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Speed'][player.Position],
                         player.Speed,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1180,7 +1201,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Tackle'][player.Position],
                         player.Tackle,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1189,7 +1211,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Strength'][player.Position],
                         player.Strength,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1198,7 +1221,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['PassRush'][player.Position],
                         player.PassRush,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1207,7 +1231,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['RunDefense'][player.Position],
                         player.RunDefense,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1220,7 +1245,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Agility'][player.Position],
                         player.Agility,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1229,7 +1255,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Tackle'][player.Position],
                         player.Tackle,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1238,7 +1265,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Strength'][player.Position],
                         player.Strength,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1247,7 +1275,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['PassRush'][player.Position],
                         player.PassRush,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1256,7 +1285,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['RunDefense'][player.Position],
                         player.RunDefense,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1270,7 +1300,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Agility'][player.Position],
                         player.Agility,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1279,7 +1310,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Speed'][player.Position],
                         player.Speed,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1288,7 +1320,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Tackle'][player.Position],
                         player.Tackle,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1297,7 +1330,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Strength'][player.Position],
                         player.Strength,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1306,7 +1340,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['PassRush'][player.Position],
                         player.PassRush,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1315,7 +1350,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['RunDefense'][player.Position],
                         player.RunDefense,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1324,7 +1360,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['ZoneCoverage'][player.Position],
                         player.ZoneCoverage,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1333,7 +1370,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['ManCoverage'][player.Position],
                         player.ManCoverage,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1346,7 +1384,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Agility'][player.Position],
                         player.Agility,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1355,7 +1394,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Speed'][player.Position],
                         player.Speed,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1364,7 +1404,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Tackle'][player.Position],
                         player.Tackle,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1373,7 +1414,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Strength'][player.Position],
                         player.Strength,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1382,7 +1424,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['ZoneCoverage'][player.Position],
                         player.ZoneCoverage,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1391,7 +1434,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['ManCoverage'][player.Position],
                         player.ManCoverage,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1400,7 +1444,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Catching'][player.Position],
                         player.Catching,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1414,7 +1459,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Agility'][player.Position],
                         player.Agility,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1423,7 +1469,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Speed'][player.Position],
                         player.Speed,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1432,7 +1479,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Tackle'][player.Position],
                         player.Tackle,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1441,7 +1489,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Strength'][player.Position],
                         player.Strength,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1450,7 +1499,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['RunDefense'][player.Position],
                         player.RunDefense,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1459,7 +1509,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['ZoneCoverage'][player.Position],
                         player.ZoneCoverage,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1468,7 +1519,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['ManCoverage'][player.Position],
                         player.ManCoverage,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1477,7 +1529,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['Catching'][player.Position],
                         player.Catching,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1490,7 +1543,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['KickAccuracy'][player.Position],
                         player.KickAccuracy,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1499,7 +1553,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['KickPower'][player.Position],
                         player.KickPower,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1512,7 +1567,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['PuntAccuracy'][player.Position],
                         player.PuntAccuracy,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
@@ -1521,7 +1577,8 @@ export const SetNFLPriority = (player) => {
                     Letter: GetNFLLetterGrade(
                         AttributeAverages['PuntPower'][player.Position],
                         player.PuntPower,
-                        player.Experience
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1535,7 +1592,8 @@ export const SetNFLPriority = (player) => {
         Letter: GetNFLLetterGrade(
             AttributeAverages['FootballIQ'][player.Position],
             player.FootballIQ,
-            player.Experience
+            player.Experience,
+            hasSnaps
         )
     });
     priorityAttributes.push({
@@ -1544,7 +1602,8 @@ export const SetNFLPriority = (player) => {
         Letter: GetNFLLetterGrade(
             AttributeAverages['Stamina'][player.Position],
             player.Stamina,
-            player.Experience
+            player.Experience,
+            hasSnaps
         )
     });
     priorityAttributes.push({
@@ -1553,7 +1612,8 @@ export const SetNFLPriority = (player) => {
         Letter: GetNFLLetterGrade(
             AttributeAverages['Injury'][player.Position],
             player.Injury,
-            player.Experience
+            player.Experience,
+            hasSnaps
         )
     });
     priorityAttributes.push({
@@ -1758,7 +1818,7 @@ export const GetLetterGrade = (attr, value, year) => {
 
 export const GetNFLLetterGrade = (attr, value, year, meetsSnapCount) => {
     const y = Number(year);
-    if (y > 1 || meetsSnapCount) return value;
+    if (meetsSnapCount || y > 1) return value;
     if (attr === undefined) return 'F';
     const { mean, stddev } = attr;
 

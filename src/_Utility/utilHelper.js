@@ -245,3 +245,32 @@ export const getCBBPositionList = (pos) => {
     if (pos === 'PF') return ['PF', 'SF', 'C'];
     return ['C', 'PF'];
 };
+
+export const RevealResults = (game, timestamp) => {
+    const { TimeSlot, GameComplete } = game;
+    if (TimeSlot === 'Thursday Night' && timestamp.ThursdayGames)
+        return GameComplete;
+    if (TimeSlot === 'Thursday Night Football' && timestamp.NFLThursday)
+        return GameComplete;
+    if (TimeSlot === 'Friday Night' && timestamp.FridayGames)
+        return GameComplete;
+    if (TimeSlot === 'Saturday Morning' && timestamp.SaturdayMorning)
+        return GameComplete;
+    if (TimeSlot === 'Saturday Afternoon' && timestamp.SaturdayNoon)
+        return GameComplete;
+    if (TimeSlot === 'Saturday Evening' && timestamp.SaturdayEvening)
+        return GameComplete;
+    if (TimeSlot === 'Saturday Night' && timestamp.SaturdayNight)
+        return GameComplete;
+    if (TimeSlot === 'Sunday Noon' && timestamp.NFLSundayNoon)
+        return GameComplete;
+    if (TimeSlot === 'Sunday Afternoon' && timestamp.NFLSundayAfternoon)
+        return GameComplete;
+    if (TimeSlot === 'Sunday Afternoon' && timestamp.NFLSundayAfternoon)
+        return GameComplete;
+    if (TimeSlot === 'Sunday Night Football' && timestamp.NFLSundayEvening)
+        return GameComplete;
+    if (TimeSlot === 'Monday Night Football' && timestamp.NFLMondayEvening)
+        return GameComplete;
+    return false;
+};

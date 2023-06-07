@@ -9,7 +9,7 @@ import {
     SuccessfulDepthChartSaveMessage,
     UnsuccessfulDepthChartSaveMessage
 } from '../../Constants/SystemMessages';
-import ServiceMessageBanner from '../_Common/ServiceMessageBanner';
+import { ServiceMessageBanner } from '../_Common/ServiceMessageBanner';
 import DCPositionItem from './DC_PositionItem';
 import { DepthChartPositionList } from './DepthChartConstants';
 import DepthChartHeader from './DepthChartHeader';

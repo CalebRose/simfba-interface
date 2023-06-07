@@ -29,7 +29,18 @@ const CFBTeamDashboardPlayerRow = (props) => {
 
         const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
 
-        return competingAbbrs.join(', ');
+        return competingAbbrs.map((x) => {
+            const logo = getLogo(x);
+            return (
+                <>
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={logo}
+                        alt="competing-team"
+                    />
+                </>
+            );
+        });
     };
 
     const leadingTeams = leadingTeamsMapper(Recruit);
@@ -168,7 +179,7 @@ const CFBTeamDashboardPlayerRow = (props) => {
                             alt="WinningTeam"
                         />
                     ) : (
-                        <h6>{leadingTeams}</h6>
+                        <>{leadingTeams}</>
                     )}
                 </td>
                 <td className="align-middle" style={{ width: 125 }}>

@@ -234,13 +234,10 @@ const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
                                         idx={idx}
                                         key={x.ID}
                                         game={x}
-                                        currentWeek={cfb_Timestamp.NFLWeek}
                                         viewMode={viewMode}
                                         isAdmin={isAdmin}
                                         change={ChangeTimeSlot}
-                                        currentSeason={
-                                            cfb_Timestamp.NFLSeasonID
-                                        }
+                                        ts={cfb_Timestamp}
                                         isNFL={true}
                                     />
                                 ))}

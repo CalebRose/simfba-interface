@@ -4,7 +4,7 @@ import {
     SavingMessage,
     SuccessfulGameplanSaveMessage
 } from '../../Constants/SystemMessages';
-import ServiceMessageBanner from '../_Common/ServiceMessageBanner';
+import { ServiceMessageBanner } from '../_Common/ServiceMessageBanner';
 import FBAGameplanService from '../../_Services/simFBA/FBAGameplanService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import { useMediaQuery } from 'react-responsive';

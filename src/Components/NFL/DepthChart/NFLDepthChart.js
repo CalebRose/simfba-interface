@@ -6,7 +6,7 @@ import {
     SuccessfulDepthChartSaveMessage,
     UnsuccessfulDepthChartSaveMessage
 } from '../../../Constants/SystemMessages';
-import ServiceMessageBanner from '../../_Common/ServiceMessageBanner';
+import { ServiceMessageBanner } from '../../_Common/ServiceMessageBanner';
 import DCPositionItem from '../../DepthChart/DC_PositionItem';
 import { DepthChartPositionList } from '../../DepthChart/DepthChartConstants';
 import DepthChartHeader from '../../DepthChart/DepthChartHeader';
@@ -308,6 +308,14 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
                 setValidation(() => false);
                 setErrorMessage(
                     `${row.FirstName} ${row.LastName} is listed on the depth chart at position ${row.Position}, but is not part of the roster. They are unable to play for ${team.TeamName}. Please remove them from the depth chart.`
+                );
+                return;
+            }
+
+            if (row.NFLPlayer.IsPracticeSquad) {
+                setValidation(() => false);
+                setErrorMessage(
+                    `${row.FirstName} ${row.LastName} is on the practice squad but is listed in the depth chart. Please swap them from their ${row.Position} position level.`
                 );
                 return;
             }

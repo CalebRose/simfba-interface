@@ -14,6 +14,7 @@ export const NFLRosterPlayerRow = ({
     ts,
     canModify,
     team,
+    psCount,
     viewMode,
     practicesquad,
     tradeblock,
@@ -169,7 +170,10 @@ export const NFLRosterPlayerRow = ({
                                 <i class="bi bi-arrow-down-up" />
                             </button>
                         )}
-                        {userView && canModify ? (
+                        {userView &&
+                        canModify &&
+                        (psCount <= 16 || player.IsPracticeSquad) &&
+                        player.Experience <= 3 ? (
                             <button
                                 type="button"
                                 className={`btn ${
@@ -188,7 +192,11 @@ export const NFLRosterPlayerRow = ({
                         ) : (
                             <button
                                 type="button"
-                                className="btn btn-secondary"
+                                className={`btn ${
+                                    player.IsPracticeSquad
+                                        ? 'btn-warning'
+                                        : 'btn-secondary'
+                                }`}
                                 title={practiceSquadTitle}
                                 disabled
                             >

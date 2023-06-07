@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
@@ -37,6 +38,39 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
         }
     }
     return userRef;
+};
+
+export const useFirestore = (collection, docName) => {
+    const [data, setData] = useState({});
+    const firestore = useMemo(() => firebase.firestore(), []);
+    const docRef = useMemo(
+        () => firestore.collection(collection).doc(docName),
+        [firestore, collection, docName]
+    );
+    useEffect(() => {
+        // const docRef = firebase.firestore().collection(collection).doc(docName);
+        const unsubscribe = docRef.onSnapshot((doc) => {
+            if (doc.exists) {
+                setData(doc.data());
+            } else {
+                setData(null);
+            }
+        });
+
+        return () => {
+            unsubscribe();
+        };
+    }, [docRef, collection, docName]);
+
+    const updateData = useCallback(
+        (newData) => {
+            console.log('PING!');
+            firestore.collection(collection).doc(docName).update(newData);
+        },
+        [collection, docName]
+    );
+
+    return [data, updateData];
 };
 
 export const auth = firebase.auth();

@@ -9,7 +9,7 @@ import {
 import FBALandingPageService from '../../_Services/simFBA/FBALandingPageService';
 import BBANewsService from '../../_Services/simNBA/BBANewsService';
 import { MapObjOptions } from '../../_Utility/filterHelper';
-import NewsLog from './NewsLog';
+import { NewsLog } from '../_Common/NewsLog';
 
 const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
     // Services

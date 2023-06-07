@@ -26,6 +26,8 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
     const [team, setTeam] = React.useState(null);
     const [teamID, setTeamID] = React.useState(null);
     const [roster, setRoster] = React.useState('');
+    const [activeCount, setActiveCount] = React.useState(0);
+    const [practiceSquadCount, setPracticeSquadCount] = React.useState(0);
     const [viewRoster, setViewRoster] = React.useState('');
     const [sort, setSort] = React.useState('ovr');
     const [isAsc, setIsAsc] = React.useState(false);
@@ -48,6 +50,17 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
             getTeams();
         }
     }, [currentUser]);
+
+    useEffect(() => {
+        if (roster && roster.length > 0) {
+            const nonPracticeSquad = [
+                ...roster.filter((x) => !x.IsPracticeSquad)
+            ];
+            const practiceSquad = [...roster.filter((x) => x.IsPracticeSquad)];
+            setPracticeSquadCount(() => practiceSquad.length);
+            setActiveCount(() => nonPracticeSquad.length);
+        }
+    }, [roster]);
 
     useEffect(() => {
         if (teamID && teamID > 0) {
@@ -250,23 +263,19 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
     };
 
     const PracticeSquadPlayer = async (player) => {
-        const res = await _tradeService.PlaceNFLPlayerOnTradeBlock(player.ID);
-        if (res) {
-            const currentRoster = [...roster];
-            const rosterIdx = currentRoster.findIndex(
-                (x) => x.ID === player.ID
-            );
-            const toggle = !currentRoster[rosterIdx].IsOnPracticeSquad;
-            currentRoster[rosterIdx].IsOnPracticeSquad = toggle;
-            const currentViewRoster = [...viewRoster];
-            const viewIdx = currentViewRoster.findIndex(
-                (x) => x.ID === player.ID
-            );
-            currentViewRoster[viewIdx].IsOnPracticeSquad = toggle;
+        const res = await _rosterService.PlaceNFLPlayerOnPracticeSquad(
+            player.ID
+        );
+        const currentRoster = [...roster];
+        const rosterIdx = currentRoster.findIndex((x) => x.ID === player.ID);
+        const toggle = !currentRoster[rosterIdx].IsPracticeSquad;
+        currentRoster[rosterIdx].IsPracticeSquad = toggle;
+        const currentViewRoster = [...viewRoster];
+        const viewIdx = currentViewRoster.findIndex((x) => x.ID === player.ID);
+        currentViewRoster[viewIdx].IsPracticeSquad = toggle;
 
-            setRoster(() => currentRoster);
-            setViewRoster(() => currentViewRoster);
-        }
+        setRoster(() => currentRoster);
+        setViewRoster(() => currentViewRoster);
     };
 
     return (
@@ -310,9 +319,13 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                     )}
                                 </div>
                             </div>
-                            <div className="col-sm-4"></div>
                             <div className="col-sm-4">
-                                <h3>Players: {roster && roster.length}</h3>
+                                <h3>Active Players: {activeCount} Players</h3>
+                            </div>
+                            <div className="col-sm-4">
+                                <h3>
+                                    Practice Squad: {practiceSquadCount} Players
+                                </h3>
                             </div>
                         </div>
                         <div className="row">
@@ -448,6 +461,9 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                                 viewMode={
                                                                     viewMode
                                                                 }
+                                                                psCount={
+                                                                    practiceSquadCount
+                                                                }
                                                                 practicesquad={
                                                                     PracticeSquadPlayer
                                                                 }
@@ -479,10 +495,19 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                     key={player.ID}
                                                     idx={idx}
                                                     player={player}
+                                                    psCount={practiceSquadCount}
                                                     userView={viewingUserTeam}
                                                     ts={cfb_Timestamp}
                                                     canModify={canModify}
                                                     theme={viewMode}
+                                                    practicesquad={
+                                                        PracticeSquadPlayer
+                                                    }
+                                                    tradeblock={
+                                                        TradeBlockPlayer
+                                                    }
+                                                    extend={ExtendPlayer}
+                                                    cut={CutPlayer}
                                                 />
                                             </>
                                         ))}

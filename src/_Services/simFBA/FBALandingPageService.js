@@ -25,6 +25,11 @@ export default class FBALandingPageService {
         // return json;
     }
 
+    async GetPersonalizedNewsFeed(league, teamID) {
+        //this uses GetCall function from FetchHelper file to return news for a NFL season
+        return GetCall(`${url}news/feed/${league}/${teamID}/`);
+    }
+
     async GetAllNewsLogsForANflSeason(nflSeason) {
         //this uses GetCall function from FetchHelper file to return news for a NFL season
         return GetCall(`${url}nfl/news/all/`);

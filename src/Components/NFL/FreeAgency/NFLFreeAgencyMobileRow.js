@@ -16,6 +16,7 @@ export const NFLFreeAgencyMobileRow = ({
     canModify,
     extend,
     cancel,
+    rosterCount,
     ts,
     team
 }) => {
@@ -66,6 +67,9 @@ export const NFLFreeAgencyMobileRow = ({
 
     const canMakeOffer =
         canModify &&
+        (ts.IsOffseason ||
+            ts.NFLPreseason ||
+            (!ts.IsNFLOffSeason && !ts.NFLPreseason && rosterCount < 56)) &&
         (!player.IsNegotiating || (player.IsNegotiating && hasOffer));
 
     return (

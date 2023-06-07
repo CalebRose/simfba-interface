@@ -29,12 +29,12 @@ const BBATeamCard = (props) => {
     return (
         <div className="col">
             <div className={cardClass}>
-                <img
-                    className="card-img-top imageSize mx-auto"
-                    src={logo}
-                    alt="logo"
-                />
                 <div className="card-body">
+                    <img
+                        className="card-img-top imageSize mx-auto mb-1"
+                        src={logo}
+                        alt="logo"
+                    />
                     <h5 className="card-title ">
                         {team} {mascot}
                     </h5>

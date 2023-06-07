@@ -7,14 +7,15 @@ export const CancelOfferModal = ({
     cancel,
     teamID,
     viewMode,
-    viewFA
+    viewFA,
+    viewPS
 }) => {
     const modalId = `cancelOffer${idx}`;
     const name = `${player.FirstName} ${player.LastName}`;
     const modalClass = GetModalClass(viewMode);
 
     const confirmChange = () => {
-        if (viewFA) {
+        if (viewFA || viewPS) {
             const offerIdx = player.Offers.findIndex(
                 (x) => x.TeamID === teamID
             );

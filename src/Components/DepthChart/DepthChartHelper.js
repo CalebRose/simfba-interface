@@ -21,7 +21,13 @@ export const GetAvailablePlayers = (pos, players) => {
         case 'QB':
             availablePlayers = players.filter((x) => x.Position === 'QB');
             availablePlayers = availablePlayers.concat(
-                players.filter((x) => x.Position === 'P')
+                players.filter(
+                    (x) =>
+                        x.Position === 'P' ||
+                        x.Position === 'K' ||
+                        x.Position === 'RB' ||
+                        x.Position === 'TE'
+                )
             );
             break;
         case 'RB':

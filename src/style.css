@@ -87,10 +87,7 @@
 }
 
 .landing-image {
-    max-height: 200px !important;
-}
-.landing-image-purdue {
-    max-height: 100px !important;
+    max-height: 50px !important;
 }
 
 .mobile-card-viewer {
@@ -255,6 +252,7 @@
 }
 
 .imageSize {
+    margin-top: 1rem !important;
     max-height: 180px;
     max-width: 180px;
 }
@@ -567,7 +565,7 @@ td {
 */
 .gameplan-table-height,
 .gameplan-table-height-dark {
-    height: 55vh;
+    height: 53vh;
     overflow: auto;
 }
 
@@ -773,4 +771,38 @@ td {
 
 hr.solid {
     border-top: 3px solid #bbb;
+}
+
+.news-feed {
+    max-width: 34rem !important;
+    max-height: 25rem !important;
+    overflow-y: scroll;
+}
+
+.cfb-news-feed {
+    max-width: 50% !important;
+    max-height: 30rem !important;
+    overflow-y: scroll;
+}
+
+.news-feed,
+.cfb-news-feed p {
+    font-size: small;
+}
+
+.desktop-display {
+    display: contents;
+}
+
+.btn-md {
+    width: 10rem;
+}
+
+.draft-room-header {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: middle;
+    text-align: center;
+    justify-content: center;
 }

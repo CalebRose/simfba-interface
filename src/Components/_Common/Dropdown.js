@@ -19,6 +19,25 @@ export const DropdownItem = ({ click, value, id, name }) => {
     );
 };
 
+export const DraftDropdownItem = ({ click, value, id, name }) => {
+    const handleChange = () => {
+        return click(name, value);
+    };
+
+    return (
+        <li className="clickable" style={{ textAlign: 'left' }}>
+            <p
+                className="dropdown-item"
+                value={value}
+                onClick={handleChange}
+                id={id}
+            >
+                {name}
+            </p>
+        </li>
+    );
+};
+
 export const Dropdown = ({ value, click, id, list, name }) => {
     const label = !value || value.length === 0 ? 'Choose Type' : value;
     return (
@@ -41,6 +60,35 @@ export const Dropdown = ({ value, click, id, list, name }) => {
                         value={x}
                         id={idx}
                         name={name}
+                    />
+                ))}
+            </ul>
+        </div>
+    );
+};
+
+export const DraftDropdown = ({ value, click, id, list, name }) => {
+    const label = !value || value.length === 0 ? 'Choose Type' : value;
+    return (
+        <div className="drop-start btn-dropdown-width-auto">
+            <button
+                name="team"
+                className="btn btn-secondary dropdown-toggle btn-dropdown-width-auto"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+            >
+                <span>{label}</span>
+            </button>
+            <ul className="dropdown-menu dropdown-content">
+                <DropdownItem value={label} click={click} id={id} name={name} />
+                <hr className="dropdown-divider"></hr>
+                {list.map((x, idx) => (
+                    <DraftDropdownItem
+                        click={click}
+                        value={x.DraftNumber}
+                        id={idx}
+                        name={`${x.DraftNumber} | ${x.Team}`}
                     />
                 ))}
             </ul>

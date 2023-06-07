@@ -218,6 +218,103 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                 <ConfirmRecruitSyncModal save={SyncRecruiting} />
                 <ConfirmRESSyncModal save={SyncRES} />
                 <ConfirmWeekSyncModal save={SyncToNextWeek} />
+                <div className="row mt-2 mb-2 g-2">
+                    <div className="col-3 col-md-3 mb-2">
+                        <h5>Recruiting Efficiency</h5>
+                        {!timestamp.RecruitingEfficiencySynced ? (
+                            <button
+                                type="button"
+                                className="btn btn-primary btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#syncRESModal"
+                            >
+                                Sync
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                className="btn btn-secondary btn-sm"
+                            >
+                                Sync
+                            </button>
+                        )}
+                    </div>
+                    <div className="col-3 mb-2">
+                        <h5>Lock Recruiting</h5>
+                        <button
+                            type="button"
+                            className="btn btn-primary btn-sm"
+                            onClick={LockRecruiting}
+                        >
+                            {timestamp.IsRecruitingLocked ? 'Lock' : 'Unlock'}
+                        </button>
+                    </div>
+                    <div className="col-3 mb-2">
+                        <h5>Sync Recruiting</h5>
+                        {!timestamp.RecruitingSynced ? (
+                            <button
+                                type="button"
+                                className={'btn btn-primary btn-sm'}
+                                data-bs-toggle="modal"
+                                data-bs-target="#syncRecruitModal"
+                            >
+                                Sync
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                className={'btn btn-secondary btn-sm'}
+                            >
+                                Sync
+                            </button>
+                        )}
+                    </div>
+                    <div className="col-3 mb-2">
+                        <h5>Sync Free Agency</h5>
+                        <button
+                            type="button"
+                            className="btn btn-primary btn-sm"
+                            onClick={SyncOffseasonFreeAgency}
+                        >
+                            Sync
+                        </button>
+                    </div>
+                    <div className="col-3 mb-2">
+                        <h5>Create a Croot</h5>
+                        <button
+                            type="button"
+                            className={
+                                !SyncComplete
+                                    ? 'btn btn-primary btn-sm'
+                                    : 'btn btn-secondary btn-sm'
+                            }
+                            data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop"
+                        >
+                            Create
+                        </button>
+                    </div>
+                    <div className="col-3 mb-2">
+                        <h5>Sync Week</h5>
+                        {SyncComplete ? (
+                            <button
+                                type="button"
+                                className="btn btn-primary btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#syncWeekModal"
+                            >
+                                Sync
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                className="btn btn-secondary btn-sm"
+                            >
+                                Sync
+                            </button>
+                        )}
+                    </div>
+                </div>
                 <div className="row mt-3 mb-5">
                     <table className="table">
                         <thead>
@@ -240,14 +337,14 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                                             data-bs-toggle="modal"
                                             data-bs-target="#syncRESModal"
                                         >
-                                            Sync
+                                            Recruiting Efficiency Sync
                                         </button>
                                     ) : (
                                         <button
                                             type="button"
                                             className="btn btn-secondary btn-sm"
                                         >
-                                            Sync
+                                            Recruiting Efficiency Sync
                                         </button>
                                     )}
                                 </td>
@@ -269,15 +366,21 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                                         className="btn btn-primary btn-sm"
                                         onClick={LockRecruiting}
                                     >
-                                        Sync
+                                        {timestamp.IsRecruitingLocked
+                                            ? 'Lock Recruiting'
+                                            : 'Unlock Recruiting'}
                                     </button>
                                 </td>
                                 <td>
-                                    <h5>
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary btn-sm"
+                                        disabled
+                                    >
                                         {timestamp.IsRecruitingLocked
                                             ? 'Locked'
                                             : 'Unlocked'}
-                                    </h5>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -323,7 +426,7 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                                         className="btn btn-primary btn-sm"
                                         onClick={SyncOffseasonFreeAgency}
                                     >
-                                        Sync
+                                        Sync Free Agency
                                     </button>
                                 </td>
                                 <td>
@@ -359,6 +462,7 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                                     <h5>Create a Croot</h5>
                                 </th>
                                 <td>
+                                    <h5>Create a Croot</h5>
                                     <button
                                         type="button"
                                         className={

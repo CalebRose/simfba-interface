@@ -47,6 +47,7 @@ import NBATradeblock from './Components/BBA/NBA/Trade Block/NBATradeblock';
 import NFLSchedulePage from './Components/NFL/Schedule/NFLSchedulePage';
 import NFLStatisticsPage from './Components/NFL/Statistics/NFLStatisticsPage';
 import NBAGameplan from './Components/BBA/NBA/Gameplan/NBAGameplan';
+import NBADraftPage from './Components/BBA/NBA/Draft Room/NBADraftPage';
 
 const Home = ({ viewMode }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -385,6 +386,14 @@ const Home = ({ viewMode }) => {
             <Route exact path={routes.NBA_TRADEBLOCK}>
                 {NBATeam > 0 && viewingBeta ? (
                     <NBATradeblock />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
+
+            <Route exact path={routes.NBA_DRAFT_ROOM}>
+                {NBATeam > 0 && viewingBeta ? (
+                    <NBADraftPage />
                 ) : (
                     <Redirect to={routes.LANDING} />
                 )}

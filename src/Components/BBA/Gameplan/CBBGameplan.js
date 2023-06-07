@@ -147,7 +147,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         );
         const midMin = getProportionLimits(
             gameplan.OffensiveFormation,
-            'Inside',
+            'Mid',
             true
         );
         const midMax = getProportionLimits(
@@ -157,7 +157,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         );
         const threeMin = getProportionLimits(
             gameplan.OffensiveFormation,
-            'Inside',
+            'Three',
             true
         );
         const threeMax = getProportionLimits(
@@ -740,7 +740,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
                 {roster && gameplan && roster.length > 0 && (
                     <div className="row">
                         <div
-                            className={`row mt-3 overflow-auto gameplan-table-height${
+                            className={`row mt-3 mb-2 overflow-auto gameplan-table-height${
                                 viewMode === 'dark' ? '-dark' : ''
                             }`}
                         >

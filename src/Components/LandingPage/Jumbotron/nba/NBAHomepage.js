@@ -48,29 +48,30 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
     return (
         <>
             <div className="row mt-2">
-                <div className="col-md-auto justify-content-start">
-                    <h2>{teamName}</h2>
+                <div className="col-auto justify-content-start">
+                    <h2>
+                        <img
+                            className="landing-image"
+                            src={logo}
+                            alt="Go Supersonics"
+                        />{' '}
+                        {teamName}
+                    </h2>
                 </div>
-                <div className="col-4">
+                <div className="col-auto">
                     <h2 className="text-start">
                         {cbb_Timestamp && cbb_Timestamp.Season}, Week{' '}
                         {cbb_Timestamp && cbb_Timestamp.NBAWeek}
                     </h2>
                 </div>
-                <div className="col-md-auto justify-content-start">
+                <div className="col-auto justify-content-start">
                     <h2>
                         {team &&
                             `${team.Conference} Conference, ${team.Division} Division`}
                     </h2>
                 </div>
             </div>
-            <div className="row mt-2"></div>
             <div className="row mt-2">
-                <div className="col-md-2">
-                    <div className="image">
-                        <img src={logo} alt="Go Supersonics" />
-                    </div>
-                </div>
                 <div className="col-md-4">
                     <div className="row mt-2 mb-2">
                         <div className="btn-group btn-group-sm d-flex">

@@ -10,10 +10,13 @@ import FBATeamService from '../../../../_Services/simFBA/FBATeamService';
 import StandingsCard from '../../../BBA/Schedule/StandingsModalCard';
 import { Spinner } from '../../../_Common/Spinner';
 import CFBMatchCard from './CFBMatchCard';
+import { NewsLogSmall } from '../../../_Common/NewsLog';
+import FBALandingPageService from '../../../../_Services/simFBA/FBALandingPageService';
 
 const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     let teamService = new FBATeamService();
     let _scheduleService = new FBAScheduleService();
+    let _landingPageService = new FBALandingPageService();
     const dispatch = useDispatch();
     const [team, setTeam] = React.useState('');
     const [logo, setLogo] = React.useState('');
@@ -22,6 +25,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const [viewableMatches, setViewableMatches] = React.useState(null);
     const [games, setGames] = React.useState([]);
     const [standings, setStandings] = React.useState([]);
+    const [newsFeed, setNewsFeed] = React.useState([]);
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:845px)` });
     // For mobile
@@ -47,6 +51,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         if (cfb_Timestamp && cfbTeam) {
             GetConferenceStandings();
             GetGames();
+            getPersonalizedNewsFeed();
         }
     }, [currentUser, cfbTeam, cfb_Timestamp]);
 
@@ -123,13 +128,29 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         setGames(() => res);
     };
 
+    const getPersonalizedNewsFeed = async () => {
+        let res = await _landingPageService.GetPersonalizedNewsFeed(
+            'CFB',
+            currentUser.teamId
+        );
+
+        setNewsFeed(() => res);
+    };
+
     return (
         <>
             <div className="row mt-2">
-                <div className="col-md-auto justify-content-start">
-                    <h2>{team}</h2>
+                <div className="col-auto justify-content-start">
+                    <h2>
+                        <img
+                            className="landing-image"
+                            src={logo}
+                            alt="Go Cougs"
+                        />{' '}
+                        {team}
+                    </h2>
                 </div>
-                <div className="col-md-4">
+                <div className="col-auto">
                     <h2 className="text-start">
                         {cfb_Timestamp ? cfb_Timestamp.Season : ''}, Week{' '}
                         {cfb_Timestamp !== null &&
@@ -138,8 +159,8 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             : ''}
                     </h2>
                 </div>
-                <div className="col-md-auto justify-content-start">
-                    {teamData ? (
+                <div className="col-auto justify-content-start">
+                    {teamData && (
                         <h2 className="">
                             {`${teamData.Conference} Conference ${
                                 teamData.Division.length > 0
@@ -147,27 +168,10 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                     : ''
                             }`}
                         </h2>
-                    ) : (
-                        <div className="row justify-content-center pt-2 mt-4 mb-2">
-                            <Spinner />
-                        </div>
                     )}
                 </div>
             </div>
             <div className="row mt-2">
-                <div className="col-md-2">
-                    <div className="image me-2">
-                        <img
-                            className={
-                                cfbTeam && cfbTeam.ID === 86
-                                    ? 'landing-image-purdue'
-                                    : ''
-                            }
-                            src={logo}
-                            alt="Go Cougs"
-                        />
-                    </div>
-                </div>
                 <div className="col-md-4">
                     {isMobile ? (
                         <>
@@ -281,7 +285,8 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                     <CFBMatchCard
                                         game={x}
                                         team={cfbTeam}
-                                        currentWeek={cfb_Timestamp.CollegeWeek}
+                                        isNFL={false}
+                                        timestamp={cfb_Timestamp}
                                     />
                                 </div>
                             );
@@ -296,25 +301,37 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                         </div>
                     )}
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-8">
                     <div
                         className={
                             isMobile
-                                ? 'row justify-content-start mt-2 ms-1'
-                                : 'row justify-content-start ms-1'
+                                ? 'row justify-content-start mb-2 mt-2  ms-1'
+                                : 'row justify-content-start  ms-1'
                         }
                     >
                         {standings && standings.length > 0 ? (
                             <>
-                                {isMobile ? (
-                                    <div className="mobile-card-viewer">
-                                        <StandingsCard standings={standings} />
+                                <div
+                                    className={
+                                        isMobile
+                                            ? 'mobile-card-viewer'
+                                            : 'desktop-display'
+                                    }
+                                >
+                                    <StandingsCard standings={standings} />
+                                    <div className="cfb-news-feed">
+                                        {newsFeed.length > 0 &&
+                                            newsFeed.map((x) => (
+                                                <NewsLogSmall
+                                                    key={x.ID}
+                                                    news={x}
+                                                    season={
+                                                        cfb_Timestamp.Season
+                                                    }
+                                                />
+                                            ))}
                                     </div>
-                                ) : (
-                                    <>
-                                        <StandingsCard standings={standings} />
-                                    </>
-                                )}
+                                </div>
                             </>
                         ) : (
                             <div className="row justify-content-center pt-2 mt-4 mb-2">

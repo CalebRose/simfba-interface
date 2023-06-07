@@ -17,65 +17,122 @@ const NFLFreeAgencyRow = ({
     cancel,
     ts,
     team,
+    rosterCount,
     freeAgencyView
 }) => {
     const rank = idx + 1;
-    const NameLabel = player.FirstName + ' ' + player.LastName;
-    const modalTarget = '#playerModal' + idx;
-    const offerTarget = '#offerModal' + idx;
-    const waiverTarget = '#waiverModal' + idx;
-    const cancelTarget = '#cancelOffer' + idx;
+    const {
+        ID,
+        FirstName,
+        LastName,
+        Position,
+        Archetype,
+        Overall,
+        ShowLetterGrade,
+        Age,
+        Experience,
+        PotentialGrade,
+        PreviousTeam,
+        IsAcceptingOffers,
+        IsNegotiating,
+        MinimumValue
+    } = player;
+    const NameLabel = `${FirstName} ${LastName}`;
+    const modalTarget = `#playerModal${idx}`;
+    const offerTarget = `#offerModal${idx}`;
+    const waiverTarget = `#waiverModal${idx}`;
+    const cancelTarget = `#cancelOffer${idx}`;
     const viewFA = freeAgencyView === 'FA';
-    let ovr = GetNFLOverall(player.Overall, player.ShowLetterGrade);
+    const viewPS = freeAgencyView === 'PS';
+    const viewWW = freeAgencyView === 'WW';
+    let ovr = GetNFLOverall(Overall, ShowLetterGrade);
     const hasOffer = CheckForOffer(player, teamID);
 
     const leadingTeamsMapper = (player) => {
-        if (player.Offers === null || player.Offers.length === 0) {
+        if (
+            ((viewFA || viewPS) &&
+                (player.Offers === null || player.Offers.length === 0)) ||
+            (!viewFA &&
+                !viewPS &&
+                (player.WaiverOffers === null ||
+                    player.WaiverOffers.length === 0))
+        ) {
             return 'None';
         }
 
-        return player.Offers.map((x) => {
+        const offers = viewFA || viewPS ? player.Offers : player.WaiverOffers;
+
+        return offers.map((x, index) => {
             const logo = getLogo(x.Team);
             return (
-                <>
-                    <img
-                        className="image-nfl-fa mx-1"
-                        src={logo}
-                        alt="competing-team"
-                    />
-                </>
+                <img
+                    key={index}
+                    className="image-nfl-fa mx-1"
+                    src={logo}
+                    alt="competing-team"
+                />
             );
         });
     };
     const leadingTeams = leadingTeamsMapper(player);
 
-    const StatusLabel = player.IsAcceptingOffers ? 'Open' : 'Negotiating';
+    const StatusLabel = IsAcceptingOffers ? 'Open' : 'Negotiating';
 
     const canMakeOffer =
         canModify &&
-        (!player.IsNegotiating || (player.IsNegotiating && hasOffer));
+        (ts.IsOffseason ||
+            ts.NFLPreseason ||
+            (!ts.IsNFLOffSeason && !ts.NFLPreseason && rosterCount < 56)) &&
+        (!IsNegotiating || (IsNegotiating && hasOffer));
+
+    const makeOfferButton = (
+        <button
+            type="button"
+            className="btn"
+            title="Make An Offer"
+            data-bs-toggle="modal"
+            data-bs-target={viewFA || viewPS ? offerTarget : waiverTarget}
+            disabled={!canMakeOffer}
+        >
+            <i className="bi bi-cash-coin image-nfl-roster" />
+        </button>
+    );
+
+    const cancelOfferButton = (
+        <button
+            type="button"
+            className="btn"
+            title="Cancel Existing Offer"
+            data-bs-toggle="modal"
+            data-bs-target={cancelTarget}
+            disabled={!hasOffer || !canModify}
+        >
+            <i className="bi bi-x-circle image-nfl-roster" />
+        </button>
+    );
 
     return (
         <>
             <FreeAgencyPlayerModal
-                key={player.ID}
+                key={ID}
                 player={player}
                 idx={idx}
                 viewMode={viewMode}
             />
-            {viewFA ? (
+            {viewFA || viewPS ? (
                 <FreeAgentOfferModal
-                    key={player.ID}
+                    key={ID}
                     team={team}
                     player={player}
                     idx={idx}
                     ts={ts}
                     extend={extend}
                     viewMode={viewMode}
+                    viewPS={viewPS}
                 />
             ) : (
                 <WaiverOfferModal
-                    key={player.ID}
+                    key={ID}
                     team={team}
                     player={player}
                     idx={idx}
@@ -86,13 +143,14 @@ const NFLFreeAgencyRow = ({
             )}
 
             <CancelOfferModal
-                key={player.ID}
+                key={ID}
                 player={player}
                 idx={idx}
                 cancel={cancel}
                 teamID={team.ID}
                 viewMode={viewMode}
                 viewFA={viewFA}
+                viewPS={viewPS}
             />
             <tr style={{ backgroundColor: 'white', zIndex: -1 }}>
                 <th scope="row">
@@ -114,104 +172,38 @@ const NFLFreeAgencyRow = ({
                     <h6>{NameLabel}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{player.Position}</h6>
+                    <h6>{Position}</h6>
                 </td>
                 <td className="align-middle" style={{ width: 175 }}>
-                    <h6>{player.Archetype}</h6>
+                    <h6>{Archetype}</h6>
                 </td>
                 <td className="align-middle">
                     <h6>
-                        {player.Age} | {player.Experience}
+                        {Age} | {Experience}
                     </h6>
                 </td>
                 <td className="align-middle">
                     <h6>{ovr}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{player.PotentialGrade}</h6>
+                    <h6>{PotentialGrade}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{player.PreviousTeam}</h6>
+                    <h6>{PreviousTeam}</h6>
                 </td>
                 <td className="align-middle">
                     <h6>{StatusLabel}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{RoundToTwoDecimals(player.MinimumValue)}</h6>
+                    <h6>{RoundToTwoDecimals(MinimumValue)}</h6>
                 </td>
                 <td className="align-middle">
                     <h6>{leadingTeams}</h6>
                 </td>
                 <td className="align-middle">
                     <div className="btn-group">
-                        {viewFA ? (
-                            <>
-                                {canMakeOffer ? (
-                                    <button
-                                        type="button"
-                                        className="btn"
-                                        title="Make An Offer"
-                                        data-bs-toggle="modal"
-                                        data-bs-target={offerTarget}
-                                    >
-                                        <i className="bi bi-cash-coin image-nfl-roster" />
-                                    </button>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        className="btn"
-                                        title="Make An Offer"
-                                        disabled
-                                    >
-                                        <i className="bi bi-cash-coin image-nfl-roster" />
-                                    </button>
-                                )}
-                            </>
-                        ) : (
-                            <>
-                                {canMakeOffer ? (
-                                    <button
-                                        type="button"
-                                        className="btn"
-                                        title="Pick Up Waiver"
-                                        data-bs-toggle="modal"
-                                        data-bs-target={offerTarget}
-                                    >
-                                        <i className="bi bi-cash-coin image-nfl-roster" />
-                                    </button>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        className="btn"
-                                        title="Make An Offer"
-                                        disabled
-                                    >
-                                        <i className="bi bi-cash-coin image-nfl-roster" />
-                                    </button>
-                                )}
-                            </>
-                        )}
-
-                        {hasOffer && canModify ? (
-                            <button
-                                type="button"
-                                className="btn"
-                                title="Cancel Existing Offer"
-                                data-bs-toggle="modal"
-                                data-bs-target={cancelTarget}
-                            >
-                                <i class="bi bi-x-circle image-nfl-roster" />
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                className="btn"
-                                title="Cancel Existing Offer"
-                                disabled
-                            >
-                                <i class="bi bi-x-circle image-nfl-roster" />
-                            </button>
-                        )}
+                        {makeOfferButton}
+                        {cancelOfferButton}
                     </div>
                 </td>
             </tr>

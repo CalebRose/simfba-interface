@@ -27,7 +27,18 @@ const CFBTeamMobilePlayerRow = (props) => {
 
         const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
 
-        return competingAbbrs.join(', ');
+        return competingAbbrs.map((x) => {
+            const logo = getLogo(x);
+            return (
+                <>
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={logo}
+                        alt="competing-team"
+                    />
+                </>
+            );
+        });
     };
 
     const leadingTeams = leadingTeamsMapper(Recruit);
@@ -121,9 +132,9 @@ const CFBTeamMobilePlayerRow = (props) => {
                     </li>
                     <li className="list-group-item">
                         {!Recruit.IsSigned ? (
-                            <h6>
+                            <>
                                 {leadingTeams} | {Recruit.RecruitingStatus}
-                            </h6>
+                            </>
                         ) : (
                             <img
                                 className="image-recruit-logo"

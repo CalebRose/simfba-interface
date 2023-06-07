@@ -10,10 +10,13 @@ import FBATeamService from '../../../../_Services/simFBA/FBATeamService';
 import { Spinner } from '../../../_Common/Spinner';
 import CFBMatchCard from '../cfb/CFBMatchCard';
 import NFLStandingsCard from '../../../_Common/NFLStandingsCard';
+import FBALandingPageService from '../../../../_Services/simFBA/FBALandingPageService';
+import { NewsLogSmall } from '../../../_Common/NewsLog';
 
 const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
     let _teamService = new FBATeamService();
     let _scheduleService = new FBAScheduleService();
+    let _landingPageService = new FBALandingPageService();
     const dispatch = useDispatch();
     const [team, setTeam] = React.useState('');
     const [logo, setLogo] = React.useState('');
@@ -22,6 +25,7 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
     const [games, setGames] = React.useState(null);
     const [viewableMatches, setViewableMatches] = React.useState(null);
     const [standings, setStandings] = React.useState([]);
+    const [newsFeed, setNewsFeed] = React.useState([]);
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:845px)` });
 
@@ -46,6 +50,7 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
         if (cfb_Timestamp && nflTeam) {
             GetDivisionStandings();
             GetGames();
+            getPersonalizedNewsFeed();
         }
     }, [currentUser, nflTeam, cfb_Timestamp]);
 
@@ -106,6 +111,15 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
         dispatch(setNFLTeam(response));
     };
 
+    const getPersonalizedNewsFeed = async () => {
+        let res = await _landingPageService.GetPersonalizedNewsFeed(
+            'NFL',
+            currentUser.NFLTeamID
+        );
+
+        setNewsFeed(() => res);
+    };
+
     const GetDivisionStandings = async () => {
         const res = await _teamService.GetNFLTeamStandingsByDivision(
             nflTeam.DivisionID,
@@ -127,10 +141,17 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
     return (
         <div>
             <div className="row mt-2">
-                <div className="col-md-auto justify-content-start">
-                    <h2>{team}</h2>
+                <div className="col-auto justify-content-start">
+                    <h2>
+                        <img
+                            className="landing-image"
+                            src={logo}
+                            alt="Go Cougs"
+                        />{' '}
+                        {team}
+                    </h2>
                 </div>
-                <div className="col-4">
+                <div className="col-auto">
                     <h2 className="text-start">
                         {cfb_Timestamp ? cfb_Timestamp.Season : ''}, Week{' '}
                         {cfb_Timestamp !== null &&
@@ -139,8 +160,8 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                             : ''}
                     </h2>
                 </div>
-                <div className="col-md-auto justify-content-start">
-                    {teamData ? (
+                <div className="col-auto justify-content-start">
+                    {teamData && (
                         <h2 className="">
                             {`${teamData.Conference} Conference ${
                                 teamData.Division.length > 0
@@ -148,19 +169,10 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                     : ''
                             }`}
                         </h2>
-                    ) : (
-                        <div className="row justify-content-center pt-2 mt-4 mb-2">
-                            <Spinner />
-                        </div>
                     )}
                 </div>
             </div>
             <div className="row mt-2">
-                <div className="col-md-2">
-                    <div className="image me-2">
-                        <img src={logo} alt="Go Cougs" />
-                    </div>
-                </div>
                 <div className="col-4">
                     <div className="row mt-2 mb-2">
                         <div className="btn-group btn-group-sm d-flex">
@@ -221,7 +233,8 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                     <CFBMatchCard
                                         game={x}
                                         team={nflTeam}
-                                        currentWeek={cfb_Timestamp.NFLWeek}
+                                        timestamp={cfb_Timestamp}
+                                        isNFL={true}
                                     />
                                 </div>
                             );
@@ -236,24 +249,36 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                         </div>
                     )}
                 </div>
-                <div className="col-md-6">
-                    {standings && standings.length > 0 ? (
-                        <>
-                            {isMobile ? (
-                                <div className="mobile-card-viewer">
+                <div className="col-md-6 ms-1">
+                    <div className="row mb-2">
+                        {standings && standings.length > 0 ? (
+                            <>
+                                {isMobile ? (
+                                    <div className="mobile-card-viewer">
+                                        <NFLStandingsCard
+                                            standings={standings}
+                                        />
+                                    </div>
+                                ) : (
                                     <NFLStandingsCard standings={standings} />
-                                </div>
-                            ) : (
-                                <>
-                                    <NFLStandingsCard standings={standings} />
-                                </>
-                            )}
-                        </>
-                    ) : (
-                        <div className="row justify-content-center pt-2 mt-4 mb-2">
-                            <Spinner />
-                        </div>
-                    )}
+                                )}
+                            </>
+                        ) : (
+                            <div className="row justify-content-center pt-2 mt-4 mb-2">
+                                <Spinner />
+                            </div>
+                        )}
+                    </div>
+                    <div className="row news-feed">
+                        {newsFeed.length > 0 &&
+                            newsFeed.map((x) => (
+                                <NewsLogSmall
+                                    key={x.ID}
+                                    news={x}
+                                    season={cfb_Timestamp.Season}
+                                />
+                            ))}
+                    </div>
                 </div>
             </div>
         </div>

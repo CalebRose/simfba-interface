@@ -1,5 +1,6 @@
 import React from 'react';
 import { GetStatsYear } from '../../../_Utility/RosterHelper';
+import { getLogo } from '../../../Constants/getLogo';
 const _ = require('lodash');
 
 export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
@@ -7,6 +8,8 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
     const s = viewType === 'SEASON' ? player.SeasonStats : player.Stats;
     const games = player.SeasonStats ? player.SeasonStats.GamesPlayed : 0;
     const year = GetStatsYear(player, viewType);
+    const teamLogo = getLogo(player.TeamAbbr);
+    const opposingLogo = getLogo(s.OpposingTeam);
     const PassingRow = () => {
         const percentLabel =
             viewType === 'SEASON'
@@ -35,7 +38,13 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 {viewType === 'SEASON' && <th className="">{games}</th>}
                 <th className="">{name}</th>
                 <th className="">{year}</th>
-                <td label="team">{player.TeamAbbr}</td>
+                <td label="team">
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={teamLogo}
+                        alt="competing-team"
+                    />
+                </td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
                 <td label="PassingYards">{s.PassingYards}</td>
@@ -48,7 +57,15 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 <td label="Sacks">{s.Sacks}</td>
                 <td label="QBR">{qbr}</td>
                 <td label="LongestPass">{s.LongestPass}</td>
-                {viewType === 'WEEK' && <td className="">{s.OpposingTeam}</td>}
+                {viewType === 'WEEK' && (
+                    <td className="">
+                        <img
+                            className="image-nfl-fa mx-1"
+                            src={opposingLogo}
+                            alt="competing-team"
+                        />
+                    </td>
+                )}
             </tr>
         );
     };
@@ -62,7 +79,13 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 {viewType === 'SEASON' && <th className="">{games}</th>}
                 <th className="">{name}</th>
                 <th className="">{year}</th>
-                <td label="team">{player.TeamAbbr}</td>
+                <td label="team">
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={teamLogo}
+                        alt="competing-team"
+                    />
+                </td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
                 <td label="RushingYards">{s.RushingYards}</td>
@@ -71,7 +94,15 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 <td label="RushingTDs">{s.RushingTDs}</td>
                 <td label="Fumbles">{s.Fumbles}</td>
                 <td label="LongestRush">{s.LongestRush}</td>
-                {viewType === 'WEEK' && <td className="">{s.OpposingTeam}</td>}
+                {viewType === 'WEEK' && (
+                    <td className="">
+                        <img
+                            className="image-nfl-fa mx-1"
+                            src={opposingLogo}
+                            alt="competing-team"
+                        />
+                    </td>
+                )}
             </tr>
         );
     };
@@ -85,7 +116,13 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 {viewType === 'SEASON' && <th className="">{games}</th>}
                 <th className="">{name}</th>
                 <th className="">{year}</th>
-                <td label="team">{player.TeamAbbr}</td>
+                <td label="team">
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={teamLogo}
+                        alt="competing-team"
+                    />
+                </td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
                 <td label="Catches">{s.Catches}</td>
@@ -95,7 +132,15 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 <td label="ReceivingTDs">{s.ReceivingTDs}</td>
                 <td label="Fumbles">{s.Fumbles}</td>
                 <td label="LongestReception">{s.LongestReception}</td>
-                {viewType === 'WEEK' && <td className="">{s.OpposingTeam}</td>}
+                {viewType === 'WEEK' && (
+                    <td className="">
+                        <img
+                            className="image-nfl-fa mx-1"
+                            src={opposingLogo}
+                            alt="competing-team"
+                        />
+                    </td>
+                )}
             </tr>
         );
     };
@@ -110,7 +155,13 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 {viewType === 'SEASON' && <th className="">{games}</th>}
                 <th className="">{name}</th>
                 <th className="">{year}</th>
-                <td label="team">{player.TeamAbbr}</td>
+                <td label="team">
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={teamLogo}
+                        alt="competing-team"
+                    />
+                </td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
                 <td label="Tackles">{tck}</td>
@@ -122,7 +173,15 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 <td label="Interceptions">{s.InterceptionsCaught}</td>
                 <td label="Safeties">{s.Safeties}</td>
                 <td label="DefensiveTDs">{s.DefensiveTDs}</td>
-                {viewType === 'WEEK' && <td className="">{s.OpposingTeam}</td>}
+                {viewType === 'WEEK' && (
+                    <td className="">
+                        <img
+                            className="image-nfl-fa mx-1"
+                            src={opposingLogo}
+                            alt="competing-team"
+                        />
+                    </td>
+                )}
             </tr>
         );
     };
@@ -133,7 +192,13 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 {viewType === 'SEASON' && <th className="">{games}</th>}
                 <th className="">{name}</th>
                 <th className="">{year}</th>
-                <td label="team">{player.TeamAbbr}</td>
+                <td label="team">
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={teamLogo}
+                        alt="competing-team"
+                    />
+                </td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
                 <td label="FGMade">{s.FGMade}</td>
@@ -143,7 +208,15 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 <td label="ExtraPointsAttempted">{s.ExtraPointsAttempted}</td>
                 <td label="Punts">{s.Punts}</td>
                 <td label="PuntsInside20">{s.PuntsInside20}</td>
-                {viewType === 'WEEK' && <td className="">{s.OpposingTeam}</td>}
+                {viewType === 'WEEK' && (
+                    <td className="">
+                        <img
+                            className="image-nfl-fa mx-1"
+                            src={opposingLogo}
+                            alt="competing-team"
+                        />
+                    </td>
+                )}
             </tr>
         );
     };
@@ -154,12 +227,26 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 {viewType === 'SEASON' && <th className="">{games}</th>}
                 <th className="">{name}</th>
                 <th className="">{year}</th>
-                <td label="team">{player.TeamAbbr}</td>
+                <td label="team">
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={teamLogo}
+                        alt="competing-team"
+                    />
+                </td>
                 <td label="Position">{player.Position}</td>
                 <td label="Archetype">{player.Archetype}</td>
                 <td label="Pancakes">{s.Pancakes}</td>
                 <td label="SacksAllowed">{s.SacksAllowed}</td>
-                {viewType === 'WEEK' && <td className="">{s.OpposingTeam}</td>}
+                {viewType === 'WEEK' && (
+                    <td className="">
+                        <img
+                            className="image-nfl-fa mx-1"
+                            src={opposingLogo}
+                            alt="competing-team"
+                        />
+                    </td>
+                )}
             </tr>
         );
     };

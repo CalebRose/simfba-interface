@@ -8,7 +8,7 @@ import {
 import FBARecruitingService from '../../_Services/simFBA/FBARecruitingService';
 import { CalculateAdjustedPoints } from '../../_Utility/CFBRecruitingHelper';
 import { RoundToTwoDecimals } from '../../_Utility/utilHelper';
-import ServiceMessageBanner from '../_Common/ServiceMessageBanner';
+import { ServiceMessageBanner } from '../_Common/ServiceMessageBanner';
 import CFBTeamBoardSidebar from './CFBTeamRecruitingComponents/CFBTeamBoardSidebar';
 import CFBTeamMobilePlayerRow from './CFBTeamRecruitingComponents/CFBTeamRecruitingMobilePlayerRow';
 import CFBTeamDashboardPlayerRow from './CFBTeamRecruitingComponents/CFBTeamRecruitingPlayerRow';
@@ -221,6 +221,15 @@ const CFBTeamRecruitingBoard = ({
         }, 5000);
     };
 
+    const toggleAIBehavior = async () => {
+        await _recruitingService.ToggleAIBehavior(recruitingProfile.ID);
+
+        const isAI = recruitingProfile.IsAI;
+
+        const profile = { ...recruitingProfile, IsAI: !isAI };
+        setRecruitingProfile(() => profile);
+    };
+
     return (
         <div className="container-fluid mt-3">
             <ConfirmSaveRecruitingBoardModal save={SavePointAllocations} />
@@ -234,6 +243,7 @@ const CFBTeamRecruitingBoard = ({
                             cfbTeam={cfbTeam}
                             recruitingProfile={recruitingProfile}
                             theme={viewMode}
+                            toggleAIBehavior={toggleAIBehavior}
                         />
                     ) : (
                         ''

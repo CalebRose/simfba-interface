@@ -38,15 +38,37 @@ export const PracticeSquadModal = ({
                     </div>
                     <div className="modal-body">
                         <div className="row g-2 gy-2 mb-2">
-                            Placing {name} on the Practice Squad will make them
-                            unavailable on your team's depth chart. To make them
-                            available, you will need to bring the player from
-                            the practice squad back onto the roster.
+                            {!player.IsPracticeSquad ? (
+                                <>
+                                    Placing {name} on the Practice Squad will
+                                    make them unavailable on your team's depth
+                                    chart. To make them available, you will need
+                                    to bring the player from the practice squad
+                                    back onto the roster.
+                                </>
+                            ) : (
+                                <>
+                                    Oh, man. You must be really hurting if
+                                    you're bringing {player.Position} {name}{' '}
+                                    back on the roster. Eh, what am I saying,
+                                    I'm just a paragraph, I don't know the
+                                    current state of your roster.{' '}
+                                </>
+                            )}
                         </div>
 
                         <div className="row g-2 gy-2 mb-2">
-                            Do you really want to place {name} on the Practice
-                            Squad?
+                            {!player.IsPracticeSquad ? (
+                                <p>
+                                    Do you really want to place {name} on the
+                                    Practice Squad?
+                                </p>
+                            ) : (
+                                <p>
+                                    Do you <i>really</i> want to place {name}{' '}
+                                    back on your roster?
+                                </p>
+                            )}
                         </div>
                     </div>
                     <div className="modal-footer">

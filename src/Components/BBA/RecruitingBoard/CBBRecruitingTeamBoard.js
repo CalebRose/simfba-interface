@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 import routes from '../../../Constants/routes';
 import BBARecruitingService from '../../../_Services/simNBA/BBARecruitingService';
-import ServiceMessageBanner from '../../_Common/ServiceMessageBanner';
+import { ServiceMessageBanner } from '../../_Common/ServiceMessageBanner';
 import { Spinner } from '../../_Common/Spinner';
 import CBBTeamDashboardMobileRow from './DashboardComponents/CBBTeamDashboardMobileRow';
 import CBBTeamDashboardPlayerRow from './DashboardComponents/CBBTeamDashboardPlayerRow';

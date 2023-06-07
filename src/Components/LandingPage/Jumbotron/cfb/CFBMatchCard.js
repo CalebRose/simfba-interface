@@ -1,8 +1,11 @@
 import React from 'react';
 import { getLogo } from '../../../../Constants/getLogo';
+import { RevealResults } from '../../../../_Utility/utilHelper';
 
-const CFBMatchCard = ({ game, team, currentWeek }) => {
-    const teamAbbr = team && team.TeamAbbr;
+const CFBMatchCard = ({ game, team, timestamp, isNFL }) => {
+    const currentWeek = !isNFL ? timestamp.CollegeWeek : timestamp.NFLWeek;
+    const teamAbbr =
+        !isNFL && team ? team.TeamAbbr : `${team.TeamName} ${team.Mascot}`;
     const opposingTeam =
         game.HomeTeam === teamAbbr ? game.AwayTeam : game.HomeTeam;
     const opposingCoach =
@@ -34,10 +37,12 @@ const CFBMatchCard = ({ game, team, currentWeek }) => {
         detailsLabel = `${ConferenceLabel} Conference Game`;
     }
 
+    const showGame = RevealResults(game, timestamp);
+
     let cardClass = '';
-    if (wonTheMatch && game.GameComplete && game.Week < currentWeek) {
+    if (wonTheMatch && (showGame || game.Week < currentWeek)) {
         cardClass = 'card mb-3 text-white bg-success';
-    } else if (lostTheMatch && game.GameComplete && game.Week < currentWeek) {
+    } else if (lostTheMatch && (showGame || game.Week < currentWeek)) {
         cardClass = 'card mb-3 text-white bg-danger';
     } else {
         cardClass = 'card mb-3';
@@ -60,7 +65,7 @@ const CFBMatchCard = ({ game, team, currentWeek }) => {
                 <div className="col-md-8">
                     <div className="card-body">
                         <h6 className="card-title">{cardTitle}</h6>
-                        {game.GameComplete && game.Week < currentWeek && (
+                        {(showGame || game.Week < currentWeek) && (
                             <small className="card-text">
                                 {game.HomeTeamScore} - {game.AwayTeamScore}
                             </small>

@@ -194,6 +194,14 @@ export const CheckForOffer = (player, teamID) => {
             return true;
         }
     }
+    if (player.WaiverOffers !== null && player.WaiverOffers.length > 0) {
+        const offerIdx = player.WaiverOffers.findIndex(
+            (x) => x.TeamID === teamID
+        );
+        if (offerIdx > -1) {
+            return true;
+        }
+    }
     return false;
 };
 

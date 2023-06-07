@@ -5,8 +5,12 @@ import { Link } from 'react-router-dom';
 import routes from '../../../Constants/routes';
 import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 
-const CFBTeamBoardSidebar = (props) => {
-    const { cfbTeam, recruitingProfile, theme } = props;
+const CFBTeamBoardSidebar = ({
+    cfbTeam,
+    recruitingProfile,
+    theme,
+    toggleAIBehavior
+}) => {
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     const mobileClass = GetMobileCardClass(theme);
@@ -15,6 +19,8 @@ const CFBTeamBoardSidebar = (props) => {
             setViewWidth(window.innerWidth);
         }
     }, [viewWidth]);
+
+    const isAI = recruitingProfile && recruitingProfile.IsAI;
 
     const RES =
         recruitingProfile !== undefined && recruitingProfile !== null
@@ -45,6 +51,8 @@ const CFBTeamBoardSidebar = (props) => {
 
     const applicableAffinities = hasApplicableAffinities(affinityList);
 
+    const handleClick = () => toggleAIBehavior();
+
     const DesktopRender = () => {
         return (
             <>
@@ -54,12 +62,22 @@ const CFBTeamBoardSidebar = (props) => {
                         <Link
                             to={routes.CFB_RECRUITING}
                             type="button"
-                            className="btn btn-primary btn-md me-2 shadow"
+                            className="btn btn-primary me-2 shadow"
                             style={colors ? colors : {}}
                         >
                             Recruiting Overview
                         </Link>
                     </div>
+                </div>
+                <div className="row mt-2 justify-content-center">
+                    <h5>Toggle AI</h5>
+                    <button
+                        className="btn btn-md btn-secondary"
+                        type="button"
+                        onClick={handleClick}
+                    >
+                        {isAI ? 'AI Activated' : 'AI Disabled'}
+                    </button>
                 </div>
                 <div className="row mt-3">
                     <div className="justify-content-center">
@@ -91,12 +109,6 @@ const CFBTeamBoardSidebar = (props) => {
                     <h5>Recruiting Efficiency Score</h5>
                     {recruitingProfile ? `${RES}%` : 'N/A'}
                 </div>
-                {/* <div className="row mt-3 justify-content-center">
-            <h5>Recruiting Class Rank</h5>
-            {recruitingProfile
-                ? recruitingProfile.RecruitingClassRank
-                : 'N/A'}
-        </div> */}
                 <div className="row mt-3 justify-content-center">
                     <h5>Recruiting Class Score</h5>
                     {recruitingProfile
@@ -119,20 +131,6 @@ const CFBTeamBoardSidebar = (props) => {
                     {recruitingProfile
                         ? recruitingProfile.ScholarshipsAvailable
                         : 'N/A'}
-                </div>
-                <div className="row mt-3 justify-content-center">
-                    <h5>Signed Players By Position (Soon)</h5>
-                    <div className="row">
-                        <div className="col-md-4">
-                            <strong>Off.</strong>
-                        </div>
-                        <div className="col-md-4">
-                            <strong>Def.</strong>
-                        </div>
-                        <div className="col-md-4">
-                            <strong>ST.</strong>
-                        </div>
-                    </div>
                 </div>
             </>
         );

@@ -34,7 +34,18 @@ const CFBDashboardPlayerRow = (props) => {
 
         const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
 
-        return competingAbbrs.join(', ');
+        return competingAbbrs.map((x) => {
+            const logo = getLogo(x);
+            return (
+                <>
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={logo}
+                        alt="competing-team"
+                    />
+                </>
+            );
+        });
     };
 
     const leadingTeams = leadingTeamsMapper(croot);
@@ -98,7 +109,7 @@ const CFBDashboardPlayerRow = (props) => {
                 </td>
                 <td className="align-middle">
                     {!croot.IsSigned ? (
-                        <h6>{leadingTeams}</h6>
+                        <>{leadingTeams}</>
                     ) : (
                         <img
                             className="image-recruit-logo"

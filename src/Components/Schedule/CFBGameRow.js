@@ -1,23 +1,19 @@
 import React from 'react';
 import { getLogo } from '../../Constants/getLogo';
-import { RoundToTwoDecimals, TitleCase } from '../../_Utility/utilHelper';
+import {
+    RevealResults,
+    RoundToTwoDecimals,
+    TitleCase
+} from '../../_Utility/utilHelper';
 import { Dropdown } from '../_Common/Dropdown';
 import {
     CFBTimeSlotList,
     NFLTimeSlotList
 } from '../../Constants/CommonConstants';
 
-const GameRow = (props) => {
-    const {
-        idx,
-        game,
-        currentWeek,
-        viewMode,
-        isAdmin,
-        change,
-        currentSeason,
-        isNFL
-    } = props;
+const GameRow = ({ idx, game, ts, viewMode, isAdmin, change, isNFL }) => {
+    const currentWeek = !isNFL ? ts.CollegeWeek : ts.NFLWeek;
+    const currentSeason = !isNFL ? ts.CollegeSeasonID : ts.NFLSeasonID;
     let TimeSlotList = CFBTimeSlotList;
     if (isNFL) {
         TimeSlotList = NFLTimeSlotList;
@@ -58,7 +54,7 @@ const GameRow = (props) => {
         detailsLabel += ' | Neutral Site';
     }
     let cardClass = `card mb-3 ${viewMode === 'dark' ? 'text-bg-dark' : ''}`;
-
+    const showGame = RevealResults(game, ts);
     const ChangeTimeslot = async (name, value) => {
         return await change(value, game);
     };
@@ -103,31 +99,31 @@ const GameRow = (props) => {
                             </div>
                         </div>
                         <div className="row mb-1">
-                            {game.GameComplete &&
-                                (GameWeek < currentWeek ||
-                                    game.SeasonID < currentSeason) && (
-                                    <p className="card-text">
-                                        <span
-                                            className={
-                                                homeTeam.TeamWin
-                                                    ? 'text-success'
-                                                    : 'text-danger'
-                                            }
-                                        >
-                                            {game.HomeTeamScore}
-                                        </span>{' '}
-                                        -{' '}
-                                        <span
-                                            className={
-                                                awayTeam.TeamWin
-                                                    ? 'text-success'
-                                                    : 'text-danger'
-                                            }
-                                        >
-                                            {game.AwayTeamScore}
-                                        </span>
-                                    </p>
-                                )}
+                            {(showGame ||
+                                GameWeek < currentWeek ||
+                                game.SeasonID < currentSeason) && (
+                                <p className="card-text">
+                                    <span
+                                        className={
+                                            homeTeam.TeamWin
+                                                ? 'text-success'
+                                                : 'text-danger'
+                                        }
+                                    >
+                                        {game.HomeTeamScore}
+                                    </span>{' '}
+                                    -{' '}
+                                    <span
+                                        className={
+                                            awayTeam.TeamWin
+                                                ? 'text-success'
+                                                : 'text-danger'
+                                        }
+                                    >
+                                        {game.AwayTeamScore}
+                                    </span>
+                                </p>
+                            )}
                         </div>
                         <div className="row">
                             <small className="card-text">
