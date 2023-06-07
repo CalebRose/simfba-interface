@@ -697,3 +697,14 @@ td {
 .select__single-value {
     color: var(--sfa-text-color) !important;
 }
+
+/*
+    Manage Sim
+*/
+.btn-sm-button {
+    width: 155px;
+}
+
+.btn-sm {
+    marginright: '600px';
+}
