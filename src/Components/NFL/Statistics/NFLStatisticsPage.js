@@ -27,7 +27,8 @@ import { PlayerStatRow } from '../../Statistics/CFBStatsComponents/PlayerStatRow
 import { TeamStatRow } from '../../Statistics/CFBStatsComponents/TeamStatRow';
 import {
     ConductSort,
-    GetDefaultStatsOrder
+    GetDefaultStatsOrder,
+    uniq_fast
 } from '../../../_Utility/utilHelper';
 
 const NFLStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
