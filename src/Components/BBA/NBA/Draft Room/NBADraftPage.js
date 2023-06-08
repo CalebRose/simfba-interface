@@ -122,7 +122,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     return (
         <div className="container-fluid mt-3">
             <div className="d-flex flex-row draft-room-header">
-                <div className=" d-flex justify-content-start flex-grow-1">
+                <div className="d-flex justify-content-start flex-grow-1">
                     <h2>NBA Draft Room</h2>
                 </div>
                 {isLoading ? (
@@ -185,6 +185,15 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                         </div>
                     </>
                 )}
+            </div>
+
+            <div className="d-flex flex-row">
+                <div className="draft-pick-container">Draft Picks Here</div>
+            </div>
+
+            <div className="d-flex flex-row">
+                <div className="px-2">Draftable Players</div>
+                <div className="px-2">Team Scouting Board</div>
             </div>
         </div>
     );
