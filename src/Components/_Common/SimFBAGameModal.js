@@ -6,8 +6,6 @@ export const SimFBAGameModal = ({ game, isNFL }) => {
     const modalId = `gameModal`;
     const [homePlayers, setHomePlayers] = useState([]);
     const [awayPlayers, setAwayPlayers] = useState([]);
-    const [homeStats, setHomeStats] = useState(null);
-    const [awayStats, setAwayStats] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
