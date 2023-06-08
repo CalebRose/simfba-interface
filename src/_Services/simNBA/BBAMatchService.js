@@ -11,6 +11,9 @@ export default class BBAMatchService {
     }
 
     async GetMatchResultData(id) {
-        return await GetCall(`${url}/match/result/${id}/`);
+        return await GetCall(`${url}/match/result/cbb/${id}/`);
+    }
+    async GetNBAMatchResultData(id) {
+        return await GetCall(`${url}/match/result/nba/${id}/`);
     }
 }

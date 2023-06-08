@@ -1,5 +1,5 @@
 import url from '../../Constants/url';
-import { GetActionCall } from './FetchHelper';
+import { GetActionCall, GetCall } from './FetchHelper';
 export default class AdminService {
     async GetCurrentTimestamp() {
         let json;
@@ -43,5 +43,17 @@ export default class AdminService {
 
     async SyncOffseasonFreeAgency() {
         return await GetActionCall(`${url}simfba/sync/freeagency/round`);
+    }
+
+    async SyncTimeslot(timeslot) {
+        return await GetActionCall(`${url}simfba/sync/timeslot/${timeslot}`);
+    }
+
+    async SyncWeek() {
+        return await GetActionCall(`${url}simfba/sync/week/`);
+    }
+
+    async RunTheGames() {
+        return await GetActionCall(`${url}admin/run/the/games/`);
     }
 }

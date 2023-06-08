@@ -28,4 +28,11 @@ export default class FBAScheduleService {
             body: JSON.stringify(dto)
         });
     }
+
+    async GetCFBGameResultData(id) {
+        return await GetCall(`${url}/games/result/cfb/${id}/`);
+    }
+    async GetNFLGameResultData(id) {
+        return await GetCall(`${url}/games/result/nfl/${id}/`);
+    }
 }
