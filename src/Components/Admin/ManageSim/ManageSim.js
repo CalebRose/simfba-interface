@@ -15,6 +15,20 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
     const [timestamp, setTimestamp] = React.useState(cfb_Timestamp);
     const [SyncComplete, setCompletion] = React.useState(false);
     const [ActionsRemaining, setRemainingActionsCount] = React.useState(3);
+    const [timeslots, setTimeSlots] = React.useState({
+        Thursday: false,
+        Friday: false,
+        SaturdayMorning: false,
+        SaturdayEvening: false,
+        SaturdayNight: false
+    });
+    const [NFLtimeslots, setNFLTimeslots] = React.useState({
+        NFLThursday: false,
+        NFLSundayNoon: false,
+        NFLSundayAfternoon: false,
+        NFLSundayEvening: false,
+        NFLMondayEvening: false
+    });
     let _recruitingService = new FBARecruitingService();
     let _adminService = new AdminService();
 
@@ -118,12 +132,22 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             MoveUpCollegeSeason: false,
             MoveUpNFLWeek: false,
             MoveUpNFLSeason: false,
-            ThursdayGames: false,
-            FridayGames: false,
-            SaturdayMorning: false,
-            SaturdayNoon: false,
-            SaturdayEvening: false,
-            SaturdayNight: false,
+            ThursdayGames: timeslots.Thursday,
+            FridayGames: timeslots.Friday,
+            SaturdayMorning: timeslots.SaturdayMorning,
+            SaturdayEvening: timeslots.SaturdayEvening,
+            SaturdayNight: timeslots.SaturdayNight,
+            NFLThursday: NFLtimeslots.NFLThursday,
+            NFLSundayNoon: NFLtimeslots.NFLSundayNoon,
+            NFLSundayAfternoon: NFLtimeslots.NFLSundayAfternoon,
+            NFLSundayEvening: NFLtimeslots.NFLSundayEvening,
+            NFLMondayEvening: NFLtimeslots.NFLMondayEvening,
+            // ThursdayGames: false,
+            // FridayGames: false,
+            // SaturdayMorning: false,
+            // SaturdayNoon: false,
+            // SaturdayEvening: false,
+            // SaturdayNight: false,
             RESSynced: false,
             RecruitingSynced: false,
             ToggleRecruitingLock: true,
@@ -138,6 +162,52 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             const newTs = { ...res };
             setTimestamp((x) => newTs);
             dispatch(setCFBTimestamp(newTs));
+        }
+    };
+
+    const handleTimeslotChange = async (timeslot) => {
+        const ts = { ...timestamp };
+        switch (timeslot) {
+            case 'Thursday':
+                ts.ThursdayGames = !ts.ThursdayGames;
+                break;
+            case 'Friday':
+                ts.FridayGames = !ts.FridayGames;
+                break;
+            case 'Saturday Morning':
+                ts.SaturdayMorning = !ts.SaturdayMorning;
+                break;
+            case 'Saturday Noon':
+                ts.SaturdayNoon = !ts.SaturdayNoon;
+                break;
+            case 'Saturday Evening':
+                ts.SaturdayEvening = !ts.SaturdayEvening;
+                break;
+            case 'Saturday Night':
+                ts.SaturdayNight = !ts.SaturdayNight;
+                break;
+            default:
+                break;
+        }
+    };
+
+    const handleNFLTimeslotChange = async (NFLtimeslots) => {
+        const ts = { ...timestamp };
+        switch (NFLtimeslots) {
+            case 'NFL Thursday':
+                ts.NFLThursday = !ts.NFLThursday;
+                break;
+            case 'NFL Sunday Noon':
+                ts.NFLSundayNoon = !ts.NFLSundayNoon;
+                break;
+            case 'NFL Sunday Afternoon':
+                ts.NFLSundayAfternoon = !ts.NFLSundayAfternoon;
+                break;
+            case 'NFL Monday Evening':
+                ts.NFLMondayEvening = !ts.NFLMondayEvening;
+                break;
+            default:
+                break;
         }
     };
 
@@ -195,10 +265,12 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
         }
     };
 
+    const runTheGames = () => {};
+
     const AdminUI = () => {
         return (
             <div className="container">
-                <div className="row mt-3">
+                <div className="row mt-2 justify-content-center">
                     <h2 className="">Manage Football Sim</h2>
                 </div>
                 <div className="row mt-4">
@@ -218,13 +290,14 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                 <ConfirmRecruitSyncModal save={SyncRecruiting} />
                 <ConfirmRESSyncModal save={SyncRES} />
                 <ConfirmWeekSyncModal save={SyncToNextWeek} />
+                <CreateCrootModal handleChange={SaveRecruit} />
                 <div className="row mt-2 mb-2 g-2">
-                    <div className="col-3 col-md-3 mb-2">
+                    <div className="col-3 col-md-3 mb-2 g-4">
                         <h5>Recruiting Efficiency</h5>
                         {!timestamp.RecruitingEfficiencySynced ? (
                             <button
                                 type="button"
-                                className="btn btn-primary btn-sm"
+                                className="btn btn-primary btn-sm-button rounded-pill"
                                 data-bs-toggle="modal"
                                 data-bs-target="#syncRESModal"
                             >
@@ -233,28 +306,30 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                         ) : (
                             <button
                                 type="button"
-                                className="btn btn-secondary btn-sm"
+                                className="btn btn-secondary btn-sm-button rounded-pill"
                             >
                                 Sync
                             </button>
                         )}
                     </div>
-                    <div className="col-3 mb-2">
+                    <div className="col-3 mb-2 g-3">
                         <h5>Lock Recruiting</h5>
                         <button
                             type="button"
-                            className="btn btn-primary btn-sm"
+                            className="btn btn-primary btn-sm-button rounded-pill"
                             onClick={LockRecruiting}
                         >
                             {timestamp.IsRecruitingLocked ? 'Lock' : 'Unlock'}
                         </button>
                     </div>
-                    <div className="col-3 mb-2">
+                    <div className="col-3 mb-2 g-3">
                         <h5>Sync Recruiting</h5>
                         {!timestamp.RecruitingSynced ? (
                             <button
                                 type="button"
-                                className={'btn btn-primary btn-sm'}
+                                className={
+                                    'btn btn-primary btn-sm-button rounded-pill'
+                                }
                                 data-bs-toggle="modal"
                                 data-bs-target="#syncRecruitModal"
                             >
@@ -263,13 +338,15 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                         ) : (
                             <button
                                 type="button"
-                                className={'btn btn-secondary btn-sm'}
+                                className={
+                                    'btn btn-secondary btn-sm-button rounded-pill'
+                                }
                             >
                                 Sync
                             </button>
                         )}
                     </div>
-                    <div className="col-3 mb-2">
+                    {/* <div className="col-3 mb-2">
                         <h5>Sync Free Agency</h5>
                         <button
                             type="button"
@@ -278,15 +355,15 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                         >
                             Sync
                         </button>
-                    </div>
-                    <div className="col-3 mb-2">
+                    </div> */}
+                    <div className="col-3 mb-2 g-3">
                         <h5>Create a Croot</h5>
                         <button
                             type="button"
                             className={
                                 !SyncComplete
-                                    ? 'btn btn-primary btn-sm'
-                                    : 'btn btn-secondary btn-sm'
+                                    ? 'btn btn-primary btn-sm-button rounded-pill'
+                                    : 'btn btn-secondary btn-sm-button rounded-pill'
                             }
                             data-bs-toggle="modal"
                             data-bs-target="#staticBackdrop"
@@ -294,193 +371,88 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                             Create
                         </button>
                     </div>
-                    <div className="col-3 mb-2">
-                        <h5>Sync Week</h5>
-                        {SyncComplete ? (
-                            <button
-                                type="button"
-                                className="btn btn-primary btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#syncWeekModal"
+                    <div className="col-3 mb-2 g-3">
+                        <h5>Run Games</h5>
+                        <button
+                            type="button"
+                            className={
+                                !SyncComplete
+                                    ? 'btn btn-primary btn-sm-button rounded-pill'
+                                    : 'btn btn-secondary btn-sm-button rounded-pill'
+                            }
+                            onClick={() => runTheGames()}
+                        >
+                            Run
+                        </button>
+                    </div>
+                    <div className="col-3 mb-2 pe-0">
+                        <div
+                            className="d-flex align-items-center justify-content-start"
+                            style={{ marginLeft: '-500px', marginTop: '-90px' }}
+                        >
+                            <div
+                                className="btn-group-vertical btn-group-lg"
+                                role="group"
+                                aria-label="TimeslotOptions"
                             >
-                                Sync
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                className="btn btn-secondary btn-sm"
-                            >
-                                Sync
-                            </button>
-                        )}
+                                <h5 className="me-3 ms-5"> Sync Week</h5>
+                                {SyncComplete ? (
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary btn-sm-button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#syncWeekModal"
+                                    >
+                                        Sync
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary btn-sm-button mt-2 rounded-pill"
+                                    >
+                                        Sync
+                                    </button>
+                                )}
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                >
+                                    Thursday
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                >
+                                    Friday
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                >
+                                    Saturday Morning
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                >
+                                    Saturday Noon
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                >
+                                    Saturday Evening
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                >
+                                    Saturday Night
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div className="row mt-3 mb-5">
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Sync Action</th>
-                                <th scope="col">Execute</th>
-                                <th scope="col">Action Complete?</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">
-                                    <h5>Recruiting Efficiency Sync</h5>
-                                </th>
-                                <td>
-                                    {!timestamp.RecruitingEfficiencySynced ? (
-                                        <button
-                                            type="button"
-                                            className="btn btn-primary btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#syncRESModal"
-                                        >
-                                            Recruiting Efficiency Sync
-                                        </button>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            className="btn btn-secondary btn-sm"
-                                        >
-                                            Recruiting Efficiency Sync
-                                        </button>
-                                    )}
-                                </td>
-                                <td>
-                                    <h5>
-                                        {timestamp.RecruitingEfficiencySynced
-                                            ? 'Synced'
-                                            : 'Incomplete'}
-                                    </h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <h5>Lock Recruiting</h5>
-                                </th>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary btn-sm"
-                                        onClick={LockRecruiting}
-                                    >
-                                        {timestamp.IsRecruitingLocked
-                                            ? 'Lock Recruiting'
-                                            : 'Unlock Recruiting'}
-                                    </button>
-                                </td>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className="btn btn-secondary btn-sm"
-                                        disabled
-                                    >
-                                        {timestamp.IsRecruitingLocked
-                                            ? 'Locked'
-                                            : 'Unlocked'}
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <h5>Recruiting Actions</h5>
-                                </th>
-                                <td>
-                                    {!timestamp.RecruitingSynced ? (
-                                        <button
-                                            type="button"
-                                            className={'btn btn-primary btn-sm'}
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#syncRecruitModal"
-                                        >
-                                            Sync
-                                        </button>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            className={
-                                                'btn btn-secondary btn-sm'
-                                            }
-                                        >
-                                            Sync
-                                        </button>
-                                    )}
-                                </td>
-                                <td>
-                                    <h5>
-                                        {timestamp.RecruitingSynced
-                                            ? 'Synced'
-                                            : 'Incomplete'}
-                                    </h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <h5>Free Agency</h5>
-                                </th>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary btn-sm"
-                                        onClick={SyncOffseasonFreeAgency}
-                                    >
-                                        Sync Free Agency
-                                    </button>
-                                </td>
-                                <td>
-                                    <h5>Run Every 3 Days</h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <h5>Sync to Next Week</h5>
-                                </th>
-                                <td>
-                                    {SyncComplete ? (
-                                        <button
-                                            type="button"
-                                            className="btn btn-primary btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#syncWeekModal"
-                                        >
-                                            Sync
-                                        </button>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            className="btn btn-secondary btn-sm"
-                                        >
-                                            Sync
-                                        </button>
-                                    )}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <h5>Create a Croot</h5>
-                                </th>
-                                <td>
-                                    <h5>Create a Croot</h5>
-                                    <button
-                                        type="button"
-                                        className={
-                                            !SyncComplete
-                                                ? 'btn btn-primary btn-sm'
-                                                : 'btn btn-secondary btn-sm'
-                                        }
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop"
-                                    >
-                                        Create
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <CreateCrootModal handleChange={SaveRecruit} />
             </div>
         );
     };
