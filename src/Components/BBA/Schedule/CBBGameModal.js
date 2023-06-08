@@ -8,7 +8,7 @@ import {
 } from '../../_Common/BBAGameModalComponents';
 
 const CBBGameModal = (props) => {
-    const { idx, game } = props;
+    const { game } = props;
     let _matchService = new BBAMatchService();
     const modalId = `gameModal`;
     const [homePlayers, setHomePlayers] = useState([]);

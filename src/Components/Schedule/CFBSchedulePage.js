@@ -30,6 +30,7 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
     const [satEveningCount, setSatEveningCount] = useState(0);
     const [satNightCount, setSatNightCount] = useState(0);
     const [selectedSeason, setSelectedSeason] = useState(null);
+    const [viewGame, setViewGame] = useState(null);
     const [viewType, setViewType] = useState('TEAM');
     const isAdmin = currentUser && currentUser.roleID === acronyms.ADMIN;
 
@@ -172,6 +173,10 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
         setAllGames(() => ag);
     };
 
+    const SetGame = (game) => {
+        setViewGame(() => game);
+    };
+
     // Return
     return (
         <div className="container-fluid">
@@ -290,6 +295,7 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
                                         change={ChangeTimeSlot}
                                         ts={cfb_Timestamp}
                                         isNFL={false}
+                                        SetGame={SetGame}
                                     />
                                 ))}
                         </div>

@@ -11,7 +11,17 @@ import {
     NFLTimeSlotList
 } from '../../Constants/CommonConstants';
 
-const GameRow = ({ idx, game, ts, viewMode, isAdmin, change, isNFL }) => {
+const GameRow = ({
+    idx,
+    game,
+    ts,
+    viewMode,
+    isAdmin,
+    change,
+    isNFL,
+    SetGame
+}) => {
+    const modalTarget = `#gameModal`;
     const currentWeek = !isNFL ? ts.CollegeWeek : ts.NFLWeek;
     const currentSeason = !isNFL ? ts.CollegeSeasonID : ts.NFLSeasonID;
     let TimeSlotList = CFBTimeSlotList;
@@ -59,6 +69,10 @@ const GameRow = ({ idx, game, ts, viewMode, isAdmin, change, isNFL }) => {
         return await change(value, game);
     };
 
+    const SetGameState = () => {
+        return SetGame(game);
+    };
+
     return (
         <div className={cardClass} style={{ maxWidth: '75vw' }}>
             <div className="row g-0">
@@ -102,27 +116,38 @@ const GameRow = ({ idx, game, ts, viewMode, isAdmin, change, isNFL }) => {
                             {(showGame ||
                                 GameWeek < currentWeek ||
                                 game.SeasonID < currentSeason) && (
-                                <p className="card-text">
-                                    <span
-                                        className={
-                                            homeTeam.TeamWin
-                                                ? 'text-success'
-                                                : 'text-danger'
-                                        }
+                                <>
+                                    <p className="card-text">
+                                        <span
+                                            className={
+                                                homeTeam.TeamWin
+                                                    ? 'text-success'
+                                                    : 'text-danger'
+                                            }
+                                        >
+                                            {game.HomeTeamScore}
+                                        </span>{' '}
+                                        -{' '}
+                                        <span
+                                            className={
+                                                awayTeam.TeamWin
+                                                    ? 'text-success'
+                                                    : 'text-danger'
+                                            }
+                                        >
+                                            {game.AwayTeamScore}
+                                        </span>
+                                    </p>
+                                    <button
+                                        type="button"
+                                        className="btn btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target={modalTarget}
+                                        onClick={SetGameState}
                                     >
-                                        {game.HomeTeamScore}
-                                    </span>{' '}
-                                    -{' '}
-                                    <span
-                                        className={
-                                            awayTeam.TeamWin
-                                                ? 'text-success'
-                                                : 'text-danger'
-                                        }
-                                    >
-                                        {game.AwayTeamScore}
-                                    </span>
-                                </p>
+                                        <i className="bi bi-info-circle" />
+                                    </button>
+                                </>
                             )}
                         </div>
                         <div className="row">
