@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const CBBOverallHeader = ({ sortFunc, cv }) => {
+export const CBBOverallHeader = ({ sortFunc, cv, viewType }) => {
     const returnSort = (val) => {
         return sortFunc(val, cv);
     };
@@ -8,7 +8,7 @@ export const CBBOverallHeader = ({ sortFunc, cv }) => {
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Team</th>
-            <th scope="col">GP</th>
+            {viewType === 'SEASON' && <th scope="col">GP</th>}
             <th scope="col" onClick={() => returnSort('Minutes', cv)}>
                 Minutes
             </th>

@@ -56,7 +56,7 @@ const CFBTeamDashboardPlayerRow = (props) => {
         return props.changePoints(idx, event);
     };
 
-    const toggleScholarship = () => {
+    const revokeScholarship = () => {
         return props.toggleScholarship(idx, recruitProfile);
     };
 
@@ -70,7 +70,7 @@ const CFBTeamDashboardPlayerRow = (props) => {
             <CrootModal crt={Recruit} idx={idx} viewMode={viewMode} />
             <ConfirmRevokeModal
                 idx={idx}
-                toggleScholarship={toggleScholarship}
+                revoke={revokeScholarship}
                 viewMode={viewMode}
             />
             <ConfirmRemovePlayerFromBoardModal
@@ -108,7 +108,7 @@ const CFBTeamDashboardPlayerRow = (props) => {
                         <h2>
                             <i
                                 className="bi bi-plus-circle-fill"
-                                onClick={toggleScholarship}
+                                onClick={revokeScholarship}
                             />
                         </h2>
                     )}

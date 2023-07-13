@@ -13,6 +13,7 @@ import {
 } from './FreeAgencyHelper';
 import { GetNFLOverall } from '../../../_Utility/RosterHelper';
 import {
+    CapRemainingRow,
     NFLBonusRow,
     NFLSalaryRow,
     NFLTotalRow,

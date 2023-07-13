@@ -49,6 +49,14 @@ export default class BBAPlayerService {
         return await PostCall(`${BBAURL}nba/freeagency/cancel/offer`, dto);
     }
 
+    async CreateWaiverOffer(dto) {
+        return await PostCall(`${BBAURL}nba/freeagency/create/waiver`, dto);
+    }
+
+    async CancelWaiverOffer(dto) {
+        return await PostCall(`${BBAURL}nba/freeagency/cancel/waiver`, dto);
+    }
+
     async PlaceNBAPlayerInGLeague(playerID) {
         return await GetCall(`${BBAURL}nba/players/place/gleague/${playerID}`);
     }

@@ -21,20 +21,41 @@ import { CBBOverallHeader } from './CBBOverallHeader';
 import { CBBPerGameHeader } from './CBBPerGameHeader';
 import CBBPlayerStatRow from './CBBPlayerStatRow';
 import CBBTeamStatRow from './CBBTeamStatRow';
+import { StatsPageButton } from '../../_Common/Buttons';
+import { SeasonsList } from '../../../Constants/CommonConstants';
 
 const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
     // Services
     let _statsService = new BBAStatsService();
 
     // Hooks
+    const [leagueView, setLeagueView] = useState('cbb');
+    const [viewType, setViewType] = useState('SEASON');
     const [currentView, setCurrentView] = useState('PLAYER');
+    const [weekOptions, setWeekOptions] = useState(() => {
+        const weeks = [...Array(21).keys()];
+
+        const weekOptionsForm = [
+            ...weeks.map((x) => {
+                return { label: x, value: x };
+            })
+        ];
+        return weekOptionsForm;
+    });
+    const [seasons, setSeasons] = useState(SeasonsList);
+    const [selectedSeason, setSelectedSeason] = useState(null);
+    const [selectedWeek, setSelectedWeek] = useState(null);
     const [selectedConferences, setSelectedConferences] = useState('');
+    const [selectedDivisions, setSelectedDivisions] = useState('');
+    const [selectedLeague, setSelectedLeague] = useState('');
     const [selectedTeams, setSelectedTeams] = useState('');
     const [statType, setStatType] = useState('PerGame'); // Offense, Defense, Differential
-    const [collegeTeamOptions, setCollegeTeamOptions] = useState([]);
+    const [teamOptions, setTeamOptions] = useState([]);
+    const [leagueOptions, setLeagueOptions] = useState([]);
     const [conferenceOptions, setConferenceOptions] = useState([]);
-    const [collegePlayers, setCollegePlayers] = useState([]);
-    const [collegeTeams, setCollegeTeams] = useState([]);
+    const [divisionOptions, setDivisionOptions] = useState([]);
+    const [players, setPlayers] = useState([]);
+    const [teams, setTeams] = useState([]);
     const [filteredView, setFilteredView] = useState([]);
     const [viewableStats, setViewableStats] = useState([]);
     const [count, setCount] = useState(100);
@@ -53,19 +74,24 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
     useEffect(() => {
         if (currentUser) {
             // Get Stats page info
-            GetStatsPageInfo();
+            // GetStatsPageInfo();
         }
     }, [currentUser]);
 
     useEffect(() => {
-        if (collegePlayers.length > 0 && collegeTeams.length > 0) {
+        console.log({ teams });
+        if (players.length > 0 || teams.length > 0) {
             const dataSet =
-                currentView === 'PLAYER'
-                    ? [...collegePlayers]
-                    : [...collegeTeams];
+                currentView === 'PLAYER' ? [...players] : [...teams];
             const fc = FilterStatsData(dataSet);
             if (fc.length > 0) {
-                const filteredDataSort = ConductSort([...fc], sort, isAsc);
+                const filteredDataSort = ConductSort(
+                    [...fc],
+                    sort,
+                    isAsc,
+                    viewType
+                );
+                console.log({ fc, filteredDataSort, viewType });
                 setFilteredView(() => [...filteredDataSort]);
                 if (currentView === 'PLAYER') {
                     setViewableStats(() => [
@@ -77,8 +103,8 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
             }
         }
     }, [
-        collegePlayers,
-        collegeTeams,
+        players,
+        teams,
         currentView,
         selectedConferences,
         selectedTeams,
@@ -87,7 +113,7 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
     ]);
 
     // Functions
-    const FilterStatsData = (dataSet) => {
+    const FilterStatsData = (dataSet, viewType) => {
         // Player VS Team View
         if (dataSet.length > 0) {
             if (currentView === 'TEAM') {
@@ -102,7 +128,7 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                 let teamList = [];
 
                 if (selectedConferences.length > 0) {
-                    const teamSet = [...collegeTeams].filter((x) =>
+                    const teamSet = [...teams].filter((x) =>
                         selectedConferences.includes(x.ConferenceID)
                     );
                     teamList = teamList.concat([...teamSet]);
@@ -123,9 +149,12 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                 switch (statType) {
                     case 'Overall':
                     case 'PerGame':
-                        dataSet = dataSet.filter(
-                            (x) => x.SeasonStats.Minutes > 0
-                        );
+                        dataSet =
+                            viewType === 'SEASON'
+                                ? dataSet.filter(
+                                      (x) => x.SeasonStats.Minutes > 0
+                                  )
+                                : dataSet.filter((x) => x.Stats.Minutes > 0);
                         break;
 
                     default:
@@ -138,13 +167,96 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
     };
 
     const GetStatsPageInfo = async () => {
-        const res = await _statsService.GetStatsPageData();
-        const teamOptions = MapCBBTeamOptions(res.CollegeTeams);
-        const conferenceOptions = MapConferenceOptions(res.CollegeConferences);
-        setCollegeTeamOptions(() => teamOptions);
+        const seasonID = Number(selectedSeason.value);
+        let week = selectedWeek ? Number(selectedWeek.value) : 1;
+        if (viewType === 'WEEK') {
+            let startingWeekID = 0;
+            if (seasonID === 1 || seasonID === 2) {
+                // Nothing
+            } else if (seasonID === 3) {
+                startingWeekID = 20;
+            } else {
+                // startingWeekID = 40;
+            }
+            week += startingWeekID;
+        }
+        const res = await _statsService.GetStatsPageData(
+            leagueView,
+            seasonID,
+            week,
+            viewType
+        );
+        const isCBB = leagueView === 'cbb';
+        const tList = isCBB ? [...res.CollegeTeams] : [...res.NBATeams];
+        const teamOptions = MapCBBTeamOptions(tList);
+        const conferenceOptions = isCBB
+            ? MapConferenceOptions(res.CollegeConferences)
+            : MapConferenceOptions(res.NBAConferences);
+        let divisionOptions = [];
+        let leagueOpts = [];
+        if (!isCBB) {
+            const uniqueDivisions = tList.filter(
+                (value, idx, self) =>
+                    idx ===
+                    self.findIndex(
+                        (t) =>
+                            t.DivisionID === value.DivisionID &&
+                            t.Division === value.Division
+                    )
+            );
+            divisionOptions = [
+                ...uniqueDivisions.map((item) => ({
+                    label: item.Division,
+                    value: item.DivisionID
+                }))
+            ];
+            leagueOpts = [
+                { label: 'SimNBA', value: 1 },
+                { label: 'International Superleague', value: 2 }
+            ];
+            setLeagueOptions(() => leagueOpts);
+            setSelectedLeague(() => ({ label: 'SimNBA', value: 1 }));
+        }
+        const plList = isCBB ? [...res.CollegePlayers] : [...res.NBAPlayers];
+        setTeamOptions(() => teamOptions);
         setConferenceOptions(() => conferenceOptions);
-        setCollegePlayers(() => [...res.CollegePlayers]);
-        setCollegeTeams(() => [...res.CollegeTeams]);
+        setDivisionOptions(() => divisionOptions);
+        setPlayers(() => plList);
+        setTeams(() => tList);
+    };
+
+    const SelectLeagueType = (event) => {
+        setViewableStats(() => []);
+        setTeams(() => []);
+        setPlayers(() => []);
+        setTeamOptions(() => []);
+        setConferenceOptions(() => []);
+        setSelectedConferences(() => []);
+        setSelectedTeams(() => []);
+        setDivisionOptions(() => []);
+        setSelectedLeague(() => []);
+        event.preventDefault();
+        const choice = event.target.value;
+        const weeks =
+            choice === 'nba' ? [...Array(31).keys()] : [...Array(21).keys()];
+
+        const weekOptionsForm = [
+            ...weeks.map((x) => {
+                return { label: x, value: x };
+            })
+        ];
+        setWeekOptions(() => weekOptionsForm);
+        setLeagueView(() => choice);
+    };
+
+    const SelectViewType = (event) => {
+        setViewableStats(() => []);
+        event.preventDefault();
+        const choice = event.target.value;
+        if (choice === 'WEEK') {
+            setStatType(() => 'Overall');
+        }
+        setViewType(() => choice);
     };
 
     const SelectPlayerView = () => {
@@ -183,6 +295,21 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
         }
     };
 
+    const ChangeSeason = (options) => {
+        const opts = { label: options.label, value: options.value };
+        setSelectedSeason(() => opts);
+    };
+
+    const ChangeWeek = (options) => {
+        const opts = { label: options.label, value: options.value };
+        setSelectedWeek(() => opts);
+    };
+
+    const ChangeLeagueOptions = (options) => {
+        const opts = { label: options.label, value: options.value };
+        setSelectedLeague(() => opts);
+    };
+
     const ChangeTeamSelections = (options) => {
         const opts = [...options.map((x) => x.value)];
         setSelectedTeams(() => opts);
@@ -191,6 +318,11 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
     const ChangeConferenceSelections = (options) => {
         const opts = [...options.map((x) => x.value)];
         setSelectedConferences(() => opts);
+    };
+
+    const ChangeDivisionSelections = (options) => {
+        const opts = [...options.map((x) => x.value)];
+        setSelectedDivisions(() => opts);
     };
 
     const ResetPlayerViewOptions = () => {
@@ -234,11 +366,19 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
         if (currentView === 'PLAYER') {
             if (statType === 'Overall')
                 return (
-                    <CBBOverallHeader sortFunc={ChangeSort} cv={currentView} />
+                    <CBBOverallHeader
+                        sortFunc={ChangeSort}
+                        cv={currentView}
+                        viewType={viewType}
+                    />
                 );
             if (statType === 'PerGame')
                 return (
-                    <CBBPerGameHeader sortFunc={ChangeSort} cv={currentView} />
+                    <CBBPerGameHeader
+                        sortFunc={ChangeSort}
+                        cv={currentView}
+                        viewType={viewType}
+                    />
                 );
         } else if (currentView === 'TEAM') {
             if (statType === 'Differential')
@@ -246,15 +386,24 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                     <CBBDifferentialHeader
                         sortFunc={ChangeSort}
                         cv={currentView}
+                        viewType={viewType}
                     />
                 );
             if (statType === 'Offense')
                 return (
-                    <CBBOffenseHeader sortFunc={ChangeSort} cv={currentView} />
+                    <CBBOffenseHeader
+                        sortFunc={ChangeSort}
+                        cv={currentView}
+                        viewType={viewType}
+                    />
                 );
             if (statType === 'Defense')
                 return (
-                    <CBBDefenseHeader sortFunc={ChangeSort} cv={currentView} />
+                    <CBBDefenseHeader
+                        sortFunc={ChangeSort}
+                        cv={currentView}
+                        viewType={viewType}
+                    />
                 );
         }
         return '';
@@ -266,7 +415,57 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                 <h2>Statistics</h2>
             </div>
             <div className="row">
-                <div className="col-md-2">
+                <div className="col-2">
+                    <div className="row">
+                        <h3>League Options</h3>
+                    </div>
+                    <div className="row mt-2 justify-content-center">
+                        <div className="col-auto">
+                            <div
+                                className="btn-group btn-group-lg"
+                                role="group"
+                                aria-label="ViewOptions"
+                            >
+                                <StatsPageButton
+                                    statType={leagueView}
+                                    action={SelectLeagueType}
+                                    value="cbb"
+                                    label="College"
+                                />
+                                <StatsPageButton
+                                    statType={leagueView}
+                                    action={SelectLeagueType}
+                                    value="nba"
+                                    label="NBA"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <h3>Search Options</h3>
+                    </div>
+                    <div className="row mt-2 justify-content-center">
+                        <div className="col-auto">
+                            <div
+                                className="btn-group btn-group-lg"
+                                role="group"
+                                aria-label="ViewOptions"
+                            >
+                                <StatsPageButton
+                                    statType={viewType}
+                                    action={SelectViewType}
+                                    value="SEASON"
+                                    label="Season"
+                                />
+                                <StatsPageButton
+                                    statType={viewType}
+                                    action={SelectViewType}
+                                    value="WEEK"
+                                    label="Week"
+                                />
+                            </div>
+                        </div>
+                    </div>
                     <div className="row">
                         <h3>View Options</h3>
                     </div>
@@ -335,6 +534,7 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                                             }
                                             onClick={SelectStatType}
                                             value="PerGame"
+                                            disabled={viewType === 'WEEK'}
                                         >
                                             Per Game
                                         </button>
@@ -383,35 +583,70 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                         </div>
                     </div>
                 </div>
-                <div className="col-md-10">
+                <div className="col-10">
                     <div className="row mt-3 justify-content-between">
                         <div className="col-md-auto">
                             <h4 className="text-start align-middle">Filters</h4>
                         </div>
                         <div className="col-md-auto">
                             <h4 className="text-start align-middle me-2">
-                                {cbb_Timestamp
-                                    ? `Current Week ${cbb_Timestamp.CollegeWeek}`
-                                    : ''}
+                                {cbb_Timestamp &&
+                                    `Current Week ${cbb_Timestamp.CollegeWeek}`}
                             </h4>
                         </div>
                     </div>
                     <div className="row">
-                        {currentView === 'PLAYER' ? (
+                        <div className="col-auto">
+                            <h5 className="text-start align-middle">Seasons</h5>
+                            <Select
+                                options={seasons}
+                                isMulti={false}
+                                className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                classNamePrefix="select"
+                                onChange={ChangeSeason}
+                            />
+                        </div>
+                        {viewType === 'WEEK' && (
+                            <div className="col-auto">
+                                <h5 className="text-start align-middle">
+                                    Week
+                                </h5>
+                                <Select
+                                    options={weekOptions}
+                                    isMulti={false}
+                                    className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                    classNamePrefix="select"
+                                    onChange={ChangeWeek}
+                                />
+                            </div>
+                        )}
+                        {currentView === 'PLAYER' && (
                             <div className="col-md-auto">
                                 <h5 className="text-start align-middle">
                                     Teams
                                 </h5>
                                 <Select
-                                    options={collegeTeamOptions}
+                                    options={teamOptions}
                                     isMulti={true}
                                     className="basic-multi-select btn-dropdown-width-team z-index-6"
                                     classNamePrefix="select"
                                     onChange={ChangeTeamSelections}
                                 />
                             </div>
-                        ) : (
-                            ''
+                        )}
+                        {leagueView === 'nba' && (
+                            <div className="col-md-auto">
+                                <h5 className="text-start align-middle">
+                                    Leagues
+                                </h5>
+                                <Select
+                                    options={leagueOptions}
+                                    isMulti={false}
+                                    className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                    classNamePrefix="select"
+                                    onChange={ChangeLeagueOptions}
+                                />
+                            </div>
                         )}
                         <div className="col-md-auto">
                             <h5 className="text-start align-middle">
@@ -423,6 +658,33 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                                 className="basic-multi-select btn-dropdown-width-team z-index-6"
                                 classNamePrefix="select"
                                 onChange={ChangeConferenceSelections}
+                            />
+                        </div>
+                        {leagueView === 'nba' && (
+                            <div className="col-md-auto">
+                                <h5 className="text-start align-middle">
+                                    Divisions
+                                </h5>
+                                <Select
+                                    options={divisionOptions}
+                                    isMulti={true}
+                                    className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                    classNamePrefix="select"
+                                    onChange={ChangeDivisionSelections}
+                                />
+                            </div>
+                        )}
+                        <div className="col-auto">
+                            <h5 className="text-start align-middle">Search</h5>
+                            <StatsPageButton
+                                statType="search"
+                                value="search"
+                                label={
+                                    viewType === 'SEASON'
+                                        ? 'Search Season'
+                                        : 'Search Week'
+                                }
+                                action={GetStatsPageInfo}
                             />
                         </div>
                     </div>
@@ -479,6 +741,9 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                                                               }
                                                               idx={idx}
                                                               player={x}
+                                                              viewType={
+                                                                  viewType
+                                                              }
                                                           />
                                                       ) : (
                                                           <CBBTeamStatRow
@@ -487,6 +752,9 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                                                               }
                                                               idx={idx}
                                                               team={x}
+                                                              viewType={
+                                                                  viewType
+                                                              }
                                                           />
                                                       );
                                                   }

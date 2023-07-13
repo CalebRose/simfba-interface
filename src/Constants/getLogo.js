@@ -86,6 +86,8 @@ export const getLogo = (team) => {
             return logos.Central_Connecticut;
         case 'CMU':
             return logos.Central_Michigan;
+        case 'CHAM':
+            return logos.Chaminade;
         case 'CHSO':
             return logos.Charleston_Southern;
         case 'CHST':
@@ -268,6 +270,8 @@ export const getLogo = (team) => {
             return logos.Long_Beach;
         case 'LEH':
             return logos.LeHigh;
+        case 'LEM':
+            return logos.Lemoyne;
         case 'LIN':
             return logos.Lindenwood;
         case 'LIP':

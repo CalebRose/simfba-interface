@@ -46,3 +46,32 @@ export const LoadTradeOptions = (options, teamID, forModal) => {
     }
     return list;
 };
+
+export const LoadNBATradeOptions = (options, teamID, forModal) => {
+    const list = [];
+    for (let i = 0; i < options.length; i++) {
+        const item = options[i];
+        let obj = {};
+        if (item.OptionType === 'Player') {
+            obj = {
+                NFLTeamID: teamID,
+                OptionType: item.OptionType,
+                NFLPlayerID: item.ID,
+                NFLDraftPickID: 0,
+                CashTransfer: Number(item.CashTransfer) || 0
+            };
+            if (forModal) obj.Player = item;
+        } else {
+            obj = {
+                NFLTeamID: teamID,
+                OptionType: item.OptionType,
+                NFLPlayerID: 0,
+                NFLDraftPickID: item.ID,
+                CashTransfer: Number(item.CashTransfer) || 0
+            };
+            if (forModal) obj.Draftpick = item;
+        }
+        list.push(obj);
+    }
+    return list;
+};

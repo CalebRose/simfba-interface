@@ -32,9 +32,12 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     const [filteredPlayers, setFilteredPlayers] = useState('');
     const [viewOfferedPlayers, setViewOfferedPlayers] = useState(false);
     const [canModify, setCanModify] = useState(true);
-    const [allPlayers, setAllPlayers] = useState('');
-    const [allFreeAgents, setAllFreeAgents] = useState('');
-    const [allWaivedPlayers, setAllWaivedPlayers] = useState('');
+    const [allPlayers, setAllPlayers] = useState([]);
+    const [allFreeAgents, setAllFreeAgents] = useState([]);
+    const [allWaivedPlayers, setAllWaivedPlayers] = useState([]);
+    const [allGLeaguePlayers, setGLeaguePlayers] = useState([]);
+    const [allInternationalPlayers, setInternationalPlayers] = useState([]);
+    const [rosterCount, setRosterCount] = useState(0);
     const [freeAgencyView, setFreeAgencyView] = useState('FA');
     const [teamOffers, setTeamOffers] = useState([]);
     const [showTamperingButton, setShowButton] = useState(true);
@@ -84,10 +87,16 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     }, [cbb_Timestamp]);
 
     useEffect(() => {
-        const players =
-            freeAgencyView === 'FA'
-                ? [...allFreeAgents]
-                : [...allWaivedPlayers];
+        let players = [];
+        if (freeAgencyView === 'FA') {
+            players = [...allFreeAgents];
+        } else if (freeAgencyView === 'WW') {
+            players = [...allWaivedPlayers];
+        } else if (freeAgencyView === 'GL') {
+            players = [...allGLeaguePlayers];
+        } else {
+            players = [...allInternationalPlayers];
+        }
         const filter = FilterFreeAgencyPlayers(
             players,
             selectedPositions,
@@ -137,11 +146,20 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         const ExistingOffers = res.TeamOffers.map((x) => {
             return { ...x };
         });
+        const gleaguers = res.GLeaguePlayers.map((x) => {
+            return { ...x };
+        });
+        const islPlayers = res.ISLPlayers.map((x) => {
+            return { ...x };
+        });
         const all = [...FAs, ...Waivers];
         setAllPlayers(() => all);
         setAllFreeAgents(() => [...FAs]);
         setAllWaivedPlayers(() => [...Waivers]);
+        setInternationalPlayers(() => [...islPlayers]);
+        setGLeaguePlayers(() => [...gleaguers]);
         setTeamOffers(() => [...ExistingOffers]);
+        setRosterCount(() => res.RosterCount);
     };
 
     // Click Functions
@@ -169,9 +187,10 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         setViewOfferedPlayers(() => toggle);
     };
 
-    const ToggleFreeAgencyView = () => {
-        const toggle = freeAgencyView === 'FA' ? 'WAIVER' : 'FA';
-        setFreeAgencyView(() => toggle);
+    const ToggleFreeAgencyView = (event) => {
+        const { value } = event.target;
+        setViewablePlayers(() => []);
+        setFreeAgencyView(() => value);
     };
 
     // Needed functions
@@ -190,55 +209,118 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     };
 
     const CreateFAOffer = async (player, offer) => {
-        let res = await _playerService.CreateFAOffer(offer);
+        let res;
         const viewingFA = freeAgencyView === 'FA';
-        const players = viewingFA ? [...allFreeAgents] : [...allWaivedPlayers];
-        const playerIDX = players.findIndex((x) => x.ID === player.ID);
-        const ExistingOffers = [...teamOffers];
-        if (offer.ID > 0) {
-            // Existing Offer
-            const offerIDX = players[playerIDX].Offers.findIndex(
-                (x) => x.ID === offer.ID
-            );
-
-            const existingOffersIdx = ExistingOffers.findIndex(
-                (x) => x.ID === offer.ID
-            );
-            ExistingOffers[existingOffersIdx] = offer;
-            players[playerIDX].Offers[offerIDX] = offer;
-        } else {
-            const offerObj = { ...offer, ID: res.ID };
-            const offers = players[playerIDX].Offers;
-            offers.push(offerObj);
-            players[playerIDX].Offers = offers.sort(
-                (a, b) => a.ContractValue - b.ContractValue
-            );
-            ExistingOffers.push(offerObj);
-        }
-
-        setTeamOffers(() => ExistingOffers);
-
+        const viewingWW = freeAgencyView === 'WW';
+        const viewingGL = freeAgencyView === 'GL';
+        const viewingINT = freeAgencyView === 'INT';
         if (viewingFA) {
-            setAllFreeAgents(() => players);
+            res = await _playerService.CreateFAOffer(offer);
         } else {
-            setAllWaivedPlayers(() => players);
+            res = await _playerService.CreateWaiverOffer(offer);
+        }
+        let players = [];
+        if (viewingFA) {
+            players = [...allFreeAgents];
+        } else if (viewingWW) {
+            players = [...allWaivedPlayers];
+        } else if (viewingGL) {
+            players = [...allGLeaguePlayers];
+        } else {
+            players = [...allInternationalPlayers];
+        }
+        if (player.IsGLeague && player.TeamID === offer.TeamID) {
+            players = players.filter((x) => x.ID !== player.ID);
+        } else {
+            const playerIDX = players.findIndex((x) => x.ID === player.ID);
+            const ExistingOffers = [...teamOffers];
+            if (offer.ID > 0 && viewingFA) {
+                // Existing Offer
+                const offerIDX = players[playerIDX].Offers.findIndex(
+                    (x) => x.ID === offer.ID
+                );
+
+                const existingOffersIdx = ExistingOffers.findIndex(
+                    (x) => x.ID === offer.ID
+                );
+                ExistingOffers[existingOffersIdx] = offer;
+                players[playerIDX].Offers[offerIDX] = offer;
+            } else {
+                const offerObj = { ...offer, ID: res.ID };
+                if (viewingFA) {
+                    const offers = players[playerIDX].Offers;
+                    offers.push(offerObj);
+                    players[playerIDX].Offers = offers.sort(
+                        (a, b) => a.ContractValue - b.ContractValue
+                    );
+                    ExistingOffers.push(offerObj);
+                } else {
+                    const offers = players[playerIDX].WaiverOffers;
+                    offers.push(offerObj);
+                    players[playerIDX].WaiverOffers = offers.sort(
+                        (a, b) => a.ContractValue - b.ContractValue
+                    );
+                    ExistingOffers.push(offerObj);
+                }
+            }
+
+            setTeamOffers(() => ExistingOffers);
+
+            if (viewingFA) {
+                setAllFreeAgents(() => players);
+            } else if (viewingGL) {
+                setGLeaguePlayers(() => players);
+            } else if (viewingWW) {
+                setAllWaivedPlayers(() => players);
+            } else {
+                setInternationalPlayers(() => players);
+            }
         }
     };
 
     const CancelOffer = async (player, offer) => {
-        let res = await _playerService.CancelFAOffer(offer);
+        console.log({ freeAgencyView });
+        const viewingFA = freeAgencyView === 'FA';
+        const viewingWW = freeAgencyView === 'WW';
+        const viewingGL = freeAgencyView === 'GL';
+        let res;
+        if (viewingFA) {
+            res = await _playerService.CancelFAOffer(offer);
+        } else {
+            res = await _playerService.CancelWaiverOffer(offer);
+        }
         if (res) {
-            const viewingFA = freeAgencyView === 'FA';
-            const players = viewingFA
-                ? [...allFreeAgents]
-                : [...allWaivedPlayers];
+            let players = [];
+            if (viewingFA) {
+                players = [...allFreeAgents];
+            } else if (viewingWW) {
+                players = [...allWaivedPlayers];
+            } else if (viewingGL) {
+                players = [...allGLeaguePlayers];
+            } else {
+                players = [...allInternationalPlayers];
+            }
             const playerIDX = players.findIndex((x) => x.ID === player.ID);
-            const offers = [...players[playerIDX].Offers];
-            players[playerIDX].Offers = offers.filter((x) => x.ID !== offer.ID);
+            if (viewingFA) {
+                const offers = [...players[playerIDX].Offers];
+                players[playerIDX].Offers = offers.filter(
+                    (x) => x.ID !== offer.ID
+                );
+            } else {
+                const offers = [...players[playerIDX].WaiverOffers];
+                players[playerIDX].WaiverOffers = offers.filter(
+                    (x) => x.ID !== offer.ID
+                );
+            }
+
             if (viewingFA) {
                 setAllFreeAgents(() => players);
-            } else {
+            } else if (viewingGL) {
+                setGLeaguePlayers(() => players);
+            } else if (viewingWW) {
                 setAllWaivedPlayers(() => players);
+            } else {
+                setInternationalPlayers(() => players);
             }
         }
     };
@@ -334,22 +416,63 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                     : 'View Offered Players'}
                             </button>
                         </div>
-                        <div className="col-md-auto">
-                            <h5 className="text-start align-middle">View</h5>
-                            <button
-                                type="button"
-                                className={`btn ${
-                                    viewOfferedPlayers
-                                        ? 'btn-outline-danger'
-                                        : 'btn-outline-success'
-                                }`}
-                                onClick={ToggleFreeAgencyView}
-                            >
-                                {freeAgencyView === 'FA'
-                                    ? 'Waiver Wire'
-                                    : 'Free Agency'}
-                            </button>
-                        </div>
+                        {freeAgencyView !== 'FA' && (
+                            <div className="col-md-auto">
+                                <h5 className="text-start align-middle">
+                                    Free Agents
+                                </h5>
+                                <button
+                                    type="button"
+                                    className={`btn ${
+                                        freeAgencyView
+                                            ? 'btn-outline-info'
+                                            : 'btn-outline-success'
+                                    }`}
+                                    onClick={ToggleFreeAgencyView}
+                                    value="FA"
+                                >
+                                    View
+                                </button>
+                            </div>
+                        )}
+                        {freeAgencyView !== 'WW' && (
+                            <div className="col-md-auto">
+                                <h5 className="text-start align-middle">
+                                    Waiver Wire
+                                </h5>
+                                <button
+                                    type="button"
+                                    className={`btn ${
+                                        freeAgencyView
+                                            ? 'btn-outline-info'
+                                            : 'btn-outline-success'
+                                    }`}
+                                    onClick={ToggleFreeAgencyView}
+                                    value="WW"
+                                >
+                                    View
+                                </button>
+                            </div>
+                        )}
+                        {freeAgencyView !== 'GL' && (
+                            <div className="col-md-auto">
+                                <h5 className="text-start align-middle">
+                                    G-League
+                                </h5>
+                                <button
+                                    type="button"
+                                    className={`btn ${
+                                        freeAgencyView
+                                            ? 'btn-outline-info'
+                                            : 'btn-outline-success'
+                                    }`}
+                                    onClick={ToggleFreeAgencyView}
+                                    value="GL"
+                                >
+                                    View
+                                </button>
+                            </div>
+                        )}
                     </div>
                     <div className="row"></div>
                     {/* Modals Here */}
@@ -463,6 +586,12 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                                             cancel={CancelOffer}
                                                             extend={
                                                                 CreateFAOffer
+                                                            }
+                                                            rosterCount={
+                                                                rosterCount
+                                                            }
+                                                            freeAgencyView={
+                                                                freeAgencyView
                                                             }
                                                         />
                                                     )

@@ -179,7 +179,10 @@ const NBATeamPlayerRow = ({
                                 <i className="bi bi-arrow-down-up" />
                             </button>
                         )}
-                        {userView && canModify ? (
+                        {userView &&
+                        canModify &&
+                        player.Contract.YearsRemaining < 2 &&
+                        player.Contract.TotalRemaining <= 1 ? (
                             <button
                                 type="button"
                                 className={`btn ${

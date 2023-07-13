@@ -406,6 +406,7 @@ export const TradeProposalModal = ({
                                         list={userList}
                                         click={AddToList}
                                         isUser
+                                        isNFL={true}
                                     />
                                 </div>
                                 {userOptions.length > 0 &&
@@ -430,6 +431,7 @@ export const TradeProposalModal = ({
                                         value="Select a Player or Pick"
                                         list={tradableList}
                                         click={AddToList}
+                                        isNFL={true}
                                     />
                                 </div>
                                 {receiverOptions.length > 0 &&

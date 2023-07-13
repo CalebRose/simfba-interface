@@ -7,6 +7,7 @@ import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
 import StandingsCard from '../../../BBA/Schedule/StandingsModalCard';
 import { Spinner } from '../../../_Common/Spinner';
 import { useMediaQuery } from 'react-responsive';
+import { NBAStandingsCard } from '../../../_Common/NBAStandingsCard';
 
 const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
     let _teamService = new BBATeamService();
@@ -97,14 +98,14 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
                                 Trade Block
                             </Link>
                             <Link
-                                to={routes.NBA_SCHEDULE}
+                                to={routes.CBB_SCHEDULE}
                                 role="button"
                                 className="btn btn-primary btn-md me-2 shadow"
                             >
                                 Schedule
                             </Link>
                             <Link
-                                to={routes.NBA_STATS}
+                                to={routes.CBB_STATS}
                                 role="button"
                                 className="btn btn-primary btn-md me-2 shadow"
                             >
@@ -125,11 +126,15 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
                             <>
                                 {isMobile ? (
                                     <div className="mobile-card-viewer">
-                                        <StandingsCard standings={standings} />
+                                        <NBAStandingsCard
+                                            standings={standings}
+                                        />
                                     </div>
                                 ) : (
                                     <>
-                                        <StandingsCard standings={standings} />
+                                        <NBAStandingsCard
+                                            standings={standings}
+                                        />
                                     </>
                                 )}
                             </>

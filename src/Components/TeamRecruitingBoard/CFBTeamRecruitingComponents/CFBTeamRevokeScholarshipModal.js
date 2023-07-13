@@ -6,7 +6,7 @@ const ConfirmRevokeModal = (props) => {
     const modalId = 'revokeModal' + idx;
 
     const confirmChange = () => {
-        return props.toggleScholarship();
+        return props.revoke();
     };
     const modalClass = GetModalClass(viewMode);
 
@@ -19,7 +19,7 @@ const ConfirmRevokeModal = (props) => {
             aria-hidden="true"
         >
             <div className="modal-dialog">
-                <div className={viewMode}>
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="revokeModalLabel">
                             Confirm Revoke Scholarship
@@ -49,8 +49,8 @@ const ConfirmRevokeModal = (props) => {
                         <button
                             type="button"
                             className="btn btn-danger"
+                            onClick={() => confirmChange()}
                             data-bs-dismiss="modal"
-                            onClick={confirmChange}
                         >
                             Confirm
                         </button>

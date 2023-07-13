@@ -36,8 +36,8 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
 
     const ValidateSyncToNextWeek = () => {
         let valid = true;
-        let actionCount = ActionsRemaining;
         const ts = { ...cfb_Timestamp };
+        let actionCount = 13;
         if (ts.RecruitingSynced) actionCount -= 1;
         if (ts.GMActionsCompleted) actionCount -= 1;
         if (ts.ThursdayGames) actionCount -= 1;
@@ -181,7 +181,7 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             case 'Saturday Morning':
                 ts.SaturdayMorning = !ts.SaturdayMorning;
                 break;
-            case 'Saturday Noon':
+            case 'Saturday Afternoon':
                 ts.SaturdayNoon = !ts.SaturdayNoon;
                 break;
             case 'Saturday Evening':
@@ -193,9 +193,10 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             default:
                 break;
         }
+        dispatch(setCFBTimestamp(ts));
         const res = await _adminService.SyncTimeslot(timeslot);
         if (res) {
-            dispatch(setCFBTimestamp(ts));
+            alert(`${timeslot} Sync Complete`);
         }
     };
 
@@ -263,7 +264,7 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             IsRecruitingLocked: false
         };
 
-        let res = await _adminService.SyncTimestamp(UpdateTimestampDTO);
+        let res = await _adminService.SyncWeek();
 
         if (!res) {
             alert('Could not sync to next week!');

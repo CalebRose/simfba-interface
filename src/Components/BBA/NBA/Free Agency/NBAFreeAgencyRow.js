@@ -3,7 +3,8 @@ import { CancelOfferModal } from '../../../NFL/FreeAgency/CancelOfferModal';
 import { CheckForOffer } from '../../../NFL/FreeAgency/FreeAgencyHelper';
 import {
     NBAFreeAgencyPlayerModal,
-    NBAFreeAgentOfferModal
+    NBAFreeAgentOfferModal,
+    NBAWaiverOfferModal
 } from './NBAFreeAgencyModals';
 import { getLogo } from '../../../../Constants/getLogo';
 
@@ -18,21 +19,44 @@ export const NBAFreeAgencyRow = ({
     extend,
     cancel,
     ts,
-    team
+    team,
+    rosterCount,
+    freeAgencyView
 }) => {
+    console.log(freeAgencyView);
+    const {
+        ID,
+        FirstName,
+        LastName,
+        IsNegotiating,
+        IsAcceptingOffers,
+        Position
+    } = player;
     const rank = idx + 1;
-    const NameLabel = player.FirstName + ' ' + player.LastName;
+    const NameLabel = `${Position} ${FirstName} ${LastName}`;
     const modalTarget = '#playerModal' + idx;
     const offerTarget = '#offerModal' + idx;
+    const waiverTarget = `#waiverModal${idx}`;
     const cancelTarget = '#cancelOffer' + idx;
     const hasOffer = CheckForOffer(player, teamID);
-
+    const viewFA = freeAgencyView === 'FA';
+    const viewGL = freeAgencyView === 'GL';
+    const viewWW = freeAgencyView === 'WW';
+    const viewINT = freeAgencyView === 'INT';
     const leadingTeamsMapper = (player) => {
-        if (player.Offers === null || player.Offers.length === 0) {
+        if (
+            (viewFA &&
+                (player.Offers === null || player.Offers.length === 0)) ||
+            (!viewFA &&
+                (player.WaiverOffers === null ||
+                    player.WaiverOffers.length === 0))
+        ) {
             return 'None';
         }
 
-        return player.Offers.map((x) => {
+        const offers = viewFA ? player.Offers : player.WaiverOffers;
+
+        return offers.map((x) => {
             const logo = getLogo(x.Team);
             return (
                 <>
@@ -47,11 +71,14 @@ export const NBAFreeAgencyRow = ({
     };
     const leadingTeams = leadingTeamsMapper(player);
 
-    const StatusLabel = player.IsAcceptingOffers ? 'Open' : 'Negotiating';
+    const StatusLabel = IsAcceptingOffers ? 'Open' : 'Negotiating';
 
     const canMakeOffer =
         canModify &&
-        (!player.IsNegotiating || (player.IsNegotiating && hasOffer));
+        (ts.IsOffseason ||
+            ts.NBAPreseason ||
+            (!ts.IsNBAOffSeason && !ts.NBAPreseason && rosterCount < 15)) &&
+        (!IsNegotiating || (IsNegotiating && hasOffer));
 
     return (
         <>
@@ -61,15 +88,28 @@ export const NBAFreeAgencyRow = ({
                 idx={idx}
                 viewMode={viewMode}
             />
-            <NBAFreeAgentOfferModal
-                key={player.ID}
-                team={team}
-                player={player}
-                idx={idx}
-                ts={ts}
-                extend={extend}
-                viewMode={viewMode}
-            />
+            {viewFA ? (
+                <NBAFreeAgentOfferModal
+                    key={player.ID}
+                    team={team}
+                    player={player}
+                    idx={idx}
+                    ts={ts}
+                    extend={extend}
+                    viewMode={viewMode}
+                />
+            ) : (
+                <NBAWaiverOfferModal
+                    key={player.ID}
+                    team={team}
+                    player={player}
+                    idx={idx}
+                    ts={ts}
+                    extend={extend}
+                    viewMode={viewMode}
+                />
+            )}
+
             <CancelOfferModal
                 key={player.ID}
                 player={player}
@@ -77,6 +117,7 @@ export const NBAFreeAgencyRow = ({
                 cancel={cancel}
                 teamID={team.ID}
                 viewMode={viewMode}
+                viewFA={viewFA}
             />
             <tr style={{ backgroundColor: 'white', zIndex: -1 }}>
                 <th scope="row">
@@ -125,46 +166,26 @@ export const NBAFreeAgencyRow = ({
                 </td>
                 <td className="align-middle">
                     <div className="btn-group">
-                        {canMakeOffer ? (
-                            <button
-                                type="button"
-                                className="btn"
-                                title="Make An Offer"
-                                data-bs-toggle="modal"
-                                data-bs-target={offerTarget}
-                            >
-                                <i className="bi bi-cash-coin image-nfl-roster" />
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                className="btn"
-                                title="Make An Offer"
-                                disabled
-                            >
-                                <i className="bi bi-cash-coin image-nfl-roster" />
-                            </button>
-                        )}
-                        {hasOffer && canModify ? (
-                            <button
-                                type="button"
-                                className="btn"
-                                title="Cancel Existing Offer"
-                                data-bs-toggle="modal"
-                                data-bs-target={cancelTarget}
-                            >
-                                <i class="bi bi-x-circle image-nfl-roster" />
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                className="btn"
-                                title="Cancel Existing Offer"
-                                disabled
-                            >
-                                <i class="bi bi-x-circle image-nfl-roster" />
-                            </button>
-                        )}
+                        <button
+                            type="button"
+                            className="btn"
+                            title="Make An Offer"
+                            data-bs-toggle="modal"
+                            data-bs-target={viewFA ? offerTarget : waiverTarget}
+                            disabled={!canMakeOffer}
+                        >
+                            <i className="bi bi-cash-coin image-nfl-roster" />
+                        </button>
+                        <button
+                            type="button"
+                            className="btn"
+                            title="Cancel Existing Offer"
+                            data-bs-toggle="modal"
+                            data-bs-target={cancelTarget}
+                            disabled={!hasOffer || !canModify}
+                        >
+                            <i class="bi bi-x-circle image-nfl-roster" />
+                        </button>
                     </div>
                 </td>
             </tr>

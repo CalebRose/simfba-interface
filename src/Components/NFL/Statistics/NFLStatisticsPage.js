@@ -226,11 +226,11 @@ const NFLStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
         let week = selectedWeek ? Number(selectedWeek.value) : 0;
         if (viewType === 'WEEK') {
             let startingWeekID = 0;
-            if (seasonID === '1') {
-                startingWeekID = 1;
-            } else if (seasonID === 2) {
-                startingWeekID = 21;
+            if (seasonID === 2) {
+                startingWeekID = 0;
             } else if (seasonID === 3) {
+                startingWeekID = 21;
+            } else if (seasonID === 4) {
                 startingWeekID = 43;
             }
             week = week + startingWeekID;
@@ -241,7 +241,6 @@ const NFLStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
             week,
             viewType
         );
-
         const teamOptions = MapTeamOptions(res.NFLTeams);
 
         setNFLTeamOptions(() => teamOptions);
@@ -731,6 +730,7 @@ const NFLStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                           idx={idx}
                                                           player={x}
                                                           viewType={viewType}
+                                                          isNFL={true}
                                                       />
                                                   ) : (
                                                       <TeamStatRow

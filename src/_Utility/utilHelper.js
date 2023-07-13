@@ -274,3 +274,22 @@ export const RevealResults = (game, timestamp) => {
         return GameComplete;
     return false;
 };
+
+export const GetPredictionRound = (r) => {
+    console.log({ r });
+    if (r === 1) {
+        return 'Early First Round';
+    } else if (r === 2) {
+        return 'Mid First Round';
+    } else if (r === 3) {
+        return 'Late First Round';
+    } else if (r === 4) {
+        return 'Early Second Round';
+    } else if (r === 5) {
+        return 'Mid Second Round';
+    } else if (r === 6) {
+        return 'Late Second Round';
+    } else {
+        return 'Likely UDFA';
+    }
+};

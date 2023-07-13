@@ -123,12 +123,20 @@ export const NFLBonusRow = ({ handleInputChange, offer, isFAOffer }) => (
                     label="Year 5 Bonus"
                 />
             )}
-
-            <TotalInput
-                name="TotalBonus"
-                value={offer ? offer.TotalBonus : 0}
-                label="Total Bonus"
-            />
+            {isFAOffer ? (
+                <OfferInput
+                    name="TotalBonus"
+                    value={offer ? offer.TotalBonus : 0}
+                    change={handleInputChange}
+                    label="Total Bonus"
+                />
+            ) : (
+                <TotalInput
+                    name="TotalBonus"
+                    value={offer ? offer.TotalBonus : 0}
+                    label="Total Bonus"
+                />
+            )}
         </div>
     </>
 );

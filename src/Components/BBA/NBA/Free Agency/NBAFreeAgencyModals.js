@@ -188,16 +188,26 @@ export const NBAFreeAgentOfferModal = ({
     const [existingOffer, setExistingOffer] = useState(null);
     const [offer, setOffer] = useState(() => {
         const offers = player.Offers;
-        const offerIdx = player.Offers.findIndex((x) => x.TeamID === team.ID);
-        if (offerIdx < 0) {
+        if (offers && offers.length > 0) {
+            const offerIdx = player.Offers.findIndex(
+                (x) => x.TeamID === team.ID
+            );
+            if (offerIdx < 0) {
+                return {
+                    PlayerID: player.ID,
+                    TeamID: team.ID,
+                    Team: `${team.Team} ${team.Nickname}`
+                };
+            }
+            setExistingOffer(() => offers[offerIdx]);
+            return offers[offerIdx];
+        } else {
             return {
                 PlayerID: player.ID,
                 TeamID: team.ID,
-                Team: team.Team + ' ' + team.Nickname
+                Team: `${team.Team} ${team.Nickname}`
             };
         }
-        setExistingOffer(() => offers[offerIdx]);
-        return offers[offerIdx];
     });
     // Comment Here
     const [hasExistingOffer, setExistingOfferBool] = useState(false);
@@ -356,8 +366,13 @@ export const NBAFreeAgentOfferModal = ({
         const minimumRequired =
             maxContractMinimum > 0 ? maxContractMinimum : MinimumValue;
 
+        const meetRequirement =
+            MaxRequested || IsSuperMaxQualified
+                ? totalCost >= minimumRequired
+                : contractValue >= minimumRequired;
+
         const isValid =
-            contractValue >= minimumRequired &&
+            meetRequirement &&
             isRule1Valid &&
             isRule2Valid &&
             isRule3Valid &&
@@ -377,20 +392,24 @@ export const NBAFreeAgentOfferModal = ({
         if (player) {
             GetTeamOffer(player.Offers);
             const offers = player.Offers;
-            const offerIdx = player.Offers.findIndex(
-                (x) => x.TeamID === team.ID
-            );
-            if (offerIdx > -1) {
-                setExistingOfferBool(() => true);
-                ValidateOffer(offers[offerIdx]);
+            if (offers && offers.length > 0) {
+                const offerIdx = player.Offers.findIndex(
+                    (x) => x.TeamID === team.ID
+                );
+                if (offerIdx > -1) {
+                    setExistingOfferBool(() => true);
+                    ValidateOffer(offers[offerIdx]);
+                }
             }
         }
     }, [player]);
 
     const GetTeamOffer = (offers) => {
-        let teamOffer = offers.findIndex((x) => x.TeamID === team.ID);
-        if (teamOffer > -1) {
-            setOffer(() => offers[teamOffer]);
+        if (offers && offers.length > 0) {
+            let teamOffer = offers.findIndex((x) => x.TeamID === team.ID);
+            if (teamOffer > -1) {
+                setOffer(() => offers[teamOffer]);
+            }
         }
     };
 
@@ -523,6 +542,18 @@ export const NBAFreeAgentOfferModal = ({
                                         </p>
                                     </div>
                                 </div>
+                                {!validOffer && (
+                                    <div className="row">
+                                        <div className="col">
+                                            <p className="text-danger">
+                                                Please ensure that the total
+                                                value of the contract has met
+                                                the minimum value the player is
+                                                requesting: {minimumLabel}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                         <div className="row mt-2 text-start">
@@ -724,6 +755,356 @@ export const NBAFreeAgentOfferModal = ({
                                 name="Y5Remaining"
                                 value={RoundToTwoDecimals(offer.Y5Remaining)}
                                 change={handleInputChange}
+                                label="Cap Year 5"
+                                isTotal={true}
+                            />
+                        </div>
+                    </div>
+                    <div className="modal-footer">
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                        >
+                            No
+                        </button>
+                        <OfferButton />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export const NBAWaiverOfferModal = ({
+    team,
+    player,
+    ts,
+    idx,
+    extend,
+    viewMode
+}) => {
+    const modalId = `waiverModal${idx}`;
+    const modalClass = GetModalClass(viewMode);
+    const name = `${player.FirstName} ${player.LastName}`;
+    const [offer, setOffer] = useState(() => {
+        const { Capsheet } = team;
+        const c = player.Contract;
+        const y1Space = GetNBACapSpace(
+            ts.Y1Capspace,
+            Capsheet.Year1Total,
+            Capsheet.Year1Cap
+        );
+        const y2Space = GetNBACapSpace(
+            ts.Y2Capspace,
+            Capsheet.Year2Total,
+            Capsheet.Year2Cap
+        );
+        const y3Space = GetNBACapSpace(
+            ts.Y3Capspace,
+            Capsheet.Year3Total,
+            Capsheet.Year3Cap
+        );
+        const y4Space = GetNBACapSpace(
+            ts.Y4Capspace,
+            Capsheet.Year4Total,
+            Capsheet.Year4Cap
+        );
+        const y5Space = GetNBACapSpace(
+            ts.Y5Capspace,
+            Capsheet.Year5Total,
+            Capsheet.Year5Cap
+        );
+        console.log({ y1Space, y2Space, y3Space, y4Space, y5Space });
+        const y1Value = c.Year1Total * 1;
+        const y2Value = c.Year2Total * 0.9;
+        const y3Value = c.Year3Total * 0.8;
+        const y4Value = c.Year4Total * 0.7;
+        const y5Value = c.Year5Total * 0.6;
+        return {
+            PlayerID: c.PlayerID,
+            TeamID: team.ID,
+            Team: `${team.Team} ${team.Nickname}`,
+            OriginalTeamID: c.OriginalTeamID,
+            OriginalTeam: c.OriginalTeam,
+            YearsRemaining: c.YearsRemaining,
+            Year1Total: c.Year1Total,
+            Year2Total: c.Year2Total,
+            Year3Total: c.Year3Total,
+            Year4Total: c.Year4Total,
+            Year5Total: c.Year5Total,
+            Year1Opt: c.Year1Opt,
+            Year2Opt: c.Year2Opt,
+            Year3Opt: c.Year3Opt,
+            Year4Opt: c.Year4Opt,
+            Year5Opt: c.Year5Opt,
+            Y1Remaining: y1Space - c.Year1Total,
+            Y2Remaining: y2Space - c.Year2Total,
+            Y3Remaining: y3Space - c.Year3Total,
+            Y4Remaining: y4Space - c.Year4Total,
+            Y5Remaining: y5Space - c.Year5Total,
+            ValueY1: y1Value,
+            ValueY2: y2Value,
+            ValueY3: y3Value,
+            ValueY4: y4Value,
+            ValueY5: y5Value,
+            ContractType: c.ContractType,
+            ContractValue: c.ContractValue,
+            IsActive: c.IsActive
+        };
+    });
+    // Comment Here
+    const { MinimumValue, MaxRequested, IsSuperMaxQualified, Year } = player;
+    const maxPercentage = GetMaxPercentage(
+        Year,
+        MaxRequested,
+        IsSuperMaxQualified
+    );
+
+    // Get the minimum required based on the current year cap.
+    const yearlyRequirement = maxPercentage * ts.Y1Capspace;
+    const minimumLabel =
+        maxPercentage > 0
+            ? `$${yearlyRequirement}M Per Year`
+            : `$${MinimumValue}M`;
+
+    const confirmChange = () => {
+        return extend(player, offer);
+    };
+
+    const OfferButton = () => {
+        return (
+            <button
+                type="button"
+                className="btn btn-danger"
+                data-bs-dismiss="modal"
+                onClick={confirmChange}
+            >
+                Offer
+            </button>
+        );
+    };
+
+    return (
+        <div
+            className="modal fade"
+            id={modalId}
+            tabindex="-1"
+            aria-labelledby="extendPlayerModalLabel"
+            aria-hidden="true"
+        >
+            <div className="modal-dialog modal-xl">
+                <div className={modalClass}>
+                    <div className="modal-header">
+                        <h4 className="modal-title" id="redshirtModalLabel">
+                            {team.Team}: Make Offer to {name}, {player.Year}{' '}
+                            Year {player.Archetype} {player.Position}
+                        </h4>
+                        <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div className="modal-body">
+                        <div className="row">
+                            <div className="col-md-auto">
+                                <h4 className="">Height: {player.Height}"</h4>
+                            </div>
+                            <div className="col-md-auto">
+                                <h4 className="">Overall: {player.Overall}</h4>
+                            </div>
+                            <div className="col-md-auto ms-auto">
+                                <h4 className="">
+                                    Contract Length:{' '}
+                                    {offer ? offer.YearsRemaining : 0} Years
+                                </h4>
+                            </div>
+                            <div className="col-md-auto ms-auto">
+                                <h4 className="">
+                                    Minimum Value: {minimumLabel}
+                                </h4>
+                            </div>
+                        </div>
+                        <div className="row mt-2 text-start">
+                            <h5>Contract Length</h5>
+                        </div>
+                        <div className="row mt-1">
+                            <div className="col-auto">
+                                <input
+                                    name="TotalYears"
+                                    type="number"
+                                    className="form-control"
+                                    id="TotalYears"
+                                    aria-describedby="TotalYears"
+                                    value={offer ? offer.YearsRemaining : 0}
+                                    disabled={true}
+                                />
+                            </div>
+                        </div>
+                        <div className="row mt-2 text-start">
+                            <h5>Total</h5>
+                        </div>
+                        <div className="row mt-1">
+                            <TotalInput
+                                name="Year1Total"
+                                value={
+                                    offer
+                                        ? RoundToTwoDecimals(offer.Year1Total)
+                                        : 0
+                                }
+                                label="Year 1"
+                            />
+                            <TotalInput
+                                name="Year2Total"
+                                value={
+                                    offer
+                                        ? RoundToTwoDecimals(offer.Year2Total)
+                                        : 0
+                                }
+                                label="Year 2"
+                            />
+                            <TotalInput
+                                name="Year3Total"
+                                value={
+                                    offer
+                                        ? RoundToTwoDecimals(offer.Year3Total)
+                                        : 0
+                                }
+                                label="Year 3"
+                            />
+                            <TotalInput
+                                name="Year4Total"
+                                value={
+                                    offer
+                                        ? RoundToTwoDecimals(offer.Year4Total)
+                                        : 0
+                                }
+                                label="Year 4"
+                            />
+                            <TotalInput
+                                name="Year5Total"
+                                value={
+                                    offer
+                                        ? RoundToTwoDecimals(offer.Year5Total)
+                                        : 0
+                                }
+                                label="Year 5"
+                            />
+                            <TotalInput
+                                name="TotalCost"
+                                value={RoundToTwoDecimals(offer.TotalCost)}
+                                label="Total Overall"
+                                isTotal={true}
+                            />
+                        </div>
+                        <div className="row mt-1 text-start">
+                            <h5>Options</h5>
+                        </div>
+                        <div className="row mt-1">
+                            <div className="col"></div>
+                            <div className="col">
+                                <h6>Year 2 Option</h6>
+                                <SwitchToggle
+                                    value="Year2Opt"
+                                    checkValue={offer ? offer.Year2Opt : false}
+                                />
+                            </div>
+                            <div className="col">
+                                <h6>Year 3 Option</h6>
+                                <SwitchToggle
+                                    value="Year3Opt"
+                                    checkValue={offer ? offer.Year3Opt : false}
+                                />
+                            </div>
+                            <div className="col">
+                                <h6>Year 4 Option</h6>
+                                <SwitchToggle
+                                    value="Year4Opt"
+                                    checkValue={offer ? offer.Year4Opt : false}
+                                />
+                            </div>
+                            <div className="col">
+                                <h6>Year 5 Option</h6>
+                                <SwitchToggle
+                                    value="Year5Opt"
+                                    checkValue={offer ? offer.Year5Opt : false}
+                                />
+                            </div>
+                        </div>
+                        <div className="row mt-1 text-start">
+                            <h5>Offer Value</h5>
+                        </div>
+                        <div className="row mt-1">
+                            <TotalInput
+                                name="ValueY1"
+                                value={RoundToTwoDecimals(offer.ValueY1)}
+                                label="Value Year 1"
+                                isTotal={true}
+                            />
+                            <TotalInput
+                                name="ValueY2"
+                                value={RoundToTwoDecimals(offer.ValueY2)}
+                                label="Value Year 2"
+                                isTotal={true}
+                            />
+                            <TotalInput
+                                name="ValueY3"
+                                value={RoundToTwoDecimals(offer.ValueY3)}
+                                label="Value Year 3"
+                                isTotal={true}
+                            />
+                            <TotalInput
+                                name="ValueY4"
+                                value={RoundToTwoDecimals(offer.ValueY4)}
+                                label="Value Year 4"
+                                isTotal={true}
+                            />
+                            <TotalInput
+                                name="ValueY5"
+                                value={RoundToTwoDecimals(offer.ValueY5)}
+                                label="Value Year 5"
+                                isTotal={true}
+                            />
+                            <TotalInput
+                                name="ContractValue"
+                                value={RoundToTwoDecimals(offer.ContractValue)}
+                                label="Contract Value"
+                                isTotal={true}
+                            />
+                        </div>
+                        <div className="row mt-1 text-start">
+                            <h5>Cap Remaining</h5>
+                        </div>
+                        <div className="row mt-1">
+                            <TotalInput
+                                name="Y1Remaining"
+                                value={RoundToTwoDecimals(offer.Y1Remaining)}
+                                label="Cap Year 1"
+                                isTotal={true}
+                            />
+                            <TotalInput
+                                name="Y2Remaining"
+                                value={RoundToTwoDecimals(offer.Y2Remaining)}
+                                label="Cap Year 2"
+                                isTotal={true}
+                            />
+                            <TotalInput
+                                name="Year3Remaining"
+                                value={RoundToTwoDecimals(offer.Y3Remaining)}
+                                label="Cap Year 3"
+                                isTotal={true}
+                            />
+                            <TotalInput
+                                name="Y4Remaining"
+                                value={RoundToTwoDecimals(offer.Y4Remaining)}
+                                label="Cap Year 4"
+                                isTotal={true}
+                            />
+                            <TotalInput
+                                name="Y5Remaining"
+                                value={RoundToTwoDecimals(offer.Y5Remaining)}
                                 label="Cap Year 5"
                                 isTotal={true}
                             />

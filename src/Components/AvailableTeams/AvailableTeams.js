@@ -56,7 +56,7 @@ class AvailableTeams extends Component {
     };
 
     NBAGetAvailableTeams = async () => {
-        let teams = await this.BBATeamService.GetNBATeams();
+        let teams = await this.BBATeamService.GetAllProfessionalTeams();
         const sortedTeams = teams.sort(
             (a, b) => '' + a.Team.localeCompare(b.Team)
         );

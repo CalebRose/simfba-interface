@@ -1,43 +1,41 @@
 import React from 'react';
 import { GetYear } from '../../../_Utility/RosterHelper';
 
-const CBBPlayerStatRow = ({ statType, idx, player }) => {
+const CBBPlayerStatRow = ({ statType, idx, player, viewType }) => {
     const name = player.FirstName + ' ' + player.LastName;
-    const seasonStats = player.SeasonStats;
+    const s = viewType === 'SEASON' ? player.SeasonStats : player.Stats;
     const games = player.SeasonStats ? player.SeasonStats.GamesPlayed : 0;
     const year = GetYear(player);
-    const FGPercentLabel =
-        parseFloat(seasonStats.FGPercent * 100).toFixed(2) + '%';
-    const FTPercentLabel =
-        parseFloat(seasonStats.FTPercent * 100).toFixed(2) + '%';
+    const FGPercentLabel = parseFloat(s.FGPercent * 100).toFixed(2) + '%';
+    const FTPercentLabel = parseFloat(s.FTPercent * 100).toFixed(2) + '%';
     const TPPercentLabel =
-        parseFloat(seasonStats.ThreePointPercent * 100).toFixed(2) + '%';
+        parseFloat(s.ThreePointPercent * 100).toFixed(2) + '%';
 
     const OverallRow = () => {
         return (
             <tr>
                 <td scope="col">{name + ' ' + year}</td>
                 <td scope="col">{player.TeamAbbr}</td>
-                <td scope="col">{games}</td>
-                <td scope="col">{seasonStats.Minutes}</td>
-                <td scope="col">{seasonStats.Possessions}</td>
-                <td scope="col">{seasonStats.Points}</td>
-                <td scope="col">{seasonStats.FGM}</td>
-                <td scope="col">{seasonStats.FGA}</td>
+                {viewType === 'SEASON' && <td scope="col">{games}</td>}
+                <td scope="col">{s.Minutes}</td>
+                <td scope="col">{s.Possessions}</td>
+                <td scope="col">{s.Points}</td>
+                <td scope="col">{s.FGM}</td>
+                <td scope="col">{s.FGA}</td>
                 <td scope="col">{FGPercentLabel}</td>
-                <td scope="col">{seasonStats.ThreePointsMade}</td>
-                <td scope="col">{seasonStats.ThreePointAttempts}</td>
+                <td scope="col">{s.ThreePointsMade}</td>
+                <td scope="col">{s.ThreePointAttempts}</td>
                 <td scope="col">{TPPercentLabel}</td>
-                <td scope="col">{seasonStats.FTM}</td>
-                <td scope="col">{seasonStats.FTA}</td>
+                <td scope="col">{s.FTM}</td>
+                <td scope="col">{s.FTA}</td>
                 <td scope="col">{FTPercentLabel}</td>
-                <td scope="col">{seasonStats.OffRebounds}</td>
-                <td scope="col">{seasonStats.DefRebounds}</td>
-                <td scope="col">{seasonStats.TotalRebounds}</td>
-                <td scope="col">{seasonStats.Assists}</td>
-                <td scope="col">{seasonStats.Steals}</td>
-                <td scope="col">{seasonStats.Blocks}</td>
-                <td scope="col">{seasonStats.Turnovers}</td>
+                <td scope="col">{s.OffRebounds}</td>
+                <td scope="col">{s.DefRebounds}</td>
+                <td scope="col">{s.TotalRebounds}</td>
+                <td scope="col">{s.Assists}</td>
+                <td scope="col">{s.Steals}</td>
+                <td scope="col">{s.Blocks}</td>
+                <td scope="col">{s.Turnovers}</td>
             </tr>
         );
     };
@@ -47,50 +45,36 @@ const CBBPlayerStatRow = ({ statType, idx, player }) => {
             <tr>
                 <td scope="col">{name}</td>
                 <td scope="col">{player.TeamAbbr}</td>
-                <td scope="col">{games}</td>
+                {viewType === 'SEASON' && <td scope="col">{games}</td>}
+                <td scope="col">{parseFloat(s.MinutesPerGame).toFixed(2)}</td>
                 <td scope="col">
-                    {parseFloat(seasonStats.MinutesPerGame).toFixed(2)}
+                    {parseFloat(s.PossessionsPerGame).toFixed(2)}
                 </td>
-                <td scope="col">
-                    {parseFloat(seasonStats.PossessionsPerGame).toFixed(2)}
-                </td>
-                <td scope="col">{parseFloat(seasonStats.PPG).toFixed(2)}</td>
-                <td scope="col">{parseFloat(seasonStats.FGMPG).toFixed(2)}</td>
-                <td scope="col">{parseFloat(seasonStats.FGAPG).toFixed(2)}</td>
+                <td scope="col">{parseFloat(s.PPG).toFixed(2)}</td>
+                <td scope="col">{parseFloat(s.FGMPG).toFixed(2)}</td>
+                <td scope="col">{parseFloat(s.FGAPG).toFixed(2)}</td>
                 <td scope="col">{FGPercentLabel}</td>
                 <td scope="col">
-                    {parseFloat(seasonStats.ThreePointsMadePerGame).toFixed(2)}
+                    {parseFloat(s.ThreePointsMadePerGame).toFixed(2)}
                 </td>
                 <td scope="col">
-                    {parseFloat(seasonStats.ThreePointAttemptsPerGame).toFixed(
-                        2
-                    )}
+                    {parseFloat(s.ThreePointAttemptsPerGame).toFixed(2)}
                 </td>
                 <td scope="col">{TPPercentLabel}</td>
-                <td scope="col">{parseFloat(seasonStats.FTMPG).toFixed(2)}</td>
-                <td scope="col">{parseFloat(seasonStats.FTAPG).toFixed(2)}</td>
+                <td scope="col">{parseFloat(s.FTMPG).toFixed(2)}</td>
+                <td scope="col">{parseFloat(s.FTAPG).toFixed(2)}</td>
                 <td scope="col">{FTPercentLabel}</td>
                 <td scope="col">
-                    {parseFloat(seasonStats.OffReboundsPerGame).toFixed(2)}
+                    {parseFloat(s.OffReboundsPerGame).toFixed(2)}
                 </td>
                 <td scope="col">
-                    {parseFloat(seasonStats.DefReboundsPerGame).toFixed(2)}
+                    {parseFloat(s.DefReboundsPerGame).toFixed(2)}
                 </td>
-                <td scope="col">
-                    {parseFloat(seasonStats.ReboundsPerGame).toFixed(2)}
-                </td>
-                <td scope="col">
-                    {parseFloat(seasonStats.AssistsPerGame).toFixed(2)}
-                </td>
-                <td scope="col">
-                    {parseFloat(seasonStats.StealsPerGame).toFixed(2)}
-                </td>
-                <td scope="col">
-                    {parseFloat(seasonStats.BlocksPerGame).toFixed(2)}
-                </td>
-                <td scope="col">
-                    {parseFloat(seasonStats.TurnoversPerGame).toFixed(2)}
-                </td>
+                <td scope="col">{parseFloat(s.ReboundsPerGame).toFixed(2)}</td>
+                <td scope="col">{parseFloat(s.AssistsPerGame).toFixed(2)}</td>
+                <td scope="col">{parseFloat(s.StealsPerGame).toFixed(2)}</td>
+                <td scope="col">{parseFloat(s.BlocksPerGame).toFixed(2)}</td>
+                <td scope="col">{parseFloat(s.TurnoversPerGame).toFixed(2)}</td>
             </tr>
         );
     };
