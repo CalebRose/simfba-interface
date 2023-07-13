@@ -186,11 +186,31 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                     </>
                 )}
             </div>
-
             <div className="d-flex flex-row">
-                <div className="draft-pick-container">Draft Picks Here</div>
+                <div className="draft-pick-container">
+                    Draft Picks Here
+                    {allDraftPicks.map((x, idx) => {
+                        const DraftNumber = idx + 1;
+                        const TeamLogo = getLogo(x.Team);
+                        return (
+                            <div className="card mb-3">
+                                <div className="row g-0">
+                                    <div className="col-1">
+                                    <p> Draft Number: {x.DraftNumber}</p></div>
+                                    <div className="col-1">
+                                        <img src={TeamLogo}/>
+                                    </div>
+                                    <div className="col-8">
+                                        <div className="card-body">
+                                            {x.SelectedPlayerID !== null && x.SelectedPlayerID < 0 ? <p>{x.SelectedPlayerName}</p> : <p>{x.Team}</p>}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
-
             <div className="d-flex flex-row">
                 <div className="px-2">Draftable Players</div>
                 <div className="px-2">Team Scouting Board</div>
