@@ -229,7 +229,7 @@ export const PlayerModal = ({ team, player, idx, viewMode }) => {
                                 </p>
                             </div>
                             <div className="col">
-                                <h5>Years in League</h5> ${player.Year}
+                                <h5>Years in League</h5> {player.Year}
                             </div>
                         </div>
                         <div className="row g-2 gy-2 mb-2">
@@ -242,16 +242,17 @@ export const PlayerModal = ({ team, player, idx, viewMode }) => {
                             </div>
                             <div className="col">
                                 <h5>Total Remaining</h5> $
-                                {Contract.TotalRemaining}
+                                {Contract.TotalRemaining}M
                             </div>
                             <div className="col">
-                                <h5>Years Left</h5> ${Contract.YearsRemaining}
+                                <h5>Years Left</h5> {Contract.YearsRemaining}
                             </div>
                         </div>
                         <div className="row g-2 gy-2 mb-2">
                             <h6>Year 1</h6>
                             <p className="fs-6">
-                                Total: {RoundToTwoDecimals(Contract.Year1Total)}
+                                Total: $
+                                {RoundToTwoDecimals(Contract.Year1Total)}
                             </p>
                             {Contract.Year1Opt && <p>Year 1 Option</p>}
                         </div>
@@ -259,7 +260,7 @@ export const PlayerModal = ({ team, player, idx, viewMode }) => {
                             <div className="row mb-1">
                                 <h6>Year 2</h6>
                                 <p className="fs-6">
-                                    Total:{' '}
+                                    Total: $
                                     {RoundToTwoDecimals(Contract.Year2Total)}
                                 </p>
                                 {Contract.Year2Opt && <p>Year 2 Option</p>}
@@ -269,7 +270,7 @@ export const PlayerModal = ({ team, player, idx, viewMode }) => {
                             <div className="row mb-1">
                                 <h6>Year 3</h6>
                                 <p className="fs-6">
-                                    Total:{' '}
+                                    Total: $
                                     {RoundToTwoDecimals(Contract.Year3Total)}
                                 </p>
                                 {Contract.Year3Opt && <p>Year 3 Option</p>}
@@ -279,7 +280,7 @@ export const PlayerModal = ({ team, player, idx, viewMode }) => {
                             <div className="row mb-1">
                                 <h6>Year 4</h6>
                                 <p className="fs-6">
-                                    Total:{' '}
+                                    Total: $
                                     {RoundToTwoDecimals(Contract.Year4Total)}
                                 </p>
                                 {Contract.Year4Opt && <p>Year 4 Option</p>}
@@ -289,7 +290,7 @@ export const PlayerModal = ({ team, player, idx, viewMode }) => {
                             <div className="row mb-1">
                                 <h6>Year 5</h6>
                                 <p className="fs-6">
-                                    Total:{' '}
+                                    Total: $
                                     {RoundToTwoDecimals(Contract.Year5Total)}
                                 </p>
                                 {Contract.Year5Opt && <p>Year 5 Option</p>}

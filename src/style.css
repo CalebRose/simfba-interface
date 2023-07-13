@@ -781,8 +781,8 @@ hr.solid {
 
 .cfb-news-feed {
     max-width: 50% !important;
-    max-height: 30rem !important;
-    overflow-y: scroll;
+    max-height: 33rem !important;
+    overflow-y: auto;
 }
 
 .news-feed,
@@ -799,12 +799,39 @@ hr.solid {
 }
 
 .draft-room-header {
-    display: flex !important;
-    flex-direction: column;
     align-items: center;
     vertical-align: middle;
     text-align: center;
-    justify-content: center;
+}
+
+.draft-pick-container {
+    /* overflow-y: scroll; */
+    height: 24rem;
+    border: 1px solid white;
+    border-radius: 9px;
+}
+
+.draft-war-room {
+    border: 1px solid white;
+    border-radius: 9px;
+    text-align: center;
+    vertical-align: middle;
+    align-content: center;
+    align-items: center;
+}
+
+.nba-draft-draftee-box {
+    overflow-y: scroll;
+    border: 1px solid white;
+    border-radius: 9px;
+    height: 30vh;
+}
+
+.nba-draft-scout-box {
+    border: 1px solid white;
+    border-radius: 9px;
+    height: 30vh;
+    overflow-y: scroll;
 }
 
 /*

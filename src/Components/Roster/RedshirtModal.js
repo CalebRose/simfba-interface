@@ -1,5 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 import { GetModalClass } from '../../Constants/CSSClassHelper';
+import routes from '../../Constants/routes';
 
 const ConfirmRedshirtModal = (props) => {
     const { idx, player, viewMode } = props;
@@ -41,8 +44,12 @@ const ConfirmRedshirtModal = (props) => {
 
                         <div className="row g-2 gy-2 mb-2">
                             If this player is already existing on your depth
-                            chart, please swap out the player immediately.
-                            Refusal to do so will incur severe punishments to
+                            chart,{' '}
+                            <b>
+                                please navigate to the depth chart page and swap
+                                out the player immediately
+                            </b>
+                            . Refusal to do so will incur severe punishments to
                             your program both in the game and in recruiting.
                         </div>
                     </div>
@@ -62,6 +69,15 @@ const ConfirmRedshirtModal = (props) => {
                         >
                             Yes
                         </button>
+                        <Link
+                            to={routes.DEPTHCHART}
+                            type="button"
+                            className="btn btn-danger"
+                            data-bs-dismiss="modal"
+                            onClick={confirmChange}
+                        >
+                            Yes and Navigate me to the Depth Chart Please
+                        </Link>
                     </div>
                 </div>
             </div>

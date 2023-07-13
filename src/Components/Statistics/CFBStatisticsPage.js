@@ -89,8 +89,6 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
         }
     }, [cfb_Timestamp, selectedSeason]);
 
-    useEffect(() => {}, [viewableStats, currentView]);
-
     useEffect(() => {
         if (collegePlayers.length > 0 && collegeTeams.length > 0) {
             const dataSet =
@@ -454,12 +452,12 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                 <h2>Statistics</h2>
             </div>
             <div className="row">
-                <div className="col-md-2">
+                <div className="col-2">
                     <div className="row">
                         <h3>Search Options</h3>
                     </div>
                     <div className="row mt-2 justify-content-center">
-                        <div className="col-md-auto">
+                        <div className="col-auto">
                             <div
                                 className="btn-group btn-group-lg"
                                 role="group"
@@ -484,7 +482,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                         <h3>View Options</h3>
                     </div>
                     <div className="row mt-2 justify-content-center">
-                        <div className="col-md-auto">
+                        <div className="col-auto">
                             <div
                                 className="btn-group btn-group-lg"
                                 role="group"
@@ -509,7 +507,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                         <h3>Categories</h3>
                     </div>
                     <div className="row mt-1 justify-content-center">
-                        <div className="col-md-auto">
+                        <div className="col-auto">
                             <div
                                 className="btn-group-vertical btn-group-lg"
                                 role="group"
@@ -580,7 +578,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                         </div>
                     </div>
                     <div className="row mt-2 justify-content-center">
-                        <div className="col-md-auto">
+                        <div className="col-auto">
                             {heismanList.length > 0 ? (
                                 <button
                                     type="button"
@@ -601,12 +599,12 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                         </div>
                     </div>
                 </div>
-                <div className="col-md-10">
+                <div className="col-10">
                     <div className="row mt-3 justify-content-between">
-                        <div className="col-md-auto">
+                        <div className="col-auto">
                             <h4 className="text-start align-middle">Filters</h4>
                         </div>
-                        <div className="col-md-auto">
+                        <div className="col-auto">
                             <h4 className="text-start align-middle me-2">
                                 {cfb_Timestamp &&
                                     `Current Week ${cfb_Timestamp.CollegeWeek}`}
@@ -614,7 +612,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-md-auto">
+                        <div className="col-auto">
                             <h5 className="text-start align-middle">Seasons</h5>
                             <Select
                                 options={seasons}
@@ -625,7 +623,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                             />
                         </div>
                         {viewType === 'WEEK' && (
-                            <div className="col-md-auto">
+                            <div className="col-auto">
                                 <h5 className="text-start align-middle">
                                     Week
                                 </h5>
@@ -639,7 +637,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                             </div>
                         )}
                         {currentView === 'PLAYER' && (
-                            <div className="col-md-auto">
+                            <div className="col-auto">
                                 <h5 className="text-start align-middle">
                                     Teams
                                 </h5>
@@ -652,7 +650,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                 />
                             </div>
                         )}
-                        <div className="col-md-auto">
+                        <div className="col-auto">
                             <h5 className="text-start align-middle">
                                 Conferences
                             </h5>
@@ -664,7 +662,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                 onChange={ChangeConferenceSelections}
                             />
                         </div>
-                        <div className="col-md-auto">
+                        <div className="col-auto">
                             <h5 className="text-start align-middle">Search</h5>
                             <StatsPageButton
                                 statType="search"
@@ -679,7 +677,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                         </div>
                     </div>
                     <div className="row mt-2">
-                        <div className="col-md-auto"></div>
+                        <div className="col-auto"></div>
                     </div>
                     <HeismanModal list={heismanList} viewMode={viewMode} />
                     <div className="row mt-3 mb-5">
@@ -734,6 +732,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                           idx={idx}
                                                           player={x}
                                                           viewType={viewType}
+                                                          isNFL={false}
                                                       />
                                                   ) : (
                                                       <TeamStatRow

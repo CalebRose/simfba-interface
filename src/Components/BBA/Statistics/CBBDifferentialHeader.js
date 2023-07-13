@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const CBBDifferentialHeader = ({ sortFunc, cv }) => {
+export const CBBDifferentialHeader = ({ sortFunc, cv, viewType }) => {
     const returnSort = (val) => {
         return sortFunc(val, cv);
     };
@@ -8,7 +8,7 @@ export const CBBDifferentialHeader = ({ sortFunc, cv }) => {
         <tr>
             <th scope="col">Team</th>
             <th scope="col">Conf.</th>
-            <th scope="col">GP</th>
+            {viewType === 'SEASON' && <th scope="col">GP</th>}
             <th scope="col" onClick={() => returnSort('PointsDiff', cv)}>
                 PTS
             </th>

@@ -3,11 +3,11 @@ import { GetStatsYear } from '../../../_Utility/RosterHelper';
 import { getLogo } from '../../../Constants/getLogo';
 const _ = require('lodash');
 
-export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
+export const PlayerStatRow = ({ statType, idx, player, viewType, isNFL }) => {
     const name = player.FirstName + ' ' + player.LastName;
     const s = viewType === 'SEASON' ? player.SeasonStats : player.Stats;
     const games = player.SeasonStats ? player.SeasonStats.GamesPlayed : 0;
-    const year = GetStatsYear(player, viewType);
+    const year = !isNFL ? GetStatsYear(player, viewType) : player.Year;
     const teamLogo = getLogo(player.TeamAbbr);
     const opposingLogo = getLogo(s.OpposingTeam);
     const PassingRow = () => {
@@ -59,11 +59,15 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 <td label="LongestPass">{s.LongestPass}</td>
                 {viewType === 'WEEK' && (
                     <td className="">
-                        <img
-                            className="image-nfl-fa mx-1"
-                            src={opposingLogo}
-                            alt="competing-team"
-                        />
+                        {!isNFL ? (
+                            <img
+                                className="image-nfl-fa mx-1"
+                                src={opposingLogo}
+                                alt="competing-team"
+                            />
+                        ) : (
+                            s.OpposingTeam
+                        )}
                     </td>
                 )}
             </tr>
@@ -96,11 +100,15 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 <td label="LongestRush">{s.LongestRush}</td>
                 {viewType === 'WEEK' && (
                     <td className="">
-                        <img
-                            className="image-nfl-fa mx-1"
-                            src={opposingLogo}
-                            alt="competing-team"
-                        />
+                        {!isNFL ? (
+                            <img
+                                className="image-nfl-fa mx-1"
+                                src={opposingLogo}
+                                alt="competing-team"
+                            />
+                        ) : (
+                            s.OpposingTeam
+                        )}
                     </td>
                 )}
             </tr>
@@ -134,11 +142,15 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 <td label="LongestReception">{s.LongestReception}</td>
                 {viewType === 'WEEK' && (
                     <td className="">
-                        <img
-                            className="image-nfl-fa mx-1"
-                            src={opposingLogo}
-                            alt="competing-team"
-                        />
+                        {!isNFL ? (
+                            <img
+                                className="image-nfl-fa mx-1"
+                                src={opposingLogo}
+                                alt="competing-team"
+                            />
+                        ) : (
+                            s.OpposingTeam
+                        )}
                     </td>
                 )}
             </tr>
@@ -175,11 +187,15 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 <td label="DefensiveTDs">{s.DefensiveTDs}</td>
                 {viewType === 'WEEK' && (
                     <td className="">
-                        <img
-                            className="image-nfl-fa mx-1"
-                            src={opposingLogo}
-                            alt="competing-team"
-                        />
+                        {!isNFL ? (
+                            <img
+                                className="image-nfl-fa mx-1"
+                                src={opposingLogo}
+                                alt="competing-team"
+                            />
+                        ) : (
+                            s.OpposingTeam
+                        )}
                     </td>
                 )}
             </tr>
@@ -210,11 +226,15 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 <td label="PuntsInside20">{s.PuntsInside20}</td>
                 {viewType === 'WEEK' && (
                     <td className="">
-                        <img
-                            className="image-nfl-fa mx-1"
-                            src={opposingLogo}
-                            alt="competing-team"
-                        />
+                        {!isNFL ? (
+                            <img
+                                className="image-nfl-fa mx-1"
+                                src={opposingLogo}
+                                alt="competing-team"
+                            />
+                        ) : (
+                            s.OpposingTeam
+                        )}
                     </td>
                 )}
             </tr>
@@ -240,11 +260,15 @@ export const PlayerStatRow = ({ statType, idx, player, viewType }) => {
                 <td label="SacksAllowed">{s.SacksAllowed}</td>
                 {viewType === 'WEEK' && (
                     <td className="">
-                        <img
-                            className="image-nfl-fa mx-1"
-                            src={opposingLogo}
-                            alt="competing-team"
-                        />
+                        {!isNFL ? (
+                            <img
+                                className="image-nfl-fa mx-1"
+                                src={opposingLogo}
+                                alt="competing-team"
+                            />
+                        ) : (
+                            s.OpposingTeam
+                        )}
                     </td>
                 )}
             </tr>

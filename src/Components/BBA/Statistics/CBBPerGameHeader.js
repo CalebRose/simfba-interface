@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const CBBPerGameHeader = ({ sortFunc, cv }) => {
+export const CBBPerGameHeader = ({ sortFunc, cv, viewType }) => {
     const returnSort = (val) => {
         return sortFunc(val, cv);
     };
@@ -8,7 +8,7 @@ export const CBBPerGameHeader = ({ sortFunc, cv }) => {
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Team</th>
-            <th scope="col">GP</th>
+            {viewType === 'SEASON' && <th scope="col">GP</th>}
             <th scope="col" onClick={() => returnSort('MinutesPerGame', cv)}>
                 MPG
             </th>

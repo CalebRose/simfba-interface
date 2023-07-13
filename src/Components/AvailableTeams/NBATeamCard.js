@@ -4,7 +4,7 @@ import { GetMobileCardClass } from '../../Constants/CSSClassHelper';
 const NBATeamCard = (props) => {
     const { ovr, off, def, team, logo, disable, viewMode, request } = props;
     const [requested, setRequested] = React.useState(false);
-    const { Team, Nickname, Conference } = team;
+    const { Team, Nickname, Conference, LeagueID } = team;
 
     const sendRequest = () => {
         if (disable === false) {
@@ -66,6 +66,7 @@ const NBATeamCard = (props) => {
                                         onClick={sendRequest}
                                         value="o"
                                         style={teamColors}
+                                        disabled={LeagueID > 1}
                                     >
                                         Request
                                     </button>
@@ -90,6 +91,7 @@ const NBATeamCard = (props) => {
                                         onClick={sendRequest}
                                         value="gm"
                                         style={teamColors}
+                                        disabled={LeagueID > 1}
                                     >
                                         Request
                                     </button>
@@ -114,6 +116,7 @@ const NBATeamCard = (props) => {
                                         onClick={sendRequest}
                                         value="hc"
                                         style={teamColors}
+                                        disabled={LeagueID > 1}
                                     >
                                         Request
                                     </button>
@@ -138,6 +141,7 @@ const NBATeamCard = (props) => {
                                         onClick={sendRequest}
                                         value="a"
                                         style={teamColors}
+                                        disabled={LeagueID > 1}
                                     >
                                         Request
                                     </button>

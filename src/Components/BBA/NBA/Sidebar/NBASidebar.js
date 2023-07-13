@@ -16,7 +16,15 @@ export const NBACapsheetRow = ({ year, total, space }) => (
     </div>
 );
 
-export const NBASidebar = ({ team, ts, isRoster, canModify, isMobile }) => {
+export const NBASidebar = ({
+    team,
+    ts,
+    isRoster,
+    canModify,
+    isMobile,
+    tp,
+    isTradeBlock
+}) => {
     const {
         Capsheet,
         NBAOwnerName,
@@ -151,6 +159,56 @@ export const NBASidebar = ({ team, ts, isRoster, canModify, isMobile }) => {
                         </h6>
                     </div>
                 </div>
+                {isTradeBlock && (
+                    <>
+                        <div className="row mt-2 mb-1 pe-2">
+                            <h3>Trade Preferences</h3>
+                        </div>
+                        <div className="row mb-2 ps-3 pe-3">
+                            {canModify && !isMobile && (
+                                <button
+                                    type="button"
+                                    className="btn btn-success"
+                                    title="Update Trade Preferences"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#tradePreferencesModal"
+                                >
+                                    Update Preferences
+                                </button>
+                            )}
+                        </div>
+                        {tp && tp.DraftPicks && (
+                            <div className="row mb-1 pe-2 justify-content-center">
+                                {tp.DraftPickType} Draft Picks
+                            </div>
+                        )}
+                        {tp && tp.PointGuards && (
+                            <div className="row mb-1 pe-2 justify-content-center">
+                                {tp.PointGuardSpecialties} Point Guards
+                            </div>
+                        )}
+                        {tp && tp.PowerForwards && (
+                            <div className="row mb-1 pe-2 justify-content-center">
+                                {tp.PowerForwardSpecialties} Power Forwards
+                            </div>
+                        )}
+                        {tp && tp.ShootingGuards && (
+                            <div className="row mb-1 pe-2 justify-content-center">
+                                {tp.ShootingGuardSpecialties} Shooting Guards
+                            </div>
+                        )}
+                        {tp && tp.SmallForwards && (
+                            <div className="row mb-1 pe-2 justify-content-center">
+                                {tp.SmallForwardSpecialties} Small Forwards
+                            </div>
+                        )}
+                        {tp && tp.Centers && (
+                            <div className="row mb-1 pe-2 justify-content-center">
+                                {tp.CenterSpecialties} Centers
+                            </div>
+                        )}
+                    </>
+                )}
             </div>
         </>
     );

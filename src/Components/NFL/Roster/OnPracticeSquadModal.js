@@ -42,51 +42,62 @@ export const PracticeSquadModal = ({
                                 <>
                                     Placing {name} on the Practice Squad will
                                     make them unavailable on your team's depth
-                                    chart. To make them available, you will need
-                                    to bring the player from the practice squad
-                                    back onto the roster.
+                                    chart. It will also remove the contract
+                                    placed on them, and will apply any remaining
+                                    bonus to your team's capsheet this year. To
+                                    make them available, you will need to bring
+                                    the player from the practice squad back onto
+                                    the roster through the Free Agency Page.
                                 </>
                             ) : (
                                 <>
-                                    Oh, man. You must be really hurting if
-                                    you're bringing {player.Position} {name}{' '}
-                                    back on the roster. Eh, what am I saying,
-                                    I'm just a paragraph, I don't know the
-                                    current state of your roster.{' '}
+                                    Please navigate to the FA page and place a
+                                    claiming offer on {player.Position} {name}{' '}
+                                    in order to bring them back onto your main
+                                    roster.
                                 </>
                             )}
                         </div>
 
-                        <div className="row g-2 gy-2 mb-2">
-                            {!player.IsPracticeSquad ? (
+                        {!player.IsPracticeSquad && (
+                            <div className="row g-2 gy-2 mb-2">
                                 <p>
                                     Do you really want to place {name} on the
                                     Practice Squad?
                                 </p>
-                            ) : (
-                                <p>
-                                    Do you <i>really</i> want to place {name}{' '}
-                                    back on your roster?
-                                </p>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                     <div className="modal-footer">
-                        <button
-                            type="button"
-                            className="btn btn-secondary"
-                            data-bs-dismiss="modal"
-                        >
-                            No
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-danger"
-                            data-bs-dismiss="modal"
-                            onClick={confirmChange}
-                        >
-                            Yes
-                        </button>
+                        {!player.IsPracticeSquad ? (
+                            <>
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    data-bs-dismiss="modal"
+                                >
+                                    No
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-danger"
+                                    data-bs-dismiss="modal"
+                                    onClick={confirmChange}
+                                >
+                                    Yes
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    data-bs-dismiss="modal"
+                                >
+                                    Okay
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

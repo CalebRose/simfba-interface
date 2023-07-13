@@ -46,14 +46,20 @@ const NBAPlayerRow = ({ player }) => {
     );
 };
 
-const DraftPickRow = ({ pick }) => {
+const DraftPickRow = ({ pick, isNFL }) => {
     return (
         <>
             <tr style={{ zIndex: -1 }}>
                 <th scope="row">{pick.Season}</th>
-                <td className="align-middle">{pick.Round}</td>
-                <td className="align-middle">{pick.PickNumber}</td>
-                <td className="align-middle">{pick.TradeValue}</td>
+                <td className="align-middle">
+                    {isNFL ? pick.Round : pick.DraftRound}
+                </td>
+                <td className="align-middle">
+                    {isNFL ? pick.PickNumber : pick.DraftNumber}
+                </td>
+                <td className="align-middle">
+                    {isNFL ? pick.TradeValue : pick.DraftValue}
+                </td>
                 <td className="align-middle">{pick.OriginalTeam}</td>
             </tr>
         </>
@@ -64,7 +70,7 @@ export const TradeBlockRow = ({ viewMode, obj }) => {
     return viewMode === 'Players' ? (
         <PlayerRow player={obj} />
     ) : (
-        <DraftPickRow pick={obj} />
+        <DraftPickRow pick={obj} isNFL={true} />
     );
 };
 
@@ -72,6 +78,6 @@ export const NBATradeBlockRow = ({ viewMode, obj }) => {
     return viewMode === 'Players' ? (
         <NBAPlayerRow player={obj} />
     ) : (
-        <DraftPickRow pick={obj} />
+        <DraftPickRow pick={obj} isNFL={false} />
     );
 };

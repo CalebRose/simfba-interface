@@ -244,7 +244,7 @@ export const NFLSidebar = ({
                         <h3>Trade Preferences</h3>
                     </div>
                     <div className="row mb-2 ps-3 pe-3">
-                        {canModify && !isMobile ? (
+                        {canModify && !isMobile && (
                             <button
                                 type="button"
                                 className="btn btn-success"
@@ -254,8 +254,6 @@ export const NFLSidebar = ({
                             >
                                 Update Preferences
                             </button>
-                        ) : (
-                            ''
                         )}
                     </div>
                     {tp && tp.DraftPicks && (

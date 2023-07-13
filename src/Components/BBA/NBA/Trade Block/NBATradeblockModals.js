@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { GetModalClass } from '../../../../Constants/CSSClassHelper';
-import { GetOptionList } from '../../../NFL/TradeBlock/TradeBlockHelper';
+import {
+    GetOptionList,
+    LoadNBATradeOptions,
+    LoadTradeOptions
+} from '../../../NFL/TradeBlock/TradeBlockHelper';
 import { GetNBACapSpace } from '../../../NFL/FreeAgency/FreeAgencyHelper';
 import { Dropdown, TradeDropdown } from '../../../_Common/Dropdown';
 import { NumberInput } from '../../../_Common/Input';
 import { SwitchToggle } from '../../../_Common/SwitchToggle';
 import { NBACapsheetRow } from '../Sidebar/NBASidebar';
+import { RoundToTwoDecimals } from '../../../../_Utility/utilHelper';
 
 const CapspaceColumn = ({ team, ts }) => {
     const {
@@ -53,10 +58,7 @@ const CapspaceColumn = ({ team, ts }) => {
                     <h5>Year</h5>
                 </div>
                 <div className="col-3">
-                    <h5>Bonus</h5>
-                </div>
-                <div className="col-3">
-                    <h5>Salary</h5>
+                    <h5>Total</h5>
                 </div>
                 <div className="col-3">
                     <h5>Space</h5>
@@ -64,27 +66,27 @@ const CapspaceColumn = ({ team, ts }) => {
             </div>
             <NBACapsheetRow
                 year={Season}
-                bonus={capsheet.Year1Total}
+                total={capsheet.Year1Total}
                 space={y1Space}
             />
             <NBACapsheetRow
                 year={Season + 1}
-                bonus={capsheet.Year2Total}
+                total={capsheet.Year2Total}
                 space={y2Space}
             />
             <NBACapsheetRow
                 year={Season + 2}
-                bonus={capsheet.Year3Total}
+                total={capsheet.Year3Total}
                 space={y3Space}
             />
             <NBACapsheetRow
                 year={Season + 3}
-                bonus={capsheet.Year4Total}
+                total={capsheet.Year4Total}
                 space={y4Space}
             />
             <NBACapsheetRow
                 year={Season + 4}
-                bonus={capsheet.Year5Total}
+                total={capsheet.Year5Total}
                 space={y5Space}
             />
         </div>
@@ -104,7 +106,7 @@ export const NBAOptionCard = ({
     const title =
         optionType === 'Player'
             ? `${opt.Position} ${opt.FirstName} ${opt.LastName}`
-            : `${opt.Season} Round ${opt.Round}`;
+            : `${opt.Season} Round ${opt.DraftRound}`;
     const description =
         optionType === 'Player' ? (
             <>
@@ -120,18 +122,18 @@ export const NBAOptionCard = ({
             <>
                 {opt.PickNumber > 0 && (
                     <p className="card-text mb-0">
-                        Pick Number: {opt.PickNumber}
+                        Pick Number: {opt.DraftNumber}
                     </p>
                 )}
-                <p className="card-text">Trade Value: {opt.TradeValue}</p>
+                <p className="card-text">Trade Value: {opt.DraftValue}</p>
             </>
         );
 
-    const salaryPercentageLabel = sp ? sp : opt.SalaryPercentage;
+    const salaryPercentageLabel = sp ? sp : opt.CashTransfer;
 
     const helper = (event) => {
         const { name, value } = event.target;
-        return change(name, value, idx, isUser);
+        return change(name, value, idx, isUser); // Cash Transfer Change
     };
 
     const removeHelper = () => {
@@ -152,7 +154,7 @@ export const NBAOptionCard = ({
                         />
                     ) : (
                         <i
-                            className={`bi bi-${opt.Round}-circle-fill`}
+                            className={`bi bi-${opt.DraftRound}-circle-fill`}
                             style={{ fontSize: '20px' }}
                         />
                     )}
@@ -179,12 +181,12 @@ export const NBAOptionCard = ({
                                 className="salary-percentage-label pe-3 text-wrap mb-1"
                                 title="The amount the sending team will pay for the salary."
                             >
-                                1st Year Salary Percentage
+                                Cash Transfer
                             </label>
                             {isProposalModal ? (
                                 <NumberInput
-                                    name="SalaryPercentage"
-                                    value={opt.SalaryPercentage || 0}
+                                    name="CashTransfer"
+                                    value={opt.CashTransfer || 0}
                                     change={helper}
                                 />
                             ) : (
@@ -258,6 +260,9 @@ export const NBATradeProposalModal = ({
 }) => {
     const [userOptions, setUserOptions] = useState([]);
     const [receiverOptions, setReceiverOptions] = useState([]);
+    const [userValue, setUserValue] = useState(0);
+    const [receiverValue, setReceiverValue] = useState(0);
+    const [validTrade, setValidTrade] = useState(true);
     const modalId = `tradeProposalModal`;
     const modalClass = GetModalClass(theme);
     const userList = GetOptionList(userPlayers, userPicks, userOptions);
@@ -267,31 +272,72 @@ export const NBATradeProposalModal = ({
         receiverOptions
     );
 
+    const ValidateTrade = () => {
+        let validity = false;
+
+        const userMinRange = userValue * 0.9;
+        const userMaxRange = userValue * 1.1;
+        const recMinRange = receiverValue * 0.9;
+        const recMaxRange = receiverValue * 1.1;
+        validity =
+            receiverValue >= userMinRange &&
+            receiverValue <= userMaxRange &&
+            userValue >= recMinRange &&
+            userValue <= recMaxRange;
+
+        setValidTrade(() => validity);
+    };
+
     const RemoveFromList = (opt, isUser) => {
         const list = isUser ? [...userOptions] : [...receiverOptions];
         const newList = [];
+        let value = 0;
         for (let i = 0; i < list.length; i++) {
             const item = list[i];
             if (item.OptionType === opt.OptionType && item.ID === opt.ID)
                 continue;
+            if (item.OptionType === 'Player') {
+                value +=
+                    Number(item.Contract.TotalRemaining) +
+                    (Number(item.CashTransfer) || 0);
+            } else {
+                value += Number(item.DraftValue);
+            }
             newList.push(item);
         }
         if (isUser) {
             setUserOptions(() => newList);
+            setUserValue(() => value);
         } else {
             setReceiverOptions(() => newList);
+            setReceiverValue(() => value);
         }
+        ValidateTrade();
     };
 
     const AddToList = (opt, isUser) => {
         const list = isUser ? [...userOptions] : [...receiverOptions];
         const obj = { ...opt };
         list.push(obj);
-        if (isUser) {
-            setUserOptions(() => list);
+        let value = 0;
+        if (obj.OptionType === 'Player') {
+            value +=
+                Number(obj.Contract.TotalRemaining) +
+                (Number(obj.CashTransfer) || 0);
         } else {
-            setReceiverOptions(() => list);
+            value += Number(obj.DraftValue);
         }
+
+        if (isUser) {
+            const totalValue = userValue + value;
+            setUserOptions(() => list);
+            setUserValue(() => totalValue);
+        } else {
+            const totalValue = receiverValue + value;
+            setReceiverOptions(() => list);
+            setReceiverValue(() => totalValue);
+        }
+        ValidateTrade();
     };
 
     const ClearOptions = () => {
@@ -304,15 +350,19 @@ export const NBATradeProposalModal = ({
         const RecepientTeamID = currentTeam.ID;
         const NBATeam = userTeam.Team + ' ' + userTeam.Nickname;
         const RecepientTeam = currentTeam.Team + ' ' + currentTeam.Nickname;
-        const tradeOptions = LoadTradeOptions(userOptions, NBATeamID, false);
-        const recepientTradeOptions = LoadTradeOptions(
+        const tradeOptions = LoadNBATradeOptions(userOptions, NBATeamID, false);
+        const recepientTradeOptions = LoadNBATradeOptions(
             receiverOptions,
             RecepientTeamID,
             false
         );
 
-        const modalSentOptions = LoadTradeOptions(userOptions, NBATeamID, true);
-        const modalRecepientTradeOptions = LoadTradeOptions(
+        const modalSentOptions = LoadNBATradeOptions(
+            userOptions,
+            NBATeamID,
+            true
+        );
+        const modalRecepientTradeOptions = LoadNBATradeOptions(
             receiverOptions,
             RecepientTeamID,
             true
@@ -336,17 +386,29 @@ export const NBATradeProposalModal = ({
         return Propose(dto, modalDTO);
     };
 
-    const SalaryPercentageChange = (name, value, idx, isUser) => {
+    const CashTransferChange = (name, value, idx, isUser) => {
         const list = isUser ? [...userOptions] : [...receiverOptions];
-        let percent = value;
-        if (value > 100) percent = 100;
-        else if (value < 0) percent = 0;
-        list[idx][name] = percent;
+        list[idx][name] = value;
+
+        let listValue = 0;
+        for (let i = 0; i < list.length; i++) {
+            const item = list[i];
+            if (item.OptionType === 'Player') {
+                listValue +=
+                    Number(item.Contract.TotalRemaining) +
+                    (Number(item.CashTransfer) || 0);
+            } else {
+                listValue += Number(item.DraftValue);
+            }
+        }
         if (isUser) {
             setUserOptions(() => list);
+            setUserValue(() => listValue);
         } else {
             setReceiverOptions(() => list);
+            setReceiverValue(() => listValue);
         }
+        ValidateTrade();
     };
 
     return (
@@ -383,6 +445,7 @@ export const NBATradeProposalModal = ({
                                         list={userList}
                                         click={AddToList}
                                         isUser
+                                        isNFL={false}
                                     />
                                 </div>
                                 {userOptions.length > 0 &&
@@ -391,7 +454,7 @@ export const NBATradeProposalModal = ({
                                             optionType={x.OptionType}
                                             opt={x}
                                             idx={idx}
-                                            change={SalaryPercentageChange}
+                                            change={CashTransferChange}
                                             remove={RemoveFromList}
                                             isUser
                                             isProposalModal
@@ -407,6 +470,7 @@ export const NBATradeProposalModal = ({
                                         value="Select a Player or Pick"
                                         list={tradableList}
                                         click={AddToList}
+                                        isNFL={false}
                                     />
                                 </div>
                                 {receiverOptions.length > 0 &&
@@ -416,7 +480,7 @@ export const NBATradeProposalModal = ({
                                             opt={x}
                                             idx={idx}
                                             remove={RemoveFromList}
-                                            change={SalaryPercentageChange}
+                                            change={CashTransferChange}
                                             isProposalModal
                                         />
                                     ))}
@@ -425,6 +489,12 @@ export const NBATradeProposalModal = ({
                         </div>
                     </div>
                     <div className="modal-footer">
+                        <div className="col">
+                            <p>User Team Value: {userValue}</p>
+                        </div>
+                        <div className="col">
+                            <p>Receiving Team Value: {receiverValue}</p>
+                        </div>
                         <button
                             type="button"
                             className="btn btn-secondary"
@@ -438,6 +508,7 @@ export const NBATradeProposalModal = ({
                             className="btn btn-warning"
                             data-bs-dismiss="modal"
                             onClick={click}
+                            disabled={!validTrade}
                         >
                             Propose
                         </button>
@@ -534,9 +605,9 @@ export const NBATradePreferencesModal = ({
                                 position="PointGuards"
                                 check={tradePreferences.PointGuards}
                                 toggle={UpdatePreferences}
-                                positionType="PointGuardType"
+                                positionType="PointGuardSpecialties"
                                 click={UpdateType}
-                                value={tradePreferences.PointGuardType}
+                                value={tradePreferences.PointGuardSpecialties}
                                 list={[
                                     'Any',
                                     'Floor General',
@@ -550,9 +621,9 @@ export const NBATradePreferencesModal = ({
                                 position="PowerForwards"
                                 check={tradePreferences.PowerForwards}
                                 toggle={UpdatePreferences}
-                                positionType="PowerForwardType"
+                                positionType="PowerForwardSpecialties"
                                 click={UpdateType}
-                                value={tradePreferences.PowerForwardType}
+                                value={tradePreferences.PowerForwardSpecialties}
                                 list={[
                                     'Any',
                                     'Point Forward',
@@ -567,9 +638,11 @@ export const NBATradePreferencesModal = ({
                                 position="ShootingGuards"
                                 check={tradePreferences.ShootingGuards}
                                 toggle={UpdatePreferences}
-                                positionType="ShootingGuardType"
+                                positionType="ShootingGuardSpecialties"
                                 click={UpdateType}
-                                value={tradePreferences.ShootingGuardType}
+                                value={
+                                    tradePreferences.ShootingGuardSpecialties
+                                }
                                 list={[
                                     'Any',
                                     'Floor General',
@@ -586,9 +659,9 @@ export const NBATradePreferencesModal = ({
                                 position="SmallForwards"
                                 check={tradePreferences.SmallForwards}
                                 toggle={UpdatePreferences}
-                                positionType="SmallForwardType"
+                                positionType="SmallForwardSpecialties"
                                 click={UpdateType}
-                                value={tradePreferences.SmallForwardType}
+                                value={tradePreferences.SmallForwardSpecialties}
                                 list={[
                                     'Any',
                                     'Point Forward',
@@ -605,9 +678,9 @@ export const NBATradePreferencesModal = ({
                                 position="Centers"
                                 check={tradePreferences.Centers}
                                 toggle={UpdatePreferences}
-                                positionType="CenterType"
+                                positionType="CenterSpecialties"
                                 click={UpdateType}
-                                value={tradePreferences.CenterType}
+                                value={tradePreferences.CenterSpecialties}
                                 list={[
                                     'Any',
                                     'Rim Protector',

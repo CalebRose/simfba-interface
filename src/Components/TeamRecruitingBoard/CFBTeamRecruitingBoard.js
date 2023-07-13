@@ -115,7 +115,6 @@ const CFBTeamRecruitingBoard = ({
             RewardScholarship: scholarshipVal,
             RevokeScholarship: revokedVal
         };
-
         const response = await _recruitingService.ToggleScholarship(
             UpdateRecruitDto
         );
@@ -411,10 +410,9 @@ const CFBTeamRecruitingBoard = ({
                                 If you're seeing this, Recruiting is currently
                                 being synced. No, you can't view your board
                                 right now. Nor can you ask to see who's being
-                                synced in real time. Please go to bed, and in
-                                the morning all of your croots will be gifted
-                                and wrapped nicely underneath your crootsmas
-                                tree. You're welcome.
+                                synced in real time. Please make a bowl of Froot
+                                Loops cereal in the meantime to enjoy the moment
+                                and to increase your odds in the recruit sync.
                             </div>
                         ) : (
                             ''

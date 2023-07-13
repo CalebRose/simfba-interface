@@ -223,7 +223,7 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode }) => {
             aria-hidden="true"
         >
             <div className="modal-dialog modal-xl">
-                <div className={viewMode}>
+                <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="standingsLabel">
                             <img
