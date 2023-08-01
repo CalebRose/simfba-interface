@@ -65,7 +65,27 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
         selectTeam(userTeam);
     };
 
-    const CutPlayerFromRoster = () => {};
+    const CutPlayerFromRoster = async (player) => {
+        const res = await _playerService.CutNBAPlayerFromRoster(player.ID);
+        if (res) {
+            const currentRoster = [...roster];
+            setRoster(() => []);
+
+            const filteredRoster = currentRoster.filter(
+                (x) => x.ID !== player.ID
+            );
+
+            const t = { ...team };
+            const contract = player.Contract;
+            t.Capsheet.Year1Total -= contract.Year1Total;
+            t.Capsheet.Year2Total -= contract.Year2Total;
+            t.Capsheet.Year3Total -= contract.Year3Total;
+            t.Capsheet.Year4Total -= contract.Year4Total;
+            t.Capsheet.Year5Total -= contract.Year5Total;
+            setRoster(() => filteredRoster);
+            setTeam(() => t);
+        }
+    };
 
     const ExtendPlayer = () => {};
 

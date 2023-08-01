@@ -25,4 +25,9 @@ export default class BBANewsService {
         //this uses GetCall function from FetchHelper file to return news for a NBA season
         return GetCall(`${url}nba/news/all/`);
     }
+
+    async GetPersonalizedNewsFeed(league, teamID) {
+        //this uses GetCall function from FetchHelper file to return news for a NFL season
+        return GetCall(`${url}news/feed/${league}/${teamID}/`);
+    }
 }

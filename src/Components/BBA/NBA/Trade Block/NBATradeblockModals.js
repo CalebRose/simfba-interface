@@ -508,7 +508,7 @@ export const NBATradeProposalModal = ({
                             className="btn btn-warning"
                             data-bs-dismiss="modal"
                             onClick={click}
-                            disabled={!validTrade}
+                            // disabled={!validTrade}
                         >
                             Propose
                         </button>

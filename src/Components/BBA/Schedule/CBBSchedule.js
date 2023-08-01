@@ -14,7 +14,10 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     let _teamService = new BBATeamService();
 
     // Hooks
-    const [allMatches, setAllMatches] = useState([]);
+    const [allCBBMatches, setAllCBBMatches] = useState([]);
+    const [allNBAMatches, setAllNBAMatches] = useState([]);
+    const [allISLMatches, setAllISLMatches] = useState([]);
+    const [viewableMatches, setViewableMatches] = useState([]);
     const [viewMatches, setViewMatches] = useState([]);
     const [weekOptions, setWeekOptions] = useState(null);
     const [teamOptions, setTeamOptions] = useState(null);
@@ -22,32 +25,54 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [selectedWeek, setSelectedWeek] = useState(null);
     const [selectedSeason, setSelectedSeason] = useState(null);
+    const [leagueView, setLeagueView] = useState(''); // CBB, NBA, ISL
     const [viewType, setViewType] = useState('WEEK');
     const [viewGame, setViewGame] = useState(null);
+    const [cbbTeams, setCBBTeams] = useState([]);
+    const [nbaTeams, setNBATeams] = useState([]);
+    const [islTeams, setISLTeams] = useState([]);
     const [showAGames, setShowAGames] = useState(true);
     const [showBGames, setShowBGames] = useState(true);
+    const [showCGames, setShowCGames] = useState(true);
+    const [showDGames, setShowDGames] = useState(true);
 
     // UseEffects
     useEffect(() => {
-        if (cbbTeam && cbb_Timestamp) {
+        if (leagueView === 'CBB' && cbb_Timestamp) {
+            GetAllCBBTeams();
+        } else if (leagueView === 'NBA' && cbb_Timestamp) {
+            GetAllNBATeams();
+        } else if (leagueView === 'ISL' && cbb_Timestamp) {
+            GetAllISLTeams();
+        }
+    }, [leagueView, cbb_Timestamp]);
+
+    useEffect(() => {
+        if (cbb_Timestamp) {
             GetAllWeeks();
-            GetAllTeams();
             GetAllMatches(cbb_Timestamp.SeasonID);
         }
-    }, [cbbTeam, cbb_Timestamp]);
+    }, [cbb_Timestamp]);
 
     useEffect(() => {
         let gamesView = [];
-        if (viewType === 'TEAM') {
+        if (leagueView === 'CBB') {
+            gamesView = [...allCBBMatches];
+        } else if (leagueView === 'NBA') {
+            gamesView = [...allNBAMatches];
+        } else {
+            gamesView = [...allISLMatches];
+        }
+        if (viewType === 'TEAM' && selectedTeam.length > 0) {
             gamesView = [
-                ...allMatches.filter(
+                ...gamesView.filter(
                     (x) =>
                         x.HomeTeam === selectedTeam ||
                         x.AwayTeam === selectedTeam
                 )
             ];
         } else {
-            gamesView = [...allMatches.filter((x) => x.Week === selectedWeek)];
+            gamesView = [...gamesView.filter((x) => x.Week === selectedWeek)];
         }
 
         if (!showAGames) {
@@ -58,32 +83,87 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             gamesView = gamesView.filter((x) => x.MatchOfWeek !== 'B');
         }
 
+        if (!showCGames) {
+            gamesView = gamesView.filter((x) => x.MatchOfWeek !== 'C');
+        }
+
+        if (!showDGames) {
+            gamesView = gamesView.filter((x) => x.MatchOfWeek !== 'D');
+        }
+
         setViewMatches(() => gamesView);
     }, [
         selectedTeam,
         selectedWeek,
         viewType,
-        allMatches,
+        allCBBMatches,
         showAGames,
         showBGames
     ]);
 
     // API Functions
-    const GetAllTeams = async () => {
-        const response = await _teamService.GetActiveCollegeTeams();
-        const teamOptionForm = [
-            ...response.map((x) => {
-                return { label: x.Team, value: x.Abbr };
-            })
-        ];
+    const GetAllCBBTeams = async () => {
+        let teamOptionForm;
+        if (cbbTeams.length === 0) {
+            const response = await _teamService.GetActiveCollegeTeams();
+            teamOptionForm = [
+                ...response.map((x) => {
+                    return { label: x.Team, value: x.Abbr };
+                })
+            ];
 
+            setTeamOptions(() => teamOptionForm);
+        } else {
+            teamOptionForm = [
+                ...cbbTeams.map((x) => {
+                    return { label: x.Team, value: x.Abbr };
+                })
+            ];
+        }
+        setTeamOptions(() => teamOptionForm);
+    };
+
+    const GetAllNBATeams = async () => {
+        let teamOptionForm;
+        if (nbaTeams.length === 0) {
+            const response = await _teamService.GetNBATeams();
+            teamOptionForm = [
+                ...response.map((x) => {
+                    return { label: x.Team, value: x.Abbr };
+                })
+            ];
+        } else {
+            teamOptionForm = [
+                ...nbaTeams.map((x) => {
+                    return { label: x.Team, value: x.Abbr };
+                })
+            ];
+        }
+        setTeamOptions(() => teamOptionForm);
+    };
+
+    const GetAllISLTeams = async () => {
+        let teamOptionForm;
+        if (islTeams.length === 0) {
+            const response = await _teamService.GetAllISLTeams();
+            teamOptionForm = [
+                ...response.map((x) => {
+                    return { label: x.Team, value: x.Abbr };
+                })
+            ];
+        } else {
+            teamOptionForm = [
+                ...islTeams.map((x) => {
+                    return { label: x.Team, value: x.Abbr };
+                })
+            ];
+        }
         setTeamOptions(() => teamOptionForm);
     };
 
     const GetAllWeeks = () => {
-        // Until weeks are uploaded into the DB
         const weeksForm = [];
-        for (let i = 1; i < 21; i++) {
+        for (let i = 1; i < 31; i++) {
             weeksForm.push({ label: i, value: i });
         }
 
@@ -93,7 +173,9 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
 
     const GetAllMatches = async (seasonID) => {
         const response = await _matchService.GetMatchesBySeason(seasonID);
-        setAllMatches(() => [...response]);
+        setAllCBBMatches(() => [...response.CBBGames]);
+        setAllNBAMatches(() => [...response.NBAGames]);
+        setAllISLMatches(() => [...response.ISLGames]);
     };
 
     const ResetTeamViewOptions = () => {
@@ -108,6 +190,17 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const SelectTeamView = () => {
         ResetTeamViewOptions();
         setViewType(() => 'TEAM');
+    };
+
+    const SelectLeagueView = (event) => {
+        const { value } = event.target;
+        setSelectedTeam(() => '');
+        ResetWeekViewOptions();
+        setLeagueView(() => value);
+        if (value === 'CBB') {
+            setShowCGames(() => false);
+            setShowDGames(() => false);
+        }
     };
 
     const SelectWeekView = () => {
@@ -141,6 +234,53 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                 <h2>SimCBB {cbb_Timestamp.Season} Schedule</h2>
                 <div className="row">
                     <div className="col-md-2">
+                        <h5>League</h5>
+                        <div className="row mt-2 justify-content-center">
+                            <div className="col-auto">
+                                <div
+                                    className="btn-group btn-group-lg"
+                                    role="group"
+                                    aria-label="ViewOptions"
+                                >
+                                    <button
+                                        type="button"
+                                        className={
+                                            leagueView === 'CBB'
+                                                ? 'btn btn-primary'
+                                                : 'btn btn-secondary'
+                                        }
+                                        value="CBB"
+                                        onClick={SelectLeagueView}
+                                    >
+                                        CBB
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={
+                                            leagueView === 'NBA'
+                                                ? 'btn btn-primary'
+                                                : 'btn btn-secondary'
+                                        }
+                                        value="NBA"
+                                        onClick={SelectLeagueView}
+                                    >
+                                        NBA
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={
+                                            leagueView === 'ISL'
+                                                ? 'btn btn-primary'
+                                                : 'btn btn-secondary'
+                                        }
+                                        value="ISL"
+                                        onClick={SelectLeagueView}
+                                    >
+                                        ISL
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         <h5>Schedule Filters</h5>
                         <div className="row mt-2 justify-content-center">
                             <div className="col-md-auto">
@@ -183,29 +323,57 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                 >
                                     <button
                                         type="button"
-                                        className={
+                                        className={`btn btn-sm ${
                                             showAGames
-                                                ? 'btn btn-primary'
-                                                : 'btn btn-danger'
-                                        }
+                                                ? 'btn-primary'
+                                                : 'btn-danger'
+                                        }`}
                                         onClick={() =>
                                             setShowAGames(() => !showAGames)
                                         }
                                     >
-                                        A Games
+                                        A
                                     </button>
                                     <button
                                         type="button"
-                                        className={
+                                        className={`btn btn-sm ${
                                             showBGames
-                                                ? 'btn btn-primary'
-                                                : 'btn btn-danger'
-                                        }
+                                                ? 'btn-primary'
+                                                : 'btn-danger'
+                                        }`}
                                         onClick={() =>
                                             setShowBGames(() => !showBGames)
                                         }
                                     >
-                                        B Games
+                                        B
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`btn btn-sm ${
+                                            showCGames
+                                                ? 'btn-primary'
+                                                : 'btn-danger'
+                                        }`}
+                                        onClick={() =>
+                                            setShowCGames(() => !showCGames)
+                                        }
+                                        disabled={leagueView === 'CBB'}
+                                    >
+                                        C
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`btn btn-sm ${
+                                            showDGames
+                                                ? 'btn-primary'
+                                                : 'btn-danger'
+                                        }`}
+                                        onClick={() =>
+                                            setShowDGames(() => !showDGames)
+                                        }
+                                        disabled={leagueView === 'CBB'}
+                                    >
+                                        D
                                     </button>
                                 </div>
                             </div>
@@ -259,19 +427,19 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                     <CBBStandingsModal ts={cbb_Timestamp} />
                     <div className="col-md-10 px-md-4">
                         <div className="row mt-3 mb-5 justify-content-between">
-                            {viewMatches && viewMatches.length > 0
-                                ? viewMatches.map((x, idx) => (
-                                      <>
-                                          <CBBGameRow
-                                              idx={idx}
-                                              key={x.ID}
-                                              game={x}
-                                              ts={cbb_Timestamp}
-                                              SetGame={SetGame}
-                                          />
-                                      </>
-                                  ))
-                                : ''}
+                            {viewMatches &&
+                                viewMatches.length > 0 &&
+                                viewMatches.map((x, idx) => (
+                                    <>
+                                        <CBBGameRow
+                                            idx={idx}
+                                            key={x.ID}
+                                            game={x}
+                                            ts={cbb_Timestamp}
+                                            SetGame={SetGame}
+                                        />
+                                    </>
+                                ))}
                         </div>
                     </div>
                 </div>

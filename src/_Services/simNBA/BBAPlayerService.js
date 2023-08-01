@@ -66,6 +66,6 @@ export default class BBAPlayerService {
     }
 
     async CutNBAPlayerFromRoster(playerID) {
-        return await GetCall(`${BBAURL}nba/players/place/twoway/${playerID}`);
+        return await GetCall(`${BBAURL}nba/players/cut/${playerID}`);
     }
 }

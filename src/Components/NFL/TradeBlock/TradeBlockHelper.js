@@ -54,19 +54,19 @@ export const LoadNBATradeOptions = (options, teamID, forModal) => {
         let obj = {};
         if (item.OptionType === 'Player') {
             obj = {
-                NFLTeamID: teamID,
+                NBATeamID: teamID,
                 OptionType: item.OptionType,
-                NFLPlayerID: item.ID,
-                NFLDraftPickID: 0,
+                NBAPlayerID: item.ID,
+                NBADraftPickID: 0,
                 CashTransfer: Number(item.CashTransfer) || 0
             };
             if (forModal) obj.Player = item;
         } else {
             obj = {
-                NFLTeamID: teamID,
+                NBATeamID: teamID,
                 OptionType: item.OptionType,
-                NFLPlayerID: 0,
-                NFLDraftPickID: item.ID,
+                NBAPlayerID: 0,
+                NBADraftPickID: item.ID,
                 CashTransfer: Number(item.CashTransfer) || 0
             };
             if (forModal) obj.Draftpick = item;

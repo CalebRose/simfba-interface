@@ -90,6 +90,10 @@
     max-height: 50px !important;
 }
 
+.landing-page-row {
+    margin-left: 0.1rem;
+}
+
 .mobile-card-viewer {
     width: 92vw !important;
 }
@@ -107,6 +111,29 @@
 .img-match-schedule {
     max-height: 125px;
     max-width: 125px;
+}
+
+.bba-match-row {
+    max-width: 27vw;
+    font-size: 12px;
+    height: 125px;
+}
+
+.bba-match-row h5 {
+    font-size: 1rem;
+}
+
+.bba-match-row h6 {
+    font-size: 0.8rem;
+}
+
+.bba-match-row p {
+    margin-bottom: 0.5rem;
+}
+
+.bba-match-schedule {
+    max-height: 75px;
+    max-width: 75px;
 }
 
 .image-nfl-roster {
@@ -780,9 +807,16 @@ hr.solid {
 }
 
 .cfb-news-feed {
-    max-width: 50% !important;
+    /* max-width: 50% !important; */
     max-height: 33rem !important;
     overflow-y: auto;
+}
+
+.cbb-news-feed {
+    max-width: 55% !important;
+    max-height: 33rem !important;
+    overflow-y: auto;
+    font-size: 14px;
 }
 
 .news-feed,
@@ -805,10 +839,14 @@ hr.solid {
 }
 
 .draft-pick-container {
-    /* overflow-y: scroll; */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-y: scroll;
     height: 24rem;
     border: 1px solid white;
     border-radius: 9px;
+    justify-content: space-between;
 }
 
 .draft-war-room {
@@ -839,4 +877,53 @@ hr.solid {
 */
 .btn-sm-button {
     width: 155px;
+}
+
+.draft-card {
+    max-width: 355px !important;
+    height: 95px;
+    width: 20%;
+}
+
+.draft-card-icon {
+    margin-top: 5px;
+    max-height: 75px;
+    max-width: 75px;
+    padding-bottom: 2px;
+}
+
+.draft-number {
+}
+
+.draft-pick-text {
+    font-size: 18px;
+}
+
+@media (max-width: 768px) {
+    .draft-pick-text {
+        font-size: 14px;
+    }
+    .draft-card {
+        max-width: 355px !important;
+        height: 95px;
+        width: 100%;
+    }
+
+    .bba-match-row {
+        font-size: 12px;
+        height: 125px;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .bba-match-row p {
+        margin-bottom: 0;
+    }
+
+    .mv-icon {
+        max-width: 20%;
+    }
+    .mv-description {
+        max-width: 60%;
+    }
 }

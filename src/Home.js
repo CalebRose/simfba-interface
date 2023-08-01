@@ -45,9 +45,9 @@ import NBARosterPage from './Components/BBA/NBA/Team/NBATeam';
 import NBAFreeAgency from './Components/BBA/NBA/Free Agency/NBAFreeAgency';
 import NBATradeblock from './Components/BBA/NBA/Trade Block/NBATradeblock';
 import NFLSchedulePage from './Components/NFL/Schedule/NFLSchedulePage';
-import NFLStatisticsPage from './Components/NFL/Statistics/NFLStatisticsPage';
 import NBAGameplan from './Components/BBA/NBA/Gameplan/NBAGameplan';
 import NBADraftPage from './Components/BBA/NBA/Draft Room/NBADraftPage';
+import NBATradePortal from './Components/BBA/Admin/NBATradePortal/NBATradePortal';
 
 const Home = ({ viewMode }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -212,7 +212,7 @@ const Home = ({ viewMode }) => {
                 exact
                 path={routes.CFB_STATS}
                 render={() =>
-                    CFBTeam > 0 ? (
+                    CFBTeam > 0 || NFLTeam > 0 ? (
                         <CFBStatisticsPage />
                     ) : (
                         <Redirect to={routes.LANDING} />
@@ -296,17 +296,6 @@ const Home = ({ viewMode }) => {
                     )
                 }
             />
-            <Route
-                exact
-                path={routes.NFL_STATS}
-                render={() =>
-                    NFLTeam > 0 ? (
-                        <NFLStatisticsPage />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
 
             <Route exact path={routes.SIGNUP} component={SignUp} />
             <Route exact path={routes.LOGIN} component={Login} />
@@ -321,6 +310,13 @@ const Home = ({ viewMode }) => {
                     )
                 }
             />
+            <Route exact path={routes.NBA_ADMIN_TRADE}>
+                {bbaRoleId === Constants.ADMIN ? (
+                    <NBATradePortal />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
             <Route exact path={routes.BBA_APPROVE}>
                 {bbaRoleId === Constants.ADMIN ? (
                     <BBAApproveRequests />
@@ -376,7 +372,7 @@ const Home = ({ viewMode }) => {
             </Route>
 
             <Route exact path={routes.NBA_FREE_AGENCY}>
-                {NBATeam > 0 && viewingBeta ? (
+                {NBATeam > 0 ? (
                     <NBAFreeAgency />
                 ) : (
                     <Redirect to={routes.LANDING} />
@@ -384,7 +380,7 @@ const Home = ({ viewMode }) => {
             </Route>
 
             <Route exact path={routes.NBA_TRADEBLOCK}>
-                {NBATeam > 0 && viewingBeta ? (
+                {NBATeam > 0 ? (
                     <NBATradeblock />
                 ) : (
                     <Redirect to={routes.LANDING} />
@@ -392,7 +388,7 @@ const Home = ({ viewMode }) => {
             </Route>
 
             <Route exact path={routes.NBA_DRAFT_ROOM}>
-                {NBATeam > 0 && viewingBeta ? (
+                {NBATeam > 0 ? (
                     <NBADraftPage />
                 ) : (
                     <Redirect to={routes.LANDING} />

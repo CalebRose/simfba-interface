@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import FBATradeService from '../../../_Services/simFBA/FBATradeService';
 import { Divider } from '../../_Common/Divider';
 
-const TradeOptionRow = ({ opt }) => {
-    const isPlayer = opt.NFLPlayerID > 0;
+const TradeOptionRow = ({ opt, isNBA }) => {
+    const isPlayer = isNBA ? opt.NBAPlayerID > 0 : opt.NFLPlayerID > 0;
     const obj = isPlayer ? opt.Player : opt.Draftpick;
 
     return isPlayer ? (
@@ -20,8 +20,10 @@ const TradeOptionRow = ({ opt }) => {
     );
 };
 
-const TradePortalRow = ({ trade, accept, veto }) => {
-    const sentOptions = trade.NFLTeamTradeOptions;
+export const TradePortalRow = ({ trade, accept, veto, isNBA }) => {
+    const sentOptions = isNBA
+        ? trade.NBATeamTradeOptions
+        : trade.NFLTeamTradeOptions;
     const recepientOptions = trade.RecepientTeamTradeOptions;
     const acceptHelper = () => {
         return accept(trade.ID);
@@ -33,16 +35,18 @@ const TradePortalRow = ({ trade, accept, veto }) => {
     return (
         <div className="row mt-2">
             <div className="col">
-                <h5 className="align-middle">{trade.NFLTeam}</h5>
+                <h5 className="align-middle">
+                    {isNBA ? trade.NBATeam : trade.NFLTeam}
+                </h5>
             </div>
             <div className="col">
                 {sentOptions.map((x) => (
-                    <TradeOptionRow opt={x} />
+                    <TradeOptionRow opt={x} isNBA={isNBA} />
                 ))}
             </div>
             <div className="col">
                 {recepientOptions.map((x) => (
-                    <TradeOptionRow opt={x} />
+                    <TradeOptionRow opt={x} isNBA={isNBA} />
                 ))}
             </div>
             <div className="col">

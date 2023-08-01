@@ -286,7 +286,69 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         }
     };
 
-    const draftPlayer = async (player) => {};
+    const draftPlayer = async (player) => {
+        const draftedPlayerInfo = {
+            SelectedPlayerID: player.ID,
+            SelectedPlayerName: `${player.FirstName} ${player.LastName}`,
+            SelectedPlayerPosition: player.Position
+        };
+        const draftPicks = [...allDraftPicks];
+        draftPicks[currentDraftPickIdx] = {
+            ...draftPickList[currentDraftPickIdx],
+            ...draftedPlayerInfo
+        };
+        // Update Player Info
+        const draftablePlayers = [...allDraftablePlayers];
+        const teamInfoFromDP = {
+            DraftPickID: draftPicks[currentDraftPickIdx].ID,
+            DraftPick: `${draftPicks[currentDraftPickIdx].DraftNumber}`,
+            DraftedTeamID: draftPicks[currentDraftPickIdx].TeamID,
+            DraftedTeamAbbr: draftPicks[currentDraftPickIdx].Team
+        };
+        const draftedPlayerIDX = draftablePlayers.findIndex(
+            (x) => x.ID === player.ID
+        );
+        if (draftedPlayerIDX === -1) {
+            alert(
+                `ERROR: COULD NOT FIND ${player.ID} ${player.FirstName} ${player.LastName}`
+            );
+            return;
+        }
+        draftablePlayers[draftedPlayerIDX] = {
+            ...draftablePlayers[draftedPlayerIDX],
+            ...teamInfoFromDP
+        };
+
+        const theNextPick = nextPick;
+        const newData = {
+            ...data,
+            currentPick: theNextPick,
+            nextPick: theNextPick + 1,
+            recentlyDraftedPlayerID: player.ID,
+            allDraftPicks: draftPickList,
+            allDraftablePlayers: draftablePlayers,
+            isPaused: true
+        };
+        updateData(newData);
+        await delay(10000);
+        const endTime = firebase.firestore.Timestamp.fromDate(
+            new Date(Date.now() + seconds * 1000)
+        );
+        let seconds = 0;
+        if (currentPick < 32) {
+            seconds = 300;
+        } else {
+            seconds = 120;
+        }
+        const resetTimerData = {
+            ...newData,
+            endTime,
+            isPaused: false,
+            seconds,
+            startAt: firebase.firestore.Timestamp.fromDate(new Date(Date.now()))
+        };
+        updateData(resetTimerData);
+    };
 
     // API Calls
     const GetDraftPageData = async () => {
@@ -412,21 +474,37 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
 
                     <div className="row mt-2">
                         <div className="draft-pick-container">
-                            Draft Picks Here
                             {allDraftPicks.map((x, idx) => {
-                                const DraftNumber = idx + 1;
                                 const TeamLogo = getLogo(x.Team);
                                 return (
-                                    <div className="card mb-3">
+                                    <div className="draft-card card mt-1 mb-2 p-1">
                                         <div className="row g-0">
                                             <div className="col-1">
-                                            <p> Draft Number: {x.DraftNumber}</p></div>
-                                            <div className="col-1">
-                                                <img src={TeamLogo}/>
+                                                <strong className="draft-number">
+                                                    {x.DraftNumber}
+                                                </strong>
+                                            </div>
+                                            <div className="col-3">
+                                                <img
+                                                    className="draft-card-icon"
+                                                    src={TeamLogo}
+                                                />
                                             </div>
                                             <div className="col-8">
                                                 <div className="card-body">
-                                                    {x.SelectedPlayerID !== null && x.SelectedPlayerID < 0 ? <p>{x.SelectedPlayerName}</p> : <p>{x.Team}</p>}
+                                                    {x.SelectedPlayerID !==
+                                                        null &&
+                                                    x.SelectedPlayerID < 0 ? (
+                                                        <p className="draft-pick-text">
+                                                            {
+                                                                x.SelectedPlayerName
+                                                            }
+                                                        </p>
+                                                    ) : (
+                                                        <p className="draft-pick-text">
+                                                            {x.Team}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -463,7 +541,9 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
 
                     <div className="row mt-2">
                         <div className="col-4 px-2 nba-draft-draftee-box">
-                            <table className={tableHoverClass}>
+                            <table
+                                className={`${tableHoverClass} table-responsive`}
+                            >
                                 <thead
                                     style={{
                                         position: 'sticky',
@@ -479,9 +559,9 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                         <th scope="col">Rank</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Age</th>
-                                        <th scope="col">Height</th>
+                                        <th scope="col">Ht.</th>
                                         <th scope="col">College</th>
-                                        <th scope="col">State/Region</th>
+                                        <th scope="col">Region</th>
                                         <th scope="col">Ovr</th>
                                         <th scope="col">Scout</th>
                                     </tr>
@@ -501,7 +581,9 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                             </table>
                         </div>
                         <div className="col-8 px-2 nba-draft-scout-box">
-                            <table className={tableHoverClass}>
+                            <table
+                                className={`${tableHoverClass} table-responsive`}
+                            >
                                 <thead
                                     style={{
                                         position: 'sticky',
@@ -551,7 +633,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                                 key={x.ID}
                                                 profile={x}
                                                 idx={idx}
-                                                timestamp={cbb_Timestamp}
+                                                ts={cbb_Timestamp}
                                                 viewMode={viewMode}
                                                 currentDraftPick={
                                                     currentDraftPick

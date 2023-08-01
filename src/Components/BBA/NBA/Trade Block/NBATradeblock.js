@@ -214,6 +214,7 @@ const NBATradeBlock = ({ currentUser, cbb_Timestamp, viewMode, nbaTeam }) => {
                             accept={AcceptTrade}
                             reject={RejectTrade}
                             cancel={CancelTrade}
+                            isNBA={true}
                         />
                     )}
                 </>

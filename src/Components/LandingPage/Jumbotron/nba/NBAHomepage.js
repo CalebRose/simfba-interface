@@ -15,6 +15,7 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
     const [team, setTeam] = useState(false);
     const [logo, setLogo] = useState('');
     const [standings, setStandings] = useState([]);
+    const [newsFeed, setNewsFeed] = useState([]);
     const [viewWidth, setViewWidth] = useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:845px)` });
 
@@ -77,6 +78,13 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
                     <div className="row mt-2 mb-2">
                         <div className="btn-group btn-group-sm d-flex">
                             <Link
+                                to={routes.NBA_ROSTER}
+                                role="button"
+                                className="btn btn-primary btn-sm me-2 shadow"
+                            >
+                                Roster
+                            </Link>
+                            <Link
                                 to={routes.NBA_GAMEPLAN}
                                 role="button"
                                 className="btn btn-primary btn-md me-2 shadow"
@@ -95,7 +103,7 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
                                 role="button"
                                 className="btn btn-primary btn-md me-2 shadow"
                             >
-                                Trade Block
+                                Trade
                             </Link>
                             <Link
                                 to={routes.CBB_SCHEDULE}

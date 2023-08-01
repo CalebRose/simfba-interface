@@ -217,7 +217,7 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                 Schedule
                             </Link>
                             <Link
-                                to={routes.NFL_STATS}
+                                to={routes.CFB_STATS}
                                 role="button"
                                 className="btn btn-primary btn-md me-2 shadow"
                                 style={teamColors ? teamColors : {}}
@@ -229,7 +229,7 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                     {viewableMatches && viewableMatches.length > 0 ? (
                         viewableMatches.map((x) => {
                             return (
-                                <div className="row">
+                                <div className="row landing-page-row">
                                     <CFBMatchCard
                                         game={x}
                                         team={nflTeam}
@@ -240,7 +240,7 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                             );
                         })
                     ) : (
-                        <div className="row">
+                        <div className="row landing-page-row">
                             <div className="card text-dark bg-light mb-3">
                                 <div className="card-body">
                                     <h5 className="card-title">Loading...</h5>

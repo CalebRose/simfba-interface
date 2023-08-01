@@ -46,5 +46,6 @@ export default {
     NBA_TRADEBLOCK: '/nba/team/tradeblock',
     NBA_SCHEDULE: '/nba/schedule',
     NBA_DRAFT_ROOM: '/nba/draft/room',
-    NBA_STATS: '/nba/stats'
+    NBA_STATS: '/nba/stats',
+    NBA_ADMIN_TRADE: '/admin-nba-trade'
 };

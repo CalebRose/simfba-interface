@@ -78,6 +78,10 @@ export default class FBAPlayerService {
         return await GetCall(`${url}nflplayers/place/player/squad/${PlayerID}`);
     }
 
+    async GetInjuryData() {
+        return await GetCall(`${url}statistics/injured/players/`);
+    }
+
     async GetFreeAgencyData(TeamID) {
         return await GetCall(`${url}nflplayers/freeagency/available/${TeamID}`);
     }

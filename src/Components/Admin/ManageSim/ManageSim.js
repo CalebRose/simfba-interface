@@ -201,6 +201,7 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
     };
 
     const handleNFLTimeslotChange = async (event) => {
+        event.preventDefault();
         const { value } = event.target;
         const NFLtimeslots = value;
         const ts = { ...cfb_Timestamp };

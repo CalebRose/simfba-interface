@@ -59,7 +59,7 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
     const selectTeam = (team) => {
         let teamsList = [...teams];
         teamsList = teamsList.filter((x) => x.ID !== team.ID);
-        setTeam(team);
+        setTeam(() => team);
         setFilteredTeams(teamsList);
     };
 

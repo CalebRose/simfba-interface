@@ -138,7 +138,7 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                         </Link>
                     </li>
                     <li>
-                        <Link to={routes.NFL_STATS} className="dropdown-item">
+                        <Link to={routes.CFB_STATS} className="dropdown-item">
                             Stats
                         </Link>
                     </li>

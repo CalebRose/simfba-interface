@@ -7,7 +7,7 @@ const CBBGameRow = (props) => {
     const currentSeason = ts.SeasonID;
     const pastSeason = game.SeasonID < currentSeason;
     const modalTarget = `#gameModal`;
-    let cardClass = 'card mb-3';
+    let cardClass = 'card mb-3 bba-match-row';
     const ShowAGame =
         ts.GamesARan && game.Week === currentWeek && game.MatchOfWeek === 'A';
     const ShowBGame =
@@ -45,32 +45,32 @@ const CBBGameRow = (props) => {
         return props.SetGame(game);
     };
     return (
-        <div className={cardClass} style={{ maxWidth: '75vw' }}>
+        <div className={cardClass}>
             <div className="row g-0">
-                <div className="col-md-3 d-flex align-items-center justify-content-center">
+                <div className="col-md-2 d-flex align-items-center justify-content-center mv-icon">
                     <img
                         src={HomeTeamLogo}
-                        className="img-fluid rounded-start img-match-schedule p-1"
+                        className="img-fluid rounded-start bba-match-schedule p-1"
                         alt="homeTeam"
                     />
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-8 mv-description">
                     <div className="card-body">
-                        <h5 className="card-title">
+                        <h6 className="card-title">
                             Week {GameWeek} {homeTeam.Team} vs {awayTeam.Team}
-                        </h5>
-                        <h6 className="card-subtitle">
-                            Home Team Coach: {homeTeam.Coach} | Away Team Coach:{' '}
-                            {awayTeam.Coach}
                         </h6>
-                        <p className="card-text">{detailsLabel}</p>
-                        {game.GameComplete &&
-                            (game.Week < currentWeek ||
-                                ShowAGame ||
-                                ShowBGame ||
-                                pastSeason) && (
-                                <>
-                                    <p className="card-text">
+                        <strong className="card-subtitle">
+                            Home: {homeTeam.Coach} | Away: {awayTeam.Coach}
+                        </strong>
+                        <p className="card-text" style={{ height: '25px' }}>
+                            {detailsLabel}{' '}
+                            {game.GameComplete &&
+                                (game.Week < currentWeek ||
+                                    ShowAGame ||
+                                    ShowBGame ||
+                                    pastSeason) && (
+                                    <>
+                                        {'| '}
                                         <span
                                             className={
                                                 homeTeam.TeamWin
@@ -79,7 +79,7 @@ const CBBGameRow = (props) => {
                                             }
                                         >
                                             {game.HomeTeamScore}
-                                        </span>
+                                        </span>{' '}
                                         -{' '}
                                         <span
                                             className={
@@ -90,27 +90,27 @@ const CBBGameRow = (props) => {
                                         >
                                             {game.AwayTeamScore}
                                         </span>
-                                    </p>
-                                    <button
-                                        type="button"
-                                        className="btn btn-sm"
-                                        data-bs-toggle="modal"
-                                        data-bs-target={modalTarget}
-                                        onClick={SetGame}
-                                    >
-                                        <i className="bi bi-info-circle" />
-                                    </button>
-                                </>
-                            )}
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target={modalTarget}
+                                            onClick={SetGame}
+                                        >
+                                            <i className="bi bi-info-circle" />
+                                        </button>
+                                    </>
+                                )}
+                        </p>
                         <small className="card-text">
-                            Location: {game.Arena} in {game.City}, {game.State}
+                            {game.Arena} in {game.City}, {game.State}
                         </small>
                     </div>
                 </div>
-                <div className="col-md-3 d-flex align-items-center justify-content-center">
+                <div className="col-md-2 d-flex align-items-center justify-content-center mv-icon">
                     <img
                         src={AwayTeamLogo}
-                        className="img-fluid rounded-start img-match-schedule p-1"
+                        className="img-fluid rounded-start bba-match-schedule p-1"
                         alt="AwayTeam"
                     />
                 </div>

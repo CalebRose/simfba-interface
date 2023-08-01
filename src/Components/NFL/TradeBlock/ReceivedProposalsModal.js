@@ -1,14 +1,20 @@
 import React from 'react';
 import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { OptionCard } from './TradeProposalModal';
+import { NBAOptionCard } from '../../BBA/NBA/Trade Block/NBATradeblockModals';
 
-const ProposalItem = ({ item, idx, isSent, accept, reject, cancel }) => {
+const ProposalItem = ({ item, idx, isSent, accept, reject, cancel, isNBA }) => {
     const collapseLabel = isSent ? `${idx}-sent` : `${idx}-received`;
-    const otherTeam = isSent ? item.RecepientTeam : item.NFLTeam;
-    const team = isSent ? item.NFLTeam : item.RecepientTeam;
+    let otherTeam = isSent ? item.RecepientTeam : item.NFLTeam;
+    let team = isSent ? item.NFLTeam : item.RecepientTeam;
+    if (isNBA && isSent) {
+        team = item.NBATeam;
+    }
+    if (isNBA && !isSent) {
+        otherTeam = item.NBATeam;
+    }
     const teamArr = team.split(' ');
     const otherTeamArr = otherTeam.split(' ');
-
     const teamLabel =
         teamArr.length > 2 ? teamArr.slice(0, 2).join(' ') : teamArr[0];
     const otherTeamLabel =
@@ -22,7 +28,9 @@ const ProposalItem = ({ item, idx, isSent, accept, reject, cancel }) => {
         ? `${teamLabel} Receives`
         : `${otherTeamLabel} Receives`;
     const header = isSent ? `To ${otherTeam}` : `From ${otherTeam}`;
-    const sentOptions = item.NFLTeamTradeOptions;
+    const sentOptions = !isNBA
+        ? item.NFLTeamTradeOptions
+        : item.NBATeamTradeOptions;
     const receivedOptions = item.RecepientTeamTradeOptions;
     const acceptHelper = () => {
         return accept(item.ID);
@@ -66,8 +74,15 @@ const ProposalItem = ({ item, idx, isSent, accept, reject, cancel }) => {
                                         x.OptionType === 'Player'
                                             ? x.Player
                                             : x.Draftpick;
-                                    return (
+                                    return !isNBA ? (
                                         <OptionCard
+                                            optionType={x.OptionType}
+                                            sp={x.SalaryPercentage}
+                                            opt={obj}
+                                            idx={idx}
+                                        />
+                                    ) : (
+                                        <NBAOptionCard
                                             optionType={x.OptionType}
                                             sp={x.SalaryPercentage}
                                             opt={obj}
@@ -84,8 +99,15 @@ const ProposalItem = ({ item, idx, isSent, accept, reject, cancel }) => {
                                         x.OptionType === 'Player'
                                             ? x.Player
                                             : x.Draftpick;
-                                    return (
+                                    return !isNBA ? (
                                         <OptionCard
+                                            optionType={x.OptionType}
+                                            sp={x.SalaryPercentage}
+                                            opt={obj}
+                                            idx={idx}
+                                        />
+                                    ) : (
+                                        <NBAOptionCard
                                             optionType={x.OptionType}
                                             sp={x.SalaryPercentage}
                                             opt={obj}
@@ -135,7 +157,8 @@ export const ReceivedProposalsModal = ({
     theme,
     accept,
     reject,
-    cancel
+    cancel,
+    isNBA
 }) => {
     const modalId = 'receivedProposalsModal';
     const modalClass = GetModalClass(theme);
@@ -176,6 +199,7 @@ export const ReceivedProposalsModal = ({
                                                 accept={accept}
                                                 reject={reject}
                                                 cancel={cancel}
+                                                isNBA={isNBA}
                                                 isSent
                                             />
                                         ))}
@@ -195,6 +219,7 @@ export const ReceivedProposalsModal = ({
                                                 accept={accept}
                                                 reject={reject}
                                                 cancel={cancel}
+                                                isNBA={isNBA}
                                             />
                                         ))}
                                     </div>

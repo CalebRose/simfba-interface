@@ -178,6 +178,14 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             <div className="row mt-2 mb-2">
                                 <div className="btn-group btn-group-sm d-flex">
                                     <Link
+                                        to={routes.ROSTER}
+                                        role="button"
+                                        className="btn btn-primary btn-sm me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Roster
+                                    </Link>
+                                    <Link
                                         to={routes.CFB_GAMEPLAN}
                                         role="button"
                                         className="btn btn-primary btn-sm me-2 shadow"
@@ -199,7 +207,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         className="btn btn-primary btn-sm me-2 shadow"
                                         style={teamColors ? teamColors : {}}
                                     >
-                                        Recruiting
+                                        Recruit
                                     </Link>
                                 </div>
                             </div>
@@ -211,7 +219,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         className="btn btn-primary btn-sm me-2 shadow"
                                         style={teamColors ? teamColors : {}}
                                     >
-                                        Statistics
+                                        Stats
                                     </Link>
                                     <Link
                                         to={routes.CFB_SCHEDULE}
@@ -225,63 +233,77 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             </div>
                         </>
                     ) : (
-                        <div className="row mt-2 mb-2">
-                            <div className="btn-group btn-group-sm d-flex">
-                                <Link
-                                    to={routes.CFB_GAMEPLAN}
-                                    role="button"
-                                    className="btn btn-primary btn-md me-2 shadow"
-                                    style={teamColors ? teamColors : {}}
-                                >
-                                    Gameplan
-                                </Link>
-                                <Link
-                                    to={routes.DEPTHCHART}
-                                    role="button"
-                                    className="btn btn-primary btn-md me-2 shadow"
-                                    style={teamColors ? teamColors : {}}
-                                >
-                                    Depth Chart
-                                </Link>
-                                <Link
-                                    to={routes.CFB_RECRUITING}
-                                    type="button"
-                                    className="btn btn-primary btn-md me-2 shadow"
-                                    style={teamColors ? teamColors : {}}
-                                >
-                                    Recruiting
-                                </Link>
-                                <Link
-                                    to={routes.CFB_STATS}
-                                    type="button"
-                                    className="btn btn-primary btn-md me-2 shadow"
-                                    style={teamColors ? teamColors : {}}
-                                >
-                                    Statistics
-                                </Link>
-                                <Link
-                                    to={routes.CFB_SCHEDULE}
-                                    type="button"
-                                    className="btn btn-primary btn-md me-2 shadow"
-                                    style={teamColors ? teamColors : {}}
-                                >
-                                    Schedule
-                                </Link>
-                                <Link
-                                    to={routes.NEWS}
-                                    type="button"
-                                    className="btn btn-primary btn-md me-2 shadow"
-                                    style={teamColors ? teamColors : {}}
-                                >
-                                    News
-                                </Link>
+                        <>
+                            <div className="row mt-2 mb-2">
+                                <div className="btn-group btn-group-sm d-flex">
+                                    <Link
+                                        to={routes.ROSTER}
+                                        role="button"
+                                        className="btn btn-primary btn-sm me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Roster
+                                    </Link>
+                                    <Link
+                                        to={routes.CFB_GAMEPLAN}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Gameplan
+                                    </Link>
+                                    <Link
+                                        to={routes.DEPTHCHART}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Depth Chart
+                                    </Link>
+                                </div>
                             </div>
-                        </div>
+                            <div className="row mt-2 mb-2">
+                                <div className="btn-group btn-group-sm d-flex">
+                                    <Link
+                                        to={routes.CFB_RECRUITING}
+                                        type="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Recruiting
+                                    </Link>
+                                    <Link
+                                        to={routes.CFB_STATS}
+                                        type="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Statistics
+                                    </Link>
+                                    <Link
+                                        to={routes.CFB_SCHEDULE}
+                                        type="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Schedule
+                                    </Link>
+                                    <Link
+                                        to={routes.NEWS}
+                                        type="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        News
+                                    </Link>
+                                </div>
+                            </div>
+                        </>
                     )}
                     {viewableMatches && viewableMatches.length > 0 ? (
                         viewableMatches.map((x) => {
                             return (
-                                <div className="row">
+                                <div className="row landing-page-row">
                                     <CFBMatchCard
                                         game={x}
                                         team={cfbTeam}
@@ -292,7 +314,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             );
                         })
                     ) : (
-                        <div className="row">
+                        <div className="row landing-page-row">
                             <div className="card text-dark bg-light mb-3">
                                 <div className="card-body">
                                     <h5 className="card-title">Loading...</h5>

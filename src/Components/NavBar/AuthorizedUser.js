@@ -76,8 +76,8 @@ const authorizedUser = (props) => {
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                 >
-                    <span className="glyphicon glyphicon-info-sign"></span>
-                    Basketball Admin <span className="caret"></span>
+                    <span className="glyphicon glyphicon-info-sign" />
+                    Basketball Admin <span className="caret" />
                 </a>
                 <ul
                     className="dropdown-menu"
@@ -85,25 +85,33 @@ const authorizedUser = (props) => {
                 >
                     <li className="dropdown-item">
                         <Link to={routes.BBA_ADMIN} className="dropdown-item">
-                            Manage Sim <span className="caret"></span>
+                            Manage Sim <span className="caret" />
                         </Link>
                     </li>
                     <li>
-                        <hr className="navbar-divider"></hr>
+                        <hr className="navbar-divider" />
                     </li>
                     <li className="dropdown-item">
                         <Link to={routes.BBA_USERS} className="dropdown-item">
-                            Manage Teams <span className="caret"></span>
+                            Manage Teams <span className="caret" />
                         </Link>
                     </li>
                     <li className="dropdown-item">
                         <Link to={routes.BBA_APPROVE} className="dropdown-item">
-                            Approve Requests <span className="caret"></span>
+                            Approve Requests <span className="caret" />
                         </Link>
                     </li>
                     <li className="dropdown-item">
                         <Link to={routes.NBA_APPROVE} className="dropdown-item">
-                            Approve NBA Requests <span className="caret"></span>
+                            Approve NBA Requests <span className="caret" />
+                        </Link>
+                    </li>
+                    <li className="dropdown-item">
+                        <Link
+                            to={routes.NBA_ADMIN_TRADE}
+                            className="dropdown-item"
+                        >
+                            NBA Trade Portal <span className="caret" />
                         </Link>
                     </li>
                 </ul>

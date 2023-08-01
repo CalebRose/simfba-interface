@@ -1163,7 +1163,7 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
                                 name="GoFor4AndShort"
                                 label="Go For It on 4th and Short"
                                 value={gameplan && gameplan.GoFor4AndShort}
-                                min={'15'}
+                                min={'0'}
                                 max={'85'}
                                 handleChange={HandleNumberChange}
                             />
@@ -1173,7 +1173,7 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
                                 name="GoFor4AndLong"
                                 label="Go For It on 4th and Long"
                                 value={gameplan && gameplan.GoFor4AndLong}
-                                min={'15'}
+                                min={'0'}
                                 max={'85'}
                                 handleChange={HandleNumberChange}
                             />

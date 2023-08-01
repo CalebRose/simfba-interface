@@ -30,6 +30,10 @@ export default class BBATeamService {
         return GetCall(`${url}teams/nba`);
     }
 
+    async GetAllISLTeams() {
+        return GetCall(`${url}teams/isl`);
+    }
+
     async GetAllProfessionalTeams() {
         return GetCall(`${url}teams/pro`);
     }

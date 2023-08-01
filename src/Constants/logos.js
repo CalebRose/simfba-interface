@@ -314,7 +314,7 @@ const logos = {
     Towson: `${baseUrl}/logos/Towson_Tigers_logo.png`,
     Troy: baseUrl + '/logos/Troy_Trojans_logo.png',
     Tulane: baseUrl + '/logos/Tulane_Green_Wave_logo.png',
-    Tulsa: baseUrl + '/logos/Tulsa_Golden_Hurricane_logo.png',
+    Tulsa: baseUrl + '/logos/Tulsa_alternate_logo.webp',
     UAB: baseUrl + '/logos/UAB_Blazers_logo.png',
     UCF: baseUrl + '/logos/UCF_Knights_logo.png',
     UC_Davis: baseUrl + '/logos/UC_Davis_Aggies_logo.png',
