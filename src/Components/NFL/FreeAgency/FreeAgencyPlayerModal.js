@@ -1,13 +1,18 @@
 import React from 'react';
 import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
-import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
+import {
+    HeightToFeetAndInches,
+    RoundToTwoDecimals
+} from '../../../_Utility/utilHelper';
+import { GetNFLOverall } from '../../../_Utility/RosterHelper';
 
 export const FreeAgencyPlayerModal = ({ player, idx, viewMode }) => {
     const modalId = 'playerModal' + idx;
     const heightObj = HeightToFeetAndInches(player.Height);
     const AllOffers = player && player.Offers;
     const modalClass = GetModalClass(viewMode);
+    const ovr = GetNFLOverall(player.Overall, player.ShowLetterGrade);
 
     const OfferingTeam = ({ offer, idx }) => {
         const logo = getLogo(offer.Team);
@@ -21,7 +26,10 @@ export const FreeAgencyPlayerModal = ({ player, idx, viewMode }) => {
                     <h6>Rank: {rank}</h6>
                 </div>
                 <div className="col">
-                    <h6>Contract Value: ${offer.ContractValue}</h6>
+                    <h6>
+                        Contract Value: $
+                        {RoundToTwoDecimals(offer.ContractValue)}
+                    </h6>
                 </div>
             </div>
         );
@@ -67,14 +75,14 @@ export const FreeAgencyPlayerModal = ({ player, idx, viewMode }) => {
                             </div>
                             <div className="col">
                                 <h5>Status: </h5>
-                                {player.IsAcceptingOffers === 0
+                                {player.IsAcceptingOffers
                                     ? 'Open'
                                     : 'Negotiating'}
                             </div>
                         </div>
                         <div className="row g-2 gy-2 mb-3">
                             <div className="col">
-                                <h5>Overall:</h5> {player.Overall}
+                                <h5>Overall:</h5> {ovr}
                             </div>
                             <div className="col">
                                 <h5>Potential:</h5> {player.PotentialGrade}

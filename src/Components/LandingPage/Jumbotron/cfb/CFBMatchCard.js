@@ -1,8 +1,11 @@
 import React from 'react';
 import { getLogo } from '../../../../Constants/getLogo';
+import { RevealResults } from '../../../../_Utility/utilHelper';
 
-const CFBMatchCard = ({ game, team, currentWeek }) => {
-    const teamAbbr = team && team.TeamAbbr;
+const CFBMatchCard = ({ game, team, timestamp, isNFL }) => {
+    const currentWeek = !isNFL ? timestamp.CollegeWeek : timestamp.NFLWeek;
+    const teamAbbr =
+        !isNFL && team ? team.TeamAbbr : `${team.TeamName} ${team.Mascot}`;
     const opposingTeam =
         game.HomeTeam === teamAbbr ? game.AwayTeam : game.HomeTeam;
     const opposingCoach =
@@ -34,10 +37,12 @@ const CFBMatchCard = ({ game, team, currentWeek }) => {
         detailsLabel = `${ConferenceLabel} Conference Game`;
     }
 
+    const showGame = RevealResults(game, timestamp);
+
     let cardClass = '';
-    if (wonTheMatch && game.GameComplete && game.Week < currentWeek) {
+    if (wonTheMatch && (showGame || game.Week < currentWeek)) {
         cardClass = 'card mb-3 text-white bg-success';
-    } else if (lostTheMatch && game.GameComplete && game.Week < currentWeek) {
+    } else if (lostTheMatch && (showGame || game.Week < currentWeek)) {
         cardClass = 'card mb-3 text-white bg-danger';
     } else {
         cardClass = 'card mb-3';
@@ -53,23 +58,18 @@ const CFBMatchCard = ({ game, team, currentWeek }) => {
                 <div className="col-md-4 d-flex align-items-center justify-content-center">
                     <img
                         src={opposingTeamLogo}
-                        className="img-fluid rounded-start img-match p-1"
+                        className="img-fluid rounded-start img-lp-match p-1"
                         alt="opposingTeam"
                     />
                 </div>
                 <div className="col-md-8">
                     <div className="card-body">
-                        <h5 className="card-title">{cardTitle}</h5>
-                        <h6 className="card-subtitle">
-                            Opposing Coach: {opposingCoach}
-                        </h6>
-                        {game.GameComplete && game.Week < currentWeek ? (
-                            <p className="card-text">
+                        <h6 className="card-title">{cardTitle}</h6>
+                        {(showGame || game.Week < currentWeek) && (
+                            <small className="card-text">
                                 {game.HomeTeamScore} - {game.AwayTeamScore}
-                            </p>
-                        ) : (
-                            <p className="card-text">{detailsLabel}</p>
-                        )}
+                            </small>
+                        )}{' '}
                         <small className="card-text">
                             Location: {game.Stadium} in {game.City},{' '}
                             {game.State}

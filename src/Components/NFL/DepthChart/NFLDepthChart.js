@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
-
-import DropdownItem from '../../Roster/DropdownItem';
 import {
     SavingMessage,
     SuccessfulDepthChartSaveMessage,
     UnsuccessfulDepthChartSaveMessage
 } from '../../../Constants/SystemMessages';
-import ServiceMessageBanner from '../../_Common/ServiceMessageBanner';
+import { ServiceMessageBanner } from '../../_Common/ServiceMessageBanner';
 import DCPositionItem from '../../DepthChart/DC_PositionItem';
 import { DepthChartPositionList } from '../../DepthChart/DepthChartConstants';
 import DepthChartHeader from '../../DepthChart/DepthChartHeader';
@@ -22,6 +20,7 @@ import FBADepthChartService from '../../../_Services/simFBA/FBADepthChartService
 import FBATeamService from '../../../_Services/simFBA/FBATeamService';
 import FBAPlayerService from '../../../_Services/simFBA/FBAPlayerService';
 import { GetTableClass } from '../../../Constants/CSSClassHelper';
+import { DropdownItemObj } from '../../Roster/DropdownItem';
 
 const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
     // Services
@@ -35,10 +34,14 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
     const [teamColors, setTeamColors] = React.useState('');
     const [collegeTeams, setCollegeTeams] = React.useState('');
     const [roster, setRoster] = React.useState([]);
+    const [rosterMap, setRosterMap] = React.useState(null);
     const [initialDC, setInitialDC] = React.useState([]);
     const [currentDepthChart, setCurrentDepthChart] = React.useState(null);
     const [positions, setPositions] = React.useState([]);
-    const [currentPosition, setCurrentPosition] = React.useState(null);
+    const [currentPosition, setCurrentPosition] = React.useState({
+        name: 'Quarterbacks',
+        abbr: 'QB'
+    });
     const [positionAttributes, setPositionAttributes] = React.useState([]);
     const [currentDepthChartPositions, setCurrentDepthChartPositions] =
         React.useState([]);
@@ -73,35 +76,10 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
 
     useEffect(() => {
         if (nflTeam) {
-            setTeam(() => nflTeam);
+            SelectTeam(nflTeam);
             setUserTeam(() => nflTeam);
         }
     }, [nflTeam]);
-
-    useEffect(() => {
-        if (team) {
-            setCanModify(
-                () =>
-                    (team.ID === currentUser.NFLTeamID &&
-                        (currentUser.NFLRole === 'Owner' ||
-                            currentUser.NFLRole === 'Coach')) ||
-                    currentUser.roleID === 'Admin'
-            );
-            GetRoster(team.ID);
-            GetDepthChart(team.ID);
-            const colors = {
-                color: '#fff',
-                backgroundColor:
-                    team && team.ColorOne ? team.ColorOne : '#6c757d',
-                borderColor: team && team.ColorOne ? team.ColorOne : '#6c757d'
-            };
-            setTeamColors(() => colors);
-            setCurrentPosition({
-                name: 'Quarterbacks',
-                abbr: 'QB'
-            });
-        }
-    }, [team]);
 
     useEffect(() => {
         if (currentDepthChart) {
@@ -113,12 +91,38 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
     }, [currentDepthChart, currentPosition]);
 
     // OnClickEvents
-    const SelectTeam = (selectedTeam) => {
+    const SelectTeam = async (selectedTeam) => {
+        setCanModify(
+            () =>
+                (selectedTeam.ID === currentUser.NFLTeamID &&
+                    (currentUser.NFLRole === 'Owner' ||
+                        currentUser.NFLRole === 'Coach')) ||
+                currentUser.roleID === 'Admin'
+        );
+        await GetRoster(selectedTeam.ID);
+        await GetDepthChart(selectedTeam.ID);
+        const colors = {
+            color: '#fff',
+            backgroundColor:
+                selectedTeam && selectedTeam.ColorOne
+                    ? selectedTeam.ColorOne
+                    : '#6c757d',
+            borderColor:
+                selectedTeam && selectedTeam.ColorOne
+                    ? selectedTeam.ColorOne
+                    : '#6c757d'
+        };
+        setTeamColors(() => colors);
+        setCurrentPosition({
+            name: 'Quarterbacks',
+            abbr: 'QB'
+        });
+
         setTeam(() => selectedTeam);
     };
 
-    const SelectUserTeam = () => {
-        SelectTeam(userTeam);
+    const SelectUserTeam = async () => {
+        await SelectTeam(userTeam);
     };
 
     const SelectPosition = (pos) => {
@@ -198,6 +202,11 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
     const GetRoster = async (ID) => {
         if (ID !== null || ID > 0) {
             let roster = await rosterService.GetNFLPlayersForDepthChartPage(ID);
+            const newMap = {};
+            for (let i = 0; i < roster.length; i++) {
+                newMap[roster[i].ID] = true;
+            }
+            setRosterMap(() => newMap);
             setRoster(() => roster);
             let players = GetAvailablePlayers('QB', [...roster]);
             setAvailablePlayers(() => players);
@@ -295,6 +304,29 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
         // It is not possible to have duplicate records under the same position
         for (let i = 0; i < dc.length; i++) {
             let row = dc[i];
+            if (!rosterMap[row.PlayerID]) {
+                setValidation(() => false);
+                setErrorMessage(
+                    `${row.FirstName} ${row.LastName} is listed on the depth chart at position ${row.Position}, but is not part of the roster. They are unable to play for ${team.TeamName}. Please remove them from the depth chart.`
+                );
+                return;
+            }
+
+            if (row.NFLPlayer.IsPracticeSquad) {
+                setValidation(() => false);
+                setErrorMessage(
+                    `${row.FirstName} ${row.LastName} is on the practice squad but is listed in the depth chart. Please swap them from their ${row.Position} position level.`
+                );
+                return;
+            }
+
+            if (row.NFLPlayer.IsInjured) {
+                setValidation(() => false);
+                setErrorMessage(
+                    `${row.FirstName} ${row.LastName} is injured with ${row.NFLPlayer.InjuryType}. They are unable to play for ${row.NFLPlayer.WeeksOfRecovery} Weeks. Please swap them from their ${row.Position} position level.`
+                );
+                return;
+            }
             const pos = row.Position;
             let NameKey = row.FirstName + row.LastName + row.PlayerID;
             let isSpecialTeamsPosition =
@@ -435,7 +467,7 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
                                     <span>{team ? team.TeamName : ''}</span>
                                 </button>
                                 <ul className="dropdown-menu dropdown-content">
-                                    <DropdownItem
+                                    <DropdownItemObj
                                         value={
                                             currentUser
                                                 ? currentUser.NFLTeam
@@ -451,7 +483,7 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
                                     <hr className="dropdown-divider"></hr>
                                     {collegeTeams && collegeTeams.length > 0
                                         ? collegeTeams.map((x) => (
-                                              <DropdownItem
+                                              <DropdownItemObj
                                                   key={x.ID}
                                                   value={
                                                       x.TeamName +

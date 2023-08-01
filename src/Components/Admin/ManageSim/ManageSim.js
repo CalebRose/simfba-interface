@@ -12,17 +12,14 @@ import CreateCrootModal from './CreateCrootModal';
 
 const ManageSim = ({ currentUser, cfb_Timestamp }) => {
     const dispatch = useDispatch();
-    const [timestamp, setTimestamp] = React.useState(cfb_Timestamp);
     const [SyncComplete, setCompletion] = React.useState(false);
-    const [ActionsRemaining, setRemainingActionsCount] = React.useState(3);
+    const [ActionsRemaining, setRemainingActionsCount] = React.useState(13);
     const [timeslots, setTimeSlots] = React.useState({
         Thursday: false,
         Friday: false,
         SaturdayMorning: false,
         SaturdayEvening: false,
-        SaturdayNight: false
-    });
-    const [NFLtimeslots, setNFLTimeslots] = React.useState({
+        SaturdayNight: false,
         NFLThursday: false,
         NFLSundayNoon: false,
         NFLSundayAfternoon: false,
@@ -35,21 +32,31 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
     useEffect(() => {
         console.log('Timestamp Syncing!');
         ValidateSyncToNextWeek();
-    }, [timestamp]);
+    }, [cfb_Timestamp]);
 
     const ValidateSyncToNextWeek = () => {
         let valid = true;
-        const ts = { ...timestamp };
-        if (!ts.RecruitingEfficiencySynced || !ts.RecruitingSynced)
-            valid = false;
+        const ts = { ...cfb_Timestamp };
+        let actionCount = 13;
+        if (ts.RecruitingSynced) actionCount -= 1;
+        if (ts.GMActionsCompleted) actionCount -= 1;
+        if (ts.ThursdayGames) actionCount -= 1;
+        if (ts.NFLThursday) actionCount -= 1;
+        if (ts.FridayGames) actionCount -= 1;
+        if (ts.SaturdayMorning) actionCount -= 1;
+        if (ts.SaturdayNoon) actionCount -= 1;
+        if (ts.SaturdayEvening) actionCount -= 1;
+        if (ts.SaturdayNight) actionCount -= 1;
+        if (ts.NFLSundayNoon) actionCount -= 1;
+        if (ts.NFLSundayAfternoon) actionCount -= 1;
+        if (ts.NFLSundayEvening) actionCount -= 1;
+        if (ts.NFLMondayEvening) actionCount -= 1;
+        if (actionCount > 0) valid = false;
+        setRemainingActionsCount(() => actionCount);
         setCompletion(valid);
     };
 
     const SyncRES = async () => {
-        const ts = { ...timestamp };
-
-        ts.RecruitingEfficiencySynced = true;
-
         const UpdateTimestampDTO = {
             MoveUpCollegeWeek: false,
             MoveUpCollegeSeason: false,
@@ -72,13 +79,12 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             alert('RES Could not be Synced!');
         } else {
             const newTs = { ...res };
-            setTimestamp((x) => newTs);
             dispatch(setCFBTimestamp(newTs));
         }
     };
 
     const SyncRecruiting = async () => {
-        const ts = { ...timestamp };
+        const ts = { ...cfb_Timestamp };
 
         if (!ts.RecruitingEfficiencySynced && !ts.IsRecruitingLocked) {
             alert(
@@ -112,7 +118,6 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             alert('Could not complete recruiting sync!');
         } else {
             const newTs = { ...res };
-            setTimestamp((x) => newTs);
             dispatch(setCFBTimestamp(newTs));
         }
     };
@@ -131,10 +136,6 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
     };
 
     const LockRecruiting = async () => {
-        const ts = { ...timestamp };
-
-        ts.IsRecruitingLocked = !ts.IsRecruitingLocked;
-
         const UpdateTimestampDTO = {
             MoveUpCollegeWeek: false,
             MoveUpCollegeSeason: false,
@@ -145,17 +146,11 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             SaturdayMorning: timeslots.SaturdayMorning,
             SaturdayEvening: timeslots.SaturdayEvening,
             SaturdayNight: timeslots.SaturdayNight,
-            NFLThursday: NFLtimeslots.NFLThursday,
-            NFLSundayNoon: NFLtimeslots.NFLSundayNoon,
-            NFLSundayAfternoon: NFLtimeslots.NFLSundayAfternoon,
-            NFLSundayEvening: NFLtimeslots.NFLSundayEvening,
-            NFLMondayEvening: NFLtimeslots.NFLMondayEvening,
-            // ThursdayGames: false,
-            // FridayGames: false,
-            // SaturdayMorning: false,
-            // SaturdayNoon: false,
-            // SaturdayEvening: false,
-            // SaturdayNight: false,
+            NFLThursday: timeslots.NFLThursday,
+            NFLSundayNoon: timeslots.NFLSundayNoon,
+            NFLSundayAfternoon: timeslots.NFLSundayAfternoon,
+            NFLSundayEvening: timeslots.NFLSundayEvening,
+            NFLMondayEvening: timeslots.NFLMondayEvening,
             RESSynced: false,
             RecruitingSynced: false,
             ToggleRecruitingLock: true,
@@ -168,24 +163,25 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             alert('Could not lock recruiting!');
         } else {
             const newTs = { ...res };
-            setTimestamp((x) => newTs);
             dispatch(setCFBTimestamp(newTs));
         }
     };
 
-    const handleTimeslotChange = async (timeslot) => {
-        const ts = { ...timestamp };
+    const handleTimeslotChange = async (event) => {
+        const { value } = event.target;
+        const timeslot = value;
+        const ts = { ...cfb_Timestamp };
         switch (timeslot) {
-            case 'Thursday':
+            case 'Thursday Night':
                 ts.ThursdayGames = !ts.ThursdayGames;
                 break;
-            case 'Friday':
+            case 'Friday Night':
                 ts.FridayGames = !ts.FridayGames;
                 break;
             case 'Saturday Morning':
                 ts.SaturdayMorning = !ts.SaturdayMorning;
                 break;
-            case 'Saturday Noon':
+            case 'Saturday Afternoon':
                 ts.SaturdayNoon = !ts.SaturdayNoon;
                 break;
             case 'Saturday Evening':
@@ -197,38 +193,61 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             default:
                 break;
         }
+        dispatch(setCFBTimestamp(ts));
+        const res = await _adminService.SyncTimeslot(timeslot);
+        if (res) {
+            alert(`${timeslot} Sync Complete`);
+        }
     };
 
-    const handleNFLTimeslotChange = async (NFLtimeslots) => {
-        const ts = { ...timestamp };
+    const handleNFLTimeslotChange = async (event) => {
+        event.preventDefault();
+        const { value } = event.target;
+        const NFLtimeslots = value;
+        const ts = { ...cfb_Timestamp };
         switch (NFLtimeslots) {
-            case 'NFL Thursday':
+            case 'Thursday Night Football':
                 ts.NFLThursday = !ts.NFLThursday;
                 break;
-            case 'NFL Sunday Noon':
+            case 'Sunday Noon':
                 ts.NFLSundayNoon = !ts.NFLSundayNoon;
                 break;
-            case 'NFL Sunday Afternoon':
+            case 'Sunday Afternoon':
                 ts.NFLSundayAfternoon = !ts.NFLSundayAfternoon;
                 break;
-            case 'NFL Monday Evening':
+            case 'Sunday Night Football':
+                ts.NFLSundayEvening = !ts.NFLSundayEvening;
+                break;
+            case 'Monday Night Football':
                 ts.NFLMondayEvening = !ts.NFLMondayEvening;
                 break;
             default:
                 break;
         }
+        const res = await _adminService.SyncTimeslot(NFLtimeslots);
+        if (res) {
+            dispatch(setCFBTimestamp(ts));
+        }
+    };
+
+    const SyncOffseasonFreeAgency = async () => {
+        const ts = { ...cfb_Timestamp };
+
+        if (ts.IsNFLOffseason) {
+            ts.FreeAgencyRound++;
+        }
+
+        let res = await _adminService.SyncOffseasonFreeAgency();
+
+        if (!res) {
+            alert('Could not sync free agency!');
+        } else {
+            ts.GMActionsCompleted = true;
+            dispatch(setCFBTimestamp(ts));
+        }
     };
 
     const SyncToNextWeek = async () => {
-        const ts = { ...timestamp };
-
-        if (!ts.RecruitingEfficiencySynced && !ts.IsRecruitingLocked) {
-            alert(
-                'You must sync Recruiting Efficiency first and lock recruiting before conducting the Recruiting sync.'
-            );
-            return;
-        }
-
         const UpdateTimestampDTO = {
             MoveUpCollegeWeek: true,
             MoveUpCollegeSeason: false,
@@ -246,18 +265,24 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             IsRecruitingLocked: false
         };
 
-        let res = await _adminService.SyncTimestamp(UpdateTimestampDTO);
+        let res = await _adminService.SyncWeek();
 
         if (!res) {
             alert('Could not sync to next week!');
         } else {
             const newTs = { ...res };
-            setTimestamp((x) => newTs);
             dispatch(setCFBTimestamp(newTs));
         }
     };
 
-    const runTheGames = () => {};
+    const runTheGames = async () => {
+        const res = await _adminService.RunTheGames();
+        if (res) {
+            const ts = { ...cfb_Timestamp };
+            ts.RunGames = true;
+            dispatch(setCFBTimestamp(ts));
+        }
+    };
 
     const AdminUI = () => {
         return (
@@ -267,144 +292,35 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                 </div>
                 <div className="row mt-4">
                     <div className="col col-md-3">
+                        <h3>Season: {cfb_Timestamp.Season}</h3>
+                    </div>
+                    <div className="col col-md-3">
+                        <h3>CFB Week: {cfb_Timestamp.CollegeWeek}</h3>
+                    </div>
+                    <div className="col col-md-3">
+                        <h3>NFL Week: {cfb_Timestamp.NFLWeek}</h3>
+                    </div>
+                    <div className="col col-md-3">
                         <h3>
-                            Season:{' '}
-                            {timestamp && timestamp.Season
-                                ? timestamp.Season
-                                : ' '}
+                            {cfb_Timestamp.IsNFLOffseason
+                                ? `Free Agency Round: ${cfb_Timestamp.FreeAgencyRound}`
+                                : `Actions Left: ${ActionsRemaining}`}
                         </h3>
                     </div>
-                    <div className="col col-md-4">
-                        <h3>
-                            CFB Week:{' '}
-                            {timestamp && timestamp.CollegeWeek
-                                ? timestamp.CollegeWeek
-                                : ' '}
-                        </h3>
-                    </div>
-                    <div className="col col-md-4">
-                        <h3>
-                            NFL Week:{' '}
-                            {timestamp && timestamp.CollegeWeek
-                                ? timestamp.CollegeWeek
-                                : ' '}
-                        </h3>
-                    </div>
-                    {/* <div className="col col-md-3">
-                        <h3>Actions Remaining: </h3>
-                    </div> */}
                 </div>
                 <ConfirmRecruitSyncModal save={SyncRecruiting} />
                 <ConfirmRESSyncModal save={SyncRES} />
                 <ConfirmWeekSyncModal save={SyncToNextWeek} />
-                {/* <th scope="col">Sync Action</th>
-                            <th scope="col">Execute</th>
-                            <th scope="col">Action Complete?</th> */}
+                <CreateCrootModal handleChange={SaveRecruit} />
                 <div className="row mt-2 mb-2 g-2">
-                    <div className="col-3 col-md-3 mb-2 g-4">
-                        <h5>Recruiting Efficiency</h5>
-                        {!timestamp.RecruitingEfficiencySynced ? (
-                            <button
-                                type="button"
-                                className="btn btn-primary btn-sm-button rounded-pill"
-                                data-bs-toggle="modal"
-                                data-bs-target="#syncRESModal"
-                            >
-                                Sync
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                className="btn btn-secondary btn-sm-button rounded-pill"
-                            >
-                                Sync
-                            </button>
-                        )}
-                    </div>
-                    <div className="col-3 mb-2 g-3">
-                        <h5>Lock Recruiting</h5>
-                        <button
-                            type="button"
-                            className="btn btn-primary btn-sm-button rounded-pill"
-                            onClick={LockRecruiting}
-                        >
-                            {timestamp.IsRecruitingLocked ? 'Lock' : 'Unlock'}
-                        </button>
-                    </div>
-                    <div className="col-3 mb-2 g-3">
-                        <h5>Sync Recruiting</h5>
-                        {!timestamp.RecruitingSynced ? (
-                            <button
-                                type="button"
-                                className={
-                                    'btn btn-primary btn-sm-button rounded-pill'
-                                }
-                                data-bs-toggle="modal"
-                                data-bs-target="#syncRecruitModal"
-                            >
-                                Sync
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                className={
-                                    'btn btn-secondary btn-sm-button rounded-pill'
-                                }
-                            >
-                                Sync
-                            </button>
-                        )}
-                    </div>
-                    {/* <div className="col-3 mb-2">
-                        <h5>Sync Free Agency</h5>
-                        <button
-                            type="button"
-                            className="btn btn-primary btn-sm"
-                            onClick={SyncOffseasonFreeAgency}
-                        >
-                            Sync
-                        </button>
-                    </div> */}
-                    <div className="col-3 mb-2 g-3">
-                        <h5>Create a Croot</h5>
-                        <button
-                            type="button"
-                            className={
-                                !SyncComplete
-                                    ? 'btn btn-primary btn-sm-button rounded-pill'
-                                    : 'btn btn-secondary btn-sm-button rounded-pill'
-                            }
-                            data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop"
-                        >
-                            Create
-                        </button>
-                    </div>
-                    <div className="col-3 mb-2 g-3">
-                        <h5>Run Games</h5>
-                        <button
-                            type="button"
-                            className={
-                                !SyncComplete
-                                    ? 'btn btn-primary btn-sm-button rounded-pill'
-                                    : 'btn btn-secondary btn-sm-button rounded-pill'
-                            }
-                            onClick={() => runTheGames()}
-                        >
-                            Run
-                        </button>
-                    </div>
-                    <div className="col-3 mb-2 pe-0">
-                        <div
-                            className="d-flex align-items-center justify-content-start"
-                            style={{ marginLeft: '-500px', marginTop: '-90px' }}
-                        >
+                    <div className="col-3 mb-2 g-2 justify-content-center  text-center">
+                        <div className="d-flex align-items-center justify-content-center">
                             <div
-                                className="btn-group-vertical btn-group-lg"
+                                className="btn-group-vertical btn-group-lg justify-content-center align-items-center"
                                 role="group"
                                 aria-label="TimeslotOptions"
                             >
-                                <h5 className="me-3 ms-5"> Sync Week</h5>
+                                <h5 className=""> Sync Week</h5>
                                 {SyncComplete ? (
                                     <button
                                         type="button"
@@ -425,44 +341,212 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                                 <button
                                     type="button"
                                     className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                    disabled={cfb_Timestamp.ThursdayGames}
+                                    value="Thursday Night"
+                                    onClick={handleTimeslotChange}
                                 >
                                     Thursday
                                 </button>
                                 <button
                                     type="button"
                                     className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                    disabled={cfb_Timestamp.FridayGames}
+                                    value="Friday Night"
+                                    onClick={handleTimeslotChange}
                                 >
                                     Friday
                                 </button>
                                 <button
                                     type="button"
                                     className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                    disabled={cfb_Timestamp.SaturdayMorning}
+                                    value="Saturday Morning"
+                                    onClick={handleTimeslotChange}
                                 >
                                     Saturday Morning
                                 </button>
                                 <button
                                     type="button"
                                     className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                    disabled={cfb_Timestamp.SaturdayNoon}
+                                    value="Saturday Afternoon"
+                                    onClick={handleTimeslotChange}
                                 >
                                     Saturday Noon
                                 </button>
                                 <button
                                     type="button"
                                     className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                    disabled={cfb_Timestamp.SaturdayEvening}
+                                    value="Saturday Evening"
+                                    onClick={handleTimeslotChange}
                                 >
                                     Saturday Evening
                                 </button>
                                 <button
                                     type="button"
                                     className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                    disabled={cfb_Timestamp.SaturdayNight}
+                                    value="Saturday Night"
+                                    onClick={handleTimeslotChange}
                                 >
                                     Saturday Night
                                 </button>
                             </div>
                         </div>
                     </div>
+                    <div className="col-3 mb-2 g-2 justify-content-center">
+                        <div className="d-flex align-items-center justify-content-center">
+                            <div
+                                className="btn-group-vertical btn-group-lg justify-content-center align-items-center"
+                                role="group"
+                                aria-label="TimeslotOptions"
+                            >
+                                <h5 className=""> Sync NFL</h5>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                    disabled={cfb_Timestamp.NFLThursday}
+                                    value="Thursday Night Football"
+                                    onClick={handleNFLTimeslotChange}
+                                >
+                                    Thursday Night
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                    disabled={cfb_Timestamp.NFLSundayNoon}
+                                    value="Sunday Noon"
+                                    onClick={handleNFLTimeslotChange}
+                                >
+                                    Sunday Noon
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                    disabled={cfb_Timestamp.NFLSundayAfternoon}
+                                    value="Sunday Afternoon"
+                                    onClick={handleNFLTimeslotChange}
+                                >
+                                    Sunday Afternoon
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                    disabled={cfb_Timestamp.NFLSundayEvening}
+                                    value="Sunday Night Football"
+                                    onClick={handleNFLTimeslotChange}
+                                >
+                                    Sunday Night
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mt-4 rounded-pill"
+                                    disabled={cfb_Timestamp.NFLMondayEvening}
+                                    value="Monday Night Football"
+                                    onClick={handleNFLTimeslotChange}
+                                >
+                                    Monday Night
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {/* <div className="col-3 col-md-3 mb-2 g-4">
+                        <h5>Recruiting Efficiency</h5>
+                        {!cfb_Timestamp.RecruitingEfficiencySynced ? (
+                            <button
+                                type="button"
+                                className="btn btn-primary btn-sm-button rounded-pill"
+                                data-bs-toggle="modal"
+                                data-bs-target="#syncRESModal"
+                            >
+                                Sync
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                className="btn btn-secondary btn-sm-button rounded-pill"
+                            >
+                                Sync
+                            </button>
+                        )}
+                    </div> */}
+                    <div className="col-3 mb-2 g-2">
+                        <h5>Lock Recruiting</h5>
+                        <button
+                            type="button"
+                            className="btn btn-primary btn-sm-button rounded-pill  mb-2"
+                            onClick={LockRecruiting}
+                        >
+                            {cfb_Timestamp.IsRecruitingLocked
+                                ? 'Unlock'
+                                : 'Lock'}
+                        </button>
+
+                        <h5>Sync Recruiting</h5>
+                        {!cfb_Timestamp.RecruitingSynced ? (
+                            <button
+                                type="button"
+                                className={
+                                    'btn btn-primary btn-sm-button rounded-pill mb-2'
+                                }
+                                data-bs-toggle="modal"
+                                data-bs-target="#syncRecruitModal"
+                            >
+                                Sync
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                className={
+                                    'btn btn-secondary btn-sm-button rounded-pill  mb-2'
+                                }
+                            >
+                                Sync Complete
+                            </button>
+                        )}
+
+                        <h5>Create a Croot</h5>
+                        <button
+                            type="button"
+                            className={
+                                !SyncComplete
+                                    ? 'btn btn-primary btn-sm-button rounded-pill'
+                                    : 'btn btn-secondary btn-sm-button rounded-pill'
+                            }
+                            data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop"
+                        >
+                            Create
+                        </button>
+                    </div>
+                    <div className="col-3 mb-2 g-2">
+                        <h5>Sync Free Agency</h5>
+                        <button
+                            type="button"
+                            className="btn btn-secondary btn-sm-button rounded-pill mb-2"
+                            onClick={SyncOffseasonFreeAgency}
+                        >
+                            Sync
+                        </button>
+
+                        <h5>Run Games</h5>
+                        <button
+                            type="button"
+                            className={
+                                !SyncComplete
+                                    ? 'btn btn-primary btn-sm-button rounded-pill'
+                                    : 'btn btn-secondary btn-sm-button rounded-pill'
+                            }
+                            disabled={cfb_Timestamp.RunGames}
+                            onClick={runTheGames}
+                        >
+                            Run
+                        </button>
+                    </div>
+                    <div className="col-3 mb-2"></div>
                 </div>
-                <CreateCrootModal handleChange={SaveRecruit} />
             </div>
         );
     };

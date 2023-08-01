@@ -1,15 +1,34 @@
 import React from 'react';
 import { GetModalClass } from '../../../Constants/CSSClassHelper';
 
-export const CancelOfferModal = ({ player, idx, cancel, teamID, viewMode }) => {
+export const CancelOfferModal = ({
+    player,
+    idx,
+    cancel,
+    teamID,
+    viewMode,
+    viewFA,
+    viewPS
+}) => {
     const modalId = `cancelOffer${idx}`;
     const name = `${player.FirstName} ${player.LastName}`;
     const modalClass = GetModalClass(viewMode);
 
     const confirmChange = () => {
-        const offerIdx = player.Offers.findIndex((x) => x.TeamID === teamID);
+        if (viewFA || viewPS) {
+            const offerIdx = player.Offers.findIndex(
+                (x) => x.TeamID === teamID
+            );
+            if (offerIdx > -1) {
+                const offer = player.Offers[offerIdx];
+                return cancel(player, offer);
+            }
+        }
+        const offerIdx = player.WaiverOffers.findIndex(
+            (x) => x.TeamID === teamID
+        );
         if (offerIdx > -1) {
-            const offer = player.Offers[offerIdx];
+            const offer = player.WaiverOffers[offerIdx];
             return cancel(player, offer);
         }
     };

@@ -16,16 +16,50 @@
     --bs-body-color: #fff;
     --bs-secondary-color: rgba(255, 255, 255, 0.5);
     --bs-border-color-translucent: rgba(255, 255, 255, 0.75);
-    /* --bs-dropdown-link-hover-color: #202020 !important; */
-    /* --bs-dropdown-link-hover-bg: var(--bs-tertiary-bg); */
+    --bs-table-color: #202020;
+    --bs-table-header-color: #202020;
+    --bs-form-control-disabled-bg: rgba(255, 255, 255, 0.1);
+}
+
+.dark .btn {
+    --bs-btn-color: #fff;
+}
+
+.dark .btn-outline-dark {
+    --bs-btn-border-color: #fff;
+}
+
+.dark .btn-outline-dark:hover {
+    --bs-btn-hover-border-color: #000;
+    --bs-btn-hover-color: #212519 !important;
+    --bs-btn-hover-bg: #fff;
+}
+
+.dark .btn-warning {
+    --bs-btn-color: #000;
+}
+
+.dark .btn-close {
+    --bs-btn-close-color: #fff !important;
+}
+
+@media screen and (max-width: 900px) {
+    .dark tr {
+        background-color: var(--bs-body-bg) !important;
+    }
 }
 
 .dark .dropdown-item:focus,
 .dark .dropdown-item:hover {
     color: #202020 !important;
 }
+
+.dark .form-check-input {
+    --bs-form-check-bg: #495057;
+}
 .light {
     background-color: #fff;
+    --bs-table-header-color: #fff;
     color: #333;
     --sfa-background-color: #fff;
     --select-bar-background: rgba(255, 255, 255, 1) !important;
@@ -41,15 +75,32 @@
     color: #fff;
 }
 
-.landing-image {
-    max-height: 200px !important;
+.btn-border {
+    border-style: solid;
+    border-width: thin;
+    border-color: var(--bs-border-color-translucent);
 }
-.landing-image-purdue {
-    max-height: 100px !important;
+
+.btn-border .btn:hover {
+    background-color: var(--bs-body-color);
+    color: var(--bs-body-bg);
+}
+
+.landing-image {
+    max-height: 50px !important;
+}
+
+.landing-page-row {
+    margin-left: 0.1rem;
 }
 
 .mobile-card-viewer {
     width: 92vw !important;
+}
+
+.img-lp-match {
+    max-height: 75px;
+    max-width: 75px;
 }
 
 .img-match {
@@ -60,6 +111,29 @@
 .img-match-schedule {
     max-height: 125px;
     max-width: 125px;
+}
+
+.bba-match-row {
+    max-width: 27vw;
+    font-size: 12px;
+    height: 125px;
+}
+
+.bba-match-row h5 {
+    font-size: 1rem;
+}
+
+.bba-match-row h6 {
+    font-size: 0.8rem;
+}
+
+.bba-match-row p {
+    margin-bottom: 0.5rem;
+}
+
+.bba-match-schedule {
+    max-height: 75px;
+    max-width: 75px;
 }
 
 .image-nfl-roster {
@@ -95,7 +169,7 @@
 
 .nfl-standings-container {
     font-size: 14px !important;
-    max-width: 35rem !important;
+    max-width: 34rem !important;
 }
 
 .standings-container {
@@ -163,7 +237,7 @@
 
 /* Specific UI height for Available Teams UI */
 .available-ui-height {
-    max-height: 75vh;
+    max-height: 67vh;
 }
 
 .scrollbar::-webkit-scrollbar {
@@ -205,6 +279,7 @@
 }
 
 .imageSize {
+    margin-top: 1rem !important;
     max-height: 180px;
     max-width: 180px;
 }
@@ -278,7 +353,7 @@
 }
 
 .table-height th {
-    background-color: white;
+    background-color: var(--bs-table-header-color);
     box-shadow: 0px 1px 0px 0px #000000;
 }
 
@@ -517,7 +592,7 @@ td {
 */
 .gameplan-table-height,
 .gameplan-table-height-dark {
-    height: 55vh;
+    height: 53vh;
     overflow: auto;
 }
 
@@ -698,6 +773,105 @@ td {
     color: var(--sfa-text-color) !important;
 }
 
+.proposal-body h3 {
+    font-size: 18px;
+}
+
+.proposal-body p,
+.proposal-body h5,
+.proposal-body label {
+    font-size: 12px;
+}
+.proposal-body input {
+    width: 50%;
+}
+
+.row-remove-btn {
+    margin-left: auto;
+    margin-right: 0.25rem;
+    padding-left: 0.75rem;
+}
+
+.remove-option-btn {
+    width: 40px;
+}
+
+hr.solid {
+    border-top: 3px solid #bbb;
+}
+
+.news-feed {
+    max-width: 34rem !important;
+    max-height: 25rem !important;
+    overflow-y: scroll;
+}
+
+.cfb-news-feed {
+    /* max-width: 50% !important; */
+    max-height: 33rem !important;
+    overflow-y: auto;
+}
+
+.cbb-news-feed {
+    max-width: 55% !important;
+    max-height: 33rem !important;
+    overflow-y: auto;
+    font-size: 14px;
+}
+
+.news-feed,
+.cfb-news-feed p {
+    font-size: small;
+}
+
+.desktop-display {
+    display: contents;
+}
+
+.btn-md {
+    width: 10rem;
+}
+
+.draft-room-header {
+    align-items: center;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.draft-pick-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+    height: 24rem;
+    border: 1px solid white;
+    border-radius: 9px;
+    justify-content: space-between;
+}
+
+.draft-war-room {
+    border: 1px solid white;
+    border-radius: 9px;
+    text-align: center;
+    vertical-align: middle;
+    align-content: center;
+    align-items: center;
+}
+
+.nba-draft-draftee-box {
+    overflow-y: scroll;
+    border: 1px solid white;
+    border-radius: 9px;
+    height: 30vh;
+}
+
+.nba-draft-scout-box {
+    border: 1px solid white;
+    border-radius: 9px;
+    height: 30vh;
+    overflow-y: scroll;
+}
+
 /*
     Manage Sim
 */
@@ -705,6 +879,51 @@ td {
     width: 155px;
 }
 
-.btn-sm {
-    marginright: '600px';
+.draft-card {
+    max-width: 355px !important;
+    height: 95px;
+    width: 20%;
+}
+
+.draft-card-icon {
+    margin-top: 5px;
+    max-height: 75px;
+    max-width: 75px;
+    padding-bottom: 2px;
+}
+
+.draft-number {
+}
+
+.draft-pick-text {
+    font-size: 18px;
+}
+
+@media (max-width: 768px) {
+    .draft-pick-text {
+        font-size: 14px;
+    }
+    .draft-card {
+        max-width: 355px !important;
+        height: 95px;
+        width: 100%;
+    }
+
+    .bba-match-row {
+        font-size: 12px;
+        height: 125px;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .bba-match-row p {
+        margin-bottom: 0;
+    }
+
+    .mv-icon {
+        max-width: 20%;
+    }
+    .mv-description {
+        max-width: 60%;
+    }
 }

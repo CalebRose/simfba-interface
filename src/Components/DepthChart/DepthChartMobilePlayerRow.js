@@ -26,6 +26,10 @@ const DepthChartMobilePlayerRow = ({
         player.OriginalPosition !== player.Position
             ? player.Position + ' (' + player.OriginalPosition + ')'
             : player.Position;
+
+    const playerLabel = playerData.IsInjured
+        ? `${name} | ${playerData.Position} (${playerData.WeeksOfRecovery})`
+        : `${name} | ${playerData.Position}`;
     const mobileClass = GetMobileCardClass(theme);
     const handleChange = (newPlayer) => {
         if (newPlayer.ID !== playerData.ID) {
@@ -40,13 +44,16 @@ const DepthChartMobilePlayerRow = ({
                 {canModify ? (
                     <div className="drop-start btn-dropdown-width-dc mb-2">
                         <button
+                            type="button"
                             name="name"
-                            className="btn btn-secondary dropdown-toggle btn-dropdown-width-dc"
+                            className={`btn btn-secondary dropdown-toggle btn-dropdown-width-dc ${
+                                playerData.IsInjured && 'text-warning'
+                            }`}
                             id="dropdownMenuButton1"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                         >
-                            <span>{name}</span>
+                            <span>{playerLabel}</span>
                         </button>
                         <ul className="dropdown-menu dropdown-content">
                             <PlayerDropdownItem

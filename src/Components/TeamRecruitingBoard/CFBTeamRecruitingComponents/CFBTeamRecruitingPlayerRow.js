@@ -9,6 +9,7 @@ import { getLogo } from '../../../Constants/getLogo';
 const CFBTeamDashboardPlayerRow = (props) => {
     const { recruitProfile, idx, viewMode } = props;
     const { Recruit } = recruitProfile;
+    const customClass = Recruit.IsCustomCroot ? 'text-primary' : '';
     const logo =
         Recruit && Recruit.College.length > 0 ? getLogo(Recruit.College) : '';
     const crootModalTarget = '#crootModal' + idx;
@@ -28,7 +29,18 @@ const CFBTeamDashboardPlayerRow = (props) => {
 
         const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
 
-        return competingAbbrs.join(', ');
+        return competingAbbrs.map((x) => {
+            const logo = getLogo(x);
+            return (
+                <>
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={logo}
+                        alt="competing-team"
+                    />
+                </>
+            );
+        });
     };
 
     const leadingTeams = leadingTeamsMapper(Recruit);
@@ -44,7 +56,7 @@ const CFBTeamDashboardPlayerRow = (props) => {
         return props.changePoints(idx, event);
     };
 
-    const toggleScholarship = () => {
+    const revokeScholarship = () => {
         return props.toggleScholarship(idx, recruitProfile);
     };
 
@@ -58,7 +70,7 @@ const CFBTeamDashboardPlayerRow = (props) => {
             <CrootModal crt={Recruit} idx={idx} viewMode={viewMode} />
             <ConfirmRevokeModal
                 idx={idx}
-                toggleScholarship={toggleScholarship}
+                revoke={revokeScholarship}
                 viewMode={viewMode}
             />
             <ConfirmRemovePlayerFromBoardModal
@@ -96,13 +108,13 @@ const CFBTeamDashboardPlayerRow = (props) => {
                         <h2>
                             <i
                                 className="bi bi-plus-circle-fill"
-                                onClick={toggleScholarship}
+                                onClick={revokeScholarship}
                             />
                         </h2>
                     )}
                 </th>
                 <td className="align-middle" style={{ width: 175 }}>
-                    <h6>{name}</h6>
+                    <h6 className={customClass}>{name}</h6>
                     <button
                         type="button"
                         className="btn btn-sm"
@@ -167,7 +179,7 @@ const CFBTeamDashboardPlayerRow = (props) => {
                             alt="WinningTeam"
                         />
                     ) : (
-                        <h6>{leadingTeams}</h6>
+                        <>{leadingTeams}</>
                     )}
                 </td>
                 <td className="align-middle" style={{ width: 125 }}>

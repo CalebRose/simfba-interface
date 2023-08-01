@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 // import { connect, useDispatch, useSelector } from 'react-redux';
 import { connect } from 'react-redux';
 import PlayerRow from './PlayerRow';
-import DropdownItem from './DropdownItem';
 import FBAPlayerService from '../../_Services/simFBA/FBAPlayerService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import { GetDefaultOrder } from '../../_Utility/RosterHelper';
@@ -11,6 +10,7 @@ import ConfirmRedshirtModal from './RedshirtModal';
 import PlayerModal from './PlayerModal';
 import MobileRosterRow from './MobileRosterRow';
 import { numberWithCommas } from '../../_Utility/utilHelper';
+import { DropdownItemObj } from './DropdownItem';
 
 const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
     /* 
@@ -98,7 +98,7 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
     const teamDropDowns =
         teams && teams.length > 0
             ? teams.map((x) => (
-                  <DropdownItem
+                  <DropdownItemObj
                       key={x.ID}
                       value={x.TeamName + ' ' + x.Mascot}
                       team={x}
@@ -258,7 +258,7 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
                                         <span>{team ? team.TeamName : ''}</span>
                                     </button>
                                     <ul className="dropdown-menu dropdown-content">
-                                        <DropdownItem
+                                        <DropdownItemObj
                                             value={
                                                 currentUser
                                                     ? currentUser.team +

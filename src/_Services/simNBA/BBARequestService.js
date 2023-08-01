@@ -1,4 +1,5 @@
 import url from '../../Constants/SimBBA_url';
+import { GetCall, PostCall } from '../simFBA/FetchHelper';
 
 export default class BBARequestService {
     async GetTeamRequests() {
@@ -14,6 +15,10 @@ export default class BBARequestService {
         }
 
         return requests;
+    }
+
+    async GetNBATeamRequests() {
+        return await GetCall(`${url}nba/requests/all/`);
     }
 
     async CreateTeamRequest(team, username) {
@@ -66,5 +71,21 @@ export default class BBARequestService {
             method: 'PUT'
         });
         return res;
+    }
+
+    async CreateNBATeamRequest(dto) {
+        return await PostCall(`${url}nba/requests/create/`, dto);
+    }
+
+    async ApproveNBARequest(dto) {
+        return await PostCall(`${url}nba/requests/approve/`, dto);
+    }
+
+    async RejectNBARequest(dto) {
+        return await PostCall(`${url}nba/requests/reject/`, dto);
+    }
+
+    async RevokeNBARequest(dto) {
+        return await PostCall(`${url}nba/requests/revoke/`, dto);
     }
 }

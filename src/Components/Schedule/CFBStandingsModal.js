@@ -4,6 +4,7 @@ import { SeasonsList } from '../../Constants/CommonConstants';
 import { GetModalClass } from '../../Constants/CSSClassHelper';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import StandingsCard from '../BBA/Schedule/StandingsModalCard';
+import { Spinner } from '../_Common/Spinner';
 
 const CFBStandingsModal = (props) => {
     let _standingsService = new FBATeamService();
@@ -159,9 +160,7 @@ const CFBStandingsModal = (props) => {
                             </>
                         ) : (
                             <div className="row justify-content-center pt-2 mt-4 mb-2">
-                                <div className="spinner-border" role="status">
-                                    <span className="sr-only">Loading...</span>
-                                </div>
+                                <Spinner />
                             </div>
                         )}
                     </div>

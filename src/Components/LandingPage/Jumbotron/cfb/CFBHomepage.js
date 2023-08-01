@@ -1,23 +1,22 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
 import { getLogo } from '../../../../Constants/getLogo';
 import routes from '../../../../Constants/routes';
-import { setCBBTeam } from '../../../../Redux/cbbTeam/cbbTeam.actions';
 import { setCFBTeam } from '../../../../Redux/cfbTeam/cfbTeam.actions';
-import { setNFLTeam } from '../../../../Redux/nflTeam/nflTeam.actions';
 import FBAScheduleService from '../../../../_Services/simFBA/FBAScheduleService';
 import FBATeamService from '../../../../_Services/simFBA/FBATeamService';
-import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
 import StandingsCard from '../../../BBA/Schedule/StandingsModalCard';
+import { Spinner } from '../../../_Common/Spinner';
 import CFBMatchCard from './CFBMatchCard';
+import { NewsLogSmall } from '../../../_Common/NewsLog';
+import FBALandingPageService from '../../../../_Services/simFBA/FBALandingPageService';
 
 const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     let teamService = new FBATeamService();
     let _scheduleService = new FBAScheduleService();
-    let _teamService = new BBATeamService();
+    let _landingPageService = new FBALandingPageService();
     const dispatch = useDispatch();
     const [team, setTeam] = React.useState('');
     const [logo, setLogo] = React.useState('');
@@ -26,6 +25,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const [viewableMatches, setViewableMatches] = React.useState(null);
     const [games, setGames] = React.useState([]);
     const [standings, setStandings] = React.useState([]);
+    const [newsFeed, setNewsFeed] = React.useState([]);
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:845px)` });
     // For mobile
@@ -41,20 +41,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             setTeam(currentUser.team);
             setLogo(getLogo(currentUser.teamAbbr));
         }
-        if (
-            (currentUser.cbb_team !== undefined &&
-                currentUser.cbb_team.length > 0) ||
-            currentUser.cbb_id > 0
-        ) {
-            GetCBBTeam();
-        }
-        if (
-            currentUser.NFLTeam !== undefined &&
-            currentUser.NFLTeam.length > 0 &&
-            currentUser.NFLTeamID > 0
-        ) {
-            GetNFLTeam();
-        }
         if (!cfbTeam) {
             getTeam();
         } else {
@@ -65,6 +51,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         if (cfb_Timestamp && cfbTeam) {
             GetConferenceStandings();
             GetGames();
+            getPersonalizedNewsFeed();
         }
     }, [currentUser, cfbTeam, cfb_Timestamp]);
 
@@ -86,8 +73,16 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             }
             prevIdx = games.findIndex((x) => x.Week === prevWeek);
             nextIdx = games.findIndex((x) => x.Week === nextWeek);
+            while (prevIdx === -1) {
+                prevWeek += 1;
+                prevIdx = games.findIndex((x) => x.Week === prevWeek);
+            }
+            while (nextIdx === -1) {
+                nextWeek -= 1;
+                nextIdx = games.findIndex((x) => x.Week === nextWeek);
+            }
 
-            let gameRange = games.slice(prevIdx, nextIdx);
+            let gameRange = games.slice(prevIdx, nextIdx + 1);
             setViewableMatches(() => gameRange);
         }
     }, [cfb_Timestamp, games]);
@@ -108,18 +103,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             setTeamColors(colors);
         }
     }, [teamData]);
-
-    const GetCBBTeam = async () => {
-        let response = await _teamService.GetTeamByTeamId(currentUser.cbb_id);
-        dispatch(setCBBTeam(response));
-    };
-
-    const GetNFLTeam = async () => {
-        let response = await teamService.GetNFLTeamByTeamID(
-            currentUser.NFLTeamID
-        );
-        dispatch(setNFLTeam(response));
-    };
 
     const getTeam = async () => {
         let response = await teamService.GetTeamByTeamId(currentUser.teamId);
@@ -145,13 +128,29 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         setGames(() => res);
     };
 
+    const getPersonalizedNewsFeed = async () => {
+        let res = await _landingPageService.GetPersonalizedNewsFeed(
+            'CFB',
+            currentUser.teamId
+        );
+
+        setNewsFeed(() => res);
+    };
+
     return (
         <>
             <div className="row mt-2">
-                <div className="col-md-auto justify-content-start">
-                    <h2>{team}</h2>
+                <div className="col-auto justify-content-start">
+                    <h2>
+                        <img
+                            className="landing-image"
+                            src={logo}
+                            alt="Go Cougs"
+                        />{' '}
+                        {team}
+                    </h2>
                 </div>
-                <div className="col-md-4">
+                <div className="col-auto">
                     <h2 className="text-start">
                         {cfb_Timestamp ? cfb_Timestamp.Season : ''}, Week{' '}
                         {cfb_Timestamp !== null &&
@@ -160,8 +159,8 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             : ''}
                     </h2>
                 </div>
-                <div className="col-md-auto justify-content-start">
-                    {teamData ? (
+                <div className="col-auto justify-content-start">
+                    {teamData && (
                         <h2 className="">
                             {`${teamData.Conference} Conference ${
                                 teamData.Division.length > 0
@@ -169,34 +168,23 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                     : ''
                             }`}
                         </h2>
-                    ) : (
-                        <div className="row justify-content-center pt-2 mt-4 mb-2">
-                            <div className="spinner-border" role="status">
-                                <span className="sr-only">Loading...</span>
-                            </div>
-                        </div>
                     )}
                 </div>
             </div>
             <div className="row mt-2">
-                <div className="col-md-2">
-                    <div className="image me-2">
-                        <img
-                            className={
-                                cfbTeam && cfbTeam.ID === 86
-                                    ? 'landing-image-purdue'
-                                    : ''
-                            }
-                            src={logo}
-                            alt="Go Cougs"
-                        />
-                    </div>
-                </div>
                 <div className="col-md-4">
                     {isMobile ? (
                         <>
                             <div className="row mt-2 mb-2">
                                 <div className="btn-group btn-group-sm d-flex">
+                                    <Link
+                                        to={routes.ROSTER}
+                                        role="button"
+                                        className="btn btn-primary btn-sm me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Roster
+                                    </Link>
                                     <Link
                                         to={routes.CFB_GAMEPLAN}
                                         role="button"
@@ -219,7 +207,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         className="btn btn-primary btn-sm me-2 shadow"
                                         style={teamColors ? teamColors : {}}
                                     >
-                                        Recruiting
+                                        Recruit
                                     </Link>
                                 </div>
                             </div>
@@ -231,7 +219,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         className="btn btn-primary btn-sm me-2 shadow"
                                         style={teamColors ? teamColors : {}}
                                     >
-                                        Statistics
+                                        Stats
                                     </Link>
                                     <Link
                                         to={routes.CFB_SCHEDULE}
@@ -241,10 +229,69 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                     >
                                         Schedule
                                     </Link>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="row mt-2 mb-2">
+                                <div className="btn-group btn-group-sm d-flex">
+                                    <Link
+                                        to={routes.ROSTER}
+                                        role="button"
+                                        className="btn btn-primary btn-sm me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Roster
+                                    </Link>
+                                    <Link
+                                        to={routes.CFB_GAMEPLAN}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Gameplan
+                                    </Link>
+                                    <Link
+                                        to={routes.DEPTHCHART}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Depth Chart
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className="row mt-2 mb-2">
+                                <div className="btn-group btn-group-sm d-flex">
+                                    <Link
+                                        to={routes.CFB_RECRUITING}
+                                        type="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Recruiting
+                                    </Link>
+                                    <Link
+                                        to={routes.CFB_STATS}
+                                        type="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Statistics
+                                    </Link>
+                                    <Link
+                                        to={routes.CFB_SCHEDULE}
+                                        type="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Schedule
+                                    </Link>
                                     <Link
                                         to={routes.NEWS}
                                         type="button"
-                                        className="btn btn-primary btn-sm me-2 shadow"
+                                        className="btn btn-primary btn-md me-2 shadow"
                                         style={teamColors ? teamColors : {}}
                                     >
                                         News
@@ -252,110 +299,65 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                 </div>
                             </div>
                         </>
-                    ) : (
-                        <div className="row mt-2 mb-2">
-                            <div className="btn-group btn-group-sm d-flex">
-                                <Link
-                                    to={routes.CFB_GAMEPLAN}
-                                    role="button"
-                                    className="btn btn-primary btn-md me-2 shadow"
-                                    style={teamColors ? teamColors : {}}
-                                >
-                                    Gameplan
-                                </Link>
-                                <Link
-                                    to={routes.DEPTHCHART}
-                                    role="button"
-                                    className="btn btn-primary btn-md me-2 shadow"
-                                    style={teamColors ? teamColors : {}}
-                                >
-                                    Depth Chart
-                                </Link>
-                                <Link
-                                    to={routes.CFB_RECRUITING}
-                                    type="button"
-                                    className="btn btn-primary btn-md me-2 shadow"
-                                    style={teamColors ? teamColors : {}}
-                                >
-                                    Recruiting
-                                </Link>
-                                <Link
-                                    to={routes.CFB_STATS}
-                                    type="button"
-                                    className="btn btn-primary btn-md me-2 shadow"
-                                    style={teamColors ? teamColors : {}}
-                                >
-                                    Statistics
-                                </Link>
-                                <Link
-                                    to={routes.CFB_SCHEDULE}
-                                    type="button"
-                                    className="btn btn-primary btn-md me-2 shadow"
-                                    style={teamColors ? teamColors : {}}
-                                >
-                                    Schedule
-                                </Link>
-                                <Link
-                                    to={routes.NEWS}
-                                    type="button"
-                                    className="btn btn-primary btn-md me-2 shadow"
-                                    style={teamColors ? teamColors : {}}
-                                >
-                                    News
-                                </Link>
-                            </div>
-                        </div>
                     )}
                     {viewableMatches && viewableMatches.length > 0 ? (
                         viewableMatches.map((x) => {
                             return (
-                                <div className="row">
+                                <div className="row landing-page-row">
                                     <CFBMatchCard
                                         game={x}
                                         team={cfbTeam}
-                                        currentWeek={cfb_Timestamp.CollegeWeek}
+                                        isNFL={false}
+                                        timestamp={cfb_Timestamp}
                                     />
                                 </div>
                             );
                         })
                     ) : (
-                        <div className="row">
+                        <div className="row landing-page-row">
                             <div className="card text-dark bg-light mb-3">
                                 <div className="card-body">
-                                    <h5 className="card-title">
-                                        This season's schedule is still in
-                                        progress. Please be patient...
-                                    </h5>
+                                    <h5 className="card-title">Loading...</h5>
                                 </div>
                             </div>
                         </div>
                     )}
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-8">
                     <div
                         className={
                             isMobile
-                                ? 'row justify-content-start mt-2 ms-1'
-                                : 'row justify-content-start ms-1'
+                                ? 'row justify-content-start mb-2 mt-2  ms-1'
+                                : 'row justify-content-start  ms-1'
                         }
                     >
                         {standings && standings.length > 0 ? (
                             <>
-                                {isMobile ? (
-                                    <div className="mobile-card-viewer">
-                                        <StandingsCard standings={standings} />
+                                <div
+                                    className={
+                                        isMobile
+                                            ? 'mobile-card-viewer'
+                                            : 'desktop-display'
+                                    }
+                                >
+                                    <StandingsCard standings={standings} />
+                                    <div className="cfb-news-feed">
+                                        {newsFeed.length > 0 &&
+                                            newsFeed.map((x) => (
+                                                <NewsLogSmall
+                                                    key={x.ID}
+                                                    news={x}
+                                                    season={
+                                                        cfb_Timestamp.Season
+                                                    }
+                                                />
+                                            ))}
                                     </div>
-                                ) : (
-                                    <>
-                                        <StandingsCard standings={standings} />
-                                    </>
-                                )}
+                                </div>
                             </>
                         ) : (
                             <div className="row justify-content-center pt-2 mt-4 mb-2">
-                                <div className="spinner-border" role="status">
-                                    <span className="sr-only">Loading...</span>
-                                </div>
+                                <Spinner />
                             </div>
                         )}
                     </div>

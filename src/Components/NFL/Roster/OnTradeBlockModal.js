@@ -33,16 +33,41 @@ export const TradeBlockModal = ({ player, idx, tradeblock, viewMode }) => {
                     </div>
                     <div className="modal-body">
                         <div className="row g-2 gy-2 mb-2">
-                            Placing {name} on the Trade Block won't cause any
-                            depth chart issues as long as {name} is on your
-                            team. Other teams will be able to inquiry you about
-                            your Team and their trade block and propose trade
-                            offers which could involve {name}.
+                            {!player.IsOnTradeBlock ? (
+                                <>
+                                    Placing {name} on the Trade Block won't
+                                    cause any depth chart issues as long as{' '}
+                                    {name} is on your team. Other teams will be
+                                    able to inquiry you about your Team and
+                                    their trade block and propose trade offers
+                                    which could involve {name}.
+                                </>
+                            ) : (
+                                <>
+                                    Oh boy, well that was an awkward moment.
+                                    Sounds like no one was interested in{' '}
+                                    {player.Position} {name}. Rest assured,
+                                    taking him off the trade block shouldn't
+                                    have any affect on any contract extension
+                                    opportunities with {name}. They certainly
+                                    won't remember that they were on the trade
+                                    block. I mean, {name} is just data.
+                                </>
+                            )}
                         </div>
 
                         <div className="row g-2 gy-2 mb-2">
-                            Do you really want to place {name} on the Trade
-                            Block?
+                            {!player.IsOnTradeBlock ? (
+                                <>
+                                    Do you really want to place {name} on the
+                                    Trade Block?
+                                </>
+                            ) : (
+                                <>
+                                    Do you want to take {name} off the trade
+                                    block?
+                                </>
+                            )}
                         </div>
                     </div>
                     <div className="modal-footer">

@@ -1,12 +1,12 @@
 import React from 'react';
 
-const KickingHeaders = ({ sortFunc, cv }) => {
+const KickingHeaders = ({ sortFunc, cv, viewType }) => {
     const returnSort = (val) => {
         return sortFunc(val, cv);
     };
     return (
         <tr>
-            <th scope="col">Games</th>
+            {viewType === 'SEASON' && <th scope="col">Games</th>}
             <th scope="col">Name</th>
             <th scope="col">Year</th>
             <th scope="col">Team</th>
@@ -36,6 +36,7 @@ const KickingHeaders = ({ sortFunc, cv }) => {
             <th scope="col" onClick={() => returnSort('PuntsInside20', cv)}>
                 Punts Inside 20
             </th>
+            {viewType === 'WEEK' && <th scope="col">Opponent</th>}
         </tr>
     );
 };

@@ -181,6 +181,24 @@ const CreateCrootModal = (props) => {
                                 </div>
                             </div>
                             <div className="row">
+                                <div className="col-md-12">
+                                    <label className="col-form-label">
+                                        Custom Croot For:
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        onChange={InputChange}
+                                        name="CreatedFor"
+                                        value={
+                                            Recruit && Recruit.CreatedFor
+                                                ? Recruit.CreatedFor
+                                                : ''
+                                        }
+                                    />
+                                </div>
+                            </div>
+                            <div className="row">
                                 <div className="col-md-6">
                                     <label className="col-form-label">
                                         Position:

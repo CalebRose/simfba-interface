@@ -1,26 +1,60 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import BBAPlayerService from '../../../_Services/simNBA/BBAPlayerService';
-import CBBGameplanRow from './CBBGameplanRow';
 import BBAGameplanService from '../../../_Services/simNBA/BBAGameplanService';
 import GameplanPlayerRow from './CBBGameplanPlayerRow';
 import {
     GetTableClass,
     GetTableHoverClass
 } from '../../../Constants/CSSClassHelper';
+import { Dropdown } from '../../_Common/Dropdown';
+import { BBAToggle } from '../../_Common/SwitchToggle';
+import {
+    GetBBAMinutesRequired,
+    getProportionLimits
+} from '../../../_Utility/utilHelper';
+import {
+    DefensiveFormationModal,
+    OffensiveFormationModal,
+    OffensiveStyleModal,
+    PaceModal
+} from './BBAGameplanModals';
 
 const CBBGameplan = ({ currentUser, viewMode }) => {
     let playerService = new BBAPlayerService();
     let gameplanService = new BBAGameplanService();
     const [team, setTeam] = React.useState('');
     const [roster, setRoster] = React.useState(null);
+    const [opposingRoster, setOpposingRoster] = React.useState([]);
     const [gameplan, setGameplan] = React.useState(null);
     const [isValid, setValidation] = React.useState(true);
     const [errorMessage, setErrorMessage] = React.useState('');
     const [serviceMessage, setServiceMessage] = React.useState('');
+    const [pgMinutes, setPGMinutes] = React.useState(0);
+    const [sgMinutes, setSGMinutes] = React.useState(0);
+    const [sfMinutes, setSFMinutes] = React.useState(0);
+    const [pfMinutes, setPFMinutes] = React.useState(0);
+    const [cMinutes, setCMinutes] = React.useState(0);
+    const [iProp, setIProp] = React.useState(0);
+    const [midProp, setMidProp] = React.useState(0);
+    const [thrProp, setThrProp] = React.useState(0);
     const savingMessage = 'Saving...';
     const paceOptions = ['Very Fast', 'Fast', 'Balanced', 'Slow', 'Very Slow'];
-    const tableClass = GetTableClass(viewMode);
+    const offFormations = [
+        'Balanced',
+        'Motion',
+        'Pick-and-Roll',
+        'Post-Up',
+        'Space-and-Post'
+    ];
+    const defFormations = [
+        'Man-to-Man',
+        '1-3-1 Zone',
+        '3-2 Zone',
+        '2-3 Zone',
+        'Box-and-One Zone'
+    ];
+    const styleList = ['Traditional', 'Small Ball', 'Microball', 'Jumbo'];
     const tableHoverClass = GetTableHoverClass(viewMode);
     useEffect(() => {
         if (currentUser) {
@@ -38,8 +72,12 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
 
     const getGameplan = async () => {
         // Get Gameplan Route using team Id
-        let res = await gameplanService.GetGameplan(currentUser.cbb_id);
-        setGameplan(() => res);
+        let res = await gameplanService.GetCBBGameplan(currentUser.cbb_id);
+        setGameplan(() => res.Gameplan);
+        const namesList = [...res.OpposingRoster].map(
+            (x) => `${x.FirstName} ${x.LastName}`
+        );
+        setOpposingRoster(() => [...namesList]);
     };
 
     const getRoster = async () => {
@@ -47,18 +85,18 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         setRoster(() => players);
     };
 
-    const updateGameplan = (event) => {
-        const tar = event.target === null ? event.currentTarget : event.target;
+    const updateGameplan = (name, value) => {
         let gp = { ...gameplan };
-        let { name, value } = tar;
         // Keep the value in range of what's being changed
-        if (name !== 'Pace') {
-            let num = Number(value);
-            if (num < 0) num = 0;
-            gp[name] = Number(num);
-        } else {
-            gp[name] = value;
-        }
+
+        gp[name] = value;
+        setGameplan(() => gp);
+    };
+
+    const UpdateViewableColumns = (event) => {
+        const { value } = event.target;
+        const gp = { ...gameplan };
+        gp[value] = !gp[value];
         setGameplan(() => gp);
     };
 
@@ -69,44 +107,238 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         setRoster(() => playerList);
     };
 
-    const IsProportionInLimits = (proportion) => {
-        return proportion >= 20 && proportion <= 60;
+    const updatePlayerPosition = (idx, name, value) => {
+        let playerList = [...roster];
+        playerList[idx][name] = value;
+        setRoster(() => playerList);
+    };
+
+    const IsProportionInLimits = (proportion, min, max) => {
+        return proportion >= min && proportion <= max;
+    };
+
+    const setAllMinutes = (pg, sg, sf, pf, c, ip, mp, tp) => {
+        setPGMinutes(() => pg);
+        setSGMinutes(() => sg);
+        setSFMinutes(() => sf);
+        setPFMinutes(() => pf);
+        setCMinutes(() => c);
+        setIProp(() => ip);
+        setMidProp(() => mp);
+        setThrProp(() => tp);
     };
 
     const checkValidation = () => {
         let valid = true;
         const proportionLimit = 100;
         let currentProportion = 0;
+        let insideTotal = 0;
+        let midTotal = 0;
+        let threeTotal = 0;
+        const insideMin = getProportionLimits(
+            gameplan.OffensiveFormation,
+            'Inside',
+            true
+        );
+        const insideMax = getProportionLimits(
+            gameplan.OffensiveFormation,
+            'Inside',
+            false
+        );
+        const midMin = getProportionLimits(
+            gameplan.OffensiveFormation,
+            'Mid',
+            true
+        );
+        const midMax = getProportionLimits(
+            gameplan.OffensiveFormation,
+            'Mid',
+            false
+        );
+        const threeMin = getProportionLimits(
+            gameplan.OffensiveFormation,
+            'Three',
+            true
+        );
+        const threeMax = getProportionLimits(
+            gameplan.OffensiveFormation,
+            'Three',
+            false
+        );
+
         let message = '';
+        const pgMinuteRequirement = GetBBAMinutesRequired(
+            'PG',
+            gameplan.OffensiveStyle,
+            false
+        );
+        const sgMinuteRequirement = GetBBAMinutesRequired(
+            'SG',
+            gameplan.OffensiveStyle,
+            false
+        );
+        const sfMinuteRequirement = GetBBAMinutesRequired(
+            'SF',
+            gameplan.OffensiveStyle,
+            false
+        );
+        const pfMinuteRequirement = GetBBAMinutesRequired(
+            'PF',
+            gameplan.OffensiveStyle,
+            false
+        );
+        const cMinuteRequirement = GetBBAMinutesRequired(
+            'C',
+            gameplan.OffensiveStyle,
+            false
+        );
+        let pgMin = 0;
+        let sgMin = 0;
+        let sfMin = 0;
+        let pfMin = 0;
+        let cMin = 0;
+
+        // Check Players
+        for (let i = 0; i < roster.length; i++) {
+            const r = roster[i];
+            if (r.P1Minutes < 0) {
+                message = `${roster[i].FirstName} ${roster[i].LastName} has allocated ${roster[i].P1Minutes} minutes for position 1. Please set the number of minutes to 0 or above.`;
+                setErrorMessage(message);
+                valid = false;
+                setValidation(valid);
+                return;
+            }
+            if (r.P2Minutes < 0) {
+                message = `${roster[i].FirstName} ${roster[i].LastName} has allocated ${roster[i].P2Minutes} minutes for position 2. Please set the number of minutes to 0 or above.`;
+                setErrorMessage(message);
+                valid = false;
+                setValidation(valid);
+                return;
+            }
+            if (r.P3Minutes < 0) {
+                message = `${roster[i].FirstName} ${roster[i].LastName} has allocated ${roster[i].P3} minutes for position 3. Please set the number of minutes to 0 or above.`;
+                setErrorMessage(message);
+                valid = false;
+                setValidation(valid);
+                return;
+            }
+
+            if (r.PositionOne === 'PG') pgMin += r.P1Minutes;
+            else if (r.PositionOne === 'SG') sgMin += r.P1Minutes;
+            else if (r.PositionOne === 'SF') sfMin += r.P1Minutes;
+            else if (r.PositionOne === 'PF') pfMin += r.P1Minutes;
+            else if (r.PositionOne === 'C') cMin += r.P1Minutes;
+            if (r.PositionTwo === 'PG') pgMin += r.P2Minutes;
+            else if (r.PositionTwo === 'SG') sgMin += r.P2Minutes;
+            else if (r.PositionTwo === 'SF') sfMin += r.P2Minutes;
+            else if (r.PositionTwo === 'PF') pfMin += r.P2Minutes;
+            else if (r.PositionTwo === 'C') cMin += r.P2Minutes;
+            if (r.PositionThree === 'PG') pgMin += r.P3Minutes;
+            else if (r.PositionThree === 'SG') sgMin += r.P3Minutes;
+            else if (r.PositionThree === 'SF') sfMin += r.P3Minutes;
+            else if (r.PositionThree === 'PF') pfMin += r.P3Minutes;
+            else if (r.PositionThree === 'C') cMin += r.P3Minutes;
+
+            if (
+                r.IsRedshirting &&
+                (r.P1Minutes > 0 || r.P2Minutes > 0 || r.P3Minutes > 0)
+            ) {
+                message = `${r.FirstName} ${r.LastName} is redshirted and is allocated ${roster[i].P1Minutes} minutes. Please set the number of minutes to 0.`;
+                setErrorMessage(message);
+                valid = false;
+                setValidation(valid);
+                return;
+            }
+
+            if (
+                r.IsRedshirting &&
+                (r.InsideProportion > 0 ||
+                    r.MidRangeProportion > 0 ||
+                    r.ThreePointProportion > 0)
+            ) {
+                const t =
+                    r.InsideProportion +
+                    r.MidRangeProportion +
+                    r.ThreePointProportion;
+                message = `${r.FirstName} ${r.LastName} is redshirted and is allocated ${t} in Shot Proportion. Please set the shot proportion for Inside, Mid, and 3pt to 0.`;
+                setErrorMessage(message);
+                valid = false;
+                setValidation(valid);
+                return;
+            }
+
+            let playerTotalMinutes = r.P1Minutes + r.P2Minutes + r.P3Minutes;
+
+            if (playerTotalMinutes > r.Stamina) {
+                message = `${r.FirstName} ${r.LastName}'s minutes allocation cannot exceed its Stamina.`;
+                setErrorMessage(message);
+                valid = false;
+                setValidation(valid);
+                return;
+            }
+
+            insideTotal += r.InsideProportion;
+            midTotal += r.MidRangeProportion;
+            threeTotal += r.ThreePointProportion;
+        }
+
         // Check Gameplan
-        if (!IsProportionInLimits(gameplan.ThreePointProportion)) {
-            message = `Three Point Proportion for Gameplan ${gameplan.Game} set to ${gameplan.ThreePointProportion}. Please make sure this allocation is between 20 and 60.`;
+        // Proportion Requirements
+        if (!IsProportionInLimits(threeTotal, threeMin, threeMax)) {
+            message = `Three Point Proportion for Gameplan ${gameplan.Game} set to ${threeTotal}. Please make sure this allocation is between ${threeMin} and ${threeMax}.`;
             setErrorMessage(message);
             valid = false;
             setValidation(valid);
+            setAllMinutes(
+                pgMin,
+                sgMin,
+                sfMin,
+                pfMin,
+                cMin,
+                insideTotal,
+                midTotal,
+                threeTotal
+            );
             return;
         }
 
-        if (!IsProportionInLimits(gameplan.JumperProportion)) {
-            message = `Jumper Proportion for Gameplan ${gameplan.Game} set to ${gameplan.JumperProportion}. Please make sure this allocation is between 20 and 60.`;
+        if (!IsProportionInLimits(midTotal, midMin, midMax)) {
+            message = `Mid-Range Proportion for Gameplan ${gameplan.Game} set to ${midTotal}. Please make sure this allocation is between ${midMin} and ${midMax}.`;
             setErrorMessage(message);
             valid = false;
             setValidation(valid);
+            setAllMinutes(
+                pgMin,
+                sgMin,
+                sfMin,
+                pfMin,
+                cMin,
+                insideTotal,
+                midTotal,
+                threeTotal
+            );
             return;
         }
 
-        if (!IsProportionInLimits(gameplan.PaintProportion)) {
-            message = `Paint Proportion for Gameplan ${gameplan.Game} set to ${gameplan.PaintProportion}. Please make sure this allocation is between 20 and 60.`;
+        if (!IsProportionInLimits(insideTotal, insideMin, insideMax)) {
+            message = `Inside Proportion for Gameplan ${gameplan.Game} set to ${insideTotal}. Please make sure this allocation is between ${insideMin} and ${insideMax}.`;
             setErrorMessage(message);
             valid = false;
             setValidation(valid);
+            setAllMinutes(
+                pgMin,
+                sgMin,
+                sfMin,
+                pfMin,
+                cMin,
+                insideTotal,
+                midTotal,
+                threeTotal
+            );
             return;
         }
 
-        currentProportion =
-            gameplan.ThreePointProportion +
-            gameplan.JumperProportion +
-            gameplan.PaintProportion;
+        currentProportion = threeTotal + midTotal + insideTotal;
         if (
             currentProportion > proportionLimit ||
             currentProportion < proportionLimit
@@ -117,43 +349,108 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             setValidation(valid);
             return;
         }
-        const minutesLimit = 200;
-        let totalMinutes = 0;
-        // Check Players
-        for (let i = 0; i < roster.length; i++) {
-            if (roster[i].Minutes < 0) {
-                message = `${roster[i].FirstName} ${roster[i].LastName} has allocated ${roster[i].Minutes} minutes. Please set the number of minutes to 0 or above.`;
-                setErrorMessage(message);
-                valid = false;
-                setValidation(valid);
-                return;
-            }
-            totalMinutes += roster[i].Minutes;
 
-            if (roster[i].IsRedshirting && roster[i].Minutes > 0) {
-                message = `${roster[i].FirstName} ${roster[i].LastName} is redshirted and is allocated ${roster[i].Minutes} minutes. Please set the number of minutes to 0.`;
-                setErrorMessage(message);
-                valid = false;
-                setValidation(valid);
-                return;
-            }
-
-            if (roster[i].Minutes > roster[i].Stamina) {
-                message = `${roster[i].FirstName} ${roster[i].LastName}'s minutes allocation cannot exceed its Stamina.`;
-                setErrorMessage(message);
-                valid = false;
-                setValidation(valid);
-                return;
-            }
-        }
-
-        if (totalMinutes > minutesLimit || totalMinutes < minutesLimit) {
-            message = `Total Minutes between all Players adds up to ${totalMinutes}.\nPlease make overall total to 200.`;
+        // Style Requirement
+        if (pgMin > pgMinuteRequirement || pgMin < pgMinuteRequirement) {
+            message = `Total Minutes between all Point Guards adds up to ${pgMin}.\nPlease make overall total to ${pgMinuteRequirement}.`;
             setErrorMessage(message);
             valid = false;
             setValidation(valid);
+            setAllMinutes(
+                pgMin,
+                sgMin,
+                sfMin,
+                pfMin,
+                cMin,
+                insideTotal,
+                midTotal,
+                threeTotal
+            );
             return;
         }
+
+        if (sgMin > sgMinuteRequirement || sgMin < sgMinuteRequirement) {
+            message = `Total Minutes between all Shooting Guards adds up to ${sgMin}.\nPlease make overall total to ${sgMinuteRequirement}.`;
+            setErrorMessage(message);
+            valid = false;
+            setValidation(valid);
+            setAllMinutes(
+                pgMin,
+                sgMin,
+                sfMin,
+                pfMin,
+                cMin,
+                insideTotal,
+                midTotal,
+                threeTotal
+            );
+            return;
+        }
+
+        if (sfMin > sfMinuteRequirement || sfMin < sfMinuteRequirement) {
+            message = `Total Minutes between all Small Forwards adds up to ${sfMin}.\nPlease make overall total to ${sfMinuteRequirement}.`;
+            setErrorMessage(message);
+            valid = false;
+            setValidation(valid);
+            setAllMinutes(
+                pgMin,
+                sgMin,
+                sfMin,
+                pfMin,
+                cMin,
+                insideTotal,
+                midTotal,
+                threeTotal
+            );
+            return;
+        }
+
+        if (pfMin > pfMinuteRequirement || pfMin < pfMinuteRequirement) {
+            message = `Total Minutes between all Power Forwards adds up to ${pfMin}.\nPlease make overall total to ${pfMinuteRequirement}.`;
+            setErrorMessage(message);
+            valid = false;
+            setValidation(valid);
+            setAllMinutes(
+                pgMin,
+                sgMin,
+                sfMin,
+                pfMin,
+                cMin,
+                insideTotal,
+                midTotal,
+                threeTotal
+            );
+            return;
+        }
+
+        if (cMin > cMinuteRequirement || cMin < cMinuteRequirement) {
+            message = `Total Minutes between all Centers adds up to ${cMin}.\nPlease make overall total to ${cMinuteRequirement}.`;
+            setErrorMessage(message);
+            valid = false;
+            setValidation(valid);
+            setAllMinutes(
+                pgMin,
+                sgMin,
+                sfMin,
+                pfMin,
+                cMin,
+                insideTotal,
+                midTotal,
+                threeTotal
+            );
+            return;
+        }
+        setAllMinutes(
+            pgMin,
+            sgMin,
+            sfMin,
+            pfMin,
+            cMin,
+            insideTotal,
+            midTotal,
+            threeTotal
+        );
+        // Set the validation
         setValidation(valid);
         setErrorMessage('');
     };
@@ -162,13 +459,14 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         checkValidation();
         if (!isValid) return;
         const gameplanOptionsDto = {
-            Players: roster,
+            CollegePlayers: roster,
             Gameplan: gameplan,
             teamId: currentUser.cbb_id
         };
         setServiceMessage(savingMessage);
         const save = await gameplanService.SaveGameplanOptions(
-            gameplanOptionsDto
+            gameplanOptionsDto,
+            'cbb'
         );
 
         if (save.ok) {
@@ -181,164 +479,366 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
     };
 
     return (
-        <div className="container mt-3">
-            <div className="row">
-                <div className="col-md-auto justify-content-start">
-                    <h2>{team} Gameplan</h2>
-                </div>
-                <div className="col-md-auto ms-auto">
-                    <div className="row">
-                        {gameplan !== undefined && gameplan !== null ? (
-                            <div className="col-md-auto me-1">
-                                <div className="dropdown">
-                                    <button
-                                        className="btn btn-secondary dropdown-toggle"
-                                        type="button"
-                                        id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false"
-                                    >
-                                        Pace: {gameplan.Pace}
-                                    </button>
-                                    <ul
-                                        className="dropdown-menu dropdown-content"
-                                        aria-labelledby="dropdownMenuButton1"
-                                        style={{ zIndex: 3 }}
-                                    >
-                                        {paceOptions.map((x) => (
-                                            <li
-                                                className="clickable"
-                                                style={{ zIndex: 3 }}
-                                            >
-                                                <button
-                                                    className="dropdown-item clickable"
-                                                    name="Pace"
-                                                    value={x}
-                                                    onClick={updateGameplan}
-                                                >
-                                                    {x}
-                                                </button>
-                                            </li>
-                                        ))}
-                                    </ul>
+        <div className="container-fluid mt-3">
+            <div className="row ps-2">
+                <div className="row mb-1">
+                    <div className="col-md-auto justify-content-start">
+                        <h2>{team} Gameplan</h2>
+                    </div>
+                    <div className="col-md-auto ms-auto">
+                        <div className="row">
+                            {gameplan && (
+                                <div className="col-md-auto me-1">
+                                    <h6>
+                                        Pace{' '}
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#paceModal"
+                                        >
+                                            <i className="bi bi-info-circle" />
+                                        </button>
+                                    </h6>
+                                    <Dropdown
+                                        value={gameplan.Pace}
+                                        click={updateGameplan}
+                                        name="Pace"
+                                        list={paceOptions}
+                                    />
                                 </div>
-                            </div>
-                        ) : (
-                            ''
-                        )}
-                        {isValid ? (
-                            <div className="col-md-auto">
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={saveGameplanOptions}
-                                >
-                                    Save
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="col-md-auto">
-                                <button className="btn btn-primary" disabled>
-                                    Save
-                                </button>
-                            </div>
-                        )}
+                            )}
+                            {gameplan && (
+                                <div className="col-md-auto me-1">
+                                    <h6>
+                                        Offensive Formation{' '}
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#offFormModal"
+                                        >
+                                            <i className="bi bi-info-circle" />
+                                        </button>
+                                    </h6>
+                                    <Dropdown
+                                        value={gameplan.OffensiveFormation}
+                                        click={updateGameplan}
+                                        name="OffensiveFormation"
+                                        list={offFormations}
+                                    />
+                                </div>
+                            )}
+                            {gameplan && (
+                                <div className="col-md-auto me-1">
+                                    <h6>
+                                        Defensive Formation{' '}
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#defFormModal"
+                                        >
+                                            <i className="bi bi-info-circle" />
+                                        </button>
+                                    </h6>
+                                    <Dropdown
+                                        value={gameplan.DefensiveFormation}
+                                        click={updateGameplan}
+                                        name="DefensiveFormation"
+                                        list={defFormations}
+                                    />
+                                </div>
+                            )}
+                            {gameplan && (
+                                <div className="col-md-auto me-1">
+                                    <h6>
+                                        Offensive Style{' '}
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#offStyleModal"
+                                        >
+                                            <i className="bi bi-info-circle" />
+                                        </button>
+                                    </h6>
+                                    <Dropdown
+                                        value={gameplan.OffensiveStyle}
+                                        click={updateGameplan}
+                                        name="OffensiveStyle"
+                                        list={styleList}
+                                    />
+                                </div>
+                            )}
+                            {gameplan &&
+                                (gameplan.DefensiveFormation === 'Man-to-Man' ||
+                                    gameplan.DefensiveFormation ===
+                                        'Box-and-One Zone') &&
+                                opposingRoster.length > 0 && (
+                                    <div className="col-md-auto me-1">
+                                        <h6>Focus Player </h6>
+                                        <Dropdown
+                                            value={gameplan.FocusPlayer}
+                                            click={updateGameplan}
+                                            name="FocusPlayer"
+                                            list={opposingRoster}
+                                        />
+                                    </div>
+                                )}
+                            {isValid ? (
+                                <div className="col-md-auto">
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={saveGameplanOptions}
+                                    >
+                                        Save
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="col-md-auto">
+                                    <button
+                                        className="btn btn-primary"
+                                        disabled
+                                    >
+                                        Save
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {serviceMessage.length > 0 || errorMessage.length > 0 ? (
-                <div className="row mt-2 mb-2">
-                    {serviceMessage.length > 0 &&
-                    serviceMessage !== savingMessage ? (
-                        <div className="alert alert-success">
-                            {serviceMessage}
-                        </div>
-                    ) : (
-                        ''
-                    )}
-                    {serviceMessage.length > 0 &&
-                    serviceMessage === savingMessage ? (
-                        <div className="alert alert-secondary">
-                            {serviceMessage}
-                        </div>
-                    ) : (
-                        ''
-                    )}
-                    {errorMessage.length > 0 ? (
-                        <div className="alert alert-danger">{errorMessage}</div>
-                    ) : (
-                        ''
-                    )}
-                </div>
-            ) : (
-                ''
-            )}
-            <div className="row">
-                <div className="row mt-3">
-                    <table className={tableClass}>
-                        <thead>
-                            <tr>
-                                <th scope="col"></th>
-                                <th scope="col">3pt Proportion</th>
-                                <th scope="col">Jumper Proportion</th>
-                                <th scope="col">Paint Proportion</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {gameplan !== undefined && gameplan !== null ? (
-                                <CBBGameplanRow
-                                    key={gameplan.ID}
-                                    gameplan={gameplan}
-                                    updateGameplan={updateGameplan}
-                                />
-                            ) : (
-                                ''
+                {serviceMessage.length > 0 ||
+                    (errorMessage.length > 0 && (
+                        <div className="row mt-2 mb-2">
+                            {serviceMessage.length > 0 &&
+                                serviceMessage !== savingMessage && (
+                                    <div className="alert alert-success">
+                                        {serviceMessage}
+                                    </div>
+                                )}
+                            {serviceMessage.length > 0 &&
+                                serviceMessage === savingMessage && (
+                                    <div className="alert alert-secondary">
+                                        {serviceMessage}
+                                    </div>
+                                )}
+                            {errorMessage.length > 0 && (
+                                <div className="alert alert-danger">
+                                    {errorMessage}
+                                </div>
                             )}
-                        </tbody>
-                    </table>
+                        </div>
+                    ))}
+
+                <PaceModal />
+                <OffensiveFormationModal />
+                <DefensiveFormationModal />
+                <OffensiveStyleModal isNBA={false} />
+                {gameplan && (
+                    <div className="row justify-content-center mt-1 mb-1">
+                        {gameplan.OffensiveStyle !== 'Jumbo' && (
+                            <div className="col mx-1">
+                                <h6>PG Minutes: {pgMinutes}</h6>
+                            </div>
+                        )}
+                        <div className="col mx-1">
+                            <h6>SG Minutes: {sgMinutes}</h6>
+                        </div>
+                        <div className="col mx-1">
+                            <h6>SF Minutes: {sfMinutes}</h6>
+                        </div>
+                        {gameplan.OffensiveStyle !== 'Microball' && (
+                            <div className="col mx-1">
+                                <h6>PF Minutes: {pfMinutes}</h6>
+                            </div>
+                        )}
+                        {gameplan.OffensiveStyle !== 'Microball' &&
+                            gameplan.OffensiveStyle !== 'Small Ball' && (
+                                <div className="col mx-1">
+                                    <h6>C Minutes: {cMinutes}</h6>
+                                </div>
+                            )}
+                        <div className="col mx-1">
+                            <h6>Inside Prop.: {iProp}</h6>
+                        </div>
+                        <div className="col mx-1">
+                            <h6>Mid Range Prop.: {midProp}</h6>
+                        </div>
+                        <div className="col mx-1">
+                            <h6>3pt Prop.: {thrProp}</h6>
+                        </div>
+                    </div>
+                )}
+                <div className="row mt-2">
+                    {gameplan && (
+                        <>
+                            <BBAToggle
+                                value="ToggleFN"
+                                label="Inside Shot"
+                                checkValue={gameplan.ToggleFN}
+                                change={UpdateViewableColumns}
+                            />
+                            <BBAToggle
+                                value="Toggle2pt"
+                                label="Mid Range Shooting"
+                                checkValue={gameplan.Toggle2pt}
+                                change={UpdateViewableColumns}
+                            />
+                            <BBAToggle
+                                value="Toggle3pt"
+                                label="3pt Shooting"
+                                checkValue={gameplan.Toggle3pt}
+                                change={UpdateViewableColumns}
+                            />
+                            <BBAToggle
+                                value="ToggleFT"
+                                label="Free Throws"
+                                checkValue={gameplan.ToggleFT}
+                                change={UpdateViewableColumns}
+                            />
+                            <BBAToggle
+                                value="ToggleBW"
+                                label="Ballwork"
+                                checkValue={gameplan.ToggleBW}
+                                change={UpdateViewableColumns}
+                            />
+                            <BBAToggle
+                                value="ToggleRB"
+                                label="Rebounding"
+                                checkValue={gameplan.ToggleRB}
+                                change={UpdateViewableColumns}
+                            />
+                            <BBAToggle
+                                value="ToggleID"
+                                label="Int. Defense"
+                                checkValue={gameplan.ToggleID}
+                                change={UpdateViewableColumns}
+                            />
+                            <BBAToggle
+                                value="TogglePD"
+                                label="Per. Defense"
+                                checkValue={gameplan.TogglePD}
+                                change={UpdateViewableColumns}
+                            />
+                            <BBAToggle
+                                value="ToggleP2"
+                                label="Position Two"
+                                checkValue={gameplan.ToggleP2}
+                                change={UpdateViewableColumns}
+                            />
+                            <BBAToggle
+                                value="ToggleP3"
+                                label="Position Three"
+                                checkValue={gameplan.ToggleP3}
+                                change={UpdateViewableColumns}
+                            />
+                        </>
+                    )}
                 </div>
-                <div
-                    className={`row mt-3 overflow-auto gameplan-table-height${
-                        viewMode === 'dark' ? '-dark' : ''
-                    }`}
-                >
-                    <table className={tableHoverClass}>
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Position</th>
-                                <th scope="col">Year</th>
-                                <th scope="col">Overall</th>
-                                <th scope="col">2pt Shooting</th>
-                                <th scope="col">3pt Shooting</th>
-                                <th scope="col">Finishing</th>
-                                <th scope="col">Ballwork</th>
-                                <th scope="col">Rebounding</th>
-                                <th scope="col">Defense</th>
-                                <th scope="col">Stamina</th>
-                                <th scope="col">Playtime Expectations</th>
-                                <th scope="col">Minutes</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {roster !== undefined &&
-                            roster !== null &&
-                            roster.length > 0
-                                ? roster.map((x, idx) => {
-                                      return (
-                                          <GameplanPlayerRow
-                                              key={x.ID}
-                                              idx={idx}
-                                              player={x}
-                                              updatePlayer={updatePlayer}
-                                          />
-                                      );
-                                  })
-                                : ''}
-                        </tbody>
-                    </table>
-                </div>
+                {roster && gameplan && roster.length > 0 && (
+                    <div className="row">
+                        <div
+                            className={`row mt-3 mb-2 overflow-auto gameplan-table-height${
+                                viewMode === 'dark' ? '-dark' : ''
+                            }`}
+                        >
+                            <table className={tableHoverClass}>
+                                <thead>
+                                    <tr>
+                                        <th
+                                            scope="col"
+                                            style={{ width: '250px' }}
+                                        >
+                                            Name
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            style={{ width: '90px' }}
+                                        >
+                                            Overall
+                                        </th>
+                                        {gameplan.ToggleFN && (
+                                            <th scope="col">Inside</th>
+                                        )}
+                                        {gameplan.Toggle2pt && (
+                                            <th scope="col">Mid</th>
+                                        )}
+                                        {gameplan.Toggle3pt && (
+                                            <th scope="col">3pt</th>
+                                        )}
+                                        {gameplan.ToggleFT && (
+                                            <th scope="col">Free Throw</th>
+                                        )}
+                                        {gameplan.ToggleBW && (
+                                            <th scope="col">Ballwork</th>
+                                        )}
+                                        {gameplan.ToggleRB && (
+                                            <th scope="col">Rebounding</th>
+                                        )}
+                                        {gameplan.ToggleID && (
+                                            <th scope="col">Int. D</th>
+                                        )}
+                                        {gameplan.TogglePD && (
+                                            <th scope="col">Per. D</th>
+                                        )}
+                                        <th scope="col">
+                                            <abbr title="Inside Proportion">
+                                                Inside Prop.
+                                            </abbr>
+                                        </th>
+                                        <th scope="col">
+                                            <abbr title="Mid Range Proportion">
+                                                Mid Prop.
+                                            </abbr>
+                                        </th>
+                                        <th scope="col">
+                                            <abbr title="3pt Proportion">
+                                                3pt Prop.
+                                            </abbr>
+                                        </th>
+                                        <th scope="col">Pos 1</th>
+                                        <th scope="col">P1 Min</th>
+                                        {gameplan.ToggleP2 && (
+                                            <th scope="col">Pos 2</th>
+                                        )}
+                                        {gameplan.ToggleP2 && (
+                                            <th scope="col">P2 Min</th>
+                                        )}
+                                        {gameplan.ToggleP3 && (
+                                            <th scope="col">Pos 3</th>
+                                        )}
+                                        {gameplan.ToggleP3 && (
+                                            <th scope="col">P3 Min</th>
+                                        )}
+                                        <th scope="col">Minutes</th>
+                                        <th scope="col">Stamina</th>
+                                        <th scope="col">
+                                            Playtime Expectations
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {roster.map((x, idx) => {
+                                        return (
+                                            <GameplanPlayerRow
+                                                key={x.ID}
+                                                idx={idx}
+                                                player={x}
+                                                updatePlayer={updatePlayer}
+                                                updatePosition={
+                                                    updatePlayerPosition
+                                                }
+                                                gameplan={gameplan}
+                                            />
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

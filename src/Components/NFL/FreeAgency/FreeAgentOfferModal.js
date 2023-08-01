@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { GetModalClass } from '../../../Constants/CSSClassHelper';
-import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
 import {
     GetCapSpace,
     GetContractLength,
@@ -9,9 +8,17 @@ import {
     ValidateRule2,
     ValidateRule3,
     ValidateRule4,
-    ValidateRule5
+    ValidateRule5,
+    ValidateRule6
 } from './FreeAgencyHelper';
-import { OfferInput, TotalInput } from './FreeAgencyOfferInput';
+import { GetNFLOverall } from '../../../_Utility/RosterHelper';
+import {
+    CapRemainingRow,
+    NFLBonusRow,
+    NFLSalaryRow,
+    NFLTotalRow,
+    OfferValueRow
+} from '../../_Common/CommonOfferComponents';
 
 export const FreeAgentOfferModal = ({
     team,
@@ -19,7 +26,8 @@ export const FreeAgentOfferModal = ({
     ts,
     idx,
     extend,
-    viewMode
+    viewMode,
+    viewPS
 }) => {
     const modalId = `offerModal${idx}`;
     const modalClass = GetModalClass(viewMode);
@@ -27,16 +35,59 @@ export const FreeAgentOfferModal = ({
     const [existingOffer, setExistingOffer] = useState(null);
     const [offer, setOffer] = useState(() => {
         const offers = player.Offers;
-        const offerIdx = player.Offers.findIndex((x) => x.TeamID === team.ID);
-        if (offerIdx < 0) {
+        if (offers && offers.length > 0) {
+            const offerIdx = player.Offers.findIndex(
+                (x) => x.TeamID === team.ID
+            );
+            if (offerIdx < 0) {
+                if (player.TeamID === team.ID && viewPS) {
+                    let bestofferIdx = 0;
+                    let maxContractValue = -Infinity;
+                    for (let i = 0; i < player.Offers.length; i++) {
+                        if (
+                            player.Offers[i].ContractValue >= maxContractValue
+                        ) {
+                            maxContractValue = player.Offers[i].ContractValue;
+                            bestofferIdx = i;
+                        }
+                    }
+                    const c = { ...player.Offers[bestofferIdx] };
+                    return {
+                        PlayerID: c.PlayerID,
+                        NFLPlayerID: c.NFLPlayerID,
+                        ContractLength: c.ContractLength,
+                        Y1BaseSalary: c.Y1BaseSalary,
+                        Y1Bonus: c.Y1Bonus,
+                        Y2BaseSalary: c.Y2BaseSalary,
+                        Y2Bonus: c.Y2Bonus,
+                        Y3BaseSalary: c.Y3BaseSalary,
+                        Y3Bonus: c.Y3Bonus,
+                        Y4BaseSalary: c.Y4BaseSalary,
+                        Y4Bonus: c.Y4Bonus,
+                        Y5BaseSalary: c.Y5BaseSalary,
+                        Y5Bonus: c.Y5Bonus,
+                        BonusPercentage: c.BonusPercentage,
+                        ContractValue: c.ContractValue,
+                        IsActive: c.IsActive,
+                        TeamID: team.ID,
+                        Team: `${team.TeamName} ${team.Mascot}`
+                    };
+                }
+                return {
+                    NFLPlayerID: player.ID,
+                    TeamID: team.ID,
+                    Team: `${team.TeamName} ${team.Mascot}`
+                };
+            }
+            setExistingOffer(() => offers[offerIdx]);
+            return offers[offerIdx];
+        } else {
             return {
                 NFLPlayerID: player.ID,
                 TeamID: team.ID,
-                Team: team.TeamName + ' ' + team.Mascot
+                Team: `${team.TeamName} ${team.Mascot}`
             };
         }
-        setExistingOffer(() => offers[offerIdx]);
-        return offers[offerIdx];
     });
     // Comment Here
     const [hasExistingOffer, setExistingOfferBool] = useState(false);
@@ -46,8 +97,9 @@ export const FreeAgentOfferModal = ({
     const [rule3Valid, setRule3] = useState(true);
     const [rule4Valid, setRule4] = useState(true);
     const [rule5Valid, setRule5] = useState(true);
+    const [rule6Valid, setRule6] = useState(true);
     const { MinimumValue } = player;
-
+    const ovr = GetNFLOverall(player.Overall, player.ShowLetterGrade);
     const confirmChange = () => {
         return extend(player, offer);
     };
@@ -55,10 +107,10 @@ export const FreeAgentOfferModal = ({
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         if (offer) {
-            let off = { ...offer };
-            off[name] = Number(value);
+            let updatedOffer = { ...offer };
+            updatedOffer[name] = Number(value);
 
-            ValidateOffer(off);
+            ValidateOffer(updatedOffer);
         }
     };
 
@@ -77,13 +129,7 @@ export const FreeAgentOfferModal = ({
             offer.Y4BaseSalary,
             offer.Y5BaseSalary
         );
-        let contractLength = GetContractLength(
-            offer.Y1BaseSalary,
-            offer.Y2BaseSalary,
-            offer.Y3BaseSalary,
-            offer.Y4BaseSalary,
-            offer.Y5BaseSalary
-        );
+        const contractLength = offer.ContractLength;
         const bonusByYear = BonusTotal / contractLength;
         y1Bonus = contractLength > 0 ? bonusByYear : 0;
         y2Bonus = contractLength > 1 ? bonusByYear : 0;
@@ -202,6 +248,14 @@ export const FreeAgentOfferModal = ({
             ts.IsNFLOffSeason
         );
 
+        const isRule6Valid = ValidateRule6(
+            offer.Y1BaseSalary,
+            offer.Y2BaseSalary,
+            offer.Y3BaseSalary,
+            offer.Y4BaseSalary,
+            offer.Y5BaseSalary
+        );
+
         const canMakeOffer =
             player.IsAcceptingOffers ||
             (player.IsNegotiating && hasExistingOffer);
@@ -211,12 +265,13 @@ export const FreeAgentOfferModal = ({
             : existingOffer.ContractValue <= contractValue;
 
         const isValid =
-            contractValue > MinimumValue &&
+            contractValue >= MinimumValue &&
             isRule1Valid &&
             isRule2Valid &&
             isRule3Valid &&
             isRule4Valid &&
             isRule5Valid &&
+            isRule6Valid &&
             canMakeOffer &&
             validToExistingOffer;
 
@@ -225,12 +280,13 @@ export const FreeAgentOfferModal = ({
         setRule3(() => isRule3Valid);
         setRule4(() => isRule4Valid);
         setRule5(() => isRule5Valid);
+        setRule6(() => isRule6Valid);
         setValidOffer(() => isValid);
         setOffer(() => updatedOffer);
     };
 
     useEffect(() => {
-        if (player) {
+        if (player && player.Offers.length > 0) {
             GetTeamOffer(player.Offers);
             const offers = player.Offers;
             const offerIdx = player.Offers.findIndex(
@@ -248,6 +304,59 @@ export const FreeAgentOfferModal = ({
         if (teamOffer > -1) {
             setOffer(() => offers[teamOffer]);
         }
+    };
+
+    const OfferButton = () => {
+        if (validOffer) {
+            if (!hasExistingOffer && player.IsAcceptingOffers) {
+                return (
+                    <button
+                        type="button"
+                        className="btn btn-danger"
+                        data-bs-dismiss="modal"
+                        onClick={confirmChange}
+                    >
+                        Yes
+                    </button>
+                );
+            } else if (
+                hasExistingOffer &&
+                (player.IsAcceptingOffers || player.IsNegotiating)
+            ) {
+                return (
+                    <button
+                        type="button"
+                        className="btn btn-warning"
+                        data-bs-dismiss="modal"
+                        onClick={confirmChange}
+                    >
+                        Update
+                    </button>
+                );
+            }
+        }
+        if (!hasExistingOffer) {
+            return (
+                <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                    disabled
+                >
+                    Yes
+                </button>
+            );
+        }
+        return (
+            <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+                disabled
+            >
+                Update
+            </button>
+        );
     };
 
     return (
@@ -281,7 +390,7 @@ export const FreeAgentOfferModal = ({
                                 </h4>
                             </div>
                             <div className="col-md-auto">
-                                <h4 className="">Overall: {player.Overall}</h4>
+                                <h4 className="">Overall: {ovr}</h4>
                             </div>
                             <div className="col-md-auto ms-auto">
                                 <h4 className="">
@@ -344,246 +453,56 @@ export const FreeAgentOfferModal = ({
                                             4: Highest year cannot be more than
                                             100% of the lowest year (or $6M)
                                         </p>
+                                        <p
+                                            className={
+                                                !rule6Valid ? 'text-danger' : ''
+                                            }
+                                        >
+                                            6: An input for salary that isn't
+                                            zero must be greater than 0.5.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div className="row mt-2 text-start">
-                            <h5>Bonus</h5>
+                            <h5>Contract Length</h5>
                         </div>
                         <div className="row mt-1">
-                            <TotalInput
-                                name="Y1Bonus"
-                                value={
-                                    offer
-                                        ? RoundToTwoDecimals(offer.Y1Bonus)
-                                        : 0
-                                }
-                                change={handleInputChange}
-                                label="Year 1 Bonus"
-                            />
-                            <TotalInput
-                                name="Y2Bonus"
-                                value={
-                                    offer
-                                        ? RoundToTwoDecimals(offer.Y2Bonus)
-                                        : 0
-                                }
-                                change={handleInputChange}
-                                label="Year 2 Bonus"
-                            />
-                            <TotalInput
-                                name="Y3Bonus"
-                                value={
-                                    offer
-                                        ? RoundToTwoDecimals(offer.Y3Bonus)
-                                        : 0
-                                }
-                                change={handleInputChange}
-                                label="Year 3 Bonus"
-                            />
-                            <TotalInput
-                                name="Y4Bonus"
-                                value={
-                                    offer
-                                        ? RoundToTwoDecimals(offer.Y4Bonus)
-                                        : 0
-                                }
-                                change={handleInputChange}
-                                label="Year 4 Bonus"
-                            />
-                            <TotalInput
-                                name="Y5Bonus"
-                                value={
-                                    offer
-                                        ? RoundToTwoDecimals(offer.Y5Bonus)
-                                        : 0
-                                }
-                                change={handleInputChange}
-                                label="Year 5 Bonus"
-                            />
-                            <OfferInput
-                                name="TotalBonus"
-                                value={offer ? offer.TotalBonus : 0}
-                                change={handleInputChange}
-                                label="Total Bonus"
-                            />
+                            <div className="col-auto">
+                                <input
+                                    name="ContractLength"
+                                    type="number"
+                                    className="form-control"
+                                    id="ContractLength"
+                                    aria-describedby="ContractLength"
+                                    value={offer ? offer.ContractLength : 0}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
                         </div>
-                        <div className="row mt-1 text-start">
-                            <h5>Salary</h5>
-                        </div>
-                        <div className="row mt-1">
-                            <OfferInput
-                                name="Y1BaseSalary"
-                                value={offer.Y1BaseSalary}
-                                change={handleInputChange}
-                                label="Year 1 Salary"
-                            />
-                            <OfferInput
-                                name="Y2BaseSalary"
-                                value={offer.Y2BaseSalary}
-                                change={handleInputChange}
-                                label="Year 2 Salary"
-                            />
-                            <OfferInput
-                                name="Y3BaseSalary"
-                                value={offer.Y3BaseSalary}
-                                change={handleInputChange}
-                                label="Year 3 Salary"
-                            />
-                            <OfferInput
-                                name="Y4BaseSalary"
-                                value={offer.Y4BaseSalary}
-                                change={handleInputChange}
-                                label="Year 4 Salary"
-                            />
-                            <OfferInput
-                                name="Y5BaseSalary"
-                                value={offer.Y5BaseSalary}
-                                change={handleInputChange}
-                                label="Year 5 Salary"
-                            />
-                            <TotalInput
-                                name="TotalSalary"
-                                value={offer.TotalSalary}
-                                change={handleInputChange}
-                                label="Total Salary"
-                            />
-                        </div>
-                        <div className="row mt-1 text-start">
-                            <h5>Total</h5>
-                        </div>
-                        <div className="row mt-1">
-                            <TotalInput
-                                name="TotalY1"
-                                value={RoundToTwoDecimals(offer.TotalY1)}
-                                change={handleInputChange}
-                                label="Total Year 1"
-                                isTotal={true}
-                            />
-                            <TotalInput
-                                name="TotalY2"
-                                value={RoundToTwoDecimals(offer.TotalY2)}
-                                change={handleInputChange}
-                                label="Total Year 2"
-                                isTotal={true}
-                            />
-                            <TotalInput
-                                name="TotalY3"
-                                value={RoundToTwoDecimals(offer.TotalY3)}
-                                change={handleInputChange}
-                                label="Total Year 3"
-                                isTotal={true}
-                            />
-                            <TotalInput
-                                name="TotalY4"
-                                value={RoundToTwoDecimals(offer.TotalY4)}
-                                change={handleInputChange}
-                                label="Total Year 4"
-                                isTotal={true}
-                            />
-                            <TotalInput
-                                name="TotalY5"
-                                value={RoundToTwoDecimals(offer.TotalY5)}
-                                change={handleInputChange}
-                                label="Total Year 5"
-                                isTotal={true}
-                            />
-                            <TotalInput
-                                name="TotalOverall"
-                                value={RoundToTwoDecimals(offer.TotalOverall)}
-                                change={handleInputChange}
-                                label="Total Overall"
-                                isTotal={true}
-                            />
-                        </div>
-                        <div className="row mt-1 text-start">
-                            <h5>Offer Value</h5>
-                        </div>
-                        <div className="row mt-1">
-                            <TotalInput
-                                name="ValueY1"
-                                value={RoundToTwoDecimals(offer.ValueY1)}
-                                change={handleInputChange}
-                                label="Value Year 1"
-                                isTotal={true}
-                            />
-                            <TotalInput
-                                name="ValueY2"
-                                value={RoundToTwoDecimals(offer.ValueY2)}
-                                change={handleInputChange}
-                                label="Value Year 2"
-                                isTotal={true}
-                            />
-                            <TotalInput
-                                name="ValueY3"
-                                value={RoundToTwoDecimals(offer.ValueY3)}
-                                change={handleInputChange}
-                                label="Value Year 3"
-                                isTotal={true}
-                            />
-                            <TotalInput
-                                name="ValueY4"
-                                value={RoundToTwoDecimals(offer.ValueY4)}
-                                change={handleInputChange}
-                                label="Value Year 4"
-                                isTotal={true}
-                            />
-                            <TotalInput
-                                name="ValueY5"
-                                value={RoundToTwoDecimals(offer.ValueY5)}
-                                change={handleInputChange}
-                                label="Value Year 5"
-                                isTotal={true}
-                            />
-                            <TotalInput
-                                name="ContractValue"
-                                value={RoundToTwoDecimals(offer.ContractValue)}
-                                change={handleInputChange}
-                                label="Contract Value"
-                                isTotal={true}
-                            />
-                        </div>
-                        <div className="row mt-1 text-start">
-                            <h5>Cap Remaining</h5>
-                        </div>
-                        <div className="row mt-1">
-                            <TotalInput
-                                name="Y1Remaining"
-                                value={RoundToTwoDecimals(offer.Y1Remaining)}
-                                change={handleInputChange}
-                                label="Cap Year 1"
-                                isTotal={true}
-                            />
-                            <TotalInput
-                                name="Y2Remaining"
-                                value={RoundToTwoDecimals(offer.Y2Remaining)}
-                                change={handleInputChange}
-                                label="Cap Year 2"
-                                isTotal={true}
-                            />
-                            <TotalInput
-                                name="Y3Remaining"
-                                value={RoundToTwoDecimals(offer.Y3Remaining)}
-                                change={handleInputChange}
-                                label="Cap Year 3"
-                                isTotal={true}
-                            />
-                            <TotalInput
-                                name="Y4Remaining"
-                                value={RoundToTwoDecimals(offer.Y4Remaining)}
-                                change={handleInputChange}
-                                label="Cap Year 4"
-                                isTotal={true}
-                            />
-                            <TotalInput
-                                name="Y5Remaining"
-                                value={RoundToTwoDecimals(offer.Y5Remaining)}
-                                change={handleInputChange}
-                                label="Cap Year 5"
-                                isTotal={true}
-                            />
-                        </div>
+                        <NFLBonusRow
+                            handleInputChange={handleInputChange}
+                            offer={offer}
+                            isFAOffer={true}
+                        />
+                        <NFLSalaryRow
+                            handleInputChange={handleInputChange}
+                            offer={offer}
+                            isFAOffer={true}
+                        />
+                        <NFLTotalRow
+                            handleInputChange={handleInputChange}
+                            offer={offer}
+                        />
+                        <OfferValueRow
+                            handleInputChange={handleInputChange}
+                            offer={offer}
+                        />
+                        <CapRemainingRow
+                            offer={offer}
+                            handleInputChange={handleInputChange}
+                        />
                     </div>
                     <div className="modal-footer">
                         <button
@@ -593,45 +512,171 @@ export const FreeAgentOfferModal = ({
                         >
                             No
                         </button>
-                        {validOffer ? (
-                            !hasExistingOffer ? (
-                                <button
-                                    type="button"
-                                    className="btn btn-danger"
-                                    data-bs-dismiss="modal"
-                                    onClick={confirmChange}
-                                >
-                                    Yes
-                                </button>
-                            ) : (
-                                <button
-                                    type="button"
-                                    className="btn btn-warning"
-                                    data-bs-dismiss="modal"
-                                    onClick={confirmChange}
-                                >
-                                    Update
-                                </button>
-                            )
-                        ) : !hasExistingOffer ? (
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                data-bs-dismiss="modal"
-                                disabled
-                            >
-                                Yes
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                data-bs-dismiss="modal"
-                                disabled
-                            >
-                                Update
-                            </button>
-                        )}
+                        <OfferButton />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export const WaiverOfferModal = ({
+    team,
+    player,
+    ts,
+    idx,
+    extend,
+    viewMode
+}) => {
+    const modalId = `waiverModal${idx}`;
+    const modalClass = GetModalClass(viewMode);
+    const name = `${player.FirstName} ${player.LastName}`;
+    const [offer, setOffer] = useState(() => {
+        const c = player.Contract;
+        return {
+            PlayerID: c.PlayerID,
+            NFLPlayerID: c.NFLPlayerID,
+            TeamID: team.ID,
+            Team: `${team.TeamName} ${team.Mascot}`,
+            OriginalTeamID: c.OriginalTeamID,
+            OriginalTeam: c.OriginalTeam,
+            ContractLength: c.ContractLength,
+            Y1BaseSalary: c.Y1BaseSalary,
+            Y1Bonus: c.Y1Bonus,
+            Y2BaseSalary: c.Y2BaseSalary,
+            Y2Bonus: c.Y2Bonus,
+            Y3BaseSalary: c.Y3BaseSalary,
+            Y3Bonus: c.Y3Bonus,
+            Y4BaseSalary: c.Y4BaseSalary,
+            Y4Bonus: c.Y4Bonus,
+            Y5BaseSalary: c.Y5BaseSalary,
+            Y5Bonus: c.Y5Bonus,
+            BonusPercentage: c.BonusPercentage,
+            ContractType: c.ContractType,
+            ContractValue: c.ContractValue,
+            IsActive: c.IsActive,
+            IsComplete: c.IsComplete,
+            IsExtended: c.IsExtended
+        };
+    });
+    const ovr = GetNFLOverall(player.Overall, player.ShowLetterGrade);
+    // Comment Here
+    const { MinimumValue } = player;
+
+    const confirmChange = () => {
+        return extend(player, offer);
+    };
+
+    const OfferButton = () => {
+        return (
+            <button
+                type="button"
+                className="btn btn-danger"
+                data-bs-dismiss="modal"
+                onClick={confirmChange}
+            >
+                Offer
+            </button>
+        );
+    };
+
+    return (
+        <div
+            className="modal fade"
+            id={modalId}
+            tabindex="-1"
+            aria-labelledby="extendPlayerModalLabel"
+            aria-hidden="true"
+        >
+            <div className="modal-dialog modal-xl">
+                <div className={modalClass}>
+                    <div className="modal-header">
+                        <h4 className="modal-title" id="redshirtModalLabel">
+                            {team.TeamName}: Make Offer to {name},{' '}
+                            {player.Experience} Year {player.Archetype}{' '}
+                            {player.Position}
+                        </h4>
+                        <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div className="modal-body">
+                        <div className="row">
+                            <div className="col-md-auto">
+                                <h4 className="">
+                                    {player.Height} inches, {player.Weight} lbs
+                                </h4>
+                            </div>
+                            <div className="col-md-auto">
+                                <h4 className="">Overall: {ovr}</h4>
+                            </div>
+                            <div className="col-md-auto ms-auto">
+                                <h4 className="">
+                                    Contract Length:{' '}
+                                    {offer ? offer.ContractLength : 0} Years
+                                </h4>
+                            </div>
+                            <div className="col-md-auto ms-auto">
+                                <h4 className="">
+                                    Minimum Value: ${MinimumValue}M
+                                </h4>
+                            </div>
+                        </div>
+                        <div className="row text-start text-small">
+                            <div className="row text-start text-small">
+                                <h5>Rules</h5>
+                                <div className="row">
+                                    <div className="col">
+                                        <p>
+                                            1: Picking up a player from the
+                                            Waiver Wire means you will take up
+                                            the player's existing contract.
+                                        </p>
+                                        <p>
+                                            3: The order of which a team may
+                                            take a player from the waiver is
+                                            determined by the team's current
+                                            standings. During the first two
+                                            weeks of the season, the Waiver Wire
+                                            uses the previous season record to
+                                            set the order. Once it is week 3,
+                                            the current season standings will be
+                                            used.
+                                        </p>
+                                    </div>
+                                    <div className="col">
+                                        <p>
+                                            2: The existing contract cannot be
+                                            modified.
+                                        </p>
+                                        <p>
+                                            4: If a team picks up a player from
+                                            the Waiver wire, their team's order
+                                            for the next waiver wire placement
+                                            is in the last spot.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <NFLBonusRow offer={offer} isFAOffer={false} />
+                        <NFLSalaryRow offer={offer} isFAOffer={false} />
+                        <NFLTotalRow offer={offer} />
+                        <OfferValueRow offer={offer} />
+                        <CapRemainingRow offer={offer} />
+                    </div>
+                    <div className="modal-footer">
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                        >
+                            No
+                        </button>
+                        <OfferButton />
                     </div>
                 </div>
             </div>

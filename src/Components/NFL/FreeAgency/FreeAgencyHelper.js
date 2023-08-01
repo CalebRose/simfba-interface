@@ -4,7 +4,8 @@ export const FilterFreeAgencyPlayers = (
     pos,
     archs,
     statuses,
-    potentials
+    potentials,
+    viewUDFAs
 ) => {
     let pr = [...players];
 
@@ -25,9 +26,12 @@ export const FilterFreeAgencyPlayers = (
         if (potentials.length > 0) {
             pr = pr.filter((x) => potentials.includes(x.PotentialGrade));
         }
+        if (viewUDFAs) {
+            pr = pr.filter((x) => x.Experience === 1);
+        }
     }
 
-    return pr;
+    return pr.slice(0);
 };
 
 export const GetTotalValue = (y1, y2, y3, y4, y5) => {
@@ -41,7 +45,7 @@ export const GetTotalValue = (y1, y2, y3, y4, y5) => {
 export const GetYearlyValue = (bonus, salary) => bonus + salary;
 
 export const GetContractLength = (y1, y2, y3, y4, y5) => {
-    if (isNaN(y1)) return 0;
+    if (isNaN(y1)) return 1;
     if (y5 > 0) return 5;
     if (y4 > 0) return 4;
     if (y3 > 0) return 3;
@@ -51,6 +55,10 @@ export const GetContractLength = (y1, y2, y3, y4, y5) => {
 
 export const GetCapSpace = (cap, bonus, salary, hit) => {
     return cap - bonus - salary - hit;
+};
+
+export const GetNBACapSpace = (cap, bonus, hit) => {
+    return cap - bonus - hit;
 };
 
 export const GetProjectedCapsheet = (capsheet, offers) => {
@@ -148,4 +156,72 @@ export const ValidateRule4 = (len, y1, y2, y3, y4, y5) => {
 export const ValidateRule5 = (bonus, total, isOffseason) => {
     if (!isOffseason) return true;
     return bonus / total >= 0.3;
+};
+
+export const ValidateRule6 = (s1, s2, s3, s4, s5) => {
+    const arr = [s1, s2, s3, s4, s5];
+    let valid = true;
+    for (let i = 0; i < arr.length; i++) {
+        const salary = arr[i];
+        if (salary > 0) valid = salary >= 0.5;
+        if (!valid) return valid;
+    }
+    return valid;
+};
+
+export const ValidateNBARule2 = (len, y1, y2, y3, y4, y5) => {
+    if (len === 5 && y5 >= y4 && y4 >= y3 && y3 >= y2 && y2 >= y1) return true;
+    if (len === 4 && y4 >= y3 && y3 >= y2 && y2 >= y1 && y5 === 0) return true;
+    if (len === 3 && y3 >= y2 && y2 >= y1 && y4 === 0 && y5 === 0) return true;
+    if (len === 2 && y2 >= y1 && y3 === 0 && y4 === 0 && y5 === 0) return true;
+    if (len === 1 && y2 === 0 && y3 === 0 && y4 === 0 && y5 === 0) return true;
+    return false;
+};
+
+export const ValidateNBARule3 = (len, y1, y2, y3, y4, y5) => {
+    if (len === 1 && !y2 && !y3 && !y4 && !y5) return true;
+    if (len === 2 && !y3 && !y4 && !y5 && !y1) return true;
+    if (len === 3 && !y2 && !y4 && !y5 && !y1) return true;
+    if (len === 4 && !y2 && !y3 && !y5 && !y1) return true;
+    if (len === 5 && !y2 && !y4 && !y4 && !y1) return true;
+    return false;
+};
+
+export const CheckForOffer = (player, teamID) => {
+    if (player.Offers !== null && player.Offers.length > 0) {
+        const offerIdx = player.Offers.findIndex((x) => x.TeamID === teamID);
+        if (offerIdx > -1) {
+            return true;
+        }
+    }
+    if (player.WaiverOffers !== null && player.WaiverOffers.length > 0) {
+        const offerIdx = player.WaiverOffers.findIndex(
+            (x) => x.TeamID === teamID
+        );
+        if (offerIdx > -1) {
+            return true;
+        }
+    }
+    return false;
+};
+
+export const GetMaxPercentage = (year, isMax, isSupermax) => {
+    if (!isMax && !isSupermax) return 0;
+    if (isSupermax) {
+        if (year > 9) {
+            return 0.35;
+        } else if (year > 6) {
+            return 0.3;
+        } else {
+            return 0.25;
+        }
+    } else if (isMax) {
+        if (year > 9) {
+            return 0.3;
+        } else if (year > 6) {
+            return 0.25;
+        } else {
+            return 0.2;
+        }
+    }
 };

@@ -4,7 +4,7 @@ import {
     SavingMessage,
     SuccessfulGameplanSaveMessage
 } from '../../../Constants/SystemMessages';
-import ServiceMessageBanner from '../../_Common/ServiceMessageBanner';
+import { ServiceMessageBanner } from '../../_Common/ServiceMessageBanner';
 import FBAGameplanService from '../../../_Services/simFBA/FBAGameplanService';
 import FBATeamService from '../../../_Services/simFBA/FBATeamService';
 import { useMediaQuery } from 'react-responsive';
@@ -24,7 +24,6 @@ import {
     TargetingLabels,
     YesNoOptions
 } from '../../Gameplan/GameplanConstants';
-import GameplanDropdownItem from './../../Gameplan/GameplanDropdownItem';
 import GameplanInputItem from './../../Gameplan/GameplanInputItem';
 import {
     GetDefenseFormationLabel,
@@ -32,8 +31,9 @@ import {
     ValidatePassPlayDistribution,
     ValidateRunPlayDistribution
 } from '../../Gameplan/GameplanHelper';
-import DropdownItem from '../../Roster/DropdownItem';
 import SchemeModal from '../../Gameplan/SchemeModal';
+import { DropdownItem } from '../../_Common/Dropdown';
+import { DropdownItemObj } from '../../Roster/DropdownItem';
 
 const NFLGameplan = ({ currentUser, nflTeam }) => {
     // GameplanService
@@ -350,6 +350,14 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
             return;
         }
 
+        if (gp.BlitzRatio > 60 || gp.BlitzRatio < 15) {
+            message = `The current Blitz Ratio is set to ${gp.BlitzRatio}%. Please set the ratio between 15% and 60%`;
+            valid = false;
+            setValidation(valid);
+            setErrorMessage(message);
+            return;
+        }
+
         currentDistribution =
             gp.TargetingWR1 +
             gp.TargetingWR2 +
@@ -470,7 +478,7 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
     };
 
     // Event Functions
-    const HandleTextChange = ({ name, value }) => {
+    const HandleTextChange = (name, value) => {
         let gp = { ...gameplan };
 
         if (value === 'Yes') {
@@ -503,9 +511,16 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
         CheckValidation();
         if (!isValid) return;
 
+        const fullGP = {
+            ...gameplan,
+            OffFormation1Name: offenseFormationLabels[0],
+            OffFormation2Name: offenseFormationLabels[1],
+            OffFormation3Name: offenseFormationLabels[2]
+        };
+
         const UpdateGameplanDTO = {
             GameplanID: gameplan.ID.toString(),
-            UpdatedNFLGameplan: gameplan,
+            UpdatedNFLGameplan: fullGP,
             Username: currentUser.username,
             TeamName: nflTeam.TeamName
         };
@@ -583,7 +598,7 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
                                 <span>{team ? team.TeamName : ''}</span>
                             </button>
                             <ul className="dropdown-menu dropdown-content">
-                                <DropdownItem
+                                <DropdownItemObj
                                     value={
                                         currentUser ? currentUser.NFLTeam : null
                                     }
@@ -597,7 +612,7 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
                                 <hr className="dropdown-divider"></hr>
                                 {aiTeams && aiTeams.length > 0
                                     ? aiTeams.map((x) => (
-                                          <DropdownItem
+                                          <DropdownItemObj
                                               key={x.ID}
                                               value={
                                                   x.TeamName + ' ' + x.Mascot
@@ -654,10 +669,11 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
                                     aria-labelledby="dropdownMenuButton1"
                                 >
                                     {OffensiveSchemeOptions.map((x) => (
-                                        <GameplanDropdownItem
+                                        <DropdownItem
                                             name="OffensiveScheme"
+                                            id="OffensiveScheme"
                                             value={x}
-                                            handleChange={HandleTextChange}
+                                            click={HandleTextChange}
                                         />
                                     ))}
                                 </ul>
@@ -867,10 +883,11 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
                                     aria-labelledby="dropdownMenuButton1"
                                 >
                                     {DefensiveSchemeOptions.map((x) => (
-                                        <GameplanDropdownItem
+                                        <DropdownItem
                                             name="DefensiveScheme"
+                                            id="DefensiveScheme"
                                             value={x}
-                                            handleChange={HandleTextChange}
+                                            click={HandleTextChange}
                                         />
                                     ))}
                                 </ul>
@@ -951,10 +968,11 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
                                 >
                                     {gameplan &&
                                         BlitzAggressivenessOptions.map((x) => (
-                                            <GameplanDropdownItem
+                                            <DropdownItem
                                                 name="BlitzAggressiveness"
+                                                id="BlitzAggressiveness"
                                                 value={x}
-                                                handleChange={HandleTextChange}
+                                                click={HandleTextChange}
                                             />
                                         ))}
                                 </ul>
@@ -983,10 +1001,11 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
                                 >
                                     {gameplan &&
                                         YesNoOptions.map((x) => (
-                                            <GameplanDropdownItem
+                                            <DropdownItem
                                                 name="BlitzSafeties"
+                                                id="BlitzSafeties"
                                                 value={x}
-                                                handleChange={HandleTextChange}
+                                                click={HandleTextChange}
                                             />
                                         ))}
                                 </ul>
@@ -1015,10 +1034,11 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
                                 >
                                     {gameplan &&
                                         YesNoOptions.map((x) => (
-                                            <GameplanDropdownItem
+                                            <DropdownItem
                                                 name="BlitzCorners"
+                                                id="BlitzCorners"
                                                 value={x}
-                                                handleChange={HandleTextChange}
+                                                click={HandleTextChange}
                                             />
                                         ))}
                                 </ul>
@@ -1047,10 +1067,10 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
                                 >
                                     {gameplan &&
                                         CoverageOptions.map((x) => (
-                                            <GameplanDropdownItem
+                                            <DropdownItem
                                                 name="LinebackerCoverage"
                                                 value={x}
-                                                handleChange={HandleTextChange}
+                                                click={HandleTextChange}
                                             />
                                         ))}
                                 </ul>
@@ -1077,10 +1097,10 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
                                 >
                                     {gameplan &&
                                         CoverageOptions.map((x) => (
-                                            <GameplanDropdownItem
+                                            <DropdownItem
                                                 name="CornersCoverage"
                                                 value={x}
-                                                handleChange={HandleTextChange}
+                                                click={HandleTextChange}
                                             />
                                         ))}
                                 </ul>
@@ -1107,10 +1127,11 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
                                 >
                                     {gameplan &&
                                         CoverageOptions.map((x) => (
-                                            <GameplanDropdownItem
+                                            <DropdownItem
                                                 name="SafetiesCoverage"
+                                                id="SafetiesCoverage"
                                                 value={x}
-                                                handleChange={HandleTextChange}
+                                                click={HandleTextChange}
                                             />
                                         ))}
                                 </ul>
@@ -1142,7 +1163,7 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
                                 name="GoFor4AndShort"
                                 label="Go For It on 4th and Short"
                                 value={gameplan && gameplan.GoFor4AndShort}
-                                min={'15'}
+                                min={'0'}
                                 max={'85'}
                                 handleChange={HandleNumberChange}
                             />
@@ -1152,7 +1173,7 @@ const NFLGameplan = ({ currentUser, nflTeam }) => {
                                 name="GoFor4AndLong"
                                 label="Go For It on 4th and Long"
                                 value={gameplan && gameplan.GoFor4AndLong}
-                                min={'15'}
+                                min={'0'}
                                 max={'85'}
                                 handleChange={HandleNumberChange}
                             />

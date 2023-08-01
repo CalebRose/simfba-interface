@@ -773,63 +773,70 @@ export const SetPriority = (data) => {
     return priorityAttributes;
 };
 
-export const SetNFLPriority = (data) => {
+export const SetNFLPriority = (player) => {
+    let hasSnaps = !player.ShowLetterGrade;
     let priorityAttributes = [];
-    switch (data.Position) {
+    switch (player.Position) {
         case 'QB':
             priorityAttributes = [
                 {
                     Name: 'Agility',
-                    Value: data.Agility,
+                    Value: player.Agility,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Agility'][data.Position],
-                        data.Agility,
-                        data.Experience
+                        AttributeAverages['Agility'][player.Position],
+                        player.Agility,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Speed',
-                    Value: data.Speed,
+                    Value: player.Speed,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Speed'][data.Position],
-                        data.Speed,
-                        data.Experience
+                        AttributeAverages['Speed'][player.Position],
+                        player.Speed,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Carrying',
-                    Value: data.Carrying,
+                    Value: player.Carrying,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Carrying'][data.Position],
-                        data.Carrying,
-                        data.Experience
+                        AttributeAverages['Carrying'][player.Position],
+                        player.Carrying,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Strength',
-                    Value: data.Strength,
+                    Value: player.Strength,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Strength'][data.Position],
-                        data.Strength,
-                        data.Experience
+                        AttributeAverages['Strength'][player.Position],
+                        player.Strength,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Throw Power',
-                    Value: data.ThrowPower,
+                    Value: player.ThrowPower,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['ThrowPower'][data.Position],
-                        data.ThrowPower,
-                        data.Experience
+                        AttributeAverages['ThrowPower'][player.Position],
+                        player.ThrowPower,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Throw Accuracy',
-                    Value: data.ThrowAccuracy,
+                    Value: player.ThrowAccuracy,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['ThrowAccuracy'][data.Position],
-                        data.ThrowAccuracy,
-                        data.Experience
+                        AttributeAverages['ThrowAccuracy'][player.Position],
+                        player.ThrowAccuracy,
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -838,56 +845,62 @@ export const SetNFLPriority = (data) => {
             priorityAttributes = [
                 {
                     Name: 'Agility',
-                    Value: data.Agility,
+                    Value: player.Agility,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Agility'][data.Position],
-                        data.Agility,
-                        data.Experience
+                        AttributeAverages['Agility'][player.Position],
+                        player.Agility,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Speed',
-                    Value: data.Speed,
+                    Value: player.Speed,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Speed'][data.Position],
-                        data.Speed,
-                        data.Experience
+                        AttributeAverages['Speed'][player.Position],
+                        player.Speed,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Carrying',
-                    Value: data.Carrying,
+                    Value: player.Carrying,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Carrying'][data.Position],
-                        data.Carrying,
-                        data.Experience
+                        AttributeAverages['Carrying'][player.Position],
+                        player.Carrying,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Catching',
-                    Value: data.Catching,
+                    Value: player.Catching,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Catching'][data.Position],
-                        data.Catching,
-                        data.Experience
+                        AttributeAverages['Catching'][player.Position],
+                        player.Catching,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Pass Block',
-                    Value: data.PassBlock,
+                    Value: player.PassBlock,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['PassBlock'][data.Position],
-                        data.PassBlock,
-                        data.Experience
+                        AttributeAverages['PassBlock'][player.Position],
+                        player.PassBlock,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Strength',
-                    Value: data.Strength,
+                    Value: player.Strength,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Strength'][data.Position],
-                        data.Strength,
-                        data.Experience
+                        AttributeAverages['Strength'][player.Position],
+                        player.Strength,
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -896,65 +909,72 @@ export const SetNFLPriority = (data) => {
             priorityAttributes = [
                 {
                     Name: 'Agility',
-                    Value: data.Agility,
+                    Value: player.Agility,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Agility'][data.Position],
-                        data.Agility,
-                        data.Experience
+                        AttributeAverages['Agility'][player.Position],
+                        player.Agility,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Speed',
-                    Value: data.Speed,
+                    Value: player.Speed,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Speed'][data.Position],
-                        data.Speed,
-                        data.Experience
+                        AttributeAverages['Speed'][player.Position],
+                        player.Speed,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Carrying',
-                    Value: data.Carrying,
+                    Value: player.Carrying,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Carrying'][data.Position],
-                        data.Carrying,
-                        data.Experience
+                        AttributeAverages['Carrying'][player.Position],
+                        player.Carrying,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Catching',
-                    Value: data.Catching,
+                    Value: player.Catching,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Catching'][data.Position],
-                        data.Catching,
-                        data.Experience
+                        AttributeAverages['Catching'][player.Position],
+                        player.Catching,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Pass Block',
-                    Value: data.PassBlock,
+                    Value: player.PassBlock,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['PassBlock'][data.Position],
-                        data.PassBlock,
-                        data.Experience
+                        AttributeAverages['PassBlock'][player.Position],
+                        player.PassBlock,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Run Block',
-                    Value: data.RunBlock,
+                    Value: player.RunBlock,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['RunBlock'][data.Position],
-                        data.RunBlock,
-                        data.Experience
+                        AttributeAverages['RunBlock'][player.Position],
+                        player.RunBlock,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Strength',
-                    Value: data.Strength,
+                    Value: player.Strength,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Strength'][data.Position],
-                        data.Strength,
-                        data.Experience
+                        AttributeAverages['Strength'][player.Position],
+                        player.Strength,
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -963,56 +983,62 @@ export const SetNFLPriority = (data) => {
             priorityAttributes = [
                 {
                     Name: 'Agility',
-                    Value: data.Agility,
+                    Value: player.Agility,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Agility'][data.Position],
-                        data.Agility,
-                        data.Experience
+                        AttributeAverages['Agility'][player.Position],
+                        player.Agility,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Speed',
-                    Value: data.Speed,
+                    Value: player.Speed,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Speed'][data.Position],
-                        data.Speed,
-                        data.Experience
+                        AttributeAverages['Speed'][player.Position],
+                        player.Speed,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Carrying',
-                    Value: data.Carrying,
+                    Value: player.Carrying,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Carrying'][data.Position],
-                        data.Carrying,
-                        data.Experience
+                        AttributeAverages['Carrying'][player.Position],
+                        player.Carrying,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Catching',
-                    Value: data.Catching,
+                    Value: player.Catching,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Catching'][data.Position],
-                        data.Catching,
-                        data.Experience
+                        AttributeAverages['Catching'][player.Position],
+                        player.Catching,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Route Running',
-                    Value: data.RouteRunning,
+                    Value: player.RouteRunning,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['RouteRunning'][data.Position],
-                        data.RouteRunning,
-                        data.Experience
+                        AttributeAverages['RouteRunning'][player.Position],
+                        player.RouteRunning,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Strength',
-                    Value: data.Strength,
+                    Value: player.Strength,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Strength'][data.Position],
-                        data.Strength,
-                        data.Experience
+                        AttributeAverages['Strength'][player.Position],
+                        player.Strength,
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1021,74 +1047,82 @@ export const SetNFLPriority = (data) => {
             priorityAttributes = [
                 {
                     Name: 'Agility',
-                    Value: data.Agility,
+                    Value: player.Agility,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Agility'][data.Position],
-                        data.Agility,
-                        data.Experience
+                        AttributeAverages['Agility'][player.Position],
+                        player.Agility,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Speed',
-                    Value: data.Speed,
+                    Value: player.Speed,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Speed'][data.Position],
-                        data.Speed,
-                        data.Experience
+                        AttributeAverages['Speed'][player.Position],
+                        player.Speed,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Carrying',
-                    Value: data.Carrying,
+                    Value: player.Carrying,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Carrying'][data.Position],
-                        data.Carrying,
-                        data.Experience
+                        AttributeAverages['Carrying'][player.Position],
+                        player.Carrying,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Catching',
-                    Value: data.Catching,
+                    Value: player.Catching,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Catching'][data.Position],
-                        data.Catching,
-                        data.Experience
+                        AttributeAverages['Catching'][player.Position],
+                        player.Catching,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Route Running',
-                    Value: data.RouteRunning,
+                    Value: player.RouteRunning,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['RouteRunning'][data.Position],
-                        data.RouteRunning,
-                        data.Experience
+                        AttributeAverages['RouteRunning'][player.Position],
+                        player.RouteRunning,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Strength',
-                    Value: data.Strength,
+                    Value: player.Strength,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Strength'][data.Position],
-                        data.Strength,
-                        data.Experience
+                        AttributeAverages['Strength'][player.Position],
+                        player.Strength,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Pass Block',
-                    Value: data.PassBlock,
+                    Value: player.PassBlock,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['PassBlock'][data.Position],
-                        data.PassBlock,
-                        data.Experience
+                        AttributeAverages['PassBlock'][player.Position],
+                        player.PassBlock,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Run Block',
-                    Value: data.RunBlock,
+                    Value: player.RunBlock,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['RunBlock'][data.Position],
-                        data.RunBlock,
-                        data.Experience
+                        AttributeAverages['RunBlock'][player.Position],
+                        player.RunBlock,
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1099,38 +1133,42 @@ export const SetNFLPriority = (data) => {
             priorityAttributes = [
                 {
                     Name: 'Agility',
-                    Value: data.Agility,
+                    Value: player.Agility,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Agility'][data.Position],
-                        data.Agility,
-                        data.Experience
+                        AttributeAverages['Agility'][player.Position],
+                        player.Agility,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Strength',
-                    Value: data.Strength,
+                    Value: player.Strength,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Strength'][data.Position],
-                        data.Strength,
-                        data.Experience
+                        AttributeAverages['Strength'][player.Position],
+                        player.Strength,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Pass Block',
-                    Value: data.PassBlock,
+                    Value: player.PassBlock,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['PassBlock'][data.Position],
-                        data.PassBlock,
-                        data.Experience
+                        AttributeAverages['PassBlock'][player.Position],
+                        player.PassBlock,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Run Block',
-                    Value: data.RunBlock,
+                    Value: player.RunBlock,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['RunBlock'][data.Position],
-                        data.RunBlock,
-                        data.Experience
+                        AttributeAverages['RunBlock'][player.Position],
+                        player.RunBlock,
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1139,56 +1177,62 @@ export const SetNFLPriority = (data) => {
             priorityAttributes = [
                 {
                     Name: 'Agility',
-                    Value: data.Agility,
+                    Value: player.Agility,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Agility'][data.Position],
-                        data.Agility,
-                        data.Experience
+                        AttributeAverages['Agility'][player.Position],
+                        player.Agility,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Speed',
-                    Value: data.Speed,
+                    Value: player.Speed,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Speed'][data.Position],
-                        data.Speed,
-                        data.Experience
+                        AttributeAverages['Speed'][player.Position],
+                        player.Speed,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Tackle',
-                    Value: data.Tackle,
+                    Value: player.Tackle,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Tackle'][data.Position],
-                        data.Tackle,
-                        data.Experience
+                        AttributeAverages['Tackle'][player.Position],
+                        player.Tackle,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Strength',
-                    Value: data.Strength,
+                    Value: player.Strength,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Strength'][data.Position],
-                        data.Strength,
-                        data.Experience
+                        AttributeAverages['Strength'][player.Position],
+                        player.Strength,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Pass Rush',
-                    Value: data.PassRush,
+                    Value: player.PassRush,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['PassRush'][data.Position],
-                        data.PassRush,
-                        data.Experience
+                        AttributeAverages['PassRush'][player.Position],
+                        player.PassRush,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Run Defense',
-                    Value: data.RunDefense,
+                    Value: player.RunDefense,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['RunDefense'][data.Position],
-                        data.RunDefense,
-                        data.Experience
+                        AttributeAverages['RunDefense'][player.Position],
+                        player.RunDefense,
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1197,47 +1241,52 @@ export const SetNFLPriority = (data) => {
             priorityAttributes = [
                 {
                     Name: 'Agility',
-                    Value: data.Agility,
+                    Value: player.Agility,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Agility'][data.Position],
-                        data.Agility,
-                        data.Experience
+                        AttributeAverages['Agility'][player.Position],
+                        player.Agility,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Tackle',
-                    Value: data.Tackle,
+                    Value: player.Tackle,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Tackle'][data.Position],
-                        data.Tackle,
-                        data.Experience
+                        AttributeAverages['Tackle'][player.Position],
+                        player.Tackle,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Strength',
-                    Value: data.Strength,
+                    Value: player.Strength,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Strength'][data.Position],
-                        data.Strength,
-                        data.Experience
+                        AttributeAverages['Strength'][player.Position],
+                        player.Strength,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Pass Rush',
-                    Value: data.PassRush,
+                    Value: player.PassRush,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['PassRush'][data.Position],
-                        data.PassRush,
-                        data.Experience
+                        AttributeAverages['PassRush'][player.Position],
+                        player.PassRush,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Run Defense',
-                    Value: data.RunDefense,
+                    Value: player.RunDefense,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['RunDefense'][data.Position],
-                        data.RunDefense,
-                        data.Experience
+                        AttributeAverages['RunDefense'][player.Position],
+                        player.RunDefense,
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1247,74 +1296,82 @@ export const SetNFLPriority = (data) => {
             priorityAttributes = [
                 {
                     Name: 'Agility',
-                    Value: data.Agility,
+                    Value: player.Agility,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Agility'][data.Position],
-                        data.Agility,
-                        data.Experience
+                        AttributeAverages['Agility'][player.Position],
+                        player.Agility,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Speed',
-                    Value: data.Speed,
+                    Value: player.Speed,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Speed'][data.Position],
-                        data.Speed,
-                        data.Experience
+                        AttributeAverages['Speed'][player.Position],
+                        player.Speed,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Tackle',
-                    Value: data.Tackle,
+                    Value: player.Tackle,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Tackle'][data.Position],
-                        data.Tackle,
-                        data.Experience
+                        AttributeAverages['Tackle'][player.Position],
+                        player.Tackle,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Strength',
-                    Value: data.Strength,
+                    Value: player.Strength,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Strength'][data.Position],
-                        data.Strength,
-                        data.Experience
+                        AttributeAverages['Strength'][player.Position],
+                        player.Strength,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Pass Rush',
-                    Value: data.PassRush,
+                    Value: player.PassRush,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['PassRush'][data.Position],
-                        data.PassRush,
-                        data.Experience
+                        AttributeAverages['PassRush'][player.Position],
+                        player.PassRush,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Run Defense',
-                    Value: data.RunDefense,
+                    Value: player.RunDefense,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['RunDefense'][data.Position],
-                        data.RunDefense,
-                        data.Experience
+                        AttributeAverages['RunDefense'][player.Position],
+                        player.RunDefense,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Zone Coverage',
-                    Value: data.ZoneCoverage,
+                    Value: player.ZoneCoverage,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['ZoneCoverage'][data.Position],
-                        data.ZoneCoverage,
-                        data.Experience
+                        AttributeAverages['ZoneCoverage'][player.Position],
+                        player.ZoneCoverage,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Man Coverage',
-                    Value: data.ManCoverage,
+                    Value: player.ManCoverage,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['ManCoverage'][data.Position],
-                        data.ManCoverage,
-                        data.Experience
+                        AttributeAverages['ManCoverage'][player.Position],
+                        player.ManCoverage,
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1323,65 +1380,72 @@ export const SetNFLPriority = (data) => {
             priorityAttributes = [
                 {
                     Name: 'Agility',
-                    Value: data.Agility,
+                    Value: player.Agility,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Agility'][data.Position],
-                        data.Agility,
-                        data.Experience
+                        AttributeAverages['Agility'][player.Position],
+                        player.Agility,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Speed',
-                    Value: data.Speed,
+                    Value: player.Speed,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Speed'][data.Position],
-                        data.Speed,
-                        data.Experience
+                        AttributeAverages['Speed'][player.Position],
+                        player.Speed,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Tackle',
-                    Value: data.Tackle,
+                    Value: player.Tackle,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Tackle'][data.Position],
-                        data.Tackle,
-                        data.Experience
+                        AttributeAverages['Tackle'][player.Position],
+                        player.Tackle,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Strength',
-                    Value: data.Strength,
+                    Value: player.Strength,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Strength'][data.Position],
-                        data.Strength,
-                        data.Experience
+                        AttributeAverages['Strength'][player.Position],
+                        player.Strength,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Zone Coverage',
-                    Value: data.ZoneCoverage,
+                    Value: player.ZoneCoverage,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['ZoneCoverage'][data.Position],
-                        data.ZoneCoverage,
-                        data.Experience
+                        AttributeAverages['ZoneCoverage'][player.Position],
+                        player.ZoneCoverage,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Man Coverage',
-                    Value: data.ManCoverage,
+                    Value: player.ManCoverage,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['ManCoverage'][data.Position],
-                        data.ManCoverage,
-                        data.Experience
+                        AttributeAverages['ManCoverage'][player.Position],
+                        player.ManCoverage,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Catching',
-                    Value: data.Catching,
+                    Value: player.Catching,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Catching'][data.Position],
-                        data.Catching,
-                        data.Experience
+                        AttributeAverages['Catching'][player.Position],
+                        player.Catching,
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1391,74 +1455,82 @@ export const SetNFLPriority = (data) => {
             priorityAttributes = [
                 {
                     Name: 'Agility',
-                    Value: data.Agility,
+                    Value: player.Agility,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Agility'][data.Position],
-                        data.Agility,
-                        data.Experience
+                        AttributeAverages['Agility'][player.Position],
+                        player.Agility,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Speed',
-                    Value: data.Speed,
+                    Value: player.Speed,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Speed'][data.Position],
-                        data.Speed,
-                        data.Experience
+                        AttributeAverages['Speed'][player.Position],
+                        player.Speed,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Tackle',
-                    Value: data.Tackle,
+                    Value: player.Tackle,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Tackle'][data.Position],
-                        data.Tackle,
-                        data.Experience
+                        AttributeAverages['Tackle'][player.Position],
+                        player.Tackle,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Strength',
-                    Value: data.Strength,
+                    Value: player.Strength,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Strength'][data.Position],
-                        data.Strength,
-                        data.Experience
+                        AttributeAverages['Strength'][player.Position],
+                        player.Strength,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Run Defense',
-                    Value: data.RunDefense,
+                    Value: player.RunDefense,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['RunDefense'][data.Position],
-                        data.RunDefense,
-                        data.Experience
+                        AttributeAverages['RunDefense'][player.Position],
+                        player.RunDefense,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Zone Coverage',
-                    Value: data.ZoneCoverage,
+                    Value: player.ZoneCoverage,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['ZoneCoverage'][data.Position],
-                        data.ZoneCoverage,
-                        data.Experience
+                        AttributeAverages['ZoneCoverage'][player.Position],
+                        player.ZoneCoverage,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Man Coverage',
-                    Value: data.ManCoverage,
+                    Value: player.ManCoverage,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['ManCoverage'][data.Position],
-                        data.ManCoverage,
-                        data.Experience
+                        AttributeAverages['ManCoverage'][player.Position],
+                        player.ManCoverage,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Catching',
-                    Value: data.Catching,
+                    Value: player.Catching,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['Catching'][data.Position],
-                        data.Catching,
-                        data.Experience
+                        AttributeAverages['Catching'][player.Position],
+                        player.Catching,
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1467,20 +1539,22 @@ export const SetNFLPriority = (data) => {
             priorityAttributes = [
                 {
                     Name: 'Kick Accuracy',
-                    Value: data.KickAccuracy,
+                    Value: player.KickAccuracy,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['KickAccuracy'][data.Position],
-                        data.KickAccuracy,
-                        data.Experience
+                        AttributeAverages['KickAccuracy'][player.Position],
+                        player.KickAccuracy,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Kick Power',
-                    Value: data.KickPower,
+                    Value: player.KickPower,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['KickPower'][data.Position],
-                        data.KickPower,
-                        data.Experience
+                        AttributeAverages['KickPower'][player.Position],
+                        player.KickPower,
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1489,20 +1563,22 @@ export const SetNFLPriority = (data) => {
             priorityAttributes = [
                 {
                     Name: 'Punt Accuracy',
-                    Value: data.PuntAccuracy,
+                    Value: player.PuntAccuracy,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['PuntAccuracy'][data.Position],
-                        data.PuntAccuracy,
-                        data.Experience
+                        AttributeAverages['PuntAccuracy'][player.Position],
+                        player.PuntAccuracy,
+                        player.Experience,
+                        hasSnaps
                     )
                 },
                 {
                     Name: 'Punt Power',
-                    Value: data.PuntPower,
+                    Value: player.PuntPower,
                     Letter: GetNFLLetterGrade(
-                        AttributeAverages['PuntPower'][data.Position],
-                        data.PuntPower,
-                        data.Experience
+                        AttributeAverages['PuntPower'][player.Position],
+                        player.PuntPower,
+                        player.Experience,
+                        hasSnaps
                     )
                 }
             ];
@@ -1512,34 +1588,37 @@ export const SetNFLPriority = (data) => {
     }
     priorityAttributes.push({
         Name: 'Football IQ',
-        Value: data.FootballIQ,
+        Value: player.FootballIQ,
         Letter: GetNFLLetterGrade(
-            AttributeAverages['FootballIQ'][data.Position],
-            data.FootballIQ,
-            data.Experience
+            AttributeAverages['FootballIQ'][player.Position],
+            player.FootballIQ,
+            player.Experience,
+            hasSnaps
         )
     });
     priorityAttributes.push({
         Name: 'Stamina',
-        Value: data.Stamina,
+        Value: player.Stamina,
         Letter: GetNFLLetterGrade(
-            AttributeAverages['Stamina'][data.Position],
-            data.Stamina,
-            data.Experience
+            AttributeAverages['Stamina'][player.Position],
+            player.Stamina,
+            player.Experience,
+            hasSnaps
         )
     });
     priorityAttributes.push({
         Name: 'Injury',
-        Value: data.Injury,
+        Value: player.Injury,
         Letter: GetNFLLetterGrade(
-            AttributeAverages['Injury'][data.Position],
-            data.Injury,
-            data.Experience
+            AttributeAverages['Injury'][player.Position],
+            player.Injury,
+            player.Experience,
+            hasSnaps
         )
     });
     priorityAttributes.push({
         Name: 'Potential',
-        Letter: data.PotentialGrade
+        Letter: player.PotentialGrade
     });
 
     return priorityAttributes;
@@ -1595,9 +1674,12 @@ export const GetNFLYear = (data) => {
     return Number(data.Experience);
 };
 
-export const GetStatsYear = (data) => {
+export const GetStatsYear = (data, viewType) => {
     const isRedshirt = data.IsRedshirt;
-    const year = Number(data.SeasonStats.Year);
+    const year =
+        viewType === 'SEASON'
+            ? Number(data.SeasonStats.Year)
+            : Number(data.Stats.Year);
 
     if (year === 1) {
         return 'Fr';
@@ -1643,8 +1725,8 @@ export const GetOverall = (ovr, year) => {
     return 'F';
 };
 
-export const GetNFLOverall = (ovr, year) => {
-    if (year > 0) return ovr;
+export const GetNFLOverall = (ovr, showLetterGrade) => {
+    if (!showLetterGrade) return ovr;
     if (ovr > 61) return 'A';
     else if (ovr > 59) return 'A-';
     else if (ovr > 57) return 'B+';
@@ -1734,9 +1816,9 @@ export const GetLetterGrade = (attr, value, year) => {
     return 'F';
 };
 
-export const GetNFLLetterGrade = (attr, value, year) => {
+export const GetNFLLetterGrade = (attr, value, year, meetsSnapCount) => {
     const y = Number(year);
-    if (y > 1) return value;
+    if (meetsSnapCount || y > 1) return value;
     if (attr === undefined) return 'F';
     const { mean, stddev } = attr;
 

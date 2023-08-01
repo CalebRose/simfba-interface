@@ -1,61 +1,18 @@
 import { saveAs } from 'file-saver';
 import url from '../../Constants/url.js';
+import { GetCall, PostCall } from './FetchHelper.js';
 
 export default class FBAPlayerService {
     async GetPlayersByTeam(teamID) {
-        let json;
-        if (teamID > 0) {
-            let response = await fetch(url + 'collegeplayers/team/' + teamID, {
-                headers: {
-                    authorization: 'Bearer ' + localStorage.getItem('token')
-                }
-            });
-
-            if (response.ok) {
-                json = await response.json();
-            } else {
-                alert('HTTP-Error:', response.status);
-            }
-        }
-        return json;
+        return await GetCall(`${url}collegeplayers/team/${teamID}`);
     }
 
     async GetPlayersByTeamNoRedshirts(teamID) {
-        let json;
-        if (teamID > 0) {
-            let response = await fetch(
-                url + 'collegeplayers/team/nors/' + teamID,
-                {
-                    headers: {
-                        authorization: 'Bearer ' + localStorage.getItem('token')
-                    }
-                }
-            );
-
-            if (response.ok) {
-                json = await response.json();
-            } else {
-                alert('HTTP-Error:', response.status);
-            }
-        }
-        return json;
+        return await GetCall(`${url}collegeplayers/team/nors/${teamID}`);
     }
 
     async GetNFLPlayersForDepthChartPage(teamID) {
-        let json;
-        if (teamID > 0) {
-            let response = await fetch(`${url}nflplayers/team/${teamID}`, {
-                headers: {
-                    authorization: 'Bearer ' + localStorage.getItem('token')
-                }
-            });
-            if (response.ok) {
-                json = await response.json();
-            } else {
-                alert('HTTP-Error:', response.status);
-            }
-        }
-        return json;
+        return await GetCall(`${url}nflplayers/team/${teamID}`);
     }
 
     async ExportRoster(teamID, teamName) {
@@ -110,85 +67,38 @@ export default class FBAPlayerService {
     }
 
     async AssignRedshirt(dto) {
-        let response = await fetch(url + 'collegeplayers/assign/redshirt/', {
-            headers: {
-                authorization: localStorage.getItem('token'),
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify(dto)
-        });
-
-        if (response.ok) {
-            console.log('Successfully added redshirt to player', dto.PlayerID);
-        } else {
-            throw (
-                ('HTTP-Error: Could not add redshirt to player',
-                response.status)
-            );
-        }
-        return true;
+        return await PostCall(`${url}collegeplayers/assign/redshirt/`, dto);
     }
 
     async CutNFLPlayerFromRoster(PlayerID) {
-        let response = await fetch(`${url}nflplayers/cut/player/${PlayerID}`, {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        if (response.ok) {
-            return response;
-        } else {
-            alert('HTTP-Error:', response.status);
-            return false;
-        }
+        return await GetCall(`${url}nflplayers/cut/player/${PlayerID}`);
+    }
+
+    async PlaceNFLPlayerOnPracticeSquad(PlayerID) {
+        return await GetCall(`${url}nflplayers/place/player/squad/${PlayerID}`);
+    }
+
+    async GetInjuryData() {
+        return await GetCall(`${url}statistics/injured/players/`);
     }
 
     async GetFreeAgencyData(TeamID) {
-        let json;
-        let response = await fetch(
-            `${url}nflplayers/freeagency/available/${TeamID}`,
-            {
-                headers: {
-                    authorization: 'Bearer ' + localStorage.getItem('token')
-                }
-            }
-        );
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('HTTP-Error:', response.status);
-        }
-
-        return json;
+        return await GetCall(`${url}nflplayers/freeagency/available/${TeamID}`);
     }
 
     async CreateFAOffer(dto) {
-        let response = await fetch(url + 'nfl/freeagency/create/offer', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token'),
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify(dto)
-        });
-        return response;
+        return await PostCall(`${url}nfl/freeagency/create/offer`, dto);
     }
 
     async CancelFAOffer(dto) {
-        let response = await fetch(url + 'nfl/freeagency/cancel/offer', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token'),
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify(dto)
-        });
-        if (response.ok) {
-            return await response.json();
-        } else {
-            alert('HTTP-Error:', response.status);
-            return false;
-        }
+        return await PostCall(`${url}nfl/freeagency/cancel/offer`, dto);
+    }
+
+    async CreateWaiverOffer(dto) {
+        return await PostCall(`${url}nfl/waiverwire/create/offer`, dto);
+    }
+
+    async CancelWaiverOffer(dto) {
+        return await PostCall(`${url}nfl/waiverwire/cancel/offer`, dto);
     }
 }

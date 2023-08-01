@@ -25,25 +25,45 @@ import TeamOffenseHeaders from './CFBStatsComponents/TeamOffenseHeaders';
 import TeamDefensiveHeaders from './CFBStatsComponents/TeamDefenseHeaders';
 import HeismanModal from './CFBStatsComponents/HeismanModal';
 import OLineHeaders from './CFBStatsComponents/OLineStats';
-import { SeasonsList } from '../../Constants/CommonConstants';
+import {
+    NFLConferenceList,
+    NFLDivisionList,
+    NFLSeasonsList,
+    SeasonsList
+} from '../../Constants/CommonConstants';
+import { StatsPageButton } from '../_Common/Buttons';
+import { InjuryReportModal } from './CFBStatsComponents/InjuryReportModal';
 
 const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
     // Services
     let _statsService = new FBAStatsService();
     // Hooks
+    const [leagueView, setLeagueView] = useState('cfb');
     const [currentView, setCurrentView] = useState('PLAYER');
+    const [viewType, setViewType] = useState('SEASON'); // SEASON, WEEK
     const [selectedConferences, setSelectedConferences] = useState('');
-    const [selectedWeek, setSelectedWeek] = useState('');
     const [selectedTeams, setSelectedTeams] = useState('');
     const [statType, setStatType] = useState('Passing'); // PASSING, RUSHING, RECEIVING, TACKLES, YARDS ALLOWED, INTs, SACKS
     const [conferenceList, setConferenceList] = useState('');
-    const [collegeTeams, setCollegeTeams] = useState([]);
-    const [collegeTeamOptions, setCollegeTeamOptions] = useState([]);
+    const [teams, setTeams] = useState([]);
+    const [teamOptions, setTeamOptions] = useState([]);
     const [conferenceOptions, setConferenceOptions] = useState([]);
+    const [divisionOptions, setDivisionOptions] = useState(NFLDivisionList);
+    const [weekOptions, setWeekOptions] = useState(() => {
+        const weeks = [...Array(21).keys()];
+
+        const weekOptionsForm = [
+            ...weeks.map((x) => {
+                return { label: x, value: x };
+            })
+        ];
+        return weekOptionsForm;
+    });
     const [seasons, setSeasons] = useState(SeasonsList);
     const [selectedSeason, setSelectedSeason] = useState(null);
+    const [selectedWeek, setSelectedWeek] = useState(null);
     const [heismanList, setHeismanList] = useState([]);
-    const [collegePlayers, setCollegePlayers] = useState([]);
+    const [players, setPlayers] = useState([]);
     const [filteredView, setFilteredView] = useState([]);
     const [viewableStats, setViewableStats] = useState([]);
     const [count, setCount] = useState(100);
@@ -61,7 +81,6 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
     // UseEffects
     useEffect(() => {
         if (currentUser) {
-            GetStatsPageInfo();
             GetHeismanList();
         }
     }, [currentUser]);
@@ -74,23 +93,22 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                     value: cfb_Timestamp.CollegeSeasonID
                 };
                 setSelectedSeason(() => year);
-            } else {
-                GetStatsPageInfo();
             }
         }
     }, [cfb_Timestamp, selectedSeason]);
 
-    useEffect(() => {}, [viewableStats, currentView]);
-
     useEffect(() => {
-        if (collegePlayers.length > 0 && collegeTeams.length > 0) {
+        if (players.length > 0 && teams.length > 0) {
             const dataSet =
-                currentView === 'PLAYER'
-                    ? [...collegePlayers]
-                    : [...collegeTeams];
+                currentView === 'PLAYER' ? [...players] : [...teams];
             const fc = FilterStatsData(dataSet);
             if (fc.length > 0) {
-                const filteredDataSort = ConductSort([...fc], sort, isAsc);
+                const filteredDataSort = ConductSort(
+                    [...fc],
+                    sort,
+                    isAsc,
+                    viewType
+                );
                 setFilteredView(() => [...filteredDataSort]);
                 if (currentView === 'PLAYER') {
                     setViewableStats(() => [
@@ -102,8 +120,8 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
             }
         }
     }, [
-        collegePlayers,
-        collegeTeams,
+        players,
+        teams,
         currentView,
         selectedConferences,
         selectedTeams,
@@ -127,7 +145,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                 let teamList = [];
 
                 if (selectedConferences.length > 0) {
-                    const teamSet = [...collegeTeams].filter((x) =>
+                    const teamSet = [...teams].filter((x) =>
                         selectedConferences.includes(x.ConferenceID)
                     );
                     teamList = teamList.concat([...teamSet]);
@@ -147,19 +165,25 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
 
                 switch (statType) {
                     case 'Passing':
-                        dataSet = dataSet.filter(
-                            (x) => x.SeasonStats.PassAttempts > 0
-                        );
+                        dataSet = dataSet.filter((x) => {
+                            return viewType === 'SEASON'
+                                ? x.SeasonStats.PassAttempts > 0
+                                : x.Stats.PassAttempts > 0;
+                        });
                         break;
                     case 'Rushing':
-                        dataSet = dataSet.filter(
-                            (x) => x.SeasonStats.RushAttempts > 0
-                        );
+                        dataSet = dataSet.filter((x) => {
+                            return viewType === 'SEASON'
+                                ? x.SeasonStats.RushAttempts > 0
+                                : x.Stats.RushAttempts > 0;
+                        });
                         break;
                     case 'Receiving':
-                        dataSet = dataSet.filter(
-                            (x) => x.SeasonStats.Targets > 0
-                        );
+                        dataSet = dataSet.filter((x) => {
+                            return viewType === 'SEASON'
+                                ? x.SeasonStats.Targets > 0
+                                : x.Stats.Targets > 0;
+                        });
                         break;
                     case 'Defense':
                         dataSet = dataSet.filter((x) =>
@@ -175,11 +199,13 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                         );
                         break;
                     case 'OLine':
-                        dataSet = dataSet.filter(
-                            (x) =>
-                                x.SeasonStats.Pancakes > 0 ||
-                                x.SeasonStats.SacksAllowed > 0
-                        );
+                        dataSet = dataSet.filter((x) => {
+                            return viewType === 'SEASON'
+                                ? x.SeasonStats.Pancakes > 0 ||
+                                      x.SeasonStats.SacksAllowed > 0
+                                : x.Stats.Pancakes > 0 ||
+                                      x.Stats.SacksAllowed > 0;
+                        });
                         break;
 
                     default:
@@ -192,21 +218,54 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
     };
 
     const GetStatsPageInfo = async () => {
-        const res = await _statsService.GetStatsForStatisticsPage(
-            selectedSeason.value
-        );
-        const teamOptions = MapTeamOptions(res.CollegeTeams);
-        const conferenceOptions = MapConferenceOptions(res.CollegeConferences);
+        const seasonID = selectedSeason.value;
+        const isCFB = leagueView === 'cfb';
 
-        setCollegeTeamOptions(() => teamOptions);
-        setConferenceOptions(() => conferenceOptions);
-        if (res.CollegePlayers) {
-            setCollegePlayers(() => [...res.CollegePlayers]);
+        let res;
+        let week = selectedWeek ? Number(selectedWeek.value) : 0;
+        let startingWeekID = 0;
+
+        if (viewType === 'WEEK') {
+            if (seasonID === '1') {
+                startingWeekID = isCFB ? 1 : 0;
+            } else if (seasonID === 2) {
+                startingWeekID = isCFB ? 21 : 0;
+            } else if (seasonID === 3) {
+                startingWeekID = isCFB ? 43 : 21;
+            } else if (seasonID === 4) {
+                startingWeekID = isCFB ? 64 : 43;
+            }
         }
-        if (res.CollegeTeams) {
-            setCollegeTeams(() => [...res.CollegeTeams]);
+        week = week + startingWeekID;
+        //
+
+        res = await _statsService.GetStatsForStatisticsPage(
+            leagueView,
+            seasonID,
+            week,
+            viewType
+        );
+        const teamList = isCFB ? res.CollegeTeams : res.NFLTeams;
+        const playerList = isCFB ? res.CollegePlayers : res.NFLPlayers;
+        const teamOptions = MapTeamOptions(teamList);
+        const conferenceOptions = isCFB
+            ? MapConferenceOptions(res.CollegeConferences)
+            : [];
+
+        setTeamOptions(() => teamOptions);
+        setConferenceOptions(() =>
+            isCFB ? conferenceOptions : NFLConferenceList
+        );
+
+        setDivisionOptions(() => (!isCFB ? NFLDivisionList : []));
+
+        if (playerList && playerList.length > 0) {
+            setPlayers(() => [...playerList]);
         }
-        setConferenceList(() => res.CollegeConferences);
+        if (teamList && teamList.length > 0) {
+            setTeams(() => [...teamList]);
+        }
+        // setConferenceList(() => res.CollegeConferences);
     };
 
     const GetHeismanList = async () => {
@@ -214,6 +273,38 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
         if (res) {
             setHeismanList(() => [...res.slice(0, 25)]);
         }
+    };
+
+    const SelectLeagueType = (event) => {
+        setViewableStats(() => []);
+        setTeams(() => []);
+        setPlayers(() => []);
+        setTeamOptions(() => []);
+        setConferenceOptions(() => []);
+        setSelectedConferences(() => []);
+        setSelectedTeams(() => []);
+        setDivisionOptions(() => []);
+        setSelectedSeason(() => null);
+        event.preventDefault();
+        const choice = event.target.value;
+        const weeks =
+            choice === 'nfl' ? [...Array(23).keys()] : [...Array(21).keys()];
+
+        const weekOptionsForm = [
+            ...weeks.map((x) => {
+                return { label: x, value: x };
+            })
+        ];
+        setSeasons(() => (choice === 'nfl' ? NFLSeasonsList : SeasonsList));
+        setWeekOptions(() => weekOptionsForm);
+        setLeagueView(() => choice);
+    };
+
+    const SelectViewType = (event) => {
+        setViewableStats(() => []);
+        event.preventDefault();
+        const choice = event.target.value;
+        setViewType(() => choice);
     };
 
     const SelectPlayerView = () => {
@@ -273,9 +364,19 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
         setSelectedConferences(() => opts);
     };
 
+    const ChangeDivisionSelections = (options) => {
+        const opts = [...options.map((x) => x.value)];
+        setSelectedDivisions(() => opts);
+    };
+
     const ChangeSeason = (options) => {
         const opts = { label: options.label, value: options.value };
         setSelectedSeason(() => opts);
+    };
+
+    const ChangeWeek = (options) => {
+        const opts = { label: options.label, value: options.value };
+        setSelectedWeek(() => opts);
     };
 
     const ResetPlayerViewOptions = () => {
@@ -323,32 +424,59 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
         if (currentView === 'PLAYER') {
             if (statType === 'Passing')
                 return (
-                    <PassingHeaders sortFunc={ChangeSort} cv={currentView} />
+                    <PassingHeaders
+                        sortFunc={ChangeSort}
+                        cv={currentView}
+                        viewType={viewType}
+                    />
                 );
             if (statType === 'Rushing')
                 return (
-                    <RushingHeaders sortFunc={ChangeSort} cv={currentView} />
+                    <RushingHeaders
+                        sortFunc={ChangeSort}
+                        cv={currentView}
+                        viewType={viewType}
+                    />
                 );
             if (statType === 'Receiving')
                 return (
-                    <ReceivingHeaders sortFunc={ChangeSort} cv={currentView} />
+                    <ReceivingHeaders
+                        sortFunc={ChangeSort}
+                        cv={currentView}
+                        viewType={viewType}
+                    />
                 );
             if (statType === 'Defense')
                 return (
-                    <DefensiveHeaders sortFunc={ChangeSort} cv={currentView} />
+                    <DefensiveHeaders
+                        sortFunc={ChangeSort}
+                        cv={currentView}
+                        viewType={viewType}
+                    />
                 );
             if (statType === 'Kicking')
                 return (
-                    <KickingHeaders sortFunc={ChangeSort} cv={currentView} />
+                    <KickingHeaders
+                        sortFunc={ChangeSort}
+                        cv={currentView}
+                        viewType={viewType}
+                    />
                 );
             if (statType === 'OLine')
-                return <OLineHeaders sortFunc={ChangeSort} cv={currentView} />;
+                return (
+                    <OLineHeaders
+                        sortFunc={ChangeSort}
+                        cv={currentView}
+                        viewType={viewType}
+                    />
+                );
         } else if (currentView === 'TEAM') {
             if (statType === 'Overall')
                 return (
                     <TeamOverallHeaders
                         sortFunc={ChangeSort}
                         cv={currentView}
+                        viewType={viewType}
                     />
                 );
             if (statType === 'Offense')
@@ -356,6 +484,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                     <TeamOffenseHeaders
                         sortFunc={ChangeSort}
                         cv={currentView}
+                        viewType={viewType}
                     />
                 );
             if (statType === 'Defense')
@@ -363,6 +492,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                     <TeamDefensiveHeaders
                         sortFunc={ChangeSort}
                         cv={currentView}
+                        viewType={viewType}
                     />
                 );
         }
@@ -374,39 +504,79 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                 <h2>Statistics</h2>
             </div>
             <div className="row">
-                <div className="col-md-2">
+                <div className="col-2">
                     <div className="row">
-                        <h3>View Options</h3>
+                        <h3>League Options</h3>
                     </div>
                     <div className="row mt-2 justify-content-center">
-                        <div className="col-md-auto">
+                        <div className="col-auto">
                             <div
                                 className="btn-group btn-group-lg"
                                 role="group"
                                 aria-label="ViewOptions"
                             >
-                                <button
-                                    type="button"
-                                    className={
-                                        currentView === 'PLAYER'
-                                            ? 'btn btn-primary'
-                                            : 'btn btn-secondary'
-                                    }
-                                    onClick={SelectPlayerView}
-                                >
-                                    Player
-                                </button>
-                                <button
-                                    type="button"
-                                    className={
-                                        currentView === 'TEAM'
-                                            ? 'btn btn-primary'
-                                            : 'btn btn-secondary'
-                                    }
-                                    onClick={SelectTeamView}
-                                >
-                                    Team
-                                </button>
+                                <StatsPageButton
+                                    statType={leagueView}
+                                    action={SelectLeagueType}
+                                    value="cfb"
+                                    label="College"
+                                />
+                                <StatsPageButton
+                                    statType={leagueView}
+                                    action={SelectLeagueType}
+                                    value="nfl"
+                                    label="NFL"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <h3>Search Options</h3>
+                    </div>
+                    <div className="row mt-2 justify-content-center">
+                        <div className="col-auto">
+                            <div
+                                className="btn-group btn-group-lg"
+                                role="group"
+                                aria-label="ViewOptions"
+                            >
+                                <StatsPageButton
+                                    statType={viewType}
+                                    action={SelectViewType}
+                                    value="SEASON"
+                                    label="Season"
+                                />
+                                <StatsPageButton
+                                    statType={viewType}
+                                    action={SelectViewType}
+                                    value="WEEK"
+                                    label="Week"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <h3>View Options</h3>
+                    </div>
+                    <div className="row mt-2 justify-content-center">
+                        <div className="col-auto">
+                            <div
+                                className="btn-group btn-group-lg"
+                                role="group"
+                                aria-label="ViewOptions"
+                            >
+                                <StatsPageButton
+                                    statType={currentView}
+                                    action={SelectPlayerView}
+                                    value="PLAYER"
+                                    label="Player"
+                                />
+                                <StatsPageButton
+                                    statType={currentView}
+                                    action={SelectTeamView}
+                                    value="TEAM"
+                                    label="Team"
+                                />
                             </div>
                         </div>
                     </div>
@@ -414,7 +584,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                         <h3>Categories</h3>
                     </div>
                     <div className="row mt-1 justify-content-center">
-                        <div className="col-md-auto">
+                        <div className="col-auto">
                             <div
                                 className="btn-group-vertical btn-group-lg"
                                 role="group"
@@ -422,159 +592,108 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                             >
                                 {currentView === 'PLAYER' ? (
                                     <>
-                                        <button
-                                            type="button"
-                                            className={
-                                                statType === 'Passing'
-                                                    ? 'btn btn-primary'
-                                                    : 'btn btn-secondary'
-                                            }
-                                            onClick={SelectStatType}
+                                        <StatsPageButton
+                                            statType={statType}
+                                            action={SelectStatType}
                                             value="Passing"
-                                        >
-                                            Passing
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={
-                                                statType === 'Rushing'
-                                                    ? 'btn btn-primary'
-                                                    : 'btn btn-secondary'
-                                            }
-                                            onClick={SelectStatType}
+                                            label="Passing"
+                                        />
+                                        <StatsPageButton
+                                            statType={statType}
+                                            action={SelectStatType}
                                             value="Rushing"
-                                        >
-                                            Rushing
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={
-                                                statType === 'Receiving'
-                                                    ? 'btn btn-primary'
-                                                    : 'btn btn-secondary'
-                                            }
-                                            onClick={SelectStatType}
+                                            label="Rushing"
+                                        />
+                                        <StatsPageButton
+                                            statType={statType}
+                                            action={SelectStatType}
                                             value="Receiving"
-                                        >
-                                            Receiving
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={
-                                                statType === 'Defense'
-                                                    ? 'btn btn-primary'
-                                                    : 'btn btn-secondary'
-                                            }
-                                            onClick={SelectStatType}
+                                            label="Receiving"
+                                        />
+                                        <StatsPageButton
+                                            statType={statType}
+                                            action={SelectStatType}
                                             value="Defense"
-                                        >
-                                            Defense
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={
-                                                statType === 'Kicking'
-                                                    ? 'btn btn-primary'
-                                                    : 'btn btn-secondary'
-                                            }
-                                            onClick={SelectStatType}
+                                            label="Defense"
+                                        />
+                                        <StatsPageButton
+                                            statType={statType}
+                                            action={SelectStatType}
                                             value="Kicking"
-                                        >
-                                            Kicking
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={
-                                                statType === 'OLine'
-                                                    ? 'btn btn-primary'
-                                                    : 'btn btn-secondary'
-                                            }
-                                            onClick={SelectStatType}
+                                            label="Kicking"
+                                        />
+                                        <StatsPageButton
+                                            statType={statType}
+                                            action={SelectStatType}
                                             value="OLine"
-                                        >
-                                            Offensive Line
-                                        </button>
+                                            label="Offensive Line"
+                                        />
                                     </>
                                 ) : (
                                     <>
-                                        <button
-                                            type="button"
-                                            className={
-                                                statType === 'Overall'
-                                                    ? 'btn btn-primary'
-                                                    : 'btn btn-secondary'
-                                            }
-                                            onClick={SelectStatType}
+                                        <StatsPageButton
+                                            statType={statType}
+                                            action={SelectStatType}
                                             value="Overall"
-                                        >
-                                            Overall
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={
-                                                statType === 'Offense'
-                                                    ? 'btn btn-primary'
-                                                    : 'btn btn-secondary'
-                                            }
-                                            onClick={SelectStatType}
+                                            label="Overall"
+                                        />
+                                        <StatsPageButton
+                                            statType={statType}
+                                            action={SelectStatType}
                                             value="Offense"
-                                        >
-                                            Offense
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={
-                                                statType === 'Defense'
-                                                    ? 'btn btn-primary'
-                                                    : 'btn btn-secondary'
-                                            }
-                                            onClick={SelectStatType}
+                                            label="Offense"
+                                        />
+                                        <StatsPageButton
+                                            statType={statType}
+                                            action={SelectStatType}
                                             value="Defense"
-                                        >
-                                            Defense
-                                        </button>
+                                            label="Defense"
+                                        />
                                     </>
                                 )}
                             </div>
                         </div>
                     </div>
                     <div className="row mt-2 justify-content-center">
-                        <div className="col-md-auto">
-                            {heismanList.length > 0 ? (
-                                <button
-                                    type="button"
-                                    className="btn btn-warning"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#heismanModal"
-                                >
-                                    Heisman Watch List
-                                </button>
-                            ) : (
-                                <button
-                                    type="button"
-                                    className="btn btn-secondary"
-                                >
-                                    Heisman Watch List
-                                </button>
-                            )}
+                        <div className="col-auto">
+                            <button
+                                type="button"
+                                className="btn btn-warning"
+                                data-bs-toggle="modal"
+                                data-bs-target="#heismanModal"
+                                disabled={heismanList.length === 0}
+                            >
+                                Heisman Watch List
+                            </button>
+                        </div>
+                    </div>
+                    <div className="row mt-2 justify-content-center">
+                        <div className="col-auto">
+                            <button
+                                type="button"
+                                className="btn btn-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#injuryReportModal"
+                            >
+                                Injury Report <i class="bi bi-bandaid" />
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div className="col-md-10">
+                <div className="col-10">
                     <div className="row mt-3 justify-content-between">
-                        <div className="col-md-auto">
+                        <div className="col-auto">
                             <h4 className="text-start align-middle">Filters</h4>
                         </div>
-                        <div className="col-md-auto">
+                        <div className="col-auto">
                             <h4 className="text-start align-middle me-2">
-                                {cfb_Timestamp
-                                    ? `Current Week ${cfb_Timestamp.CollegeWeek}`
-                                    : ''}
+                                {cfb_Timestamp &&
+                                    `Current Week ${cfb_Timestamp.CollegeWeek}`}
                             </h4>
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-md-auto">
+                        <div className="col-auto">
                             <h5 className="text-start align-middle">Seasons</h5>
                             <Select
                                 options={seasons}
@@ -584,23 +703,35 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                 onChange={ChangeSeason}
                             />
                         </div>
-                        {currentView === 'PLAYER' ? (
-                            <div className="col-md-auto">
+                        {viewType === 'WEEK' && (
+                            <div className="col-auto">
+                                <h5 className="text-start align-middle">
+                                    Week
+                                </h5>
+                                <Select
+                                    options={weekOptions}
+                                    isMulti={false}
+                                    className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                    classNamePrefix="select"
+                                    onChange={ChangeWeek}
+                                />
+                            </div>
+                        )}
+                        {currentView === 'PLAYER' && (
+                            <div className="col-auto">
                                 <h5 className="text-start align-middle">
                                     Teams
                                 </h5>
                                 <Select
-                                    options={collegeTeamOptions}
+                                    options={teamOptions}
                                     isMulti={true}
                                     className="basic-multi-select btn-dropdown-width-team z-index-6"
                                     classNamePrefix="select"
                                     onChange={ChangeTeamSelections}
                                 />
                             </div>
-                        ) : (
-                            ''
                         )}
-                        <div className="col-md-auto">
+                        <div className="col-auto">
                             <h5 className="text-start align-middle">
                                 Conferences
                             </h5>
@@ -612,11 +743,39 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                 onChange={ChangeConferenceSelections}
                             />
                         </div>
+                        {leagueView === 'nfl' && (
+                            <div className="col-md-auto">
+                                <h5 className="text-start align-middle">
+                                    Divisions
+                                </h5>
+                                <Select
+                                    options={divisionOptions}
+                                    isMulti={true}
+                                    className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                    classNamePrefix="select"
+                                    onChange={ChangeDivisionSelections}
+                                />
+                            </div>
+                        )}
+                        <div className="col-auto">
+                            <h5 className="text-start align-middle">Search</h5>
+                            <StatsPageButton
+                                statType="search"
+                                value="search"
+                                label={
+                                    viewType === 'SEASON'
+                                        ? 'Search Season'
+                                        : 'Search Week'
+                                }
+                                action={GetStatsPageInfo}
+                            />
+                        </div>
                     </div>
                     <div className="row mt-2">
-                        <div className="col-md-auto"></div>
+                        <div className="col-auto"></div>
                     </div>
                     <HeismanModal list={heismanList} viewMode={viewMode} />
+                    <InjuryReportModal />
                     <div className="row mt-3 mb-5">
                         <InfiniteScroll
                             dataLength={viewableStats.length}
@@ -668,12 +827,18 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                           statType={statType}
                                                           idx={idx}
                                                           player={x}
+                                                          viewType={viewType}
+                                                          isNFL={
+                                                              leagueView ===
+                                                              'nfl'
+                                                          }
                                                       />
                                                   ) : (
                                                       <TeamStatRow
                                                           statType={statType}
                                                           idx={idx}
                                                           team={x}
+                                                          viewType={viewType}
                                                       />
                                                   );
                                               })

@@ -1,4 +1,5 @@
 import url from '../../Constants/url.js';
+import { PostCall } from './FetchHelper.js';
 
 export default class FBAGameplanService {
     async GetGameplanByTeamID(TeamID) {
@@ -53,14 +54,6 @@ export default class FBAGameplanService {
     }
 
     async SaveNFLGameplan(dto) {
-        let response = await fetch(url + 'gameplan/nfl/updategameplan', {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token'),
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify(dto)
-        });
-        return response;
+        return await PostCall(`${url}gameplan/nfl/updategameplan`, dto);
     }
 }

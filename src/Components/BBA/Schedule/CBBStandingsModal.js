@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import BBAStandingsService from '../../../_Services/simNBA/BBAStandingsService';
+import { Spinner } from '../../_Common/Spinner';
 import StandingsCard from './StandingsModalCard';
 
 const CBBStandingsModal = (props) => {
@@ -125,9 +126,7 @@ const CBBStandingsModal = (props) => {
                             </>
                         ) : (
                             <div className="row justify-content-center pt-2 mt-4 mb-2">
-                                <div className="spinner-border" role="status">
-                                    <span className="sr-only">Loading...</span>
-                                </div>
+                                <Spinner />
                             </div>
                         )}
                     </div>

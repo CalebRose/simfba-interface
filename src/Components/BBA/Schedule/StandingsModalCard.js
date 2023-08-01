@@ -1,25 +1,8 @@
 import React, { useEffect } from 'react';
 import { getLogo } from '../../../Constants/getLogo';
+import { StandingsRow } from '../../_Common/NBAStandingsCard';
 
-const StandingsRow = (props) => {
-    const { row, rank } = props;
-    const logo = getLogo(row.TeamAbbr);
-    return (
-        <div className="row mb-2">
-            <div className="col">{rank}</div>
-            <div className="col">
-                <img className="image-standings-logo" src={logo} />
-            </div>
-            <div className="col">{row.ConferenceWins}</div>
-            <div className="col">{row.ConferenceLosses}</div>
-            <div className="col">{row.TotalWins}</div>
-            <div className="col">{row.TotalLosses}</div>
-        </div>
-    );
-};
-
-const StandingsCard = (props) => {
-    const { standings } = props;
+const StandingsCard = ({ standings }) => {
     const [standingsOne, setStandingsOne] = React.useState([]);
     const [standingsTwo, setStandingsTwo] = React.useState([]);
 

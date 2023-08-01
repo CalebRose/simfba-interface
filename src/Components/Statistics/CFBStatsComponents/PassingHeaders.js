@@ -1,12 +1,12 @@
 import React from 'react';
 
-const PassingHeaders = ({ sortFunc, cv }) => {
+const PassingHeaders = ({ sortFunc, cv, viewType }) => {
     const returnSort = (val) => {
         return sortFunc(val, cv);
     };
     return (
         <tr>
-            <th scope="col">Games</th>
+            {viewType === 'SEASON' && <th scope="col">Games</th>}
             <th scope="col">Name</th>
             <th scope="col">Year</th>
             <th scope="col">Team</th>
@@ -16,14 +16,14 @@ const PassingHeaders = ({ sortFunc, cv }) => {
                 Passing Yards
             </th>
             <th scope="col" onClick={() => returnSort('PassCompletions', cv)}>
-                Pass Completions
+                Completions
             </th>
             <th scope="col" onClick={() => returnSort('PassAttempts', cv)}>
-                Passing Attempts
+                Attempts
             </th>
             <th scope="col" onClick={() => returnSort('Completion', cv)}>
                 Percentage
-            </th>{' '}
+            </th>
             <th scope="col" onClick={() => returnSort('PassingAvg', cv)}>
                 Passing Avg
             </th>
@@ -42,6 +42,7 @@ const PassingHeaders = ({ sortFunc, cv }) => {
             <th scope="col" onClick={() => returnSort('LongestPass', cv)}>
                 Longest Pass
             </th>
+            {viewType === 'WEEK' && <th scope="col">Opponent</th>}
         </tr>
     );
 };

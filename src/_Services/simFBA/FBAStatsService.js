@@ -1,13 +1,16 @@
 import url from '../../Constants/url';
 
 export default class FBAStatsService {
-    async GetStatsForStatisticsPage(season) {
+    async GetStatsForStatisticsPage(league, season, week, viewType) {
         let json;
-        let response = await fetch(`${url}statistics/interface/cfb/${season}`, {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
+        let response = await fetch(
+            `${url}statistics/interface/${league}/${season}/${week}/${viewType}`,
+            {
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('token')
+                }
             }
-        });
+        );
         if (response.ok) {
             json = await response.json();
         } else {

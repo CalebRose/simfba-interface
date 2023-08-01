@@ -476,7 +476,7 @@ const CFBRecruitingOverview = ({
                                 onChange={ChangeRecruitingStatus}
                             />
                         </div>
-                        {cfb_Timestamp && cfb_Timestamp.CollegeWeek > 4 ? (
+                        {cfb_Timestamp && cfb_Timestamp.CollegeWeek >= 4 ? (
                             <div className="col-md-auto">
                                 <h5 className="text-start align-middle">
                                     Team Rankings
@@ -640,13 +640,6 @@ const CFBRecruitingOverview = ({
                                                 ? viewableRecruits.map(
                                                       (x, idx) => (
                                                           <>
-                                                              <CrootModal
-                                                                  crt={x}
-                                                                  idx={idx}
-                                                                  viewMode={
-                                                                      viewMode
-                                                                  }
-                                                              />
                                                               <CFBDashboardPlayerRow
                                                                   key={x.ID}
                                                                   croot={x}

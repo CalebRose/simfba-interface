@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const CBBOffenseHeader = ({ sortFunc, cv }) => {
+export const CBBOffenseHeader = ({ sortFunc, cv, viewType }) => {
     const returnSort = (val) => {
         return sortFunc(val, cv);
     };
@@ -8,7 +8,7 @@ export const CBBOffenseHeader = ({ sortFunc, cv }) => {
         <tr>
             <th scope="col">Team</th>
             <th scope="col">Conf.</th>
-            <th scope="col">GP</th>
+            {viewType === 'SEASON' && <th scope="col">GP</th>}
             <th scope="col" onClick={() => returnSort('PPG', cv)}>
                 PTS
             </th>

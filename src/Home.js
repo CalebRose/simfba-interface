@@ -38,6 +38,16 @@ import NFLRoster from './Components/NFL/Roster/NFLRoster';
 import NFLGameplan from './Components/NFL/Gameplan/NFLGameplan';
 import NFLDepthChart from './Components/NFL/DepthChart/NFLDepthChart';
 import NFLFreeAgency from './Components/NFL/FreeAgency/NFLFreeAgency';
+import NFLTradeBlock from './Components/NFL/TradeBlock/NFLTradeBlock';
+import AdminTradePortal from './Components/Admin/AdminTradePortal/AdminTradePortal';
+import NBAApproveRequests from './Components/BBA/Admin/ApproveNBARequests/NBAApproveRequests';
+import NBARosterPage from './Components/BBA/NBA/Team/NBATeam';
+import NBAFreeAgency from './Components/BBA/NBA/Free Agency/NBAFreeAgency';
+import NBATradeblock from './Components/BBA/NBA/Trade Block/NBATradeblock';
+import NFLSchedulePage from './Components/NFL/Schedule/NFLSchedulePage';
+import NBAGameplan from './Components/BBA/NBA/Gameplan/NBAGameplan';
+import NBADraftPage from './Components/BBA/NBA/Draft Room/NBADraftPage';
+import NBATradePortal from './Components/BBA/Admin/NBATradePortal/NBATradePortal';
 
 const Home = ({ viewMode }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -59,7 +69,7 @@ const Home = ({ viewMode }) => {
             setBBARole(() => user.bba_roleID);
             setCFBTeam(() => user.teamId);
             setCBBTeam(() => user.cbb_id);
-            setNBATeam(() => user.nba_id);
+            setNBATeam(() => user.NBATeamID);
             setNFLTeam(() => user.NFLTeamID);
         }
     }, [user]);
@@ -142,6 +152,13 @@ const Home = ({ viewMode }) => {
                     <Redirect to={routes.LANDING} />
                 )}
             </Route>
+            <Route exact path={routes.NFL_ADMIN_TRADE}>
+                {roleId === Constants.ADMIN ? (
+                    <AdminTradePortal />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
             <Route
                 exact
                 path={routes.MANAGE_USERS}
@@ -195,7 +212,7 @@ const Home = ({ viewMode }) => {
                 exact
                 path={routes.CFB_STATS}
                 render={() =>
-                    CFBTeam > 0 ? (
+                    CFBTeam > 0 || NFLTeam > 0 ? (
                         <CFBStatisticsPage />
                     ) : (
                         <Redirect to={routes.LANDING} />
@@ -250,13 +267,36 @@ const Home = ({ viewMode }) => {
                 exact
                 path={routes.NFL_FREE_AGENCY}
                 render={() =>
-                    NFLTeam > 0 && viewingBeta ? (
+                    NFLTeam > 0 ? (
                         <NFLFreeAgency />
                     ) : (
                         <Redirect to={routes.LANDING} />
                     )
                 }
             />
+            <Route
+                exact
+                path={routes.NFL_TRADEBLOCK}
+                render={() =>
+                    NFLTeam > 0 ? (
+                        <NFLTradeBlock />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
+                path={routes.NFL_SCHEDULE}
+                render={() =>
+                    NFLTeam > 0 ? (
+                        <NFLSchedulePage />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+
             <Route exact path={routes.SIGNUP} component={SignUp} />
             <Route exact path={routes.LOGIN} component={Login} />
             <Route
@@ -270,9 +310,23 @@ const Home = ({ viewMode }) => {
                     )
                 }
             />
+            <Route exact path={routes.NBA_ADMIN_TRADE}>
+                {bbaRoleId === Constants.ADMIN ? (
+                    <NBATradePortal />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
             <Route exact path={routes.BBA_APPROVE}>
                 {bbaRoleId === Constants.ADMIN ? (
                     <BBAApproveRequests />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
+            <Route exact path={routes.NBA_APPROVE}>
+                {bbaRoleId === Constants.ADMIN ? (
+                    <NBAApproveRequests />
                 ) : (
                     <Redirect to={routes.LANDING} />
                 )}
@@ -302,6 +356,45 @@ const Home = ({ viewMode }) => {
                     CBBTeam > 0 ? <BBATeam /> : <Redirect to={routes.LANDING} />
                 }
             />
+            <Route exact path={routes.NBA_ROSTER}>
+                {NBATeam > 0 ? (
+                    <NBARosterPage />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
+            <Route exact path={routes.NBA_GAMEPLAN}>
+                {NBATeam > 0 ? (
+                    <NBAGameplan />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
+
+            <Route exact path={routes.NBA_FREE_AGENCY}>
+                {NBATeam > 0 ? (
+                    <NBAFreeAgency />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
+
+            <Route exact path={routes.NBA_TRADEBLOCK}>
+                {NBATeam > 0 ? (
+                    <NBATradeblock />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
+
+            <Route exact path={routes.NBA_DRAFT_ROOM}>
+                {NBATeam > 0 ? (
+                    <NBADraftPage />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
+
             <Route
                 exact
                 path={routes.CBB_RECRUITING}
@@ -354,7 +447,7 @@ const Home = ({ viewMode }) => {
                 }
             >
                 <div className="container">
-                    <span>Simfba, 2021</span>
+                    <span>Simfba, {new Date().getFullYear()}</span>
                 </div>
             </footer>
         </div>

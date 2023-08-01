@@ -1,69 +1,89 @@
 import React from 'react';
 
-export const TeamStatRow = ({ statType, idx, team }) => {
-    const seasonStats = team.SeasonStats;
+export const TeamStatRow = ({ statType, idx, team, viewType }) => {
+    const s = viewType === 'SEASON' ? team.SeasonStats : team.Stats;
+    const seasonView = viewType === 'SEASON';
     const games = team.SeasonStats ? team.SeasonStats.GamesPlayed : 0;
-
+    const toy = seasonView
+        ? s.TotalOffensiveYards
+        : s.PassingYards + s.RushingYards;
+    const tya = seasonView
+        ? s.TotalYardsAllowed
+        : s.PassingYardsAllowed + s.RushingYardsAllowed;
+    const to = seasonView
+        ? s.Turnovers
+        : s.DefensiveInterceptions + s.FumblesRecovered;
     const OverallRow = () => {
         return (
             <tr>
-                <th className="">{games}</th>
+                {viewType === 'SEASON' && <th className="">{games}</th>}
                 <th className="">{team.TeamName}</th>
                 <td label="">{team.Conference}</td>
-                <td label="">{seasonStats.PointsScored}</td>
-                <td label="">{seasonStats.PointsAgainst}</td>
-                <td label="">{seasonStats.TotalOffensiveYards}</td>
-                <td label="">{seasonStats.TotalYardsAllowed}</td>
-                <td label="">{seasonStats.PassingYards}</td>
-                <td label="">{seasonStats.PassingYardsAllowed}</td>
-                <td label="">{seasonStats.RushingYards}</td>
-                <td label="">{seasonStats.RushingYardsAllowed}</td>
-                <td label="">{seasonStats.Turnovers}</td>
-                <td label="">{seasonStats.OffensivePenalties}</td>
-                <td label="">{seasonStats.DefensivePenalties}</td>
+                <td label="">{s.PointsScored}</td>
+                <td label="">{s.PointsAgainst}</td>
+                <td label="">{toy}</td>
+                <td label="">{tya}</td>
+                <td label="">{s.PassingYards}</td>
+                <td label="">{s.PassingYardsAllowed}</td>
+                <td label="">{s.RushingYards}</td>
+                <td label="">{s.RushingYardsAllowed}</td>
+                <td label="">{to}</td>
+                <td label="">{s.OffensivePenalties}</td>
+                <td label="">{s.DefensivePenalties}</td>
             </tr>
         );
     };
 
     const OffenseRow = () => {
-        const qbr = parseFloat(seasonStats.QBRating).toFixed(2);
+        let qbr = parseFloat(s.QBRating).toFixed(2);
+        if (!seasonView) {
+            const py = 8.4 * s.PassingYards;
+            const ptd = 330 * s.PassingTouchdowns;
+            const pc = 100 * s.PassingCompletions;
+            const ints = 200 * s.PassingInterceptions;
+            const num = py + ptd + pc - ints;
+            qbr = parseFloat(num / s.PassingAttempts).toFixed(2);
+        }
         return (
             <tr>
-                <th className="">{games}</th>
+                {viewType === 'SEASON' && <th className="">{games}</th>}
                 <th className="">{team.TeamName}</th>
                 <td label="">{team.Conference}</td>
-                <td label="">{seasonStats.PointsScored}</td>
-                <td label="">{seasonStats.TotalOffensiveYards}</td>
-                <td label="">{seasonStats.PassingYards}</td>
-                <td label="">{seasonStats.PassingTouchdowns}</td>
+                <td label="">{s.PointsScored}</td>
+                <td label="">{toy}</td>
+                <td label="">{s.PassingYards}</td>
+                <td label="">{s.PassingTouchdowns}</td>
                 <td label="">{qbr}</td>
-                <td label="">{seasonStats.QBSacks}</td>
-                <td label="">{seasonStats.PassingInterceptions}</td>
-                <td label="">{seasonStats.RushingYards}</td>
-                <td label="RushingTDs">{seasonStats.RushingTouchdowns}</td>
+                <td label="">{s.QBSacks}</td>
+                <td label="">{s.PassingInterceptions}</td>
+                <td label="">{s.RushingYards}</td>
+                <td label="RushingTDs">{s.RushingTouchdowns}</td>
             </tr>
         );
     };
 
     const DefenseRow = () => {
+        const tck = seasonView
+            ? s.Tackles
+            : s.SoloTackles + s.AssistedTackles / 2;
         return (
             <tr>
-                <th className="">{games}</th>
+                {viewType === 'SEASON' && <th className="">{games}</th>}
                 <th className="">{team.TeamName}</th>
                 <td label="">{team.Conference}</td>
-                <td label="">{seasonStats.PointsAgainst}</td>
-                <td label="">{seasonStats.TotalYardsAllowed}</td>
-                <td label="">{seasonStats.PassingYardsAllowed}</td>
-                <td label="">{seasonStats.RushingYardsAllowed}</td>
-                <td label="">{seasonStats.Turnovers}</td>
-                <td label="">{seasonStats.Tackles}</td>
-                <td label="">{seasonStats.TacklesForLoss}</td>
-                <td label="">{seasonStats.DefensiveSacks}</td>
-                <td label="">{seasonStats.ForcedFumbles}</td>
-                <td label="">{seasonStats.FumblesRecovered}</td>
-                <td label="">{seasonStats.DefensiveInterceptions}</td>
-                <td label="">{seasonStats.Safeties}</td>
-                <td label="">{seasonStats.DefensiveTDs}</td>
+                <td label="">{s.PointsAgainst}</td>
+                <td label="">{tya}</td>
+                <td label="">{s.PassingYardsAllowed}</td>
+                <td label="">{s.RushingYardsAllowed}</td>
+                <td label="">{to}</td>
+                <td label="">{tck}</td>
+                <td label="">{s.TacklesForLoss}</td>
+                <td label="">{s.DefensiveSacks}</td>
+                <td label="">{s.ForcedFumbles}</td>
+                <td label="">{s.FumblesRecovered}</td>
+                <td label="">{s.DefensiveInterceptions}</td>
+                <td label="">{s.Safeties}</td>
+                <td label="">{s.DefensiveTDs}</td>
             </tr>
         );
     };

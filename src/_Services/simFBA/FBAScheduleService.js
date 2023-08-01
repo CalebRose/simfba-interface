@@ -1,54 +1,38 @@
 import url from '../../Constants/url.js';
+import { GetCall, PostCall } from './FetchHelper.js';
 
 export default class FBAScheduleService {
     async GetCollegeGamesByTeamAndSeason(TeamID, SeasonID) {
-        let response = await fetch(
-            url + `games/college/team/${TeamID}/${SeasonID}/`,
-            {
-                headers: {
-                    authorization: 'Bearer ' + localStorage.getItem('token')
-                }
-            }
-        );
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}games/college/team/${TeamID}/${SeasonID}/`);
     }
 
     async GetNFLGamesByTeamAndSeason(TeamID, SeasonID) {
-        let response = await fetch(
-            url + `games/nfl/team/${TeamID}/${SeasonID}/`,
-            {
-                headers: {
-                    authorization: 'Bearer ' + localStorage.getItem('token')
-                }
-            }
-        );
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+        return await GetCall(`${url}games/nfl/team/${TeamID}/${SeasonID}/`);
     }
 
     async GetAllCollegeGamesInASeason(SeasonID) {
-        let response = await fetch(url + `games/college/season/${SeasonID}/`, {
+        return await GetCall(`${url}games/college/season/${SeasonID}/`);
+    }
+
+    async GetAllNFLGamesInASeason(SeasonID) {
+        return await GetCall(`${url}games/nfl/season/${SeasonID}/`);
+    }
+
+    async UpdateTimeslot(dto) {
+        await fetch(`${url}games/update/time/`, {
             headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            // mode: 'cors',
+            body: JSON.stringify(dto)
         });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('Http-Error', response.status);
-        }
-        return json;
+    }
+
+    async GetCFBGameResultData(id) {
+        return await GetCall(`${url}/games/result/cfb/${id}/`);
+    }
+    async GetNFLGameResultData(id) {
+        return await GetCall(`${url}/games/result/nfl/${id}/`);
     }
 }

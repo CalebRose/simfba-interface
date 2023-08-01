@@ -1,19 +1,10 @@
 import url from '../../Constants/SimBBA_url';
+import { GetActionCall, GetCall, PostCall } from '../simFBA/FetchHelper.js';
 
 export default class BBAStatsService {
-    async GetStatsPageData() {
-        let json;
-        let response = await fetch(`${url}/stats/cbb/page`, {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('HTTP-Error:', response.status);
-        }
-        return json;
+    async GetStatsPageData(league, seasonID, weekID, viewType) {
+        return await GetCall(
+            `${url}/stats/${league}/${seasonID}/${weekID}/${viewType}`
+        );
     }
 }

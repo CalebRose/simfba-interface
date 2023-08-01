@@ -1,48 +1,22 @@
 import url from '../../Constants/SimBBA_url';
+import { GetCall } from '../simFBA/FetchHelper';
 
 export default class BBAMatchService {
+    async GetCBBMatchesByTeamAndSeason(TeamID, SeasonID) {
+        return await GetCall(`${url}match/team/${TeamID}/season/${SeasonID}/`);
+    }
     async GetMatchesByWeek(week) {
-        let response = await fetch(`${url}/match/week/${week}/`, {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('HTTP-Error:', response.status);
-        }
-        return json;
+        return await GetCall(`${url}/match/week/${week}/`);
     }
 
     async GetMatchesBySeason(seasonID) {
-        let response = await fetch(`${url}/match/season/${seasonID}/`, {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('HTTP-Error:', response.status);
-        }
-        return json;
+        return await GetCall(`${url}/match/season/${seasonID}/`);
     }
 
     async GetMatchResultData(id) {
-        let response = await fetch(`${url}/match/result/${id}/`, {
-            headers: {
-                authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        let json;
-        if (response.ok) {
-            json = await response.json();
-        } else {
-            alert('HTTP-Error:', response.status);
-        }
-        return json;
+        return await GetCall(`${url}/match/result/cbb/${id}/`);
+    }
+    async GetNBAMatchResultData(id) {
+        return await GetCall(`${url}/match/result/nba/${id}/`);
     }
 }

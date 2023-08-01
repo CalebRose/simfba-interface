@@ -1,4 +1,5 @@
 import url from '../../Constants/url';
+import { GetCall } from './FetchHelper.js';
 
 export default class FBARecruitingService {
     async GetTeamProfileForDashboard(id) {
@@ -240,5 +241,9 @@ export default class FBARecruitingService {
             );
         }
         return json;
+    }
+
+    async ToggleAIBehavior(id) {
+        return await GetCall(`${url}recruiting/toggle/ai/${id}`);
     }
 }

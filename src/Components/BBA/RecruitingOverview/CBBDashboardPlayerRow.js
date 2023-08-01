@@ -81,6 +81,9 @@ const CBBDashboardPlayerRow = (props) => {
                     <h6>{data.Shooting3}</h6>
                 </td>
                 <td className="align-middle">
+                    <h6>{data.FreeThrow}</h6>
+                </td>
+                <td className="align-middle">
                     <h6>{data.Finishing}</h6>
                 </td>
                 <td className="align-middle">
@@ -90,7 +93,10 @@ const CBBDashboardPlayerRow = (props) => {
                     <h6>{data.Rebounding}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{data.Defense}</h6>
+                    <h6>{data.InteriorDefense}</h6>
+                </td>
+                <td className="align-middle">
+                    <h6>{data.PerimeterDefense}</h6>
                 </td>
                 <td className="align-middle">
                     <h6>{data.PotentialGrade}</h6>

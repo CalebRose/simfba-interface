@@ -8,7 +8,33 @@ import {
     GetProjectedCapsheet
 } from '../FreeAgency/FreeAgencyHelper';
 
-export const NFLSidebar = ({ team, ts, isRoster, TeamOffers }) => {
+export const CapsheetRow = ({ year, bonus, salary, space }) => (
+    <div className="row mb-1 pe-2">
+        <div className="col-3">
+            <p>{year}</p>
+        </div>
+        <div className="col-3">
+            <p>{RoundToTwoDecimals(bonus)}</p>
+        </div>
+        <div className="col-3">
+            <p>{RoundToTwoDecimals(salary)}</p>
+        </div>
+        <div className="col-3">
+            <p>{RoundToTwoDecimals(space)}</p>
+        </div>
+    </div>
+);
+
+export const NFLSidebar = ({
+    team,
+    ts,
+    isRoster,
+    TeamOffers,
+    isTradeBlock,
+    tp,
+    canModify,
+    isMobile
+}) => {
     const capsheet = team.Capsheet;
     const y1Cap = ts.Y1Capspace;
     const y2Cap = ts.Y2Capspace;
@@ -78,14 +104,6 @@ export const NFLSidebar = ({ team, ts, isRoster, TeamOffers }) => {
         projectedCapsheet.Y5CapHit
     );
 
-    const CapsheetRow = ({ year, bonus, salary, space }) => (
-        <div className="row mb-1 pe-2">
-            <div className="col-3">{year}</div>
-            <div className="col-3">{RoundToTwoDecimals(bonus)}</div>
-            <div className="col-3">{RoundToTwoDecimals(salary)}</div>
-            <div className="col-3">{RoundToTwoDecimals(space)}</div>
-        </div>
-    );
     return (
         <div className="col-sm-2">
             {isRoster && (
@@ -166,6 +184,9 @@ export const NFLSidebar = ({ team, ts, isRoster, TeamOffers }) => {
                 salary={capsheet.Y5Salary}
                 space={y5Space}
             />
+            <div className="row mt-1">
+                <h6>Dead Cap: {RoundToTwoDecimals(capsheet.Y1CapHit)}</h6>
+            </div>
             {TeamOffers && TeamOffers.length > 0 && (
                 <>
                     <div className="row mt-4 mb-1 pe-2">
@@ -215,6 +236,116 @@ export const NFLSidebar = ({ team, ts, isRoster, TeamOffers }) => {
                         salary={projectedCapsheet.Y5Salary}
                         space={ProjectedY5Space}
                     />
+                </>
+            )}
+            {isTradeBlock && (
+                <>
+                    <div className="row mt-2 mb-1 pe-2">
+                        <h3>Trade Preferences</h3>
+                    </div>
+                    <div className="row mb-2 ps-3 pe-3">
+                        {canModify && !isMobile && (
+                            <button
+                                type="button"
+                                className="btn btn-success"
+                                title="Update Trade Preferences"
+                                data-bs-toggle="modal"
+                                data-bs-target="#tradePreferencesModal"
+                            >
+                                Update Preferences
+                            </button>
+                        )}
+                    </div>
+                    {tp && tp.DraftPicks && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.DraftPickType} Draft Picks
+                        </div>
+                    )}
+                    {tp && tp.Quarterbacks && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.QuarterbackType} Quarterbacks
+                        </div>
+                    )}
+                    {tp && tp.Runningbacks && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.RunningbackType} Runningbacks
+                        </div>
+                    )}
+                    {tp && tp.Fullbacks && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.FullbackType} Fullbacks
+                        </div>
+                    )}
+                    {tp && tp.WideReceivers && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.WideReceiverType} Wide Receivers
+                        </div>
+                    )}
+                    {tp && tp.TightEnds && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.TightEndType} Tight Ends
+                        </div>
+                    )}
+                    {tp && tp.OffensiveTackles && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.OffensiveTackleType} OTs
+                        </div>
+                    )}
+                    {tp && tp.OffensiveGuards && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.OffensiveGuardType} OGs
+                        </div>
+                    )}
+                    {tp && tp.Centers && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.CenterType} Centers
+                        </div>
+                    )}
+                    {tp && tp.DefensiveTackles && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.DefensiveTackleType} DTs
+                        </div>
+                    )}
+                    {tp && tp.DefensiveEnds && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.DefensiveEndType} DEs
+                        </div>
+                    )}
+                    {tp && tp.OutsideLinebackers && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.OutsideLinebackerType} OLBs
+                        </div>
+                    )}
+                    {tp && tp.InsideLinebackers && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.InsideLinebackerType} ILBS
+                        </div>
+                    )}
+                    {tp && tp.Cornerbacks && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.CornerbackType} CBs
+                        </div>
+                    )}
+                    {tp && tp.FreeSafeties && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.FreeSafetyType} FSs
+                        </div>
+                    )}
+                    {tp && tp.StrongSafeties && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.StrongSafetyType} SSs
+                        </div>
+                    )}
+                    {tp && tp.Kickers && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.KickerType} Kickers
+                        </div>
+                    )}
+                    {tp && tp.Punters && (
+                        <div className="row mb-1 pe-2 justify-content-center">
+                            {tp.PunterType} Punters
+                        </div>
+                    )}
                 </>
             )}
         </div>

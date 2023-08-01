@@ -3,6 +3,10 @@ import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 import { baseUrl } from '../../../Constants/logos';
 import { GetNFLOverall } from '../../../_Utility/RosterHelper';
 import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
+import { CutPlayerModal } from './CutPlayerModal';
+import { ExtendPlayerModal } from './ExtendPlayerModal';
+import { PracticeSquadModal } from './OnPracticeSquadModal';
+import { TradeBlockModal } from './OnTradeBlockModal';
 
 const NFLMobileRosterRow = ({
     player,
@@ -10,14 +14,20 @@ const NFLMobileRosterRow = ({
     userView,
     ts,
     canModify,
-    theme
+    theme,
+    team,
+    psCount,
+    practicesquad,
+    tradeblock,
+    extend,
+    cut
 }) => {
     let modalTarget = `#playerModal${idx}`;
     let cutPlayerTarget = `#cutPlayer${idx}`;
     let extendPlayerTarget = `#extendPlayer${idx}`;
     let tradeBlockTarget = `#tradeBlock${idx}`;
     let practiceSquadTarget = `#practiceSquad${idx}`;
-    let ovr = GetNFLOverall(player.Overall, player.Experience);
+    let ovr = GetNFLOverall(player.Overall, player.ShowLetterGrade);
     const year = player.Experience === 0 ? 'R' : player.Experience;
     const heightObj = HeightToFeetAndInches(player.Height);
     const contract = player.Contract;
@@ -34,6 +44,34 @@ const NFLMobileRosterRow = ({
 
     return (
         <>
+            <CutPlayerModal
+                key={player.ID}
+                player={player}
+                idx={idx}
+                cut={cut}
+                viewMode={theme}
+            />
+            <ExtendPlayerModal
+                key={player.ID}
+                player={player}
+                idx={idx}
+                extend={extend}
+                viewMode={theme}
+            />
+            <TradeBlockModal
+                key={player.ID}
+                player={player}
+                idx={idx}
+                tradeblock={tradeblock}
+                viewMode={theme}
+            />
+            <PracticeSquadModal
+                key={player.ID}
+                player={player}
+                idx={idx}
+                practicesquad={practicesquad}
+                viewMode={theme}
+            />
             <div className={`${mobileCardClass} mb-2`}>
                 <div className="card-body">
                     <h5 className="card-title">
@@ -78,10 +116,7 @@ const NFLMobileRosterRow = ({
                                 data-bs-toggle="modal"
                                 data-bs-target={cutPlayerTarget}
                             >
-                                <img
-                                    className="image-nfl-roster"
-                                    src={`${baseUrl}/icons/cut_player.png`}
-                                />
+                                <i class="bi bi-scissors" />
                             </button>
                         ) : (
                             'Unavailable'
@@ -97,10 +132,7 @@ const NFLMobileRosterRow = ({
                                 data-bs-toggle="modal"
                                 data-bs-target={extendPlayerTarget}
                             >
-                                <img
-                                    className="image-nfl-roster"
-                                    src={`${baseUrl}/icons/extend_contract.png`}
-                                />
+                                <i class="bi bi-currency-dollar" />
                             </button>
                         ) : (
                             'Unavailable'
@@ -111,34 +143,49 @@ const NFLMobileRosterRow = ({
                         {canTradeBlockPlayer ? (
                             <button
                                 type="button"
-                                className="btn"
+                                className={`btn ${
+                                    player.IsOnTradeBlock ? 'btn-danger' : ''
+                                }`}
                                 title={tradeBlockTitle}
                                 data-bs-toggle="modal"
                                 data-bs-target={tradeBlockTarget}
                             >
-                                <img
-                                    className="image-nfl-roster"
-                                    src={`${baseUrl}/icons/trade_block.png`}
-                                />
+                                <i class="bi bi-arrow-down-up" />
                             </button>
                         ) : (
-                            'Unavailable'
+                            <button
+                                type="button"
+                                className={`btn ${
+                                    player.IsOnTradeBlock
+                                        ? 'btn-danger'
+                                        : 'btn-secondary'
+                                }`}
+                                title={tradeBlockTitle}
+                                disabled
+                            >
+                                <i class="bi bi-arrow-down-up" />
+                            </button>
                         )}
                     </li>
                     <li className="list-group-item">
                         Place {player.LastName} on PS |{' '}
-                        {canCutOrPracticeSquad ? (
+                        {canCutOrPracticeSquad &&
+                        (psCount <= 16 || player.IsPracticeSquad) &&
+                        player.Experience <= 3 ? (
                             <button
                                 type="button"
-                                className="btn"
+                                className={`btn ${
+                                    player.IsPracticeSquad ? 'btn-warning' : ''
+                                }`}
                                 title={practiceSquadTitle}
                                 data-bs-toggle="modal"
                                 data-bs-target={practiceSquadTarget}
                             >
-                                <img
-                                    className="image-nfl-roster"
-                                    src={`${baseUrl}/icons/practice_squad.png`}
-                                />
+                                {player.IsPracticeSquad ? (
+                                    <i class="bi bi-person-fill-up" />
+                                ) : (
+                                    <i class="bi bi-person-fill-down" />
+                                )}
                             </button>
                         ) : (
                             'Unavailable'

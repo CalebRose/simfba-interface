@@ -71,12 +71,16 @@ const CBBDashboardMobileRow = (props) => {
                         {croot.Shooting3}
                     </li>
                     <li className="list-group-item">
-                        Finishing: {croot.Finishing} | Ballwork:{' '}
+                        Finishing: {croot.Finishing} | Free Throw:{' '}
+                        {croot.FreeThrow}
+                    </li>
+                    <li className="list-group-item">
+                        Rebounding: {croot.Rebounding} | Ballwork:{' '}
                         {croot.Ballwork}
                     </li>
                     <li className="list-group-item">
-                        Rebounding: {croot.Rebounding} | Defense:{' '}
-                        {croot.Defense}
+                        Int. Defense: {croot.InteriorDefense} | Per. Defense:{' '}
+                        {croot.PerimeterDefense}
                     </li>
                     <li className="list-group-item">
                         Potential: {croot.PotentialGrade}

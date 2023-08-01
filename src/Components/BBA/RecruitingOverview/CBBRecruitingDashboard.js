@@ -28,6 +28,7 @@ import {
 import CBBDashboardMobileRow from './CBBDashboardMobileRow';
 import RecruitingClassModal from '../../_Common/RecruitingClassModal';
 import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
+import { Spinner } from '../../_Common/Spinner';
 
 const CBBRecruitingDashboard = ({
     currentUser,
@@ -398,9 +399,8 @@ const CBBRecruitingDashboard = ({
                         </div>
                         <div className="col-md-auto">
                             <h4 className="text-start align-middle me-2">
-                                {cbb_Timestamp
-                                    ? `Current Week ${cbb_Timestamp.CollegeWeek}`
-                                    : ''}
+                                {cbb_Timestamp &&
+                                    `Current Week ${cbb_Timestamp.CollegeWeek}`}
                             </h4>
                         </div>
                     </div>
@@ -502,7 +502,7 @@ const CBBRecruitingDashboard = ({
                                 onChange={ChangeRecruitingStatus}
                             />
                         </div>
-                        {cbb_Timestamp && cbb_Timestamp.CollegeWeek > 4 ? (
+                        {cbb_Timestamp && cbb_Timestamp.CollegeWeek > 4 && (
                             <>
                                 <div className="col-md-auto">
                                     <h5 className="text-start align-middle">
@@ -518,10 +518,8 @@ const CBBRecruitingDashboard = ({
                                     </button>
                                 </div>
                             </>
-                        ) : (
-                            ''
                         )}
-                        {cbbTeam && luckyTeam >= 16 && showCollusionButton ? (
+                        {cbbTeam && luckyTeam >= 16 && showCollusionButton && (
                             <div className="col-md-auto">
                                 <h5 className="text-start align-middle">
                                     Collude?
@@ -531,11 +529,9 @@ const CBBRecruitingDashboard = ({
                                     className="btn btn-danger"
                                     onClick={CollusionButton}
                                 >
-                                    Free poionts heere
+                                    You Know You Want To
                                 </button>
                             </div>
-                        ) : (
-                            ''
                         )}
                     </div>
                     <CBBRankingsModal
@@ -638,7 +634,7 @@ const CBBRecruitingDashboard = ({
                                                         ChangeSort('Shooting2')
                                                     }
                                                 >
-                                                    2pt. Shooting
+                                                    2pt.
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -646,7 +642,15 @@ const CBBRecruitingDashboard = ({
                                                         ChangeSort('Shooting3')
                                                     }
                                                 >
-                                                    3pt Shooting.
+                                                    3pt.
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort('FreeThrow')
+                                                    }
+                                                >
+                                                    FT
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -675,10 +679,22 @@ const CBBRecruitingDashboard = ({
                                                 <th
                                                     scope="col"
                                                     onClick={() =>
-                                                        ChangeSort('Defense')
+                                                        ChangeSort(
+                                                            'InteriorDefense'
+                                                        )
                                                     }
                                                 >
-                                                    Defense
+                                                    Int. Defense
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort(
+                                                            'PerimeterDefense'
+                                                        )
+                                                    }
+                                                >
+                                                    Per. Defense
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -698,28 +714,25 @@ const CBBRecruitingDashboard = ({
                                             </tr>
                                         </thead>
                                         <tbody className="overflow-auto">
-                                            {viewableRecruits.length > 0
-                                                ? viewableRecruits.map(
-                                                      (x, idx) => (
-                                                          <CBBDashboardPlayerRow
-                                                              key={x.ID}
-                                                              player={x}
-                                                              idx={idx}
-                                                              rank={idx + 1}
-                                                              map={crootMap}
-                                                              timestamp={
-                                                                  cbb_Timestamp
-                                                              }
-                                                              add={
-                                                                  addPlayerToProfile
-                                                              }
-                                                              viewMode={
-                                                                  viewMode
-                                                              }
-                                                          />
-                                                      )
-                                                  )
-                                                : ''}
+                                            {viewableRecruits.length > 0 &&
+                                                viewableRecruits.map(
+                                                    (x, idx) => (
+                                                        <CBBDashboardPlayerRow
+                                                            key={x.ID}
+                                                            player={x}
+                                                            idx={idx}
+                                                            rank={idx + 1}
+                                                            map={crootMap}
+                                                            timestamp={
+                                                                cbb_Timestamp
+                                                            }
+                                                            add={
+                                                                addPlayerToProfile
+                                                            }
+                                                            viewMode={viewMode}
+                                                        />
+                                                    )
+                                                )}
                                         </tbody>
                                     </table>
                                 )}
@@ -738,9 +751,7 @@ const CBBRecruitingDashboard = ({
                                 </div>
 
                                 <div className="row justify-content-center pt-2 mt-4 mb-2">
-                                    <div class="spinner-border" role="status">
-                                        <span class="sr-only">Loading...</span>
-                                    </div>
+                                    <Spinner />
                                 </div>
                             </>
                         )}

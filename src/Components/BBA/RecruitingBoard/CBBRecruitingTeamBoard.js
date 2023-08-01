@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 import routes from '../../../Constants/routes';
 import BBARecruitingService from '../../../_Services/simNBA/BBARecruitingService';
-import ServiceMessageBanner from '../../_Common/ServiceMessageBanner';
+import { ServiceMessageBanner } from '../../_Common/ServiceMessageBanner';
+import { Spinner } from '../../_Common/Spinner';
 import CBBTeamDashboardMobileRow from './DashboardComponents/CBBTeamDashboardMobileRow';
 import CBBTeamDashboardPlayerRow from './DashboardComponents/CBBTeamDashboardPlayerRow';
 
@@ -380,9 +381,7 @@ const CBBRecruitingTeamBoard = ({
                         )}
                         {recruits === undefined || recruits === null ? (
                             <div className="row justify-content-center pt-2 mt-4 mb-2">
-                                <div class="spinner-border" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
+                                <Spinner />
                             </div>
                         ) : (
                             ''

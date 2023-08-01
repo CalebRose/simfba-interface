@@ -8,7 +8,7 @@ import {
 import FBARecruitingService from '../../_Services/simFBA/FBARecruitingService';
 import { CalculateAdjustedPoints } from '../../_Utility/CFBRecruitingHelper';
 import { RoundToTwoDecimals } from '../../_Utility/utilHelper';
-import ServiceMessageBanner from '../_Common/ServiceMessageBanner';
+import { ServiceMessageBanner } from '../_Common/ServiceMessageBanner';
 import CFBTeamBoardSidebar from './CFBTeamRecruitingComponents/CFBTeamBoardSidebar';
 import CFBTeamMobilePlayerRow from './CFBTeamRecruitingComponents/CFBTeamRecruitingMobilePlayerRow';
 import CFBTeamDashboardPlayerRow from './CFBTeamRecruitingComponents/CFBTeamRecruitingPlayerRow';
@@ -115,7 +115,6 @@ const CFBTeamRecruitingBoard = ({
             RewardScholarship: scholarshipVal,
             RevokeScholarship: revokedVal
         };
-
         const response = await _recruitingService.ToggleScholarship(
             UpdateRecruitDto
         );
@@ -221,6 +220,15 @@ const CFBTeamRecruitingBoard = ({
         }, 5000);
     };
 
+    const toggleAIBehavior = async () => {
+        await _recruitingService.ToggleAIBehavior(recruitingProfile.ID);
+
+        const isAI = recruitingProfile.IsAI;
+
+        const profile = { ...recruitingProfile, IsAI: !isAI };
+        setRecruitingProfile(() => profile);
+    };
+
     return (
         <div className="container-fluid mt-3">
             <ConfirmSaveRecruitingBoardModal save={SavePointAllocations} />
@@ -234,6 +242,7 @@ const CFBTeamRecruitingBoard = ({
                             cfbTeam={cfbTeam}
                             recruitingProfile={recruitingProfile}
                             theme={viewMode}
+                            toggleAIBehavior={toggleAIBehavior}
                         />
                     ) : (
                         ''
@@ -401,10 +410,9 @@ const CFBTeamRecruitingBoard = ({
                                 If you're seeing this, Recruiting is currently
                                 being synced. No, you can't view your board
                                 right now. Nor can you ask to see who's being
-                                synced in real time. Please go to bed, and in
-                                the morning all of your croots will be gifted
-                                and wrapped nicely underneath your crootsmas
-                                tree. You're welcome.
+                                synced in real time. Please make a bowl of Froot
+                                Loops cereal in the meantime to enjoy the moment
+                                and to increase your odds in the recruit sync.
                             </div>
                         ) : (
                             ''

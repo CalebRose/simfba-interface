@@ -54,7 +54,8 @@ const BBATeamPlayerRow = (props) => {
             <td className="align-middle">{player.FinishingGrade}</td>
             <td className="align-middle">{player.BallworkGrade}</td>
             <td className="align-middle">{player.ReboundingGrade}</td>
-            <td className="align-middle">{player.DefenseGrade}</td>
+            <td className="align-middle">{player.InteriorDefenseGrade}</td>
+            <td className="align-middle">{player.PerimeterDefenseGrade}</td>
             <td className="align-middle">{player.Stamina}</td>
             <td className="align-middle">{player.PotentialGrade}</td>
             <td className="align-middle">{player.PlaytimeExpectations}</td>
