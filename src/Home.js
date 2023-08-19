@@ -447,7 +447,7 @@ const Home = ({ viewMode }) => {
                 }
             >
                 <div className="container">
-                    <span>Simfba, {new Date().getFullYear()}</span>
+                    <span>SimFBA, {new Date().getFullYear()}</span>
                 </div>
             </footer>
         </div>

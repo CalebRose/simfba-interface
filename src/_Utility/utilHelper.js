@@ -15,6 +15,10 @@ export const RoundToTwoDecimals = (num) => {
     return Math.round(num * 100) / 100;
 };
 
+export const PickFromArray = (arr) => {
+    return arr[~~(Math.random() * arr.length)];
+};
+
 export const GetDefaultStatsOrder = (
     newSortValue,
     sort,

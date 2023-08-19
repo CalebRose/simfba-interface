@@ -3,7 +3,7 @@ import { GetYear } from '../../../_Utility/RosterHelper';
 
 const CBBPlayerStatRow = ({ statType, idx, player, viewType }) => {
     const name = player.FirstName + ' ' + player.LastName;
-    const s = viewType === 'SEASON' ? player.SeasonStats : player.Stats;
+    const s = viewType === 'SEASON' ? player.SeasonStats : player.Stats[0];
     const games = player.SeasonStats ? player.SeasonStats.GamesPlayed : 0;
     const year = GetYear(player);
     const FGPercentLabel = parseFloat(s.FGPercent * 100).toFixed(2) + '%';

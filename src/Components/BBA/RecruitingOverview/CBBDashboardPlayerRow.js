@@ -30,7 +30,18 @@ const CBBDashboardPlayerRow = (props) => {
 
         const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
 
-        return competingAbbrs.join(', ');
+        return competingAbbrs.map((x) => {
+            const logo = getLogo(x);
+            return (
+                <>
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={logo}
+                        alt="competing-team"
+                    />
+                </>
+            );
+        });
     };
 
     const addToProfile = () => {

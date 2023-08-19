@@ -1,6 +1,6 @@
 export const baseUrl = 'https://calebrose.io/simfba-logo-cdn';
 
-const logos = {
+export const logos = {
     Abilene_Christian: `${baseUrl}/logos/Abilene_Christian_Wildcats_logo.png`,
     Air_Force: baseUrl + '/logos/Air_Force_Falcons_logo.png',
     Akron_Zips: baseUrl + '/logos/Akron_Zips_logo.png',
@@ -442,4 +442,45 @@ const logos = {
     SD_Clippers: `${baseUrl}/logos/san_diego_clippers_logo.png`
 };
 
-export default logos;
+export const ISLLogos = {
+    Adelaide: `${baseUrl}/logos/Adelaide.png`,
+    ALBA: `${baseUrl}/logos/Alba_Berlin_logo.png`,
+    Alvark: `${baseUrl}/logos/Alvark_Tokyo_logo.png`,
+    Anadolu: `${baseUrl}/logos/Anadolu_Efes_SK_logo.png`,
+    Barangay: `${baseUrl}/logos/Barangay_Ginebra_San_Miguel_logo.png`,
+    Barcelona: `${baseUrl}/logos/FC_Barcelona_logo.png`,
+    Bayern: `${baseUrl}/logos/FC_Bayern_Munich_logo.png`,
+    BeijingDucks: `${baseUrl}/logos/Beijing_Ducks.png`,
+    Brisbane: `${baseUrl}/logos/Brisbane.png`,
+    Caledonia: `${baseUrl}/logos/Caledonia_Gladiators_logo.png`,
+    CazooBaskonia: `${baseUrl}/logos/Saski_Baskonia_logo.png`,
+    CrvenaZvezda: `${baseUrl}/logos/Crvena_zvezda.png`,
+    Fenerbache: `${baseUrl}/logos/Fenerbahçe_logo.png`,
+    Goyang: `${baseUrl}/logos/Carrot_Jumpers_logo.png`,
+    Guandong: `${baseUrl}/logos/Guangdong_Southern_Tigers.png`,
+    Guangzhou: `${baseUrl}/logos/Guangzhou_Long_Lions_logo.png`,
+    Hiroshima: `${baseUrl}/logos/Hiroshima_Dragonflies_logo.png`,
+    Jilin: `${baseUrl}/logos/Jilin_Northeast_Tigers.png`,
+    KKPartizan: `${baseUrl}/logos/KK_Partizan_logo.png`,
+    LDLC: `${baseUrl}/logos/LDLC_Asvel_Dark.png`,
+    London: `${baseUrl}/logos/London_Lions_logo.png`,
+    Maccabi: `${baseUrl}/logos/Maccabi_Tel_Aviv_BC_logo.png`,
+    Melbourne: `${baseUrl}/logos/Melbourne_United_logo.png`,
+    Nagoya: `${baseUrl}/logos/Nagoya_Diamond_Dolphins_logo.png`,
+    NewZealand: `${baseUrl}/logos/New_Zealand_Breakers_logo.png`,
+    Olimpia: `${baseUrl}/logos/Olimpia_Milano_logo.png`,
+    Olympiacos: `${baseUrl}/logos/Olympiacos_BC_logo.png`,
+    Panathinaikos: `${baseUrl}/logos/Panathinaikos_BC_logo.png`,
+    Perth: `${baseUrl}/logos/Perth_Wildcats_logo.png`,
+    Prometey: `${baseUrl}/logos/BC_Prometey_logo.png`,
+    RealMadrid: `${baseUrl}/logos/Real_Madrid_CF.png`,
+    Ryuku: `${baseUrl}/logos/Ryukyu_Golden_Kings_logo.png`,
+    Seoul: `${baseUrl}/logos/Seoul_Samsung_Thunders_logo.png`,
+    Shandong: `${baseUrl}/logos/Shandong_Golden_Stars.png`,
+    Shanghai: `${baseUrl}/logos/Shanghai_Sharks_logo.png`,
+    Shenzen: `${baseUrl}/logos/Shenzhen_Leopards_logo.png`,
+    Taipei: `${baseUrl}/logos/Fubon_Braves_logo.png`,
+    VEF: `${baseUrl}/logos/VEF_Riga_logo_90s.png`,
+    Virtus: `${baseUrl}/logos/Virtus_Bologna_logo.png`,
+    Zalgiris: `${baseUrl}/logos/BC_Žalgiris_logo.png`
+};

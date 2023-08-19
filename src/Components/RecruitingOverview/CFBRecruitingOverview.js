@@ -7,6 +7,7 @@ import {
     CloseToHome,
     LetterGradesList,
     PositionList,
+    RecruitingLoadMessages,
     SimpleLetterGrades,
     StarsList,
     StatesList
@@ -26,6 +27,7 @@ import CFBDashboardRankingsModal from './CFBDashboardComponents/CFBDashboardRank
 import { GetCollusionStatements } from '../../Constants/CollusionStatements';
 import CFBDashboardMobilePlayerRow from './CFBDashboardComponents/CFBDashboardMobilePlayerRow';
 import RecruitingClassModal from '../_Common/RecruitingClassModal';
+import { PickFromArray } from '../../_Utility/utilHelper';
 
 const CFBRecruitingOverview = ({
     currentUser,
@@ -63,6 +65,9 @@ const CFBRecruitingOverview = ({
     const [crootMap, setCrootMap] = React.useState({});
     const [teamColors, setTeamColors] = React.useState('');
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const [loadMessage] = React.useState(() =>
+        PickFromArray(RecruitingLoadMessages)
+    );
     const [showCollusionButton, setShowCollusionButton] = React.useState(true);
     const statusOptions = MapOptions([
         'Not Ready',
@@ -548,7 +553,6 @@ const CFBRecruitingOverview = ({
                                 dataLength={viewableRecruits.length}
                                 next={loadMoreRecords}
                                 hasMore={true}
-                                height={570}
                                 scrollThreshold={0.8}
                                 loader={
                                     <div className="row justify-content-center">
@@ -636,29 +640,26 @@ const CFBRecruitingOverview = ({
                                         </thead>
 
                                         <tbody className="overflow-auto">
-                                            {viewableRecruits.length > 0
-                                                ? viewableRecruits.map(
-                                                      (x, idx) => (
-                                                          <>
-                                                              <CFBDashboardPlayerRow
-                                                                  key={x.ID}
-                                                                  croot={x}
-                                                                  idx={idx}
-                                                                  add={
-                                                                      AddRecruitToBoard
-                                                                  }
-                                                                  map={crootMap}
-                                                                  timestamp={
-                                                                      cfb_Timestamp
-                                                                  }
-                                                                  theme={
-                                                                      viewMode
-                                                                  }
-                                                              />
-                                                          </>
-                                                      )
-                                                  )
-                                                : ''}
+                                            {viewableRecruits.length > 0 &&
+                                                viewableRecruits.map(
+                                                    (x, idx) => (
+                                                        <>
+                                                            <CFBDashboardPlayerRow
+                                                                key={x.ID}
+                                                                croot={x}
+                                                                idx={idx}
+                                                                add={
+                                                                    AddRecruitToBoard
+                                                                }
+                                                                map={crootMap}
+                                                                timestamp={
+                                                                    cfb_Timestamp
+                                                                }
+                                                                theme={viewMode}
+                                                            />
+                                                        </>
+                                                    )
+                                                )}
                                         </tbody>
                                     </table>
                                 )}
@@ -666,12 +667,7 @@ const CFBRecruitingOverview = ({
                         ) : (
                             <>
                                 <div className="row justify-content-center mt-3 mb-2">
-                                    My dude, recruiting is currently in-sync.
-                                    Please wait until it's finished. Until then,
-                                    make some tea and enjoy the next few
-                                    minutes. Please check Discord for news on
-                                    the completion of this week's recruiting
-                                    sync.
+                                    {loadMessage}
                                 </div>
 
                                 <div className="row justify-content-center pt-2 mt-4 mb-2">

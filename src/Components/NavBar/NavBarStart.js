@@ -139,7 +139,7 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                     </li>
                     <li>
                         <Link to={routes.CFB_STATS} className="dropdown-item">
-                            Stats
+                            Statistics
                         </Link>
                     </li>
                     <li>
@@ -195,7 +195,7 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                     </li>
                     <li>
                         <Link to={routes.CBB_STATS} className="dropdown-item">
-                            Team Statistics
+                            Statistics
                         </Link>
                     </li>
                     <li>
@@ -259,7 +259,7 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                     </li>
                     <li>
                         <Link to={routes.CBB_STATS} className="dropdown-item">
-                            Team Statistics
+                            Statistics
                         </Link>
                     </li>
                     <li>

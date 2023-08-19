@@ -23,12 +23,14 @@ import CBBRankingsModal from './CBBRankingsModal';
 import { CheckRegion, CheckState } from '../../../_Utility/CBBRecruitingHelper';
 import {
     ConductSortForCBBOverview,
-    GetDefaultOrderForCBBOverview
+    GetDefaultOrderForCBBOverview,
+    PickFromArray
 } from '../../../_Utility/utilHelper';
 import CBBDashboardMobileRow from './CBBDashboardMobileRow';
 import RecruitingClassModal from '../../_Common/RecruitingClassModal';
 import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 import { Spinner } from '../../_Common/Spinner';
+import { RecruitingLoadMessages } from '../../../Constants/CommonConstants';
 
 const CBBRecruitingDashboard = ({
     currentUser,
@@ -74,6 +76,9 @@ const CBBRecruitingDashboard = ({
     const [teamProfiles, setTeamProfiles] = React.useState([]);
     const [sort, setSort] = React.useState('Rank');
     const [isAsc, setIsAsc] = React.useState(false);
+    const [loadMessage] = React.useState(() =>
+        PickFromArray(RecruitingLoadMessages)
+    );
     const luckyTeam = Math.floor(Math.random() * (20 - 1) + 1);
     const tableHoverClass = GetTableHoverClass(viewMode);
 
@@ -84,7 +89,7 @@ const CBBRecruitingDashboard = ({
         }
     }, [viewWidth]);
 
-    const isMobile = useMediaQuery({ query: `(max-width:844px)` });
+    const isMobile = useMediaQuery({ query: `(max-width:851px)` });
 
     // Static Data
     const filterCroots = (recruits) => {
@@ -553,7 +558,6 @@ const CBBRecruitingDashboard = ({
                                 dataLength={viewableRecruits.length}
                                 next={loadMoreRecords}
                                 hasMore={true}
-                                height={570}
                                 scrollThreshold={0.8}
                                 loader={
                                     <div className="row justify-content-center">
@@ -740,14 +744,7 @@ const CBBRecruitingDashboard = ({
                         ) : (
                             <>
                                 <div className="row justify-content-center mt-3 mb-2">
-                                    My dude, recruiting is currently in-sync.
-                                    Please wait until it's finished. Until then,
-                                    make some tea and enjoy the next few
-                                    minutes. Please check Discord for news on
-                                    the completion of this week's recruiting
-                                    sync. Also, please consider 3-Star player
-                                    Kevin Chen from China as a future player on
-                                    your team.
+                                    {loadMessage}
                                 </div>
 
                                 <div className="row justify-content-center pt-2 mt-4 mb-2">

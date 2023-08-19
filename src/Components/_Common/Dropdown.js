@@ -1,4 +1,5 @@
 import React from 'react';
+import BBATeamDropdownItem from '../BBA/Team/BBATeamDropdownItem';
 
 export const DropdownItem = ({ click, value, id, name }) => {
     const handleChange = () => {
@@ -62,6 +63,46 @@ export const Dropdown = ({ value, click, id, list, name }) => {
                         name={name}
                     />
                 ))}
+            </ul>
+        </div>
+    );
+};
+
+export const BBATeamDropdown = ({ team, currentUser, selectTeam, list }) => {
+    const handleUserClick = () => {
+        return selectTeam(team);
+    };
+    return (
+        <div className="dropdown">
+            <button
+                className="btn btn-secondary dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+            >
+                {team && team.Team}
+            </button>
+            <ul
+                className="dropdown-menu dropdown-content"
+                aria-labelledby="dropdownMenuButton1"
+            >
+                <li>
+                    <p className="dropdown-item" onClick={handleUserClick}>
+                        {currentUser.NBATeam}
+                    </p>
+                </li>
+                <li>
+                    <hr className="dropdown-divider" />
+                </li>
+                {list &&
+                    list.map((x) => (
+                        <BBATeamDropdownItem
+                            key={x.ID}
+                            selectTeam={selectTeam}
+                            team={x}
+                        />
+                    ))}
             </ul>
         </div>
     );

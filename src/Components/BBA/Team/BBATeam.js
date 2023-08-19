@@ -174,11 +174,12 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
                                     <th scope="col">Overall</th>
                                     <th scope="col">2pt Shooting</th>
                                     <th scope="col">3pt Shooting</th>
+                                    <th scope="col">Free Throw</th>
                                     <th scope="col">Finishing</th>
                                     <th scope="col">Ballwork</th>
                                     <th scope="col">Rebounding</th>
-                                    <th scope="col">Interior Defense</th>
-                                    <th scope="col">Perimeter Defense</th>
+                                    <th scope="col">Int. Defense</th>
+                                    <th scope="col">Per. Defense</th>
                                     <th scope="col">Stamina</th>
                                     <th scope="col">Potential</th>
                                     <th scope="col">Min. Expectations</th>
@@ -189,7 +190,7 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
                         </table>
                     </div>
                 </div>
-            </div>{' '}
+            </div>
         </div>
     );
 };

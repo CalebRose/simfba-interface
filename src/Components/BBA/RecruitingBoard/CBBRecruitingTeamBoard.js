@@ -9,6 +9,8 @@ import { ServiceMessageBanner } from '../../_Common/ServiceMessageBanner';
 import { Spinner } from '../../_Common/Spinner';
 import CBBTeamDashboardMobileRow from './DashboardComponents/CBBTeamDashboardMobileRow';
 import CBBTeamDashboardPlayerRow from './DashboardComponents/CBBTeamDashboardPlayerRow';
+import { PickFromArray } from '../../../_Utility/utilHelper';
+import { RecruitingLoadMessages } from '../../../Constants/CommonConstants';
 
 const CBBRecruitingTeamBoard = ({
     currentUser,
@@ -28,6 +30,9 @@ const CBBRecruitingTeamBoard = ({
     const savingMessage = 'Saving Recruiting Options...';
     const successMessage = 'Saved successfully!';
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const [loadMessage] = React.useState(() =>
+        PickFromArray(RecruitingLoadMessages)
+    );
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     const tableHoverClass = GetTableHoverClass(viewMode);
 
@@ -339,10 +344,12 @@ const CBBRecruitingTeamBoard = ({
                                         <th scope="col">Stars</th>
                                         <th scope="col">Sht. 2</th>
                                         <th scope="col">Sht. 3</th>
+                                        <th scope="col">FT</th>
                                         <th scope="col">Fin.</th>
                                         <th scope="col">Bal.</th>
                                         <th scope="col">Reb.</th>
-                                        <th scope="col">Def.</th>
+                                        <th scope="col">Int. Def.</th>
+                                        <th scope="col">Per. Def.</th>
                                         <th scope="col">Pot.</th>
                                         <th scope="col">Status</th>
                                         <th scope="col">Leading Teams</th>
@@ -355,59 +362,45 @@ const CBBRecruitingTeamBoard = ({
                                 </thead>
                                 <tbody className="overflow-auto">
                                     {cbb_Timestamp &&
-                                    !cbb_Timestamp.IsRecruitingLocked &&
-                                    recruits !== undefined &&
-                                    recruits !== null &&
-                                    recruits &&
-                                    recruits.length > 0
-                                        ? recruits.map((x, idx) => (
-                                              <CBBTeamDashboardPlayerRow
-                                                  key={x.ID}
-                                                  player={x}
-                                                  idx={idx}
-                                                  remove={
-                                                      removeRecruitFromBoard
-                                                  }
-                                                  toggleScholarship={
-                                                      toggleScholarship
-                                                  }
-                                                  changePoints={allocatePoints}
-                                                  viewMode={viewMode}
-                                              />
-                                          ))
-                                        : ''}
+                                        !cbb_Timestamp.IsRecruitingLocked &&
+                                        recruits !== undefined &&
+                                        recruits !== null &&
+                                        recruits &&
+                                        recruits.length > 0 &&
+                                        recruits.map((x, idx) => (
+                                            <CBBTeamDashboardPlayerRow
+                                                key={x.ID}
+                                                player={x}
+                                                idx={idx}
+                                                remove={removeRecruitFromBoard}
+                                                toggleScholarship={
+                                                    toggleScholarship
+                                                }
+                                                changePoints={allocatePoints}
+                                                viewMode={viewMode}
+                                            />
+                                        ))}
                                 </tbody>
                             </table>
                         )}
-                        {recruits === undefined || recruits === null ? (
-                            <div className="row justify-content-center pt-2 mt-4 mb-2">
-                                <Spinner />
-                            </div>
-                        ) : (
-                            ''
-                        )}
+                        {recruits === undefined ||
+                            (recruits === null && (
+                                <div className="row justify-content-center pt-2 mt-4 mb-2">
+                                    <Spinner />
+                                </div>
+                            ))}
                         {recruits !== undefined &&
-                        recruits !== null &&
-                        recruits.length === 0 ? (
+                            recruits !== null &&
+                            recruits.length === 0 && (
+                                <div className="row justify-content-center">
+                                    Have you considered adding a croot to your
+                                    team board?
+                                </div>
+                            )}
+                        {cbb_Timestamp && cbb_Timestamp.IsRecruitingLocked && (
                             <div className="row justify-content-center">
-                                Have you considered adding a croot to your team
-                                board?
+                                {loadMessage}
                             </div>
-                        ) : (
-                            ''
-                        )}
-                        {cbb_Timestamp && cbb_Timestamp.IsRecruitingLocked ? (
-                            <div className="row justify-content-center">
-                                Good morning! If you're seeing this, it means
-                                that the recruiting sync is currently occurring.
-                                Please make a cup of coffee, tea, and have some
-                                breakfast and enjoy the smells of the morning
-                                air until recruiting completes. Also, congrats
-                                to Southern Alabama for considering Giovanni
-                                Giorgio as the future of their team.
-                            </div>
-                        ) : (
-                            ''
                         )}
                     </div>
                 </div>

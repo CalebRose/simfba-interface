@@ -5,7 +5,6 @@ const NBATeamCard = (props) => {
     const { ovr, off, def, team, logo, disable, viewMode, request } = props;
     const [requested, setRequested] = React.useState(false);
     const { Team, Nickname, Conference, LeagueID } = team;
-
     const sendRequest = () => {
         if (disable === false) {
             const role = event.target.value;

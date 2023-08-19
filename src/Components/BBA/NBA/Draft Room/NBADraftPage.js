@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { DraftDropdown, Dropdown } from '../../../_Common/Dropdown';
+import Select from 'react-select';
+import { useMediaQuery } from 'react-responsive';
+import { BBATeamDropdown } from '../../../_Common/Dropdown';
 import firebase from 'firebase';
 import { useFirestore } from '../../../../Firebase/firebase';
 import BBADraftService from '../../../../_Services/simNBA/BBADraftService';
@@ -10,6 +12,8 @@ import { NBADrafteeRow } from './NBADrafteeRow';
 import { GetTableHoverClass } from '../../../../Constants/CSSClassHelper';
 import { NBAScoutPlayerRow } from './NBAScoutPlayerRow';
 import { NBADraftHelpModal, ScoutingModal } from './NBADraftModals';
+import { MapObjOptions } from '../../../../_Utility/filterHelper';
+import { PositionList } from '../../../../Constants/BBAConstants';
 
 const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     // Services
@@ -26,10 +30,14 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     const [startTime, setStartTime] = useState(null);
     const [timeLeft, setTimeLeft] = useState(300);
     const [warRoom, setWarRoom] = useState(null);
+    const [userWarRoom, setUserWarRoom] = useState(null);
     const [scoutMap, setScoutMap] = useState({});
     const [nbaTeams, setNBATeams] = useState([]);
     const [draftPickList, setDraftPickList] = useState([]);
-    const [draftablePlayers, setDraftablePlayers] = useState([]);
+    const positions = MapObjOptions(PositionList);
+    const [selectedPositions, setPositions] = React.useState('');
+    const [mobileView, setMobileView] = useState('DRAFT');
+    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const [modalDraftee, setModalDraftee] = useState(null);
     const {
         allDraftPicks,
@@ -58,6 +66,15 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         return () => clearInterval(intervalId);
     }, [endTime, isPaused]);
 
+    // For mobile
+    React.useEffect(() => {
+        if (!viewWidth) {
+            setViewWidth(window.innerWidth);
+        }
+    }, [viewWidth]);
+
+    const isMobile = useMediaQuery({ query: `(max-width:851px)` });
+
     const recentlyDraftedPlayer = useMemo(() => {
         if (allDraftablePlayers) {
             const idx = allDraftablePlayers.findIndex(
@@ -72,16 +89,16 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     }, [allDraftablePlayers, recentlyDraftedPlayerID]);
     const draftMap = useMemo(() => {
         const draftMapObj = {};
-        if (allDraftablePlayers) {
-            for (let i = 0; i < allDraftablePlayers.length; i++) {
-                const player = allDraftablePlayers[i];
-                if (player.DraftedTeamID > 0) {
-                    draftMapObj[player.ID] === true;
+        if (allDraftPicks) {
+            for (let i = 0; i < allDraftPicks.length; i++) {
+                const pick = allDraftPicks[i];
+                if (pick.SelectedPlayerID > 0) {
+                    draftMapObj[pick.SelectedPlayerID] = true;
                 }
             }
         }
         return draftMapObj;
-    }, [allDraftablePlayers]);
+    }, [allDraftPicks]);
     const currentDraftPickIdx = useMemo(() => {
         if (allDraftPicks) {
             return allDraftPicks.findIndex(
@@ -123,6 +140,20 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         }
         return null;
     }, [nextDraftPick]);
+
+    const viewablePlayers = useMemo(() => {
+        let list = [];
+        if (allDraftablePlayers) {
+            list = [...allDraftablePlayers];
+            if (selectedPositions.length > 0) {
+                list = list.filter((x) =>
+                    selectedPositions.includes(x.Position)
+                );
+            }
+        }
+        return list;
+    }, [allDraftablePlayers, selectedPositions]);
+
     // NBA Draft Room State -- get Firebase
     // Current Round
     // Current Pick
@@ -185,7 +216,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         if (currentUser && data) {
             const adminStatus = currentUser.bba_roleID === 'Admin';
             if (!warRoom && nbaTeams.length === 0) {
-                GetDraftPageData();
+                GetDraftPageData(currentUser.NBATeamID);
             }
             setIsAdmin(() => adminStatus);
             if (data.endTime) {
@@ -200,11 +231,20 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     }, [currentUser, data, warRoom, nbaTeams]);
 
     // Click Functionality
-    const adminSelectDraftPick = (name, val) => {
-        console.log({ val });
-        if (val > 0 && val < 65) console.log('PING!');
-        // Create updatedData object, setting the next draft pick to the value
-        // updateData into firestore
+    const adminSelectTeam = async (team) => {
+        if (currentUser.username !== 'TuscanSota') {
+            alert('Sorry, but this is something only Tuscan can do for now.');
+            return;
+        }
+        setIsLoading(() => true);
+        await GetDraftPageData(team.ID);
+    };
+
+    const selectMobileView = (event) => {
+        event.preventDefault();
+
+        const { value } = event.target;
+        setMobileView(() => value);
     };
 
     const addPlayerToScoutingBoard = async (player) => {
@@ -254,7 +294,6 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
             TeamID: wr.TeamID
         };
 
-        console.log({ dto });
         const res = await _draftService.RevealAttribute(dto);
         if (res) {
             if (attr === 'Shooting2') {
@@ -294,7 +333,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         };
         const draftPicks = [...allDraftPicks];
         draftPicks[currentDraftPickIdx] = {
-            ...draftPickList[currentDraftPickIdx],
+            ...draftPicks[currentDraftPickIdx],
             ...draftedPlayerInfo
         };
         // Update Player Info
@@ -308,6 +347,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         const draftedPlayerIDX = draftablePlayers.findIndex(
             (x) => x.ID === player.ID
         );
+
         if (draftedPlayerIDX === -1) {
             alert(
                 `ERROR: COULD NOT FIND ${player.ID} ${player.FirstName} ${player.LastName}`
@@ -320,39 +360,46 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         };
 
         const theNextPick = nextPick;
+        const finalPick = currentPick === allDraftPicks.length;
         const newData = {
             ...data,
             currentPick: theNextPick,
             nextPick: theNextPick + 1,
             recentlyDraftedPlayerID: player.ID,
-            allDraftPicks: draftPickList,
+            allDraftPicks: draftPicks,
             allDraftablePlayers: draftablePlayers,
             isPaused: true
         };
         updateData(newData);
-        await delay(10000);
-        const endTime = firebase.firestore.Timestamp.fromDate(
-            new Date(Date.now() + seconds * 1000)
-        );
-        let seconds = 0;
-        if (currentPick < 32) {
-            seconds = 300;
-        } else {
-            seconds = 120;
-        }
-        const resetTimerData = {
-            ...newData,
-            endTime,
-            isPaused: false,
-            seconds,
-            startAt: firebase.firestore.Timestamp.fromDate(new Date(Date.now()))
-        };
-        updateData(resetTimerData);
+        setTimeout(() => {
+            console.log('NEXT TEAM CAN NOW DRAFT');
+            const endTime = firebase.firestore.Timestamp.fromDate(
+                new Date(Date.now() + seconds * 1000)
+            );
+            let seconds = 0;
+            if (currentPick < 32) {
+                seconds = 300;
+            } else {
+                seconds = 120;
+            }
+            const resetTimerData = {
+                ...newData,
+                endTime,
+                isPaused: finalPick,
+                seconds,
+                startAt: firebase.firestore.Timestamp.fromDate(
+                    new Date(Date.now())
+                ),
+                draftingTeam: nextDraftPick.Team,
+                draftingTeamID: nextDraftPick.TeamID
+            };
+            updateData(resetTimerData);
+        }, 10000);
     };
 
     // API Calls
-    const GetDraftPageData = async () => {
-        const res = await _draftService.GetDraftPageData(currentUser.NBATeamID);
+    const GetDraftPageData = async (id) => {
+        const res = await _draftService.GetDraftPageData(id);
         const { ScoutProfiles } = res.WarRoom;
         const scoutingMap = {};
         for (let i = 0; i < ScoutProfiles.length; i++) {
@@ -366,13 +413,30 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                 ] = true;
             }
         }
+        // In the event we need to re-upload the draft picks
+        // const { AllDraftPicks, DraftablePlayers } = res;
+        // const newData = {
+        //     ...data,
+        //     allDraftPicks: AllDraftPicks
+        //     // allDraftablePlayers: DraftablePlayers
+        // };
+        // updateData(newData);
         setWarRoom(() => res.WarRoom);
-        setNBATeams(() => res.NBATeams);
+        if (res.WarRoom.ID === currentUser.NBATeamID) {
+            setUserWarRoom(() => res.WarRoom);
+        }
+        if (nbaTeams.length === 0) {
+            setNBATeams(() => res.NBATeams);
+        }
         setScoutMap(() => scoutingMap);
         setIsLoading(() => false);
     };
 
     // Secondary Components
+    const ChangePositions = (options) => {
+        const opts = [...options.map((x) => x.value)];
+        setPositions(opts);
+    };
 
     return (
         <div className="container-fluid mt-3">
@@ -382,32 +446,45 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                 <>
                     <div className="row draft-room-header">
                         <div className="col-2 justify-content-start ms-end">
-                            <h2>NBA Draft Room</h2>
+                            <h3>NBA Draft Room</h3>
                         </div>
 
+                        {currentDraftPickIdx > -1 && (
+                            <>
+                                <div className="col-auto px-4">
+                                    Current Pick: {currentPick}
+                                </div>
+                                <div className="col-auto px-4">
+                                    Team Drafting:{' '}
+                                    <img
+                                        src={currentPickTeamLogo}
+                                        height="50px"
+                                        width="50px"
+                                        alt="Current Team Logo"
+                                    />
+                                </div>
+                            </>
+                        )}
+                        {nextDraftPickIdx > -1 && (
+                            <div className="col-auto px-4">
+                                Next Team:{' '}
+                                <img
+                                    src={nextPickTeamLogo}
+                                    height="50px"
+                                    width="50px"
+                                    alt="Next Team Logo"
+                                />
+                            </div>
+                        )}
+                        {!currentDraftPick && !nextDraftPick && (
+                            <div className="col-auto px-4">
+                                Draft is Complete!
+                            </div>
+                        )}
+
                         <div className="col-auto px-4">
-                            Current Pick: {currentPick}
-                        </div>
-                        <div className="col-auto px-4">
-                            Team Drafting:{' '}
-                            <img
-                                src={currentPickTeamLogo}
-                                height="50px"
-                                width="50px"
-                                alt="Current Team Logo"
-                            />
-                        </div>
-                        <div className="col-auto px-4">
-                            Next Team:{' '}
-                            <img
-                                src={nextPickTeamLogo}
-                                height="50px"
-                                width="50px"
-                                alt="Next Team Logo"
-                            />
-                        </div>
-                        <div className="col-auto px-4">
-                            Recently Drafted Player: {recentlyDraftedPlayer}
+                            <p>Recently Drafted Player</p>
+                            <p>{recentlyDraftedPlayer}</p>
                         </div>
 
                         <div className="col-auto">
@@ -460,12 +537,12 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                     )}
                                 </div>
                                 <div className="col-auto px-4">
-                                    <h6>Pick Selection</h6>
-                                    <DraftDropdown
-                                        value={`${currentPick} | ${currentDraftPick.Team}`}
-                                        list={data.allDraftPicks}
-                                        name="DraftPick"
-                                        click={adminSelectDraftPick}
+                                    <h6>War Room Selection</h6>
+                                    <BBATeamDropdown
+                                        team={userWarRoom}
+                                        list={nbaTeams}
+                                        currentUser={currentUser}
+                                        selectTeam={adminSelectTeam}
                                     />
                                 </div>
                             </>
@@ -476,8 +553,22 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                         <div className="draft-pick-container">
                             {allDraftPicks.map((x, idx) => {
                                 const TeamLogo = getLogo(x.Team);
-                                return (
-                                    <div className="draft-card card mt-1 mb-2 p-1">
+
+                                return !isMobile ? (
+                                    <div
+                                        className={`draft-card card mt-1 mb-2 p-1 ${
+                                            x.SelectedPlayerID > 0 &&
+                                            'border-success'
+                                        } ${
+                                            currentDraftPick &&
+                                            currentDraftPick.ID === x.ID &&
+                                            'border-danger'
+                                        }  ${
+                                            nextDraftPick &&
+                                            nextDraftPick.ID === x.ID &&
+                                            'border-warning'
+                                        }`}
+                                    >
                                         <div className="row g-0">
                                             <div className="col-1">
                                                 <strong className="draft-number">
@@ -492,23 +583,76 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                             </div>
                                             <div className="col-8">
                                                 <div className="card-body">
+                                                    <div className="draft-pick-text">
+                                                        {x.Team}
+                                                    </div>
                                                     {x.SelectedPlayerID !==
                                                         null &&
-                                                    x.SelectedPlayerID < 0 ? (
-                                                        <p className="draft-pick-text">
-                                                            {
-                                                                x.SelectedPlayerName
-                                                            }
-                                                        </p>
-                                                    ) : (
-                                                        <p className="draft-pick-text">
-                                                            {x.Team}
-                                                        </p>
-                                                    )}
+                                                        x.SelectedPlayerID >
+                                                            0 && (
+                                                            <small className="text-small">
+                                                                {
+                                                                    x.SelectedPlayerPosition
+                                                                }{' '}
+                                                                {
+                                                                    x.SelectedPlayerName
+                                                                }
+                                                            </small>
+                                                        )}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                ) : (
+                                    <>
+                                        <div
+                                            className={`draft-card-mobile card mt-1 mb-1 p-1 ${
+                                                x.SelectedPlayerID > 0 &&
+                                                'border-success'
+                                            } ${
+                                                currentDraftPick &&
+                                                currentDraftPick.ID === x.ID &&
+                                                'border-danger'
+                                            }  ${
+                                                nextDraftPick &&
+                                                nextDraftPick.ID === x.ID &&
+                                                'border-warning'
+                                            }`}
+                                        >
+                                            <div className="row">
+                                                <div className="col-3">
+                                                    <strong className="draft-number me-1">
+                                                        {x.DraftNumber}
+                                                    </strong>
+                                                    <img
+                                                        className="image-standings-logo"
+                                                        src={TeamLogo}
+                                                    />
+                                                </div>
+                                                <div className="col-9">
+                                                    <div className="justify-content-start text-start">
+                                                        <label className="draft-pick-text-mobile text-start">
+                                                            {x.Team}
+                                                            {x.SelectedPlayerID !==
+                                                                null &&
+                                                                x.SelectedPlayerID >
+                                                                    0 && (
+                                                                    <>
+                                                                        {' | '}
+                                                                        {
+                                                                            x.SelectedPlayerPosition
+                                                                        }{' '}
+                                                                        {
+                                                                            x.SelectedPlayerName
+                                                                        }
+                                                                    </>
+                                                                )}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
                                 );
                             })}
                         </div>
@@ -516,140 +660,251 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                     <NBADraftHelpModal />
                     <ScoutingModal player={modalDraftee} />
                     <div className="row mt-2 draft-war-room">
-                        <div className="col-auto text-start">
-                            <h4>{warRoom.Team} War Room</h4>
+                        <div className="row">
+                            <div className="col-auto text-start">
+                                <h4>{warRoom.Team} War Room</h4>
+                            </div>
+                            <div className="col-auto">
+                                <h5>Total Points: {warRoom.ScoutingPoints}</h5>
+                            </div>
+                            <div className="col-auto">
+                                <h5>Spent Points: {warRoom.SpentPoints}</h5>
+                            </div>
+                            <div className="col-auto">
+                                <h5>Draft Picks:</h5>
+                            </div>
+                            {warRoom.DraftPicks.length > 0 &&
+                                warRoom.DraftPicks.map((x) => (
+                                    <div className="col-1">
+                                        <span>
+                                            Round {x.DraftRound}, Pick{' '}
+                                            {x.DraftNumber}
+                                        </span>
+                                    </div>
+                                ))}
                         </div>
-                        <div className="col-auto">
-                            <h5>Total Points: {warRoom.ScoutingPoints}</h5>
+                        <div className="row mt-2">
+                            <div className="col-md-auto">
+                                <h6 className="text-start align-middle">
+                                    Position
+                                </h6>
+                                <Select
+                                    options={positions}
+                                    isMulti={true}
+                                    className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                    classNamePrefix="select"
+                                    onChange={ChangePositions}
+                                />
+                            </div>
                         </div>
-                        <div className="col-auto">
-                            <h5>Spent Points: {warRoom.SpentPoints}</h5>
-                        </div>
-                        <div className="col-auto">
-                            <h5>Draft Picks:</h5>
-                        </div>
-                        {warRoom.DraftPicks.length > 0 &&
-                            warRoom.DraftPicks.map((x) => (
-                                <div className="col-1">
-                                    <span>
-                                        Round {x.DraftRound}, Pick{' '}
-                                        {x.DraftNumber}
-                                    </span>
-                                </div>
-                            ))}
                     </div>
-
-                    <div className="row mt-2">
-                        <div className="col-4 px-2 nba-draft-draftee-box">
-                            <table
-                                className={`${tableHoverClass} table-responsive`}
-                            >
-                                <thead
-                                    style={{
-                                        position: 'sticky',
-                                        top: 0,
-                                        backgroundColor:
-                                            viewMode === 'dark'
-                                                ? '#202020'
-                                                : 'white',
-                                        zIndex: 3
-                                    }}
+                    {!isMobile ? (
+                        <div className="row mt-2">
+                            <div className="col-4 px-2 nba-draft-draftee-box">
+                                <table
+                                    className={`${tableHoverClass} table-responsive`}
                                 >
-                                    <tr>
-                                        <th scope="col">Rank</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Age</th>
-                                        <th scope="col">Ht.</th>
-                                        <th scope="col">College</th>
-                                        <th scope="col">Region</th>
-                                        <th scope="col">Ovr</th>
-                                        <th scope="col">Scout</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {allDraftablePlayers.map((x, idx) => (
-                                        <NBADrafteeRow
-                                            player={x}
-                                            ts={cbb_Timestamp}
-                                            map={scoutMap}
-                                            add={addPlayerToScoutingBoard}
-                                            idx={idx}
-                                            theme={viewMode}
-                                        />
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className="col-8 px-2 nba-draft-scout-box">
-                            <table
-                                className={`${tableHoverClass} table-responsive`}
-                            >
-                                <thead
-                                    style={{
-                                        position: 'sticky',
-                                        top: 0,
-                                        backgroundColor:
-                                            viewMode === 'dark'
-                                                ? '#202020'
-                                                : 'white',
-                                        zIndex: 3
-                                    }}
-                                >
-                                    <tr>
-                                        <th
-                                            scope="col"
-                                            onClick={() => ChangeSort('Name')}
-                                        >
-                                            Name
-                                        </th>
-                                        <th scope="col">Age</th>
-                                        <th scope="col">Height</th>
-                                        <th
-                                            scope="col"
-                                            onClick={() =>
-                                                ChangeSort('College')
-                                            }
-                                        >
-                                            College
-                                        </th>
-                                        <th scope="col">Overall</th>
-                                        <th scope="col">2pt.</th>
-                                        <th scope="col">3pt.</th>
-                                        <th scope="col">FT</th>
-                                        <th scope="col">Finishing</th>
-                                        <th scope="col">Ballwork</th>
-                                        <th scope="col">Rebounding</th>
-                                        <th scope="col">Int. Defense</th>
-                                        <th scope="col">Per. Defense</th>
-                                        <th scope="col">Pot.</th>
-                                        <th scope="col">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="overflow-auto">
-                                    {warRoom &&
-                                        warRoom.ScoutProfiles.length > 0 &&
-                                        warRoom.ScoutProfiles.map((x, idx) => (
-                                            <NBAScoutPlayerRow
-                                                key={x.ID}
-                                                profile={x}
-                                                idx={idx}
+                                    <thead
+                                        style={{
+                                            position: 'sticky',
+                                            top: 0,
+                                            backgroundColor:
+                                                viewMode === 'dark'
+                                                    ? '#202020'
+                                                    : 'white',
+                                            zIndex: 3,
+                                            fontSize: '1.5vh'
+                                        }}
+                                    >
+                                        <tr>
+                                            <th scope="col">Rank</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Age</th>
+                                            <th scope="col">Ht.</th>
+                                            <th scope="col">College</th>
+                                            <th scope="col">Region</th>
+                                            <th scope="col">Ovr</th>
+                                            <th scope="col">Scout</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {viewablePlayers.map((x, idx) => (
+                                            <NBADrafteeRow
+                                                player={x}
                                                 ts={cbb_Timestamp}
-                                                viewMode={viewMode}
-                                                currentDraftPick={
-                                                    currentDraftPick
-                                                }
-                                                map={draftMap}
-                                                draft={draftPlayer}
-                                                remove={removePlayerFromBoard}
-                                                wr={warRoom}
-                                                reveal={revealAttribute}
-                                                setDraftee={setModalDraftee}
+                                                map={scoutMap}
+                                                draftMap={draftMap}
+                                                add={addPlayerToScoutingBoard}
+                                                idx={idx}
+                                                theme={viewMode}
                                             />
                                         ))}
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="col-8 px-2 nba-draft-scout-box">
+                                <table
+                                    className={`${tableHoverClass} table-responsive`}
+                                >
+                                    <thead
+                                        style={{
+                                            position: 'sticky',
+                                            top: 0,
+                                            backgroundColor:
+                                                viewMode === 'dark'
+                                                    ? '#202020'
+                                                    : 'white',
+                                            zIndex: 3,
+                                            fontSize: '1.5vh'
+                                        }}
+                                    >
+                                        <tr>
+                                            <th
+                                                scope="col"
+                                                onClick={() =>
+                                                    ChangeSort('Name')
+                                                }
+                                            >
+                                                Name
+                                            </th>
+                                            <th scope="col">Age</th>
+                                            <th scope="col">Height</th>
+                                            <th
+                                                scope="col"
+                                                onClick={() =>
+                                                    ChangeSort('College')
+                                                }
+                                            >
+                                                College
+                                            </th>
+                                            <th scope="col">Overall</th>
+                                            <th scope="col">2pt.</th>
+                                            <th scope="col">3pt.</th>
+                                            <th scope="col">FT</th>
+                                            <th scope="col">Finishing</th>
+                                            <th scope="col">Ballwork</th>
+                                            <th scope="col">Rebounding</th>
+                                            <th scope="col">Int. Defense</th>
+                                            <th scope="col">Per. Defense</th>
+                                            <th scope="col">Pot.</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="overflow-auto">
+                                        {warRoom &&
+                                            warRoom.ScoutProfiles.length > 0 &&
+                                            warRoom.ScoutProfiles.map(
+                                                (x, idx) => (
+                                                    <NBAScoutPlayerRow
+                                                        key={x.ID}
+                                                        profile={x}
+                                                        idx={idx}
+                                                        ts={cbb_Timestamp}
+                                                        viewMode={viewMode}
+                                                        currentDraftPick={
+                                                            currentDraftPick
+                                                        }
+                                                        map={draftMap}
+                                                        draft={draftPlayer}
+                                                        remove={
+                                                            removePlayerFromBoard
+                                                        }
+                                                        wr={warRoom}
+                                                        reveal={revealAttribute}
+                                                        setDraftee={
+                                                            setModalDraftee
+                                                        }
+                                                    />
+                                                )
+                                            )}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <>
+                            <div className="row mt-2">
+                                <div
+                                    className="btn-group"
+                                    role="group"
+                                    aria-label="Basic example"
+                                >
+                                    <button
+                                        type="button"
+                                        className={`btn ${
+                                            mobileView !== 'DRAFT'
+                                                ? 'btn-outline-info'
+                                                : 'btn-info'
+                                        }`}
+                                        value="DRAFT"
+                                        onClick={selectMobileView}
+                                    >
+                                        Draft Board
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`btn ${
+                                            mobileView !== 'SCOUT'
+                                                ? 'btn-outline-info'
+                                                : 'btn-info'
+                                        }`}
+                                        value="SCOUT"
+                                        onClick={selectMobileView}
+                                    >
+                                        Scouting Board
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="row mt-2 nba-draft-mobile-box">
+                                {mobileView === 'DRAFT' ? (
+                                    <>
+                                        {viewablePlayers.map((x, idx) => (
+                                            <NBADrafteeRow
+                                                player={x}
+                                                ts={cbb_Timestamp}
+                                                map={scoutMap}
+                                                draftMap={draftMap}
+                                                add={addPlayerToScoutingBoard}
+                                                idx={idx}
+                                                theme={viewMode}
+                                                isMobile={true}
+                                            />
+                                        ))}
+                                    </>
+                                ) : (
+                                    <>
+                                        {warRoom &&
+                                            warRoom.ScoutProfiles.length > 0 &&
+                                            warRoom.ScoutProfiles.map(
+                                                (x, idx) => (
+                                                    <NBAScoutPlayerRow
+                                                        key={x.ID}
+                                                        profile={x}
+                                                        idx={idx}
+                                                        ts={cbb_Timestamp}
+                                                        viewMode={viewMode}
+                                                        currentDraftPick={
+                                                            currentDraftPick
+                                                        }
+                                                        map={draftMap}
+                                                        draft={draftPlayer}
+                                                        remove={
+                                                            removePlayerFromBoard
+                                                        }
+                                                        wr={warRoom}
+                                                        reveal={revealAttribute}
+                                                        setDraftee={
+                                                            setModalDraftee
+                                                        }
+                                                        isMobile={true}
+                                                    />
+                                                )
+                                            )}
+                                    </>
+                                )}
+                            </div>
+                        </>
+                    )}
                 </>
             )}
         </div>

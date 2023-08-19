@@ -41,7 +41,7 @@ export const ExtraLargeModal = (props) => (
         className="modal modal-xl fade"
         id={props.id}
         tabindex="-1"
-        aria-labelledby="schemeModalLabel"
+        aria-labelledby="modalLabel"
         aria-hidden="true"
     >
         <div className="modal-dialog modal-dialog-scrollable">
@@ -59,6 +59,16 @@ export const ExtraLargeModal = (props) => (
                 </div>
                 <div className="modal-body">{props.children}</div>
                 <div className="modal-footer">
+                    {props.Submit && (
+                        <button
+                            type="button"
+                            className="btn btn-primary me-2"
+                            data-bs-dismiss="modal"
+                            onClick={props.Submit}
+                        >
+                            Submit
+                        </button>
+                    )}
                     <button
                         type="button"
                         className="btn btn-secondary"

@@ -1,8 +1,25 @@
 /* Hero Container + Nav for all pages */
 /* Background Image */
+p {
+    font-size: 1.6vh !important;
+}
+
+h6 {
+    font-size: 1.6vh !important;
+}
+
+h5 {
+    font-size: 2.4vh !important;
+}
+
 .App {
     text-align: center;
 }
+
+.btn {
+    font-size: 1.6vh !important;
+}
+
 .dark {
     background-color: #202020;
     color: #fff;
@@ -23,6 +40,7 @@
 
 .dark .btn {
     --bs-btn-color: #fff;
+    font-size: 1.6vh;
 }
 
 .dark .btn-outline-dark {
@@ -57,6 +75,10 @@
 .dark .form-check-input {
     --bs-form-check-bg: #495057;
 }
+.footer {
+    height: 6vh;
+}
+
 .light {
     background-color: #fff;
     --bs-table-header-color: #fff;
@@ -73,6 +95,10 @@
 .navy {
     background-color: #151957;
     color: #fff;
+}
+
+.navbar {
+    font-size: 1.6vh;
 }
 
 .btn-border {
@@ -92,6 +118,15 @@
 
 .landing-page-row {
     margin-left: 0.1rem;
+    font-size: 1.6vh;
+}
+
+.landing-page-row h6 {
+    font-size: 1.6vh;
+}
+
+.form-check {
+    font-size: 1.6vh;
 }
 
 .mobile-card-viewer {
@@ -168,13 +203,17 @@
 }
 
 .nfl-standings-container {
-    font-size: 14px !important;
+    font-size: 1.6vh !important;
     max-width: 34rem !important;
 }
 
 .standings-container {
     font-size: 14px !important;
     max-width: 22rem !important;
+}
+
+.cbb-modal {
+    --bs-modal-margin: 6rem !important;
 }
 
 .modal-game {
@@ -403,6 +442,11 @@
 .table td,
 .table th {
     padding: 0.5em 0.25em;
+    font-size: 1.6vh;
+}
+
+.table h6 {
+    font-size: 1.6vh;
 }
 /* 
 .table .is-truncated td &:first-child {
@@ -507,11 +551,13 @@ td {
 }
 
 .btn-dropdown-width-team {
-    width: 18rem !important;
+    width: 15vw !important;
+    font-size: 1.7vh;
 }
 
 .btn-dropdown-width-dc {
     width: 15rem !important;
+    font-size: 1.7vh;
 }
 
 /* 
@@ -624,6 +670,11 @@ td {
 /*
     CBB Recruiting Dashboard
 */
+
+.infinite-scroll-component {
+    max-height: 50vh !important;
+}
+
 .dashboard-row {
     max-width: 100% !important;
 }
@@ -633,7 +684,7 @@ td {
 }
 
 .dashboard-table-height {
-    max-height: 65vh;
+    max-height: 50vh;
     overflow-y: auto;
 }
 
@@ -649,7 +700,7 @@ td {
 }
 
 .dashboard-table-height-dark {
-    max-height: 65vh;
+    max-height: 60vh;
     overflow-y: auto;
 }
 
@@ -724,6 +775,13 @@ td {
         border-collapse: separate !important;
         border-spacing: 1rem;
     }
+
+    .cfb-news-feed {
+        max-width: 100% !important;
+        max-height: 33rem !important;
+        overflow-y: auto;
+        margin-top: 1rem;
+    }
 }
 
 @media screen and (max-width: 480px) {
@@ -753,6 +811,7 @@ td {
 .select__menu {
     background-color: var(--select-bar-background) !important;
     border: 1px solid var(--select-bar-border-color) !important;
+    z-index: 10;
 }
 
 .select__option {
@@ -807,8 +866,8 @@ hr.solid {
 }
 
 .cfb-news-feed {
-    /* max-width: 50% !important; */
-    max-height: 33rem !important;
+    max-width: 35vw;
+    max-height: 33rem;
     overflow-y: auto;
 }
 
@@ -836,6 +895,11 @@ hr.solid {
     align-items: center;
     vertical-align: middle;
     text-align: center;
+    font-size: 1.7vh;
+}
+
+.draft-room-header h2 {
+    font-size: 3vh;
 }
 
 .draft-pick-container {
@@ -843,7 +907,7 @@ hr.solid {
     flex-direction: row;
     flex-wrap: wrap;
     overflow-y: scroll;
-    height: 24rem;
+    height: 18.75rem;
     border: 1px solid white;
     border-radius: 9px;
     justify-content: space-between;
@@ -854,8 +918,8 @@ hr.solid {
     border-radius: 9px;
     text-align: center;
     vertical-align: middle;
-    align-content: center;
-    align-items: center;
+    padding: 0.5rem !important;
+    padding-bottom: 0.75rem !important;
 }
 
 .nba-draft-draftee-box {
@@ -872,6 +936,23 @@ hr.solid {
     overflow-y: scroll;
 }
 
+.nba-draft-mobile-box {
+    border: 1px solid white;
+    border-radius: 9px;
+    height: 35rem !important;
+    overflow-y: scroll;
+}
+
+.scout-row,
+.draftee-row {
+    font-size: 1.6vh;
+}
+
+.scout-row h6,
+.draftee-row h6 {
+    font-size: 1.6vh;
+}
+
 /*
     Manage Sim
 */
@@ -880,9 +961,16 @@ hr.solid {
 }
 
 .draft-card {
-    max-width: 355px !important;
+    /* max-width: 355px !important; */
+    max-width: 19vw !important;
     height: 95px;
     width: 20%;
+}
+
+.draft-card-mobile {
+    /* max-width: 355px !important; */
+    width: 100%;
+    height: 40px;
 }
 
 .draft-card-icon {
@@ -896,7 +984,11 @@ hr.solid {
 }
 
 .draft-pick-text {
-    font-size: 18px;
+    font-size: 16px;
+}
+
+.draft-pick-text-mobile {
+    font-size: 1.2vh;
 }
 
 @media (max-width: 768px) {
@@ -925,5 +1017,9 @@ hr.solid {
     }
     .mv-description {
         max-width: 60%;
+    }
+
+    .btn-dropdown-width-team {
+        width: 100% !important;
     }
 }

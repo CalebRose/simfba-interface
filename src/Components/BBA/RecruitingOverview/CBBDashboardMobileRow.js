@@ -6,7 +6,7 @@ const CBBDashboardMobileRow = (props) => {
     const [flag, setFlag] = React.useState(false);
     const { croot, idx, map, timestamp, theme } = props;
     const rank = idx + 1;
-    const name = croot.FirstName + ' ' + croot.LastName;
+    const name = `${croot.FirstName} ${croot.LastName}`;
     const keyCode =
         croot.FirstName +
         croot.LastName +
@@ -42,22 +42,16 @@ const CBBDashboardMobileRow = (props) => {
         return props.add(croot);
     };
     const leadingTeams = leadingTeamsMapper(croot);
-    const customClass = croot.IsCustomCroot ? 'text-primary' : '';
+    const customClass = croot.IsCustomCroot
+        ? 'card-text text-primary'
+        : 'card-title';
     const loc = croot.Country === 'USA' ? croot.State : croot.Country;
 
     return (
         <>
             <div className={`${mobileClass} mb-2`}>
                 <div className="card-body">
-                    <h5
-                        className={
-                            croot.IsCustomCroot
-                                ? 'card-text text-primary'
-                                : 'card-title'
-                        }
-                    >
-                        {name}
-                    </h5>
+                    <h5 className={customClass}>{name}</h5>
                     <h6 className="card-subtitle mb-2 text-muted">
                         Rank: {rank}{' '}
                     </h6>
@@ -86,13 +80,11 @@ const CBBDashboardMobileRow = (props) => {
                         Potential: {croot.PotentialGrade}
                     </li>
                     {croot.SigningStatus.length > 0 &&
-                    croot.SigningStatus !== 'Signed' ? (
-                        <li className="list-group-item">
-                            Recruiting Status: {croot.SigningStatus}
-                        </li>
-                    ) : (
-                        ''
-                    )}
+                        croot.SigningStatus !== 'Signed' && (
+                            <li className="list-group-item">
+                                Recruiting Status: {croot.SigningStatus}
+                            </li>
+                        )}
                     <li className="list-group-item">
                         {!croot.IsSigned ? (
                             <h6>{leadingTeams}</h6>

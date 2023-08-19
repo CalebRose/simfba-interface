@@ -14,8 +14,8 @@ const TradeOptionRow = ({ opt, isNBA }) => {
         </p>
     ) : (
         <p className="align-middle">
-            {obj.Season} Round {obj.Round} Draft Pick{' '}
-            {obj.PickNumber > 0 && `| Pick Number ${obj.PickNumber}`}
+            {obj.Season} Round {isNBA ? obj.DraftRound : obj.Round} Draft Pick{' '}
+            {`| Pick Number ${isNBA ? obj.DraftNumber : obj.PickNumber}`}
         </p>
     );
 };

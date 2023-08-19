@@ -7,12 +7,13 @@ import {
 } from '../../Constants/SystemMessages';
 import FBARecruitingService from '../../_Services/simFBA/FBARecruitingService';
 import { CalculateAdjustedPoints } from '../../_Utility/CFBRecruitingHelper';
-import { RoundToTwoDecimals } from '../../_Utility/utilHelper';
+import { PickFromArray, RoundToTwoDecimals } from '../../_Utility/utilHelper';
 import { ServiceMessageBanner } from '../_Common/ServiceMessageBanner';
 import CFBTeamBoardSidebar from './CFBTeamRecruitingComponents/CFBTeamBoardSidebar';
 import CFBTeamMobilePlayerRow from './CFBTeamRecruitingComponents/CFBTeamRecruitingMobilePlayerRow';
 import CFBTeamDashboardPlayerRow from './CFBTeamRecruitingComponents/CFBTeamRecruitingPlayerRow';
 import ConfirmSaveRecruitingBoardModal from './CFBTeamRecruitingComponents/CFBTeamSaveBoardModal';
+import { RecruitingLoadMessages } from '../../Constants/CommonConstants';
 
 const CFBTeamRecruitingBoard = ({
     currentUser,
@@ -31,6 +32,9 @@ const CFBTeamRecruitingBoard = ({
     const [serviceMessage, setServiceMessage] = React.useState('');
     const [approxPoints, setApproxPoints] = React.useState(0);
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const [loadMessage] = React.useState(() =>
+        PickFromArray(RecruitingLoadMessages)
+    );
     React.useEffect(() => {
         if (!viewWidth) {
             setViewWidth(window.innerWidth);
@@ -385,37 +389,26 @@ const CFBTeamRecruitingBoard = ({
                             </table>
                         )}
                         {(recruits === undefined || recruits === null) &&
-                        cfb_Timestamp &&
-                        !cfb_Timestamp.IsRecruitingLocked ? (
-                            <div className="row justify-content-center pt-2 mt-4 mb-2">
-                                <div class="spinner-border" role="status">
-                                    <span class="sr-only">Loading...</span>
+                            cfb_Timestamp &&
+                            !cfb_Timestamp.IsRecruitingLocked && (
+                                <div className="row justify-content-center pt-2 mt-4 mb-2">
+                                    <div class="spinner-border" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
                                 </div>
-                            </div>
-                        ) : (
-                            ''
-                        )}
+                            )}
                         {recruits !== undefined &&
-                        recruits !== null &&
-                        recruits.length === 0 ? (
+                            recruits !== null &&
+                            recruits.length === 0 && (
+                                <div className="row justify-content-center">
+                                    Have you considered adding a croot to your
+                                    team board?
+                                </div>
+                            )}
+                        {cfb_Timestamp && cfb_Timestamp.IsRecruitingLocked && (
                             <div className="row justify-content-center">
-                                Have you considered adding a croot to your team
-                                board?
+                                {loadMessage}
                             </div>
-                        ) : (
-                            ''
-                        )}
-                        {cfb_Timestamp && cfb_Timestamp.IsRecruitingLocked ? (
-                            <div className="row justify-content-center">
-                                If you're seeing this, Recruiting is currently
-                                being synced. No, you can't view your board
-                                right now. Nor can you ask to see who's being
-                                synced in real time. Please make a bowl of Froot
-                                Loops cereal in the meantime to enjoy the moment
-                                and to increase your odds in the recruit sync.
-                            </div>
-                        ) : (
-                            ''
                         )}
                     </div>
                 </div>

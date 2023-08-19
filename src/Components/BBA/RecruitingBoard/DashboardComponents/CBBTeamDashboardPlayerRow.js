@@ -24,8 +24,18 @@ const CBBTeamDashboardPlayerRow = (props) => {
         );
 
         const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
-
-        return competingAbbrs.join(', ');
+        return competingAbbrs.map((x) => {
+            const logo = getLogo(x);
+            return (
+                <>
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={logo}
+                        alt="competing-team"
+                    />
+                </>
+            );
+        });
     };
 
     const handleChange = (event) => {
@@ -124,6 +134,9 @@ const CBBTeamDashboardPlayerRow = (props) => {
                     <h6>{recruit.Shooting3}</h6>
                 </td>
                 <td className="align-middle">
+                    <h6>{recruit.FreeThrow}</h6>
+                </td>
+                <td className="align-middle">
                     <h6>{recruit.Finishing}</h6>
                 </td>
                 <td className="align-middle">
@@ -133,7 +146,10 @@ const CBBTeamDashboardPlayerRow = (props) => {
                     <h6>{recruit.Rebounding}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{recruit.Defense}</h6>
+                    <h6>{recruit.InteriorDefense}</h6>
+                </td>
+                <td className="align-middle">
+                    <h6>{recruit.PerimeterDefense}</h6>
                 </td>
                 <td className="align-middle">
                     <h6>{recruit.PotentialGrade}</h6>

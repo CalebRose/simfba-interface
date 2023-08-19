@@ -216,12 +216,14 @@ class AvailableTeams extends Component {
                     />
                 );
             } else if (this.state.selectedSport === constants.NBA) {
+                let logoKey = `${team.Team} ${team.Nickname}`;
+                logoKey = logoKey.trim();
                 return (
                     <NBATeamCard
                         key={team.ID}
                         teamId={team.ID}
                         team={team}
-                        logo={getLogo(team.Team + ' ' + team.Nickname)}
+                        logo={getLogo(logoKey)}
                         request={this.sendNBARequest}
                         disable={this.state.sentRequest}
                         viewMode={this.props.viewMode}

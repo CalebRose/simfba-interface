@@ -1,4 +1,4 @@
-import logos from './logos';
+import { ISLLogos, logos } from './logos';
 
 export const getLogo = (team) => {
     switch (team) {
@@ -864,6 +864,86 @@ export const getLogo = (team) => {
             return logos.WAS_Wizards;
         case 'Washington Commanders':
             return logos.WAS_Commies;
+        case 'Adelaide 36ers':
+            return ISLLogos.Adelaide;
+        case 'ALBA Berlin':
+            return ISLLogos.ALBA;
+        case 'Alvark Tokyo':
+            return ISLLogos.Alvark;
+        case 'Anadolu Efes':
+            return ISLLogos.Anadolu;
+        case 'Barangay Ginebra San Miguel':
+            return ISLLogos.Barangay;
+        case 'Barcelona':
+            return ISLLogos.Barcelona;
+        case 'Bayern Munich':
+            return ISLLogos.Bayern;
+        case 'Beijing Ducks':
+            return ISLLogos.BeijingDucks;
+        case 'Brisbane Bullets':
+            return ISLLogos.Brisbane;
+        case 'Caledonia Gladiators':
+            return ISLLogos.Caledonia;
+        case 'Cazoo Baskonia':
+            return ISLLogos.CazooBaskonia;
+        case 'Crvena zvezda':
+            return ISLLogos.CrvenaZvezda;
+        case 'Fenerbahce Beko':
+            return ISLLogos.Fenerbache;
+        case 'Goyang Carrot Jumpers':
+            return ISLLogos.Goyang;
+        case 'Guangdong Southern Tigers':
+            return ISLLogos.Guandong;
+        case 'Guangzhou Loong Lions':
+            return ISLLogos.Guangzhou;
+        case 'Hiroshima Dragonflies':
+            return ISLLogos.Hiroshima;
+        case 'Jilin Northeast Tigers':
+            return ISLLogos.Jilin;
+        case 'KK Partizan':
+            return ISLLogos.KKPartizan;
+        case 'LDLC ASVEL':
+            return ISLLogos.LDLC;
+        case 'London Lions':
+            return ISLLogos.London;
+        case 'Maccabi Tel Aviv':
+            return ISLLogos.Maccabi;
+        case 'Melbourne United':
+            return ISLLogos.Melbourne;
+        case 'Nagoya Diamond Dolphins':
+            return ISLLogos.Nagoya;
+        case 'New Zealand Breakers':
+            return ISLLogos.NewZealand;
+        case 'Olimpia Milano':
+            return ISLLogos.Olimpia;
+        case 'Olympiacos':
+            return ISLLogos.Olympiacos;
+        case 'Panathinaikos':
+            return ISLLogos.Panathinaikos;
+        case 'Perth Wildcats':
+            return ISLLogos.Perth;
+        case 'Prometey':
+            return ISLLogos.Prometey;
+        case 'Real Madrid':
+            return ISLLogos.RealMadrid;
+        case 'Ryukyu Golden Kings':
+            return ISLLogos.Ryuku;
+        case 'Seoul Samsung Thunders':
+            return ISLLogos.Seoul;
+        case 'Shandong Hi-Speed Kirin':
+            return ISLLogos.Shandong;
+        case 'Shanghai Sharks':
+            return ISLLogos.Shanghai;
+        case 'Shenzhen Leopards':
+            return ISLLogos.Shenzen;
+        case 'Taipei Fubon Braves':
+            return ISLLogos.Taipei;
+        case 'VEF Riga':
+            return ISLLogos.VEF;
+        case 'Virtus Bologna':
+            return ISLLogos.Virtus;
+        case 'Zalgiris':
+            return ISLLogos.Zalgiris;
 
         default:
             return logos.Unknown;

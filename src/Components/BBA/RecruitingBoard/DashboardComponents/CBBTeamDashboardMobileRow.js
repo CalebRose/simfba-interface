@@ -84,31 +84,32 @@ const CBBTeamDashboardMobileRow = (props) => {
                         {recruit.Shooting3}
                     </li>
                     <li className="list-group-item">
-                        Finishing: {recruit.Finishing} | Ballwork:{' '}
-                        {recruit.Ballwork}
+                        Finishing: {recruit.Finishing} | Free Throw:{' '}
+                        {recruit.FreeThrow}
                     </li>
                     <li className="list-group-item">
-                        Rebounding: {recruit.Rebounding} | Defense:{' '}
-                        {recruit.Defense}
+                        Ballwork: {recruit.Ballwork} | Rebounding:{' '}
+                        {recruit.Rebounding}
+                    </li>
+                    <li className="list-group-item">
+                        Int. Defense: {recruit.InteriorDefense} | Per. Defense:{' '}
+                        {recruit.PerimeterDefense}
                     </li>
                     <li className="list-group-item">
                         Potential: {recruit.PotentialGrade}
                     </li>
                     {recruit.SigningStatus.length > 0 &&
-                    recruit.SigningStatus !== 'Signed' ? (
-                        <li className="list-group-item">
-                            Recruiting Status: {recruit.SigningStatus}
-                        </li>
-                    ) : (
-                        ''
-                    )}
-                    {recruit.HasStateBonus || recruit.HasRegionBonus ? (
-                        <li className="list-group-item">
-                            {recruit.HasStateBonus ? 'State' : 'Region'}
-                        </li>
-                    ) : (
-                        ''
-                    )}
+                        recruit.SigningStatus !== 'Signed' && (
+                            <li className="list-group-item">
+                                Recruiting Status: {recruit.SigningStatus}
+                            </li>
+                        )}
+                    {recruit.HasStateBonus ||
+                        (recruit.HasRegionBonus && (
+                            <li className="list-group-item">
+                                {recruit.HasStateBonus ? 'State' : 'Region'}
+                            </li>
+                        ))}
                     <li className="list-group-item">
                         {!recruit.IsSigned ? (
                             <h6>{leadingTeams}</h6>

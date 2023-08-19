@@ -7,6 +7,7 @@ import CBBGameModal from './CBBGameModal';
 import CBBGameRow from './CBBGameRow';
 import CBBStandingsModal from './CBBStandingsModal';
 import { SeasonsList } from '../../../Constants/CommonConstants';
+import { SubmitCollegePollForm } from '../../_Common/SubmitCollegePollModal';
 
 const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     // Services
@@ -412,7 +413,7 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                             />
                         </div>
 
-                        <div className="row mt-2 justify-content-center">
+                        <div className="row mt-2 mb-2 justify-content-center">
                             <button
                                 type="button"
                                 className="btn btn-primary"
@@ -422,9 +423,37 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                 Standings
                             </button>
                         </div>
+
+                        <div className="row mt-2 mb-2 justify-content-center">
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#submitPollModal"
+                            >
+                                Submit College Poll
+                            </button>
+                        </div>
+                        <div className="row mt-2 mb-2 justify-content-center">
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#collegePollModal"
+                            >
+                                College Poll
+                            </button>
+                        </div>
                     </div>
                     <CBBGameModal game={viewGame} />
                     <CBBStandingsModal ts={cbb_Timestamp} />
+
+                    <SubmitCollegePollForm
+                        currentUser={currentUser}
+                        timestamp={cbb_Timestamp}
+                        isCFB={false}
+                    />
+
                     <div className="col-md-10 px-md-4">
                         <div className="row mt-3 mb-5 justify-content-between">
                             {viewMatches &&
