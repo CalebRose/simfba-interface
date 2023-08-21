@@ -8,6 +8,7 @@ import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import GameRow from './CFBGameRow';
 import CFBStandingsModal from './CFBStandingsModal';
 import { SeasonsList } from '../../Constants/CommonConstants';
+import { SimFBAGameModal } from '../_Common/SimFBAGameModal';
 
 const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
     // Services
@@ -261,6 +262,7 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
                             </button>
                         </div>
                     </div>
+                    <SimFBAGameModal game={viewGame} isNFL={false} />
                     <CFBStandingsModal ts={cfb_Timestamp} viewMode={viewMode} />
                     <div className="col-md-10 px-md-4">
                         <div className="row mb-2">
