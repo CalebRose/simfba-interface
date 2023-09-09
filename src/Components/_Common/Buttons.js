@@ -18,3 +18,21 @@ export const StatsPageButton = ({
         {label}
     </button>
 );
+
+export const ButtonWithIcon = ({
+    isDisabled,
+    title,
+    iconName,
+    onClick,
+    customClass
+}) => (
+    <button
+        type="button"
+        className={`btn ${customClass}`}
+        title={title}
+        onClick={onClick}
+        disabled={isDisabled}
+    >
+        <i className={`bi ${iconName}`} />
+    </button>
+);

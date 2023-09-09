@@ -56,4 +56,14 @@ export default class AdminService {
     async RunTheGames() {
         return await GetActionCall(`${url}admin/run/the/games/`);
     }
+
+    async SyncAIRecruitingBoards() {
+        return await GetActionCall(`${url}admin/ai/sync/boards`);
+    }
+
+    async UpdateAIDepthCharts() {
+        return await GetActionCall(
+            `${url}gameplan/college/depthchart/ai/update/`
+        );
+    }
 }

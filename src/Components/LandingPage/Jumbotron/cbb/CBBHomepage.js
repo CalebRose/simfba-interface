@@ -203,7 +203,7 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                     <BBAMatchCard
                                         game={x}
                                         team={cbbTeam}
-                                        isNFL={false}
+                                        isNBA={false}
                                         timestamp={cbb_Timestamp}
                                     />
                                 </div>

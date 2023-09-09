@@ -47,6 +47,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         recentlyDraftedPlayerID,
         seconds,
         startAt,
+        exportComplete,
         endTime
     } = data;
     const tableHoverClass = GetTableHoverClass(viewMode);
@@ -397,6 +398,25 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         }, 10000);
     };
 
+    const exportDraftedPlayers = async () => {
+        if (exportComplete) {
+            return;
+        }
+
+        const draftpicks = [...allDraftPicks];
+        const dto = { DraftPicks: draftpicks };
+
+        const res = await _draftService.ExportPlayers(dto);
+
+        if (res) {
+            const newData = {
+                ...data,
+                exportComplete: true
+            };
+            updateData(newData);
+        }
+    };
+
     // API Calls
     const GetDraftPageData = async (id) => {
         const res = await _draftService.GetDraftPageData(id);
@@ -478,7 +498,14 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                         )}
                         {!currentDraftPick && !nextDraftPick && (
                             <div className="col-auto px-4">
-                                Draft is Complete!
+                                <h6>Draft is Complete!</h6>
+                                <button
+                                    className="btn btn-outline-primary"
+                                    disabled={exportComplete || !isAdmin}
+                                    onClick={exportDraftedPlayers}
+                                >
+                                    Export Drafted Players
+                                </button>
                             </div>
                         )}
 

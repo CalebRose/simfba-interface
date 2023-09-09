@@ -20,7 +20,6 @@ const PollDropdown = ({
     useEffect(() => {
         if (selection) {
             const standings = standingsMap[selection.value];
-            console.log({ standings, standingsMap });
             const description = `${standings.TotalWins} Wins | ${standings.TotalLosses} Losses | ${standings.ConferenceWins} Conference Wins | ${standings.ConferenceLosses} Losses`;
             setSelectionLabel(() => description);
             setSelectedTeam(() => standings.TeamName);

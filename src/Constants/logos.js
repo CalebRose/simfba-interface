@@ -420,7 +420,7 @@ export const logos = {
     IND_Pacers: baseUrl + '/logos/IND_Pacers.png',
     MIL_Bucks: baseUrl + '/logos/MIL_Bucks.png',
     ATL_Hawks: baseUrl + '/logos/ATL_Hawks.png',
-    CHA_Hornets: baseUrl + '/logos/CHA_Hornets.png',
+    CHA_Hornets: baseUrl + '/logos/Charlotte_Hornets_Logo_1989.png',
     MIA_Heat: baseUrl + '/logos/MIA_Heat.png',
     ORL_Magic: baseUrl + '/logos/ORL_Magic.png',
     WAS_Wizards: baseUrl + '/logos/WAS_Wizards.png',

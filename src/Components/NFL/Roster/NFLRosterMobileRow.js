@@ -20,6 +20,7 @@ const NFLMobileRosterRow = ({
     practicesquad,
     tradeblock,
     extend,
+    ir,
     cut
 }) => {
     let modalTarget = `#playerModal${idx}`;
@@ -41,7 +42,9 @@ const NFLMobileRosterRow = ({
         (ts.NFLWeek >= 15 || ts.NFLWeek === 0) && userView && canModify;
     const canTradeBlockPlayer = ts.NFLWeek <= 9 && userView && canModify;
     const mobileCardClass = GetMobileCardClass(theme);
-
+    const injuryReservePlayer = () => {
+        return ir(player);
+    };
     return (
         <>
             <CutPlayerModal
@@ -104,6 +107,20 @@ const NFLMobileRosterRow = ({
                                 }`}
                             />{' '}
                             Info
+                        </button>
+                    </li>
+                    <li className="list-group-item">
+                        Place {player.LastName} on IR
+                        <button
+                            type="button"
+                            className={`btn ${
+                                player.InjuryReserve && 'btn-danger'
+                            }`}
+                            title="Place player on IR"
+                            onClick={injuryReservePlayer}
+                            disabled={!player.IsInjured}
+                        >
+                            <i class="bi bi-bandaid" />
                         </button>
                     </li>
                     <li className="list-group-item">

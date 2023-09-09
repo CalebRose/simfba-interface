@@ -29,6 +29,7 @@ const NBATeamPlayerRow = ({
     const extendPlayerTitle = `Extend ${player.FirstName}`;
     const tradeBlockTitle = `Place ${player.FirstName} on the Trade Block.`;
     // Row Functions
+    const aav = player.Contract.TotalRemaining / player.Contract.YearsRemaining;
 
     // Row Variables
 
@@ -181,8 +182,9 @@ const NBATeamPlayerRow = ({
                         )}
                         {userView &&
                         canModify &&
-                        player.Contract.YearsRemaining < 2 &&
-                        player.Contract.TotalRemaining <= 1 ? (
+                        player.Year <= 3 &&
+                        player.Contract.YearsRemaining <= 2 &&
+                        player.Contract.Year1Total <= 2 ? (
                             <button
                                 type="button"
                                 className={`btn ${

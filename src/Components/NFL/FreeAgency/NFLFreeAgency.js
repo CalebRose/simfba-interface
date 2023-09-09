@@ -236,6 +236,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
         } else {
             res = await _rosterService.CreateWaiverOffer(offer);
         }
+        const offerData = await res.json();
         let players = [];
         if (viewingFA) {
             players = [...allFreeAgents];
@@ -258,10 +259,10 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                 const existingOffersIdx = ExistingOffers.findIndex(
                     (x) => x.ID === offer.ID
                 );
-                ExistingOffers[existingOffersIdx] = offer;
-                players[playerIDX].Offers[offerIDX] = offer;
+                ExistingOffers[existingOffersIdx] = offerData;
+                players[playerIDX].Offers[offerIDX] = offerData;
             } else {
-                const offerObj = { ...offer, ID: res.ID };
+                const offerObj = { ...offerData };
                 if (viewingFA || viewingPS) {
                     const offers = players[playerIDX].Offers;
                     offers.push(offerObj);

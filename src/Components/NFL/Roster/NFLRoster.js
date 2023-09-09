@@ -54,7 +54,7 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
     useEffect(() => {
         if (roster && roster.length > 0) {
             const nonPracticeSquad = [
-                ...roster.filter((x) => !x.IsPracticeSquad)
+                ...roster.filter((x) => !x.IsPracticeSquad && !x.InjuryReserve)
             ];
             const practiceSquad = [...roster.filter((x) => x.IsPracticeSquad)];
             setPracticeSquadCount(() => practiceSquad.length);
@@ -241,7 +241,33 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
         setViewRoster(r);
         setTeam(() => t);
     };
-    const ExtendPlayer = () => {};
+    const ExtendPlayer = async (player, offer) => {
+        let res = await _rosterService.CreateExtensionOffer(offer);
+        const offerData = await res.json();
+        const r = [...roster];
+        const playerIDX = r.findIndex((x) => x.ID === player.ID);
+        if (offer.ID > 0) {
+            const offerIDX = r[playerIDX].Extensions.findIndex(
+                (x) => x.ID === offer.ID
+            );
+            r[playerIDX].Extensions[offerIDX] = offerData;
+        } else {
+            const offerObj = { offerData };
+            r[playerIDX].Extensions.push(offerObj);
+        }
+
+        setRoster(() => r);
+    };
+
+    const CancelExtension = async (player, offer) => {
+        let res = await _rosterService.CancelExtensionOffer(offer);
+        const r = [...roster];
+        const playerIDX = r.findIndex((x) => x.ID === player.ID);
+        const exs = r[playerIDX].Extensions.filter((x) => x.ID !== offer.ID);
+        r[playerIDX].Extensions = exs;
+
+        setRoster(() => r);
+    };
     const TradeBlockPlayer = async (player) => {
         const res = await _tradeService.PlaceNFLPlayerOnTradeBlock(player.ID);
         if (res) {
@@ -273,6 +299,22 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
         const currentViewRoster = [...viewRoster];
         const viewIdx = currentViewRoster.findIndex((x) => x.ID === player.ID);
         currentViewRoster[viewIdx].IsPracticeSquad = toggle;
+
+        setRoster(() => currentRoster);
+        setViewRoster(() => currentViewRoster);
+    };
+
+    const InjuryReservePlayer = async (player) => {
+        const res = await _rosterService.PlaceNFLPlayerOnInjuryReserve(
+            player.ID
+        );
+        const currentRoster = [...roster];
+        const rosterIdx = currentRoster.findIndex((x) => x.ID === player.ID);
+        const toggle = !currentRoster[rosterIdx].InjuryReserve;
+        currentRoster[rosterIdx].InjuryReserve = toggle;
+        const currentViewRoster = [...viewRoster];
+        const viewIdx = currentViewRoster.findIndex((x) => x.ID === player.ID);
+        currentViewRoster[viewIdx].InjuryReserve = toggle;
 
         setRoster(() => currentRoster);
         setViewRoster(() => currentViewRoster);
@@ -473,7 +515,13 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                                 extend={
                                                                     ExtendPlayer
                                                                 }
+                                                                cancelExtension={
+                                                                    CancelExtension
+                                                                }
                                                                 cut={CutPlayer}
+                                                                ir={
+                                                                    InjuryReservePlayer
+                                                                }
                                                             />
                                                         </>
                                                     )
@@ -507,7 +555,11 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                         TradeBlockPlayer
                                                     }
                                                     extend={ExtendPlayer}
+                                                    cancelExtension={
+                                                        CancelExtension
+                                                    }
                                                     cut={CutPlayer}
+                                                    ir={InjuryReservePlayer}
                                                 />
                                             </>
                                         ))}

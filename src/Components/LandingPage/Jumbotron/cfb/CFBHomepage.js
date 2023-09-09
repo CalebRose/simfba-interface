@@ -75,15 +75,26 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             nextIdx = games.findIndex((x) => x.Week === nextWeek);
             while (prevIdx === -1) {
                 prevWeek += 1;
+                if (prevWeek > 20) {
+                    prevIdx = -2;
+                    break;
+                }
                 prevIdx = games.findIndex((x) => x.Week === prevWeek);
             }
             while (nextIdx === -1) {
                 nextWeek -= 1;
                 nextIdx = games.findIndex((x) => x.Week === nextWeek);
+                if (nextWeek <= prevWeek) {
+                    nextIdx = prevIdx;
+                    break;
+                }
             }
-
-            let gameRange = games.slice(prevIdx, nextIdx + 1);
-            setViewableMatches(() => gameRange);
+            if (nextIdx === prevIdx && prevIdx === -2) {
+                setViewableMatches(() => []);
+            } else {
+                let gameRange = games.slice(prevIdx, nextIdx + 1);
+                setViewableMatches(() => gameRange);
+            }
         }
     }, [cfb_Timestamp, games]);
 

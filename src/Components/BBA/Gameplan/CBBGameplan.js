@@ -464,8 +464,6 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             teamId: currentUser.cbb_id
         };
 
-        console.log({ gameplanOptionsDto });
-
         setServiceMessage(savingMessage);
         const save = await gameplanService.SaveGameplanOptions(
             gameplanOptionsDto,

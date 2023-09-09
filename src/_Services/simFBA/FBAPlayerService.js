@@ -78,6 +78,12 @@ export default class FBAPlayerService {
         return await GetCall(`${url}nflplayers/place/player/squad/${PlayerID}`);
     }
 
+    async PlaceNFLPlayerOnInjuryReserve(PlayerID) {
+        return await GetCall(
+            `${url}nflplayers/injury/reserve/player/${PlayerID}`
+        );
+    }
+
     async GetInjuryData() {
         return await GetCall(`${url}statistics/injured/players/`);
     }
@@ -100,5 +106,13 @@ export default class FBAPlayerService {
 
     async CancelWaiverOffer(dto) {
         return await PostCall(`${url}nfl/waiverwire/cancel/offer`, dto);
+    }
+
+    async CreateExtensionOffer(dto) {
+        return await PostCall(`${url}nfl/extension/create/offer`, dto);
+    }
+
+    async CancelExtensionOffer(dto) {
+        return await PostCall(`${url}nfl/extension/cancel/offer`, dto);
     }
 }

@@ -815,7 +815,6 @@ export const NBAWaiverOfferModal = ({
             Capsheet.Year5Total,
             Capsheet.Year5Cap
         );
-        console.log({ y1Space, y2Space, y3Space, y4Space, y5Space });
         const y1Value = c.Year1Total * 1;
         const y2Value = c.Year2Total * 0.9;
         const y3Value = c.Year3Total * 0.8;

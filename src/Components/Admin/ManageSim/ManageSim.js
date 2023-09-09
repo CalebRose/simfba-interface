@@ -37,7 +37,7 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
     const ValidateSyncToNextWeek = () => {
         let valid = true;
         const ts = { ...cfb_Timestamp };
-        let actionCount = 13;
+        let actionCount = 15;
         if (ts.RecruitingSynced) actionCount -= 1;
         if (ts.GMActionsCompleted) actionCount -= 1;
         if (ts.ThursdayGames) actionCount -= 1;
@@ -51,6 +51,8 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
         if (ts.NFLSundayAfternoon) actionCount -= 1;
         if (ts.NFLSundayEvening) actionCount -= 1;
         if (ts.NFLMondayEvening) actionCount -= 1;
+        if (ts.AIDepthchartsSync) actionCount -= 1;
+        if (ts.AIRecruitingBoardsSynced) actionCount -= 1;
         if (actionCount > 0) valid = false;
         setRemainingActionsCount(() => actionCount);
         setCompletion(valid);
@@ -243,6 +245,32 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
             alert('Could not sync free agency!');
         } else {
             ts.GMActionsCompleted = true;
+            dispatch(setCFBTimestamp(ts));
+        }
+    };
+
+    const UpdateAIDepthCharts = async () => {
+        const ts = { ...cfb_Timestamp };
+
+        let res = await _adminService.UpdateAIDepthCharts();
+
+        if (!res) {
+            alert('Could not sync AI Recruiting Boards!');
+        } else {
+            ts.AIDepthchartsSync = true;
+            dispatch(setCFBTimestamp(ts));
+        }
+    };
+
+    const SyncAIRecruitingBoards = async () => {
+        const ts = { ...cfb_Timestamp };
+
+        let res = await _adminService.SyncAIRecruitingBoards();
+
+        if (!res) {
+            alert('Could not sync AI Recruiting Boards!');
+        } else {
+            ts.AIRecruitingBoardsSynced = true;
             dispatch(setCFBTimestamp(ts));
         }
     };
@@ -473,7 +501,25 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                         )}
                     </div> */}
                     <div className="col-3 mb-2 g-2">
-                        <h5>Lock Recruiting</h5>
+                        <h5 className="">Update CFB AI Depthcharts</h5>
+                        <button
+                            type="button"
+                            className="btn btn-primary btn-sm-button rounded-pill  mb-2"
+                            onClick={UpdateAIDepthCharts}
+                            disabled={cfb_Timestamp.AIDepthchartsSync}
+                        >
+                            Update
+                        </button>
+                        <h5 className="mt-1">Sync AI Recruiting Boards</h5>
+                        <button
+                            type="button"
+                            className="btn btn-primary btn-sm-button rounded-pill  mb-2"
+                            onClick={SyncAIRecruitingBoards}
+                            disabled={cfb_Timestamp.AIRecruitingBoardsSynced}
+                        >
+                            Sync
+                        </button>
+                        <h5 className="mt-1">Lock Recruiting</h5>
                         <button
                             type="button"
                             className="btn btn-primary btn-sm-button rounded-pill  mb-2"
@@ -484,30 +530,23 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                                 : 'Lock'}
                         </button>
 
-                        <h5>Sync Recruiting</h5>
-                        {!cfb_Timestamp.RecruitingSynced ? (
-                            <button
-                                type="button"
-                                className={
-                                    'btn btn-primary btn-sm-button rounded-pill mb-2'
-                                }
-                                data-bs-toggle="modal"
-                                data-bs-target="#syncRecruitModal"
-                            >
-                                Sync
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                className={
-                                    'btn btn-secondary btn-sm-button rounded-pill  mb-2'
-                                }
-                            >
-                                Sync Complete
-                            </button>
-                        )}
+                        <h5 className="mt-1">Sync Recruiting</h5>
 
-                        <h5>Create a Croot</h5>
+                        <button
+                            type="button"
+                            className={
+                                'btn btn-primary btn-sm-button rounded-pill mb-2'
+                            }
+                            data-bs-toggle="modal"
+                            data-bs-target="#syncRecruitModal"
+                            disabled={cfb_Timestamp.RecruitingSynced}
+                        >
+                            {!cfb_Timestamp.RecruitingSynced
+                                ? 'Sync'
+                                : 'Sync Complete'}
+                        </button>
+
+                        <h5 className="mt-1">Create a Croot</h5>
                         <button
                             type="button"
                             className={
@@ -517,6 +556,7 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                             }
                             data-bs-toggle="modal"
                             data-bs-target="#staticBackdrop"
+                            disabled={!cfb_Timestamp.IsOffseason}
                         >
                             Create
                         </button>

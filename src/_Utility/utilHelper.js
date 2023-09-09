@@ -280,7 +280,6 @@ export const RevealResults = (game, timestamp) => {
 };
 
 export const GetPredictionRound = (r) => {
-    console.log({ r });
     if (r === 1) {
         return 'Early First Round';
     } else if (r === 2) {

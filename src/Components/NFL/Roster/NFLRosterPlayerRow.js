@@ -6,6 +6,7 @@ import { ExtendPlayerModal } from './ExtendPlayerModal';
 import { NFLPlayerModal } from './NFLPlayerModal';
 import { PracticeSquadModal } from './OnPracticeSquadModal';
 import { TradeBlockModal } from './OnTradeBlockModal';
+import { ButtonWithIcon } from '../../_Common/Buttons';
 
 export const NFLRosterPlayerRow = ({
     player,
@@ -19,6 +20,8 @@ export const NFLRosterPlayerRow = ({
     practicesquad,
     tradeblock,
     extend,
+    cancelExtension,
+    ir,
     cut
 }) => {
     let modalTarget = `#playerModal${idx}`;
@@ -29,11 +32,19 @@ export const NFLRosterPlayerRow = ({
     let ovr = GetNFLOverall(player.Overall, player.ShowLetterGrade);
     const year = player.Experience === 0 ? 'R' : player.Experience;
     const heightObj = HeightToFeetAndInches(player.Height);
-    const contract = player.Contract;
+    const { Contract, Extensions } = player;
     const cutPlayerTitle = `Cut ${player.FirstName}`;
     const extendPlayerTitle = `Extend ${player.FirstName}`;
     const tradeBlockTitle = `Place ${player.FirstName} on the Trade Block.`;
     const practiceSquadTitle = `Place ${player.FirstName} on the Practice Squad`;
+    const offeredExtensionIdx = Extensions.findIndex(
+        (x) => x.IsActive === true && !x.IsAccepted
+    );
+    const offeredExtension = offeredExtensionIdx > -1;
+
+    const injuryReservePlayer = () => {
+        return ir(player);
+    };
 
     return (
         <>
@@ -50,6 +61,9 @@ export const NFLRosterPlayerRow = ({
                 idx={idx}
                 extend={extend}
                 viewMode={viewMode}
+                cancel={cancelExtension}
+                team={team}
+                ts={ts}
             />
             <TradeBlockModal
                 key={player.ID}
@@ -96,117 +110,95 @@ export const NFLRosterPlayerRow = ({
                     {heightObj.feet}' {heightObj.inches}"
                 </td>
                 <td label="Weight">{player.Weight}</td>
-                <td label="Bonus">{contract.Y1Bonus}</td>
-                <td label="Salary">{contract.Y1BaseSalary}</td>
-                <td label="YearsRemaining">{contract.ContractLength}</td>
+                <td label="Bonus">{Contract.Y1Bonus}</td>
+                <td label="Salary">{Contract.Y1BaseSalary}</td>
+                <td label="YearsRemaining">{Contract.ContractLength}</td>
                 <td>
                     <div className="btn-group btn-border">
-                        {userView && canModify ? (
-                            <button
-                                type="button"
-                                className="btn"
-                                title={cutPlayerTitle}
-                                data-bs-toggle="modal"
-                                data-bs-target={cutPlayerTarget}
-                            >
-                                <i class="bi bi-scissors" />
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                title={cutPlayerTitle}
-                                disabled
-                            >
-                                <i class="bi bi-scissors" />
-                            </button>
-                        )}
-
-                        {(ts.NFLWeek >= 15 || ts.NFLWeek === 0) &&
-                        userView &&
-                        canModify ? (
-                            <button
-                                type="button"
-                                className="btn"
-                                title={extendPlayerTitle}
-                                data-bs-toggle="modal"
-                                data-bs-target={extendPlayerTarget}
-                            >
-                                <i class="bi bi-currency-dollar" />
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                title={extendPlayerTitle}
-                                disabled
-                            >
-                                <i class="bi bi-currency-dollar" />
-                            </button>
-                        )}
-                        {ts.NFLWeek <= 9 && userView && canModify ? (
-                            <button
-                                type="button"
-                                className={`btn ${
-                                    player.IsOnTradeBlock ? 'btn-danger' : ''
+                        <button
+                            type="button"
+                            className={`btn`}
+                            title={cutPlayerTitle}
+                            disabled={!userView || !canModify}
+                            data-bs-toggle="modal"
+                            data-bs-target={cutPlayerTarget}
+                        >
+                            <i className={`bi bi-scissors`} />
+                        </button>
+                        <button
+                            type="button"
+                            className={`btn ${
+                                Extensions.length > 0 && 'btn-success'
+                            }`}
+                            title={extendPlayerTitle}
+                            data-bs-toggle="modal"
+                            data-bs-target={extendPlayerTarget}
+                            disabled={
+                                !(
+                                    (ts.NFLWeek >= 15 || ts.NFLWeek === 0) &&
+                                    userView &&
+                                    canModify &&
+                                    !player.IsPracticeSquad
+                                ) ||
+                                Contract.ContractLength > 1 ||
+                                player.IsPracticeSquad
+                            }
+                        >
+                            <i className="bi bi-currency-dollar" />
+                        </button>
+                        <button
+                            type="button"
+                            className={`btn ${
+                                player.InjuryReserve && 'btn-danger'
+                            }`}
+                            title="Place player on IR"
+                            onClick={injuryReservePlayer}
+                            disabled={!player.IsInjured}
+                        >
+                            <i class="bi bi-bandaid" />
+                        </button>
+                        <button
+                            type="button"
+                            className={`btn ${
+                                player.IsOnTradeBlock && 'btn-danger'
+                            }`}
+                            title={tradeBlockTitle}
+                            data-bs-toggle="modal"
+                            data-bs-target={tradeBlockTarget}
+                            disabled={
+                                !(ts.NFLWeek <= 9 && userView && canModify)
+                            }
+                        >
+                            <i className="bi bi-arrow-down-up" />
+                        </button>
+                        <button
+                            type="button"
+                            className={`btn ${
+                                player.IsPracticeSquad
+                                    ? 'btn-warning'
+                                    : 'btn-secondary'
+                            }`}
+                            title={practiceSquadTitle}
+                            data-bs-toggle="modal"
+                            data-bs-target={practiceSquadTarget}
+                            disabled={
+                                !(
+                                    userView &&
+                                    canModify &&
+                                    (psCount <= 16 || player.IsPracticeSquad) &&
+                                    player.Experience <= 3
+                                )
+                            }
+                        >
+                            <i
+                                className={`bi ${
+                                    player.IsPracticeSquad ||
+                                    player.IsOnPracticeSquad
+                                        ? 'bi-person-fill-up'
+                                        : 'bi-person-fill-down'
                                 }`}
-                                title={tradeBlockTitle}
-                                data-bs-toggle="modal"
-                                data-bs-target={tradeBlockTarget}
-                            >
-                                <i class="bi bi-arrow-down-up" />
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                className={`btn ${
-                                    player.IsOnTradeBlock
-                                        ? 'btn-danger'
-                                        : 'btn-secondary'
-                                }`}
-                                title={tradeBlockTitle}
-                                disabled
-                            >
-                                <i class="bi bi-arrow-down-up" />
-                            </button>
-                        )}
-                        {userView &&
-                        canModify &&
-                        (psCount <= 16 || player.IsPracticeSquad) &&
-                        player.Experience <= 3 ? (
-                            <button
-                                type="button"
-                                className={`btn ${
-                                    player.IsPracticeSquad ? 'btn-warning' : ''
-                                }`}
-                                title={practiceSquadTitle}
-                                data-bs-toggle="modal"
-                                data-bs-target={practiceSquadTarget}
-                            >
-                                {player.IsPracticeSquad ? (
-                                    <i class="bi bi-person-fill-up" />
-                                ) : (
-                                    <i class="bi bi-person-fill-down" />
-                                )}
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                className={`btn ${
-                                    player.IsPracticeSquad
-                                        ? 'btn-warning'
-                                        : 'btn-secondary'
-                                }`}
-                                title={practiceSquadTitle}
-                                disabled
-                            >
-                                {player.IsOnPracticeSquad ? (
-                                    <i class="bi bi-person-fill-up" />
-                                ) : (
-                                    <i class="bi bi-person-fill-down" />
-                                )}
-                            </button>
-                        )}
+                            />
+                        </button>
                     </div>
                 </td>
             </tr>

@@ -23,7 +23,6 @@ export const NBAFreeAgencyRow = ({
     rosterCount,
     freeAgencyView
 }) => {
-    console.log(freeAgencyView);
     const {
         ID,
         FirstName,
@@ -77,7 +76,7 @@ export const NBAFreeAgencyRow = ({
         canModify &&
         (ts.IsOffseason ||
             ts.NBAPreseason ||
-            (!ts.IsNBAOffSeason && !ts.NBAPreseason && rosterCount < 15)) &&
+            (!ts.IsNBAOffSeason && !ts.NBAPreseason && rosterCount < 18)) &&
         (!IsNegotiating || (IsNegotiating && hasOffer));
 
     return (
@@ -172,7 +171,10 @@ export const NBAFreeAgencyRow = ({
                             title="Make An Offer"
                             data-bs-toggle="modal"
                             data-bs-target={viewFA ? offerTarget : waiverTarget}
-                            disabled={!canMakeOffer}
+                            disabled={
+                                !canMakeOffer ||
+                                (player.IsInternational && !player.IsNBA)
+                            }
                         >
                             <i className="bi bi-cash-coin image-nfl-roster" />
                         </button>

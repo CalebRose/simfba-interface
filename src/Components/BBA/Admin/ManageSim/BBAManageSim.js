@@ -102,10 +102,11 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
 
     const SyncManagementActions = async () => {
         const newTimestamp = { ...timestamp };
-        newTimestamp.GMActionsComplete = true;
 
         if (newTimestamp.IsNBAOffseason) {
-            ts.FreeAgencyRound++;
+            newTimestamp.FreeAgencyRound = newTimestamp.FreeAgencyRound + 1;
+        } else {
+            newTimestamp.GMActionsComplete = true;
         }
 
         const res = await _adminService.SyncFreeAgency();
@@ -166,208 +167,216 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
 
     return (
         <div className="container">
-            <div className="row mt-3">
-                <div className="col">
-                    <h2>Manage Basketball Sim</h2>
-                </div>
-            </div>
-            <div className="row mt-4">
-                <div className="col  col-md-4">
-                    <h3>
-                        Season:{' '}
-                        {timestamp && timestamp.Season ? timestamp.Season : ''}
-                    </h3>
-                </div>
-                <div className="col col-md-4">
-                    <h3>Week: {timestamp && timestamp.CollegeWeek}</h3>
-                </div>
-                <div className="col col-md-4">
-                    <h3>
-                        {SyncComplete
-                            ? 'All Actions Completed'
-                            : ActionsRemaining + ' Actions Remaining'}
-                    </h3>
-                </div>
-            </div>
-            <div className="row mt-3">
-                <div className="col-3 mb-2 g-2 justify-content-center text-center">
-                    <div className="d-flex align-items-center justify-content-center">
-                        <div
-                            className="btn-group-vertical btn-group-lg justify-content-center align-items-center"
-                            role="group"
-                            aria-label="TimeslotOptions"
-                        >
-                            <button
-                                type="button"
-                                className={
-                                    SyncComplete
-                                        ? 'btn btn-primary btn-sm'
-                                        : 'btn btn-secondary btn-sm'
-                                }
-                                disabled={!SyncComplete}
-                                onClick={syncToNextWeek}
-                            >
-                                Sync
-                            </button>
-                            <button
-                                type="button"
-                                className={
-                                    timestamp && timestamp.IsOffSeason
-                                        ? 'btn btn-secondary btn-sm'
-                                        : 'btn btn-primary btn-sm'
-                                }
-                                disabled={timestamp.GamesARan}
-                                value="A"
-                                onClick={SyncResults}
-                            >
-                                A Games
-                            </button>
-                            <button
-                                type="button"
-                                className={
-                                    timestamp && timestamp.IsOffSeason
-                                        ? 'btn btn-secondary btn-sm'
-                                        : 'btn btn-primary btn-sm'
-                                }
-                                disabled={timestamp.GamesBRan}
-                                value="B"
-                                onClick={SyncResults}
-                            >
-                                B Games
-                            </button>
-                            <button
-                                type="button"
-                                className={
-                                    timestamp && timestamp.IsOffSeason
-                                        ? 'btn btn-secondary btn-sm'
-                                        : 'btn btn-primary btn-sm'
-                                }
-                                disabled={timestamp.GamesCRan}
-                                value="C"
-                                onClick={SyncResults}
-                            >
-                                C Games
-                            </button>
-                            <button
-                                type="button"
-                                className={
-                                    timestamp && timestamp.IsOffSeason
-                                        ? 'btn btn-secondary btn-sm'
-                                        : 'btn btn-primary btn-sm'
-                                }
-                                disabled={timestamp.GamesDRan}
-                                value="D"
-                                onClick={SyncResults}
-                            >
-                                D Games
-                            </button>
+            {timestamp && (
+                <>
+                    <div className="row mt-3">
+                        <div className="col">
+                            <h2>Manage Basketball Sim</h2>
                         </div>
                     </div>
-                </div>
-                <div className="col-3 mb-2 g-2 justify-content-center text-center">
-                    <div className="d-flex align-items-center justify-content-center">
-                        <div
-                            className="btn-group-vertical btn-group-lg justify-content-center align-items-center"
-                            role="group"
-                            aria-label="College Options"
-                        >
-                            <button
-                                type="button"
-                                className={
-                                    timestamp && !timestamp.IsRecruitingLocked
-                                        ? 'btn btn-primary btn-sm'
-                                        : 'btn btn-secondary btn-sm'
-                                }
-                                onClick={lockRecruiting}
-                            >
-                                {!timestamp.IsRecruitingLocked
-                                    ? 'Lock Recruiting'
-                                    : 'Unlock Recruiting'}
-                            </button>
-                            <button
-                                type="button"
-                                className={'btn btn-primary btn-sm'}
-                                onClick={syncRecruiting}
-                                disabled={
-                                    timestamp &&
-                                    (timestamp.AIPointAllocationComplete ||
-                                        timestamp.AIBoardsCreated)
-                                }
-                            >
-                                Sync AI Boards
-                            </button>
-                            <button
-                                type="button"
-                                className={'btn btn-primary btn-sm'}
-                                onClick={syncRecruiting}
-                                disabled={
-                                    timestamp && timestamp.AIBoardsCreated
-                                }
-                            >
-                                Fill AI Boards
-                            </button>
-                            <button
-                                type="button"
-                                className={'btn btn-primary btn-sm'}
-                                onClick={syncRecruiting}
-                                disabled={
-                                    timestamp &&
-                                    (timestamp.RecruitingSynced ||
-                                        !timestamp.AIPointAllocationComplete)
-                                }
-                            >
-                                Sync Recruits
-                            </button>
+                    <div className="row mt-4">
+                        <div className="col  col-md-3">
+                            <h3>Season: {timestamp.Season}</h3>
+                        </div>
+                        <div className="col col-md-3">
+                            <h3>Week: {timestamp.CollegeWeek}</h3>
+                        </div>
+                        <div className="col col-md-3">
+                            <h3>FA Round: {timestamp.FreeAgencyRound}</h3>
+                        </div>
+                        <div className="col col-md-3">
+                            <h3>
+                                {SyncComplete
+                                    ? 'All Actions Completed'
+                                    : ActionsRemaining + ' Actions Remaining'}
+                            </h3>
                         </div>
                     </div>
-                </div>
-                <div className="col-3 mb-2 g-2 justify-content-center text-center">
-                    <div className="d-flex align-items-center justify-content-center">
-                        <div
-                            className="btn-group-vertical btn-group-lg justify-content-center align-items-center"
-                            role="group"
-                            aria-label="Professional Options"
-                        >
-                            <button
-                                type="button"
-                                className={'btn btn-primary btn-sm'}
-                                onClick={SyncManagementActions}
-                                disabled={
-                                    timestamp && timestamp.GMActionsComplete
-                                }
-                            >
-                                Run Free Agency
-                            </button>
-                            <button
-                                type="button"
-                                className={
-                                    timestamp && !timestamp.IsDraftTime
-                                        ? 'btn btn-primary btn-sm'
-                                        : 'btn btn-secondary btn-sm'
-                                }
-                                onClick={ChangeDraftTime}
-                            >
-                                {timestamp && !timestamp.IsDraftTime
-                                    ? 'Activate Draft'
-                                    : 'Deactivate Draft'}
-                            </button>
+                    <div className="row mt-3">
+                        <div className="col-3 mb-2 g-2 justify-content-center text-center">
+                            <div className="d-flex align-items-center justify-content-center">
+                                <div
+                                    className="btn-group-vertical btn-group-lg justify-content-center align-items-center"
+                                    role="group"
+                                    aria-label="TimeslotOptions"
+                                >
+                                    <h5>Sync Results</h5>
+                                    <button
+                                        type="button"
+                                        className={
+                                            SyncComplete
+                                                ? 'btn btn-primary btn-sm'
+                                                : 'btn btn-secondary btn-sm'
+                                        }
+                                        disabled={!SyncComplete}
+                                        onClick={syncToNextWeek}
+                                    >
+                                        Week
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={
+                                            timestamp.IsOffSeason
+                                                ? 'btn btn-secondary btn-sm'
+                                                : 'btn btn-primary btn-sm'
+                                        }
+                                        // disabled={timestamp.GamesARan}
+                                        disabled
+                                        value="A"
+                                        onClick={SyncResults}
+                                    >
+                                        A Games
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={
+                                            timestamp.IsOffSeason
+                                                ? 'btn btn-secondary btn-sm'
+                                                : 'btn btn-primary btn-sm'
+                                        }
+                                        // disabled={timestamp.GamesBRan}
+                                        disabled
+                                        value="B"
+                                        onClick={SyncResults}
+                                    >
+                                        B Games
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={
+                                            timestamp.IsOffSeason
+                                                ? 'btn btn-secondary btn-sm'
+                                                : 'btn btn-primary btn-sm'
+                                        }
+                                        // disabled={timestamp.GamesCRan}
+                                        disabled
+                                        value="C"
+                                        onClick={SyncResults}
+                                    >
+                                        C Games
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={
+                                            timestamp.IsOffSeason
+                                                ? 'btn btn-secondary btn-sm'
+                                                : 'btn btn-primary btn-sm'
+                                        }
+                                        // disabled={timestamp.GamesDRan}
+                                        disabled
+                                        value="D"
+                                        onClick={SyncResults}
+                                    >
+                                        D Games
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-3 mb-2 g-2 justify-content-center text-center">
+                            <div className="d-flex align-items-center justify-content-center">
+                                <div
+                                    className="btn-group-vertical btn-group-lg justify-content-center align-items-center"
+                                    role="group"
+                                    aria-label="College Options"
+                                >
+                                    <h5>Recruiting</h5>
+                                    <button
+                                        type="button"
+                                        className={
+                                            !timestamp.IsRecruitingLocked
+                                                ? 'btn btn-primary btn-sm'
+                                                : 'btn btn-secondary btn-sm'
+                                        }
+                                        onClick={lockRecruiting}
+                                    >
+                                        {!timestamp.IsRecruitingLocked
+                                            ? 'Lock Recruiting'
+                                            : 'Unlock Recruiting'}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={'btn btn-primary btn-sm'}
+                                        onClick={syncRecruiting}
+                                        // disabled={
+                                        //     timestamp.AIPointAllocationComplete ||
+                                        //     timestamp.AIBoardsCreated
+                                        // }
+                                        disabled
+                                    >
+                                        Sync AI Boards
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={'btn btn-primary btn-sm'}
+                                        onClick={syncRecruiting}
+                                        // disabled={timestamp.AIBoardsCreated}
+                                        disabled
+                                    >
+                                        Fill AI Boards
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={'btn btn-primary btn-sm'}
+                                        onClick={syncRecruiting}
+                                        // disabled={
+                                        //     timestamp.RecruitingSynced ||
+                                        //     !timestamp.AIPointAllocationComplete
+                                        // }
+                                        disabled
+                                    >
+                                        Sync Recruits
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-3 mb-2 g-2 justify-content-center text-center">
+                            <div className="d-flex align-items-center justify-content-center">
+                                <div
+                                    className="btn-group-vertical btn-group-lg justify-content-center align-items-center"
+                                    role="group"
+                                    aria-label="Professional Options"
+                                >
+                                    <h5>NBA Management</h5>
+                                    <button
+                                        type="button"
+                                        className={'btn btn-primary btn-sm'}
+                                        onClick={SyncManagementActions}
+                                        disabled={timestamp.GMActionsComplete}
+                                    >
+                                        Run Free Agency
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={
+                                            !timestamp.IsDraftTime
+                                                ? 'btn btn-primary btn-sm'
+                                                : 'btn btn-secondary btn-sm'
+                                        }
+                                        onClick={ChangeDraftTime}
+                                    >
+                                        {!timestamp.IsDraftTime
+                                            ? 'Activate Draft'
+                                            : 'Deactivate Draft'}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div className="row mt-5">
-                <button
-                    type="button"
-                    className="btn btn-primary btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#cbbCreateCrootModal"
-                    disabled={timestamp && !timestamp.IsOffSeason}
-                >
-                    <h5>Create Character</h5>
-                </button>
-                <h6>Note: Only available in off-season</h6>
-            </div>
-            <BBACreateCrootModal handleChange={SaveRecruit} />
+                    <div className="row mt-5">
+                        <button
+                            type="button"
+                            className="btn btn-primary btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#cbbCreateCrootModal"
+                            disabled={!timestamp.IsOffSeason}
+                        >
+                            <h5>Create Character</h5>
+                        </button>
+                        <h6>Note: Only available in off-season</h6>
+                    </div>
+                    <BBACreateCrootModal handleChange={SaveRecruit} />
+                </>
+            )}
         </div>
     );
 };

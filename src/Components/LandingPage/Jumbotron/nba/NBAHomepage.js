@@ -4,18 +4,24 @@ import { getLogo } from '../../../../Constants/getLogo';
 import { Link } from 'react-router-dom';
 import routes from '../../../../Constants/routes';
 import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
-import StandingsCard from '../../../BBA/Schedule/StandingsModalCard';
 import { Spinner } from '../../../_Common/Spinner';
 import { useMediaQuery } from 'react-responsive';
 import { NBAStandingsCard } from '../../../_Common/NBAStandingsCard';
+import BBAMatchService from '../../../../_Services/simNBA/BBAMatchService';
+import BBANewsService from '../../../../_Services/simNBA/BBANewsService';
+import { NewsLogSmall } from '../../../_Common/NewsLog';
 
 const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
-    let _teamService = new BBATeamService();
+    const _teamService = new BBATeamService();
+    const _matchService = new BBAMatchService();
+    const _newsService = new BBANewsService();
     const [teamName, setTeamName] = useState('');
     const [team, setTeam] = useState(false);
     const [logo, setLogo] = useState('');
     const [standings, setStandings] = useState([]);
     const [newsFeed, setNewsFeed] = useState([]);
+    const [matches, setMatches] = useState([]);
+    const [viewableMatches, setViewableMatches] = useState([]);
     const [viewWidth, setViewWidth] = useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:845px)` });
 
@@ -35,8 +41,60 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
         }
         if (cbb_Timestamp && nbaTeam) {
             GetConferenceStandings();
+            GetMatches();
+            getPersonalizedNewsFeed();
         }
     }, [currentUser, nbaTeam, cbb_Timestamp]);
+
+    useEffect(() => {
+        if (
+            cbb_Timestamp &&
+            cbb_Timestamp.NBAWeek > -1 &&
+            matches &&
+            matches.length > 0
+        ) {
+            const currentWeek = cbb_Timestamp.NBAWeek;
+            let latestMatch = '';
+            if (!cbb_Timestamp.GamesARan) {
+                latestMatch = 'A';
+            } else if (!cbb_Timestamp.GamesBRan) {
+                latestMatch = 'B';
+            } else if (!cbb_Timestamp.GamesCRan) {
+                latestMatch = 'C';
+            } else if (!cbb_Timestamp.GamesDRan) {
+                latestMatch = 'D';
+            }
+            let prevWeek = currentWeek - 1;
+            let nextWeek = currentWeek + 2;
+            let prevIdx = 0;
+            let nextIdx = 0;
+            if (prevWeek < 0) {
+                nextWeek = nextWeek - prevWeek;
+                prevWeek = 0;
+            }
+            prevIdx = matches.findIndex(
+                (x) => x.Week === prevWeek && x.MatchOfWeek === latestMatch
+            );
+            nextIdx = matches.findIndex(
+                (x) => x.Week === nextWeek && x.MatchOfWeek === latestMatch
+            );
+            while (prevIdx === -1) {
+                prevWeek += 1;
+                prevIdx = matches.findIndex(
+                    (x) => x.Week === prevWeek && x.MatchOfWeek === latestMatch
+                );
+            }
+            while (nextIdx === -1) {
+                nextWeek -= 1;
+                nextIdx = matches.findIndex(
+                    (x) => x.Week === nextWeek && x.MatchOfWeek === latestMatch
+                );
+            }
+
+            let gameRange = matches.slice(prevIdx, nextIdx + 1);
+            setViewableMatches(() => gameRange);
+        }
+    }, [cbb_Timestamp, matches]);
 
     const GetConferenceStandings = async () => {
         const res = await _teamService.GetNBAStandingsByConferenceID(
@@ -45,6 +103,24 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
         );
 
         setStandings(() => res);
+    };
+
+    const GetMatches = async () => {
+        const res = await _matchService.GetNBAMatchesByTeamAndSeason(
+            nbaTeam.ID,
+            cbb_Timestamp.SeasonID
+        );
+
+        setMatches(() => res);
+    };
+
+    const getPersonalizedNewsFeed = async () => {
+        let res = await _newsService.GetPersonalizedNewsFeed(
+            'NBA',
+            currentUser.NBATeamID
+        );
+
+        setNewsFeed(() => res);
     };
 
     return (
@@ -121,30 +197,57 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
                             </Link>
                         </div>
                     </div>
-                    <div className="row">
-                        <h4 className="text-start">Previous Week</h4>
-                    </div>
-                    <div className="row mt-2">
-                        <h4 className="text-start">Current Week</h4>
-                    </div>
+                    {viewableMatches && viewableMatches.length > 0 ? (
+                        viewableMatches.map((x) => {
+                            return (
+                                <div className="row landing-page-row">
+                                    <BBAMatchCard
+                                        game={x}
+                                        team={nbaTeam}
+                                        isNBA={true}
+                                        timestamp={cbb_Timestamp}
+                                    />
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <div className="row landing-page-row">
+                            <div className="card text-dark bg-light mb-3">
+                                <div className="card-body">
+                                    <h5 className="card-title">
+                                        Need to Add Games to DB, please be
+                                        patient
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
                 <div className="col-md-6">
                     <div className="row justify-content-start ms-1">
                         {standings && standings.length > 0 ? (
                             <>
-                                {isMobile ? (
-                                    <div className="mobile-card-viewer">
-                                        <NBAStandingsCard
-                                            standings={standings}
-                                        />
+                                <div
+                                    className={
+                                        isMobile
+                                            ? 'mobile-card-viewer'
+                                            : 'desktop-display'
+                                    }
+                                >
+                                    <NBAStandingsCard standings={standings} />
+                                    <div className="cbb-news-feed">
+                                        {newsFeed.length > 0 &&
+                                            newsFeed.map((x) => (
+                                                <NewsLogSmall
+                                                    key={x.ID}
+                                                    news={x}
+                                                    season={
+                                                        cbb_Timestamp.Season
+                                                    }
+                                                />
+                                            ))}
                                     </div>
-                                ) : (
-                                    <>
-                                        <NBAStandingsCard
-                                            standings={standings}
-                                        />
-                                    </>
-                                )}
+                                </div>
                             </>
                         ) : (
                             <div className="row justify-content-center pt-2 mt-4 mb-2">

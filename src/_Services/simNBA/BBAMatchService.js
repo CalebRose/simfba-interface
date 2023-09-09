@@ -5,6 +5,11 @@ export default class BBAMatchService {
     async GetCBBMatchesByTeamAndSeason(TeamID, SeasonID) {
         return await GetCall(`${url}match/team/${TeamID}/season/${SeasonID}/`);
     }
+    async GetNBAMatchesByTeamAndSeason(TeamID, SeasonID) {
+        return await GetCall(
+            `${url}nba/match/team/${TeamID}/season/${SeasonID}/`
+        );
+    }
     async GetMatchesByWeek(week) {
         return await GetCall(`${url}/match/week/${week}/`);
     }

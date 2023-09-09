@@ -219,6 +219,7 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         } else {
             res = await _playerService.CreateWaiverOffer(offer);
         }
+        const offerData = await res.json();
         let players = [];
         if (viewingFA) {
             players = [...allFreeAgents];
@@ -243,10 +244,10 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                 const existingOffersIdx = ExistingOffers.findIndex(
                     (x) => x.ID === offer.ID
                 );
-                ExistingOffers[existingOffersIdx] = offer;
-                players[playerIDX].Offers[offerIDX] = offer;
+                ExistingOffers[existingOffersIdx] = offerData;
+                players[playerIDX].Offers[offerIDX] = offerData;
             } else {
-                const offerObj = { ...offer, ID: res.ID };
+                const offerObj = { ...offerData };
                 if (viewingFA) {
                     const offers = players[playerIDX].Offers;
                     offers.push(offerObj);
@@ -279,7 +280,6 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     };
 
     const CancelOffer = async (player, offer) => {
-        console.log({ freeAgencyView });
         const viewingFA = freeAgencyView === 'FA';
         const viewingWW = freeAgencyView === 'WW';
         const viewingGL = freeAgencyView === 'GL';
@@ -468,6 +468,26 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                     }`}
                                     onClick={ToggleFreeAgencyView}
                                     value="GL"
+                                >
+                                    View
+                                </button>
+                            </div>
+                        )}
+
+                        {freeAgencyView !== 'INT' && (
+                            <div className="col-md-auto">
+                                <h5 className="text-start align-middle">
+                                    International
+                                </h5>
+                                <button
+                                    type="button"
+                                    className={`btn ${
+                                        freeAgencyView
+                                            ? 'btn-outline-info'
+                                            : 'btn-outline-success'
+                                    }`}
+                                    onClick={ToggleFreeAgencyView}
+                                    value="INT"
                                 >
                                     View
                                 </button>
