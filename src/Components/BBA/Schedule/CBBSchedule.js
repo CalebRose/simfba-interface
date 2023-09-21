@@ -8,6 +8,7 @@ import CBBGameRow from './CBBGameRow';
 import CBBStandingsModal from './CBBStandingsModal';
 import { SeasonsList } from '../../../Constants/CommonConstants';
 import { SubmitCollegePollForm } from '../../_Common/SubmitCollegePollModal';
+import { CollegePollModal } from '../../_Common/CollegePollModal';
 
 const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     // Services
@@ -184,7 +185,7 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     };
 
     const ResetWeekViewOptions = () => {
-        setSelectedWeek(() => cbb_Timestamp.CollegeWeek);
+        setSelectedWeek(() => cbb_Timestamp.NBAWeek);
     };
 
     // Click Functions
@@ -358,7 +359,11 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                         onClick={() =>
                                             setShowCGames(() => !showCGames)
                                         }
-                                        disabled={leagueView === 'CBB'}
+                                        disabled={
+                                            leagueView === 'CBB' &&
+                                            selectedWeek &&
+                                            selectedWeek.value !== 3
+                                        }
                                     >
                                         C
                                     </button>
@@ -372,7 +377,11 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                         onClick={() =>
                                             setShowDGames(() => !showDGames)
                                         }
-                                        disabled={leagueView === 'CBB'}
+                                        disabled={
+                                            leagueView === 'CBB' &&
+                                            selectedWeek &&
+                                            selectedWeek.value !== 3
+                                        }
                                     >
                                         D
                                     </button>
@@ -452,6 +461,11 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                         currentUser={currentUser}
                         timestamp={cbb_Timestamp}
                         isCFB={false}
+                    />
+                    <CollegePollModal
+                        currentUser={currentUser}
+                        timestamp={cbb_Timestamp}
+                        seasonOptions={seasons}
                     />
 
                     <div className="col-md-10 px-md-4">

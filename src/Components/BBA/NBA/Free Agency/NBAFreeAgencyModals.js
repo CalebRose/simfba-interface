@@ -7,7 +7,9 @@ import {
     GetNBACapSpace,
     GetTotalValue,
     ValidateNBARule2,
-    ValidateNBARule3
+    ValidateNBARule3,
+    ValidateNBARule4,
+    ValidateNBARule5
 } from '../../../NFL/FreeAgency/FreeAgencyHelper';
 import {
     OfferInput,
@@ -216,6 +218,7 @@ export const NBAFreeAgentOfferModal = ({
     const [rule2Valid, setRule2] = useState(true);
     const [rule3Valid, setRule3] = useState(true);
     const [rule4Valid, setRule4] = useState(true);
+    const [rule5Valid, setRule5] = useState(true);
     const { MinimumValue, MaxRequested, IsSuperMaxQualified, Year } = player;
     const maxPercentage = GetMaxPercentage(
         Year,
@@ -350,7 +353,23 @@ export const NBAFreeAgentOfferModal = ({
             offer.Year5Opt
         );
 
-        const isRule4Valid = true;
+        const isRule4Valid = ValidateNBARule4(
+            totalYears,
+            y1Total,
+            y2Total,
+            y3Total,
+            y4Total,
+            y5Total,
+            MinimumValue
+        );
+        const isRule5Valid = ValidateNBARule5(
+            totalYears,
+            y1Total,
+            y2Total,
+            y3Total,
+            y4Total,
+            y5Total
+        );
 
         const canMakeOffer =
             player.IsAcceptingOffers ||
@@ -377,6 +396,7 @@ export const NBAFreeAgentOfferModal = ({
             isRule2Valid &&
             isRule3Valid &&
             isRule4Valid &&
+            isRule5Valid &&
             canMakeOffer &&
             validToExistingOffer;
 
@@ -384,6 +404,7 @@ export const NBAFreeAgentOfferModal = ({
         setRule2(() => isRule2Valid);
         setRule3(() => isRule3Valid);
         setRule4(() => isRule4Valid);
+        setRule5(() => isRule5Valid);
         setValidOffer(() => isValid);
         setOffer(() => updatedOffer);
     };
@@ -528,6 +549,15 @@ export const NBAFreeAgentOfferModal = ({
                                             3: The final year of a contract may
                                             be an option.
                                         </p>
+                                        <p
+                                            className={
+                                                !rule5Valid ? 'text-danger' : ''
+                                            }
+                                        >
+                                            5: Yearly amounts do not need to be
+                                            equal, but bids must be within 8% of
+                                            the preceding year.
+                                        </p>
                                     </div>
                                     <div className="col">
                                         <p
@@ -535,10 +565,18 @@ export const NBAFreeAgentOfferModal = ({
                                                 !rule2Valid ? 'text-danger' : ''
                                             }
                                         >
-                                            2: Yearly amounts do not need to be
-                                            equal, but bids must be equal or
-                                            greater than the subsequent year in
-                                            the contract.
+                                            2: Bids cannot offer yearly amounts
+                                            outside the designated contract
+                                            length.
+                                        </p>
+                                        <p
+                                            className={
+                                                !rule4Valid ? 'text-danger' : ''
+                                            }
+                                        >
+                                            4: An input for salary that isn't
+                                            zero must be greater than the
+                                            minimum asking amount.
                                         </p>
                                     </div>
                                 </div>

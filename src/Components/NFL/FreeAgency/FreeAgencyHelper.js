@@ -170,10 +170,10 @@ export const ValidateRule6 = (s1, s2, s3, s4, s5) => {
 };
 
 export const ValidateNBARule2 = (len, y1, y2, y3, y4, y5) => {
-    if (len === 5 && y5 >= y4 && y4 >= y3 && y3 >= y2 && y2 >= y1) return true;
-    if (len === 4 && y4 >= y3 && y3 >= y2 && y2 >= y1 && y5 === 0) return true;
-    if (len === 3 && y3 >= y2 && y2 >= y1 && y4 === 0 && y5 === 0) return true;
-    if (len === 2 && y2 >= y1 && y3 === 0 && y4 === 0 && y5 === 0) return true;
+    if (len === 5) return true;
+    if (len === 4 && y5 === 0) return true;
+    if (len === 3 && y4 === 0 && y5 === 0) return true;
+    if (len === 2 && y3 === 0 && y4 === 0 && y5 === 0) return true;
     if (len === 1 && y2 === 0 && y3 === 0 && y4 === 0 && y5 === 0) return true;
     return false;
 };
@@ -185,6 +185,43 @@ export const ValidateNBARule3 = (len, y1, y2, y3, y4, y5) => {
     if (len === 4 && !y2 && !y3 && !y5 && !y1) return true;
     if (len === 5 && !y2 && !y4 && !y4 && !y1) return true;
     return false;
+};
+
+export const ValidateNBARule4 = (len, y1, y2, y3, y4, y5, min) => {
+    if (len === 1) return y1 >= min;
+    if (len === 2) return y2 >= min && y1 >= min;
+    if (len === 3) return y3 >= min && y2 >= min && y1 >= min;
+    if (len === 4) return y4 >= min && y3 >= min && y2 >= min && y1 >= min;
+    if (len === 5)
+        return y5 >= min && y4 >= min && y3 >= min && y2 >= min && y1 >= min;
+    return false;
+};
+
+export const ValidateNBARule5 = (len, y1, y2, y3, y4, y5) => {
+    if (len === 1) return true;
+    let check2 = true;
+    let check3 = true;
+    let check4 = true;
+    let check5 = true;
+    if (len > 4) {
+        check5 = checkYearlyRange(y4, y5);
+    }
+    if (len > 3) {
+        check4 = checkYearlyRange(y3, y4);
+    }
+    if (len > 2) {
+        check3 = checkYearlyRange(y2, y3);
+    }
+    if (len > 1) {
+        check2 = checkYearlyRange(y1, y2);
+    }
+    return check2 && check3 && check4 && check5;
+};
+
+const checkYearlyRange = (val1, val2) => {
+    const min = 0.92 * val1;
+    const max = 1.08 * val1;
+    return val2 >= min && val2 <= max;
 };
 
 export const CheckForOffer = (player, teamID) => {

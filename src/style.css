@@ -1,7 +1,7 @@
 /* Hero Container + Nav for all pages */
 /* Background Image */
 p {
-    font-size: 1.6vh !important;
+    font-size: 1.6vh;
 }
 
 h6 {
@@ -91,6 +91,11 @@ h2 {
     height: 6vh;
 }
 
+.dark .select__value-container,
+.dark .select__input-container {
+    color: white !important;
+}
+
 .light {
     background-color: #fff;
     --bs-table-header-color: #fff;
@@ -141,6 +146,10 @@ h2 {
     font-size: 1.6vh;
 }
 
+.dropdown-item {
+    font-size: 1.6vh;
+}
+
 .mobile-card-viewer {
     width: 92vw !important;
 }
@@ -163,7 +172,7 @@ h2 {
 .bba-match-row {
     max-width: 27vw;
     font-size: 12px;
-    height: 125px;
+    /* height: 125px; */
 }
 
 .bba-match-row h5 {
@@ -318,6 +327,17 @@ h2 {
     border-radius: 6px;
     overflow-wrap: break-word;
     width: 18em;
+}
+
+.card-small {
+    --bs-card-spacer-y: 0.5vh !important;
+    --bs-card-spacer-x: 0.5vh !important;
+}
+
+.card-text {
+    font-size: 1.4vh !important;
+    margin: 0 !important;
+    margin-bottom: 0.5rem !important;
 }
 
 .card-content {
@@ -567,6 +587,11 @@ td {
     font-size: 1.7vh;
 }
 
+.btn-dropdown-width-poll {
+    width: 10vw !important;
+    font-size: 1.7vh;
+}
+
 .btn-dropdown-width-dc {
     width: 15rem !important;
     font-size: 1.7vh;
@@ -630,6 +655,9 @@ td {
 .image-recruit-logo {
     max-height: 50px !important;
     max-width: 50px !important;
+}
+.image-rank-logo {
+    max-height: 4vh !important;
 }
 /* End of CFB Recruiting */
 
@@ -992,15 +1020,16 @@ hr.solid {
     padding-bottom: 2px;
 }
 
-.draft-number {
-}
-
 .draft-pick-text {
     font-size: 16px;
 }
 
 .draft-pick-text-mobile {
     font-size: 1.2vh;
+}
+
+.poll-modal-fixed {
+    min-height: 50vh;
 }
 
 @media (max-width: 768px) {
@@ -1015,7 +1044,7 @@ hr.solid {
 
     .bba-match-row {
         font-size: 12px;
-        height: 125px;
+        /* height: 125px; */
         width: 100%;
         max-width: 100%;
     }
@@ -1033,5 +1062,10 @@ hr.solid {
 
     .btn-dropdown-width-team {
         width: 100% !important;
+    }
+
+    .btn-dropdown-width-poll {
+        width: 100% !important;
+        font-size: 1.7vh;
     }
 }

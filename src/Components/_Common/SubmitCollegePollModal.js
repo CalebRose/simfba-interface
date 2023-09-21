@@ -13,16 +13,19 @@ const PollDropdown = ({
     list,
     selection,
     setSelection,
-    standingsMap
+    standingsMap,
+    gameMap
 }) => {
     const [selectedTeam, setSelectedTeam] = useState('');
     const [selectionLabel, setSelectionLabel] = useState('');
     useEffect(() => {
         if (selection) {
             const standings = standingsMap[selection.value];
-            const description = `${standings.TotalWins} Wins | ${standings.TotalLosses} Losses | ${standings.ConferenceWins} Conference Wins | ${standings.ConferenceLosses} Losses`;
-            setSelectionLabel(() => description);
-            setSelectedTeam(() => standings.TeamName);
+            if (standings) {
+                const description = `${standings.TotalWins} Wins | ${standings.TotalLosses} Losses | ${standings.ConferenceWins} Conference Wins | ${standings.ConferenceLosses} Losses`;
+                setSelectionLabel(() => description);
+                setSelectedTeam(() => standings.TeamName);
+            }
         }
     }, [selection]);
 
@@ -56,8 +59,10 @@ export const SubmitCollegePollForm = ({ currentUser, timestamp, isCFB }) => {
         ? new FBATeamService()
         : new BBAStandingsService();
     const _pollService = isCFB ? new FBAPollService() : new BBAPollService();
-    const [rankMap, setRankMap] = useState(null);
+    const [submissionID, setSubmissionID] = useState(0);
+    const [gameMap, setGameMap] = useState(null);
     const [standingsMap, setStandingsMap] = useState(null);
+    const [validPoll, setValidPoll] = useState(true);
     const [teamList, setTeamList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [rankOne, setRankOne] = useState(null);
@@ -86,17 +91,114 @@ export const SubmitCollegePollForm = ({ currentUser, timestamp, isCFB }) => {
     const [rankTwentyFour, setRankTwentyFour] = useState(null);
     const [rankTwentyFive, setRankTwentyFive] = useState(null);
 
+    const ranks = [
+        rankOne,
+        rankTwo,
+        rankThree,
+        rankFour,
+        rankFive,
+        rankSix,
+        rankSeven,
+        rankEight,
+        rankNine,
+        rankTen,
+        rankEleven,
+        rankTwelve,
+        rankThirteen,
+        rankFourteen,
+        rankFifteen,
+        rankSixteen,
+        rankSeventeen,
+        rankEighteen,
+        rankNineteen,
+        rankTwenty,
+        rankTwentyOne,
+        rankTwentyTwo,
+        rankTwentyThree,
+        rankTwentyFour,
+        rankTwentyFive
+    ];
+
+    const setRanks = [
+        setRankOne,
+        setRankTwo,
+        setRankThree,
+        setRankFour,
+        setRankFive,
+        setRankSix,
+        setRankSeven,
+        setRankEight,
+        setRankNine,
+        setRankTen,
+        setRankEleven,
+        setRankTwelve,
+        setRankThirteen,
+        setRankFourteen,
+        setRankFifteen,
+        setRankSixteen,
+        setRankSeventeen,
+        setRankEighteen,
+        setRankNineteen,
+        setRankTwenty,
+        setRankTwentyOne,
+        setRankTwentyTwo,
+        setRankTwentyThree,
+        setRankTwentyFour,
+        setRankTwentyFive
+    ];
+
+    useEffect(() => {
+        const rankMap = {};
+        let valid = true;
+        for (let i = 0; i < ranks.length; i++) {
+            if (ranks[i] && rankMap[ranks[i].value]) {
+                valid = false;
+                break;
+            }
+            if (ranks[i]) {
+                rankMap[ranks[i].value] = true;
+            }
+        }
+        setValidPoll(() => valid);
+    }, [
+        rankOne,
+        rankTwo,
+        rankThree,
+        rankFour,
+        rankFive,
+        rankSix,
+        rankSeven,
+        rankEight,
+        rankNine,
+        rankTen,
+        rankEleven,
+        rankTwelve,
+        rankThirteen,
+        rankFourteen,
+        rankFifteen,
+        rankSixteen,
+        rankSeventeen,
+        rankEighteen,
+        rankNineteen,
+        rankTwenty,
+        rankTwentyOne,
+        rankTwentyTwo,
+        rankTwentyThree,
+        rankTwentyFour,
+        rankTwentyFive
+    ]);
+
     useEffect(() => {
         if (isLoading) {
-            GetStandingsMap();
+            GetPollData();
         }
     }, [isLoading]);
 
-    const GetStandingsMap = async () => {
-        const seasonID = isCFB ? timestamp.CollegeSeasonID : timestamp.SeasonID;
-        const res = await _standingsService.GetAllConferenceStandings(seasonID);
+    const GetPollData = async () => {
+        const res = await _pollService.GetSubmittedPoll(currentUser.username);
+        const { Standings, Matches, Poll } = res;
 
-        const sortedStandings = res.sort((a, b) =>
+        const sortedStandings = Standings.sort((a, b) =>
             a.TeamName.localeCompare(b.TeamName)
         );
 
@@ -110,200 +212,89 @@ export const SubmitCollegePollForm = ({ currentUser, timestamp, isCFB }) => {
             teamMap[stand.TeamID] = stand;
         }
 
+        const matchMap = {};
+
+        for (let i = 0; i < Matches.length; i++) {
+            const game = Matches[i];
+            if (!game.GameComplete) {
+                continue;
+            }
+            if (!matchMap[game.HomeTeamID]) {
+                matchMap[game.HomeTeamID] = [game];
+            } else {
+                matchMap[game.HomeTeamID].push(game);
+            }
+            if (!matchMap[game.AwayTeamID]) {
+                matchMap[game.AwayTeamID] = [game];
+            } else {
+                matchMap[game.AwayTeamID].push(game);
+            }
+        }
+
+        for (let i = 1; i <= 25; i++) {
+            const rankLabel = Poll[`Rank${i}`];
+            const rankValue = Poll[`Rank${i}ID`];
+
+            setRanks[i - 1](() => {
+                return { label: rankLabel, value: rankValue };
+            });
+        }
+
+        setGameMap(() => matchMap);
+        setSubmissionID(() => Poll.ID);
+
         setStandingsMap(() => teamMap);
         setTeamList(() => teamLabels);
         setIsLoading(() => false);
     };
 
-    const SelectTeam = () => {};
-
-    const SubmitPoll = () => {
-        const DTO = {};
+    const SubmitPoll = async () => {
+        const DTO = {
+            ID: submissionID,
+            Week: Number(timestamp.CollegeWeek),
+            WeekID: Number(timestamp.CollegeWeekID),
+            SeasonID: Number(timestamp.SeasonID),
+            Username: currentUser.username
+        };
+        for (let i = 0; i < ranks.length; i++) {
+            const num = i + 1;
+            const rank = ranks[i];
+            DTO[`Rank${num}`] = rank.label;
+            DTO[`Rank${num}ID`] = rank.value;
+        }
+        const res = await _pollService.SubmitPoll(DTO);
+        const body = await res.json();
+        setSubmissionID(() => body.ID);
     };
 
     return (
-        <ExtraLargeModal id={modalId} header={header} Submit={SubmitPoll}>
+        <ExtraLargeModal
+            id={modalId}
+            header={header}
+            Submit={SubmitPoll}
+            enableSubmit={validPoll}
+        >
             {isLoading ? (
                 <div className="mt-3">
                     <Spinner />
                 </div>
             ) : (
                 <div className="d-flex flex-wrap justify-content-between">
-                    <PollDropdown
-                        label="Rank 1"
-                        list={teamList}
-                        selection={rankOne}
-                        setSelection={setRankOne}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 2"
-                        list={teamList}
-                        selection={rankTwo}
-                        setSelection={setRankTwo}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 3"
-                        list={teamList}
-                        selection={rankThree}
-                        setSelection={setRankThree}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 4"
-                        list={teamList}
-                        selection={rankFour}
-                        setSelection={setRankFour}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 5"
-                        list={teamList}
-                        selection={rankFive}
-                        setSelection={setRankFive}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 6"
-                        list={teamList}
-                        selection={rankSix}
-                        setSelection={setRankSix}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 7"
-                        list={teamList}
-                        selection={rankSeven}
-                        setSelection={setRankSeven}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 8"
-                        list={teamList}
-                        selection={rankEight}
-                        setSelection={setRankEight}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 9"
-                        list={teamList}
-                        selection={rankNine}
-                        setSelection={setRankNine}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 10"
-                        list={teamList}
-                        selection={rankTen}
-                        setSelection={setRankTen}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 11"
-                        list={teamList}
-                        selection={rankEleven}
-                        setSelection={setRankEleven}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 12"
-                        list={teamList}
-                        selection={rankTwelve}
-                        setSelection={setRankTwelve}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 13"
-                        list={teamList}
-                        selection={rankThirteen}
-                        setSelection={setRankThirteen}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 14"
-                        list={teamList}
-                        selection={rankFourteen}
-                        setSelection={setRankFourteen}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 15"
-                        list={teamList}
-                        selection={rankFifteen}
-                        setSelection={setRankFifteen}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 16"
-                        list={teamList}
-                        selection={rankSixteen}
-                        setSelection={setRankSixteen}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 17"
-                        list={teamList}
-                        selection={rankSeventeen}
-                        setSelection={setRankSeventeen}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 18"
-                        list={teamList}
-                        selection={rankEighteen}
-                        setSelection={setRankEighteen}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 19"
-                        list={teamList}
-                        selection={rankNineteen}
-                        setSelection={setRankNineteen}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 20"
-                        list={teamList}
-                        selection={rankTwenty}
-                        setSelection={setRankTwenty}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 21"
-                        list={teamList}
-                        selection={rankTwentyOne}
-                        setSelection={setRankTwentyOne}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 22"
-                        list={teamList}
-                        selection={rankTwentyTwo}
-                        setSelection={setRankTwentyTwo}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 23"
-                        list={teamList}
-                        selection={rankTwentyThree}
-                        setSelection={setRankTwentyThree}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 24"
-                        list={teamList}
-                        selection={rankTwentyFour}
-                        setSelection={setRankTwentyFour}
-                        standingsMap={standingsMap}
-                    />
-                    <PollDropdown
-                        label="Rank 25"
-                        list={teamList}
-                        selection={rankTwentyFive}
-                        setSelection={setRankTwentyFive}
-                        standingsMap={standingsMap}
-                    />
+                    {ranks.map((x, idx) => {
+                        const num = idx + 1;
+                        return (
+                            <PollDropdown
+                                key={`rank-${num}`}
+                                label={`Rank ${num}`}
+                                list={teamList}
+                                idx={idx}
+                                selection={x}
+                                setSelection={setRanks[idx]}
+                                standingsMap={standingsMap}
+                                gameMap={gameMap}
+                            />
+                        );
+                    })}
                 </div>
             )}
         </ExtraLargeModal>

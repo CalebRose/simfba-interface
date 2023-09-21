@@ -373,7 +373,6 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         };
         updateData(newData);
         setTimeout(() => {
-            console.log('NEXT TEAM CAN NOW DRAFT');
             const endTime = firebase.firestore.Timestamp.fromDate(
                 new Date(Date.now() + seconds * 1000)
             );

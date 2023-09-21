@@ -10,6 +10,7 @@ import { NBAStandingsCard } from '../../../_Common/NBAStandingsCard';
 import BBAMatchService from '../../../../_Services/simNBA/BBAMatchService';
 import BBANewsService from '../../../../_Services/simNBA/BBANewsService';
 import { NewsLogSmall } from '../../../_Common/NewsLog';
+import { BBAMatchCard } from '../../../_Common/BBAMatchCard';
 
 const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
     const _teamService = new BBATeamService();
@@ -65,7 +66,7 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
                 latestMatch = 'D';
             }
             let prevWeek = currentWeek - 1;
-            let nextWeek = currentWeek + 2;
+            let nextWeek = currentWeek + 1;
             let prevIdx = 0;
             let nextIdx = 0;
             if (prevWeek < 0) {

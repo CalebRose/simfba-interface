@@ -1,6 +1,6 @@
 import React from 'react';
 import { CutPlayerModal } from '../../../NFL/Roster/CutPlayerModal';
-import { ExtendPlayerModal } from '../../../NFL/Roster/ExtendPlayerModal';
+import { ExtendNBAPlayerModal } from '../../../NFL/Roster/ExtendPlayerModal';
 import { TradeBlockModal } from '../../../NFL/Roster/OnTradeBlockModal';
 import { GLeagueModal, PlayerModal, TwoWayModal } from './NBATeamModals';
 
@@ -49,7 +49,7 @@ const NBATeamPlayerRow = ({
                 cut={cut}
                 viewMode={theme}
             />
-            <ExtendPlayerModal
+            <ExtendNBAPlayerModal
                 key={player.ID}
                 player={player}
                 idx={idx}

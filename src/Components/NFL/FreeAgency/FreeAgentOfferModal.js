@@ -150,31 +150,31 @@ export const FreeAgentOfferModal = ({
         const y5Value = y5Bonus * 0.6 + offer.Y5BaseSalary * 0.05;
         const y1Space = GetCapSpace(
             ts.Y1Capspace,
-            y1Bonus,
+            capsheet.Y1Bonus,
             capsheet.Y1Salary,
             capsheet.Y1CapHit
         );
         const y2Space = GetCapSpace(
             ts.Y2Capspace,
-            y2Bonus,
+            capsheet.Y2Bonus,
             capsheet.Y2Salary,
             capsheet.Y2CapHit
         );
         const y3Space = GetCapSpace(
             ts.Y3Capspace,
-            y3Bonus,
+            capsheet.Y3Bonus,
             capsheet.Y3Salary,
             capsheet.Y3CapHit
         );
         const y4Space = GetCapSpace(
             ts.Y4Capspace,
-            y4Bonus,
+            capsheet.Y4Bonus,
             capsheet.Y4Salary,
             capsheet.Y4CapHit
         );
         const y5Space = GetCapSpace(
             ts.Y5Capspace,
-            y5Bonus,
+            capsheet.Y5Bonus,
             capsheet.Y5Salary,
             capsheet.Y5CapHit
         );

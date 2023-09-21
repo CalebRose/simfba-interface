@@ -116,32 +116,32 @@ export const ExtendPlayerModal = ({
         const y4Value = y4Bonus * 0.7 + offer.Y4BaseSalary * 0.1;
         const y5Value = y5Bonus * 0.6 + offer.Y5BaseSalary * 0.05;
         const y1Space = GetCapSpace(
-            ts.Y1Capspace,
-            y1Bonus,
-            capsheet.Y1Salary,
-            capsheet.Y1CapHit
-        );
-        const y2Space = GetCapSpace(
             ts.Y2Capspace,
-            y2Bonus,
+            capsheet.Y2Bonus,
             capsheet.Y2Salary,
             capsheet.Y2CapHit
         );
-        const y3Space = GetCapSpace(
+        const y2Space = GetCapSpace(
             ts.Y3Capspace,
-            y3Bonus,
+            capsheet.Y3Bonus,
             capsheet.Y3Salary,
             capsheet.Y3CapHit
         );
-        const y4Space = GetCapSpace(
+        const y3Space = GetCapSpace(
             ts.Y4Capspace,
-            y4Bonus,
+            capsheet.Y4Bonus,
             capsheet.Y4Salary,
             capsheet.Y4CapHit
         );
+        const y4Space = GetCapSpace(
+            ts.Y5Capspace,
+            capsheet.Y5Bonus,
+            capsheet.Y5Salary,
+            capsheet.Y5CapHit
+        );
         const y5Space = GetCapSpace(
             ts.Y5Capspace,
-            y5Bonus,
+            capsheet.Y5Bonus,
             capsheet.Y5Salary,
             capsheet.Y5CapHit
         );
@@ -232,7 +232,6 @@ export const ExtendPlayerModal = ({
             : existingExtension.ContractValue <= contractValue;
 
         const isValid =
-            contractValue >= MinimumValue &&
             isRule1Valid &&
             isRule2Valid &&
             isRule3Valid &&
@@ -253,7 +252,7 @@ export const ExtendPlayerModal = ({
     };
 
     useEffect(() => {
-        if (player && player.Extensions.length > 0) {
+        if (player && player.Extensions && player.Extensions.length > 0) {
             GetTeamOffer(player.Extensions);
             const offers = player.Extensions;
             const offerIdx = player.Extensions.findIndex(
@@ -470,6 +469,56 @@ export const ExtendPlayerModal = ({
                             </button>
                         )}
                         <OfferButton />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export const ExtendNBAPlayerModal = ({
+    player,
+    idx,
+    extend,
+    viewMode,
+    team,
+    ts,
+    cancel
+}) => {
+    const modalId = `extendPlayer${idx}`;
+    const name = `${player.FirstName} ${player.LastName}`;
+    const modalClass = GetModalClass(viewMode);
+    return (
+        <div
+            className="modal fade"
+            id={modalId}
+            tabindex="-1"
+            aria-labelledby="extendPlayerModalLabel"
+            aria-hidden="true"
+        >
+            <div className="modal-dialog modal-xl">
+                <div className={modalClass}>
+                    <div className="modal-header">
+                        <h4 className="modal-title" id="redshirtModalLabel">
+                            Extend Contract for {name}, {player.Year} Year{' '}
+                            {player.Archetype} {player.Position}
+                        </h4>
+                        <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        />
+                    </div>
+                    <div className="modal-body"></div>
+                    <div className="modal-footer">
+                        <button
+                            type="button"
+                            className="btn btn-secondary me-2"
+                            data-bs-dismiss="modal"
+                        >
+                            No
+                        </button>
                     </div>
                 </div>
             </div>

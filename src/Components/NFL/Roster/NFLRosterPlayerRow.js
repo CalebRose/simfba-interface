@@ -37,10 +37,28 @@ export const NFLRosterPlayerRow = ({
     const extendPlayerTitle = `Extend ${player.FirstName}`;
     const tradeBlockTitle = `Place ${player.FirstName} on the Trade Block.`;
     const practiceSquadTitle = `Place ${player.FirstName} on the Practice Squad`;
-    const offeredExtensionIdx = Extensions.findIndex(
-        (x) => x.IsActive === true && !x.IsAccepted
-    );
-    const offeredExtension = offeredExtensionIdx > -1;
+    const offeredExtensionIdx =
+        Extensions &&
+        Extensions.findIndex((x) => x.IsActive === true && !x.IsAccepted);
+    const offeredExtensionBool = Extensions && offeredExtensionIdx > -1;
+    const offeredExtension =
+        offeredExtensionBool && Extensions[offeredExtensionIdx];
+
+    let extensionStatus = '';
+    if (offeredExtensionBool) {
+        extensionStatus = 'btn-success';
+    } else if (
+        (offeredExtensionBool &&
+            (offeredExtension.IsRejected || offeredExtension.Rejections > 2)) ||
+        player.Rejections > 2
+    ) {
+        extensionStatus = 'btn-danger';
+    } else if (
+        (offeredExtensionBool && offeredExtension.Rejections > 0) ||
+        player.Rejections > 0
+    ) {
+        extensionStatus = 'btn-warning';
+    }
 
     const injuryReservePlayer = () => {
         return ir(player);
@@ -127,9 +145,7 @@ export const NFLRosterPlayerRow = ({
                         </button>
                         <button
                             type="button"
-                            className={`btn ${
-                                Extensions.length > 0 && 'btn-success'
-                            }`}
+                            className={`btn ${extensionStatus}`}
                             title={extendPlayerTitle}
                             data-bs-toggle="modal"
                             data-bs-target={extendPlayerTarget}
@@ -141,7 +157,8 @@ export const NFLRosterPlayerRow = ({
                                     !player.IsPracticeSquad
                                 ) ||
                                 Contract.ContractLength > 1 ||
-                                player.IsPracticeSquad
+                                player.IsPracticeSquad ||
+                                player.Rejections > 2
                             }
                         >
                             <i className="bi bi-currency-dollar" />
