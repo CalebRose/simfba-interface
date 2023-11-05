@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import Select from 'react-select';
 import { connect } from 'react-redux';
+import toast from 'react-hot-toast';
 import CBBDashboardPlayerRow from './CBBDashboardPlayerRow';
 import BBAPlayerService from '../../../_Services/simNBA/BBAPlayerService';
 import BBARecruitingService from '../../../_Services/simNBA/BBARecruitingService';
@@ -271,6 +272,7 @@ const CBBRecruitingDashboard = ({
                 payload.Country;
             map[keyCode] = true;
             crootProfile.Recruits.push(newProfile);
+            toast.success('Successfully added croot to board!');
 
             setCrootMap(map);
             setRecruitingProfile(crootProfile);

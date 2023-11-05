@@ -4,14 +4,14 @@ import FBATeamService from '../../../_Services/simFBA/FBATeamService';
 import Select from 'react-select';
 import NFLStandingsCard from '../../_Common/NFLStandingsCard';
 import { Spinner } from '../../_Common/Spinner';
-import { NFLSeasonsList } from '../../../Constants/CommonConstants';
+import { SeasonsList } from '../../../Constants/CommonConstants';
 
 export const NFLStandings = ({ ts, viewMode }) => {
     let _standingsService = new FBATeamService();
     const modalId = `standingsModal`;
     const [conferences, setConferences] = useState([]);
     const [divisions, setDivisions] = useState([]);
-    const [seasons, setSeasons] = useState(NFLSeasonsList);
+    const [seasons, setSeasons] = useState(SeasonsList);
     const [allStandings, setAllStandings] = useState([]);
     const [viewableStandings, setViewableStandings] = useState([]);
     const [selectedConferences, setSelectedConferences] = useState([]);

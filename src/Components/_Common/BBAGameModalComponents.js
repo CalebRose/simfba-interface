@@ -1,22 +1,32 @@
 import React from 'react';
 import GameModalRow from '../BBA/Schedule/GameModalRow';
 
-export const BBABoxScoreHeader = () => (
+export const BBABoxScoreHeader = ({ isNBA }) => (
     <div className="row g-2 gy-2 mb-2">
         <div className="col">Team</div>
-        <div className="col">First Half</div>
-        <div className="col">Second Half</div>
+        <div className="col">{!isNBA ? 'First Half' : '1st Qtr'}</div>
+        <div className="col">{!isNBA ? 'First Half' : '2nd Qtr'}</div>
+        {isNBA && (
+            <>
+                <div className="col">3rd Qtr</div>
+                <div className="col">4th Qtr</div>
+            </>
+        )}
         <div className="col">OT</div>
         <div className="col">Total</div>
         <div className="col">Possessions</div>
     </div>
 );
 
-export const BBABoxScoreRow = ({ team, teamStats }) => (
+export const BBABoxScoreRow = ({ team, teamStats, isNBA }) => (
     <div className="row g-2 gy-2 mb-1">
         <div className="col">{team}</div>
         <div className="col">{teamStats.FirstHalfScore}</div>
-        <div className="col">{teamStats.SecondHalfScore}</div>
+        <div className="col">
+            {isNBA ? teamStats.SecondQuarterScore : teamStats.SecondHalfScore}
+        </div>
+        {isNBA && <div className="col">{teamStats.SecondHalfScore}</div>}
+        {isNBA && <div className="col">{teamStats.FourthQuarterScore}</div>}
         <div className="col">{teamStats.OvertimeScore}</div>
         <div className="col">{teamStats.Points}</div>
         <div className="col">{teamStats.Possessions}</div>

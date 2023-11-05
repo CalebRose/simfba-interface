@@ -618,6 +618,8 @@ export const getLogo = (team) => {
             return logos.New_Orleans;
         case 'UOG':
             return logos.Guam;
+        case 'UWG':
+            return logos.West_Georgia;
         case 'UNLV':
             return logos.UNLV;
         case 'UPST':
@@ -883,6 +885,7 @@ export const getLogo = (team) => {
         case 'Brisbane Bullets':
             return ISLLogos.Brisbane;
         case 'Caledonia Gladiators':
+        case 'Caledonia':
             return ISLLogos.Caledonia;
         case 'Cazoo Baskonia':
             return ISLLogos.CazooBaskonia;
@@ -905,6 +908,7 @@ export const getLogo = (team) => {
         case 'LDLC ASVEL':
             return ISLLogos.LDLC;
         case 'London Lions':
+        case 'London':
             return ISLLogos.London;
         case 'Maccabi Tel Aviv':
             return ISLLogos.Maccabi;

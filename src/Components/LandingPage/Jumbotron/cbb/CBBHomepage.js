@@ -60,42 +60,28 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             matches &&
             matches.length > 0
         ) {
-            const currentWeek = cbb_Timestamp.CollegeWeek;
-            let latestMatch = '';
-            if (!cbb_Timestamp.GamesARan) {
-                latestMatch = 'A';
-            } else if (!cbb_Timestamp.GamesBRan) {
-                latestMatch = 'B';
+            let currentMatchIdx = -1;
+            for (let i = 0; i < matches.length; i++) {
+                const match = matches[i];
+                if (match.GameComplete) continue;
+                currentMatchIdx = i;
+                break;
             }
-            let prevWeek = currentWeek - 1;
-            let nextWeek = currentWeek + 2;
-            let prevIdx = 0;
-            let nextIdx = 0;
-            if (prevWeek < 0) {
-                nextWeek = nextWeek - prevWeek;
-                prevWeek = 0;
+            let prevIdx = currentMatchIdx - 2;
+            let nextIdx = currentMatchIdx + 2;
+            if (prevIdx < 0) {
+                prevIdx = 0;
             }
-            prevIdx = matches.findIndex(
-                (x) => x.Week === prevWeek && x.MatchOfWeek === latestMatch
-            );
-            nextIdx = matches.findIndex(
-                (x) => x.Week === nextWeek && x.MatchOfWeek === latestMatch
-            );
-            while (prevIdx === -1) {
-                prevWeek += 1;
-                prevIdx = matches.findIndex(
-                    (x) => x.Week === prevWeek && x.MatchOfWeek === latestMatch
-                );
-            }
-            while (nextIdx === -1) {
-                nextWeek -= 1;
-                nextIdx = matches.findIndex(
-                    (x) => x.Week === nextWeek && x.MatchOfWeek === latestMatch
-                );
+            if (nextIdx >= matches.length) {
+                nextIdx = matches.length - 1;
             }
 
-            let gameRange = matches.slice(prevIdx, nextIdx + 1);
-            setViewableMatches(() => gameRange);
+            if (currentMatchIdx === -1) {
+                setViewableMatches(() => []);
+            } else {
+                let gameRange = matches.slice(prevIdx, nextIdx + 1);
+                setViewableMatches(() => gameRange.slice(0, 5));
+            }
         }
     }, [cbb_Timestamp, matches]);
 

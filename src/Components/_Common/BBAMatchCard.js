@@ -1,6 +1,6 @@
 import React from 'react';
 import { getLogo } from '../../Constants/getLogo';
-import { RevealResults } from '../../_Utility/utilHelper';
+import { RevealCBBResults, RevealResults } from '../../_Utility/utilHelper';
 
 export const BBAMatchCard = ({ game, team, timestamp, isNBA }) => {
     const currentWeek = !isNBA ? timestamp.CollegeWeek : timestamp.NBAWeek;
@@ -10,6 +10,8 @@ export const BBAMatchCard = ({ game, team, timestamp, isNBA }) => {
         game.HomeTeam === teamAbbr ? game.AwayTeam : game.HomeTeam;
     const opposingCoach =
         game.HomeTeam === teamAbbr ? game.AwayTeamCoach : game.HomeTeamCoach;
+    const opposingRank =
+        game.HomeTeam === teamAbbr ? game.AwayRank : game.HomeRank;
     const wonTheMatch =
         game.GameComplete &&
         ((game.HomeTeam === teamAbbr && game.HomeTeamWin) ||
@@ -34,7 +36,7 @@ export const BBAMatchCard = ({ game, team, timestamp, isNBA }) => {
         detailsLabel = `${ConferenceLabel} Conference Game`;
     }
 
-    const showGame = RevealResults(game, timestamp);
+    const showGame = RevealCBBResults(game, timestamp);
 
     let cardClass = '';
     if (wonTheMatch && (showGame || game.Week < currentWeek)) {
@@ -47,7 +49,7 @@ export const BBAMatchCard = ({ game, team, timestamp, isNBA }) => {
 
     const cardTitle = `Week ${gameWeek}${game.MatchOfWeek} ${
         awayGame ? 'at ' : 'vs '
-    } ${opposingTeam}`;
+    } ${opposingRank > 0 ? `(${opposingRank})` : ''}${opposingTeam}`;
 
     return (
         <div className={cardClass} style={{ maxWidth: '540px' }}>

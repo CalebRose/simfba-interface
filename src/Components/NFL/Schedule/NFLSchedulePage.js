@@ -5,7 +5,7 @@ import Select from 'react-select';
 import { NFLStandings } from './NFLStandingsModal';
 import GameRow from '../../Schedule/CFBGameRow';
 import { connect } from 'react-redux';
-import { NFLSeasonsList } from '../../../Constants/CommonConstants';
+import { SeasonsList } from '../../../Constants/CommonConstants';
 import acronyms from '../../../Constants/acronyms';
 
 const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
@@ -16,7 +16,7 @@ const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
     // Hooks
     const [weekOptions, setWeekOptions] = useState(null);
     const [teamOptions, setTeamOptions] = useState(null);
-    const [seasons, setSeasons] = useState(NFLSeasonsList);
+    const [seasons, setSeasons] = useState(SeasonsList);
     const [allGames, setAllGames] = useState([]);
     const [viewGames, setViewGames] = useState([]);
     const [selectedTeam, setSelectedTeam] = useState(null);

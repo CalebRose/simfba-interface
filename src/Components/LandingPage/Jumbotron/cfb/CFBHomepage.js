@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
+import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { getLogo } from '../../../../Constants/getLogo';
 import routes from '../../../../Constants/routes';
@@ -148,6 +149,12 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         setNewsFeed(() => res);
     };
 
+    const getBread = () => {
+        toast(`Here's some bread!`, {
+            icon: '🍞'
+        });
+    };
+
     return (
         <>
             <div className="row mt-2">
@@ -271,6 +278,16 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                     >
                                         Depth Chart
                                     </Link>
+                                    {currentUser &&
+                                        currentUser.teamId === 59 && (
+                                            <button
+                                                type="button"
+                                                className="btn btn-small btn-outline-light"
+                                                onClick={getBread}
+                                            >
+                                                🍞
+                                            </button>
+                                        )}
                                 </div>
                             </div>
                             <div className="row mt-2 mb-2">

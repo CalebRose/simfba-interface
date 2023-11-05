@@ -816,7 +816,8 @@ td {
         border-spacing: 1rem;
     }
 
-    .cfb-news-feed {
+    .cfb-news-feed,
+    .nfl-news-feed {
         max-width: 100% !important;
         max-height: 33rem !important;
         overflow-y: auto;
@@ -911,6 +912,12 @@ hr.solid {
     overflow-y: auto;
 }
 
+.nfl-news-feed {
+    max-width: 27vw;
+    max-height: 33rem;
+    overflow-y: auto;
+}
+
 .cbb-news-feed {
     max-width: 55% !important;
     max-height: 33rem !important;
@@ -919,7 +926,8 @@ hr.solid {
 }
 
 .news-feed,
-.cfb-news-feed p {
+.cfb-news-feed,
+.nfl-news-feed p {
     font-size: small;
 }
 
@@ -1068,4 +1076,8 @@ hr.solid {
         width: 100% !important;
         font-size: 1.7vh;
     }
+}
+
+.btn-mobile {
+    height: 70px;
 }

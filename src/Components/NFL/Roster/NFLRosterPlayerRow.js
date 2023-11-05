@@ -38,16 +38,16 @@ export const NFLRosterPlayerRow = ({
     const tradeBlockTitle = `Place ${player.FirstName} on the Trade Block.`;
     const practiceSquadTitle = `Place ${player.FirstName} on the Practice Squad`;
     const offeredExtensionIdx =
-        Extensions &&
-        Extensions.findIndex((x) => x.IsActive === true && !x.IsAccepted);
+        Extensions && Extensions.findIndex((x) => x.IsActive === true);
+    const acceptedExtensionIdx =
+        Extensions && Extensions.findIndex((x) => x.IsAccepted === true);
     const offeredExtensionBool = Extensions && offeredExtensionIdx > -1;
+    const acceptedExtensionBool = Extensions && acceptedExtensionIdx > -1;
     const offeredExtension =
         offeredExtensionBool && Extensions[offeredExtensionIdx];
 
     let extensionStatus = '';
-    if (offeredExtensionBool) {
-        extensionStatus = 'btn-success';
-    } else if (
+    if (
         (offeredExtensionBool &&
             (offeredExtension.IsRejected || offeredExtension.Rejections > 2)) ||
         player.Rejections > 2
@@ -58,6 +58,11 @@ export const NFLRosterPlayerRow = ({
         player.Rejections > 0
     ) {
         extensionStatus = 'btn-warning';
+    } else if (offeredExtensionBool) {
+        extensionStatus = 'btn-info';
+    }
+    if (acceptedExtensionBool) {
+        extensionStatus = 'btn-success';
     }
 
     const injuryReservePlayer = () => {
@@ -158,7 +163,8 @@ export const NFLRosterPlayerRow = ({
                                 ) ||
                                 Contract.ContractLength > 1 ||
                                 player.IsPracticeSquad ||
-                                player.Rejections > 2
+                                player.Rejections > 2 ||
+                                acceptedExtensionBool
                             }
                         >
                             <i className="bi bi-currency-dollar" />
@@ -202,7 +208,7 @@ export const NFLRosterPlayerRow = ({
                                 !(
                                     userView &&
                                     canModify &&
-                                    (psCount <= 16 || player.IsPracticeSquad) &&
+                                    psCount <= 16 &&
                                     player.Experience <= 3
                                 )
                             }

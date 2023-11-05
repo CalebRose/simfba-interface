@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import toast from 'react-hot-toast';
 import BBAPlayerService from '../../../_Services/simNBA/BBAPlayerService';
 import BBAGameplanService from '../../../_Services/simNBA/BBAGameplanService';
 import GameplanPlayerRow from './CBBGameplanPlayerRow';
-import {
-    GetTableClass,
-    GetTableHoverClass
-} from '../../../Constants/CSSClassHelper';
+import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 import { Dropdown } from '../../_Common/Dropdown';
 import { BBAToggle } from '../../_Common/SwitchToggle';
 import {
@@ -28,8 +26,6 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
     const [opposingRoster, setOpposingRoster] = React.useState([]);
     const [gameplan, setGameplan] = React.useState(null);
     const [isValid, setValidation] = React.useState(true);
-    const [errorMessage, setErrorMessage] = React.useState('');
-    const [serviceMessage, setServiceMessage] = React.useState('');
     const [pgMinutes, setPGMinutes] = React.useState(0);
     const [sgMinutes, setSGMinutes] = React.useState(0);
     const [sfMinutes, setSFMinutes] = React.useState(0);
@@ -38,8 +34,10 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
     const [iProp, setIProp] = React.useState(0);
     const [midProp, setMidProp] = React.useState(0);
     const [thrProp, setThrProp] = React.useState(0);
-    const savingMessage = 'Saving...';
     const paceOptions = ['Very Fast', 'Fast', 'Balanced', 'Slow', 'Very Slow'];
+    const totalAllocationLimit = 30;
+    const indAllocationLimit = 15;
+    const allocationMinimum = 1;
     const offFormations = [
         'Balanced',
         'Motion',
@@ -82,7 +80,8 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
 
     const getRoster = async () => {
         let players = await playerService.GetPlayersByTeam(currentUser.cbb_id);
-        setRoster(() => players);
+        const sortedPlayers = players.sort((a, b) => b.Minutes - a.Minutes);
+        setRoster(() => sortedPlayers);
     };
 
     const updateGameplan = (name, value) => {
@@ -117,24 +116,92 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         return proportion >= min && proportion <= max;
     };
 
-    const setAllMinutes = (pg, sg, sf, pf, c, ip, mp, tp) => {
-        setPGMinutes(() => pg);
-        setSGMinutes(() => sg);
-        setSFMinutes(() => sf);
-        setPFMinutes(() => pf);
-        setCMinutes(() => c);
+    const setAllMinutes = (positionMinutes, ip, mp, tp) => {
+        setPGMinutes(() => positionMinutes['PG']);
+        setSGMinutes(() => positionMinutes['SG']);
+        setSFMinutes(() => positionMinutes['SF']);
+        setPFMinutes(() => positionMinutes['PF']);
+        setCMinutes(() => positionMinutes['C']);
         setIProp(() => ip);
         setMidProp(() => mp);
         setThrProp(() => tp);
+    };
+
+    const updateMinutes = (pos, mins, minsObj) => {
+        minsObj[pos] = (minsObj[pos] || 0) + mins;
+    };
+
+    const checkPlayerMinutes = (player, setValidation) => {
+        const { FirstName, LastName, P1Minutes, P2Minutes, P3Minutes } = player;
+        const totalMinutes = P1Minutes + P2Minutes + P3Minutes;
+        if (P1Minutes < 0 || P2Minutes < 0 || P3Minutes < 0) {
+            const message = `${FirstName} ${LastName} has allocated negative minutes. Please set the number of minutes to 0 or above.`;
+            setValidation(false);
+            toast.error(message, { duration: 6000 });
+            return false;
+        }
+        if (totalMinutes < 0) {
+            const message = `${FirstName} ${LastName} has allocated negative minutes. Please set the number of minutes to 0 or above.`;
+            setValidation(false);
+            toast.error(message, { duration: 6000 });
+            return false;
+        }
+
+        return true;
+    };
+
+    const checkRedshirtStatus = (player, setValidation) => {
+        if (
+            player.IsRedshirting &&
+            (player.P1Minutes > 0 ||
+                player.P2Minutes > 0 ||
+                player.P3Minutes > 0)
+        ) {
+            const min = player.P1Minutes + player.P2Minutes + player.P3Minutes;
+            const message = `${player.FirstName} ${player.LastName} is redshirted and is allocated ${min} minutes. Please set the number of minutes to 0.`;
+            toast.error(message, { duration: 6000 });
+            setValidation(false);
+            return false;
+        }
+
+        if (
+            player.IsRedshirting &&
+            (player.InsideProportion > 0 ||
+                player.MidRangeProportion > 0 ||
+                player.ThreePointProportion > 0)
+        ) {
+            const t =
+                player.InsideProportion +
+                player.MidRangeProportion +
+                player.ThreePointProportion;
+            const message = `${player.FirstName} ${player.LastName} is redshirted and is allocated ${t} in Shot Proportion. Please set the shot proportion for Inside, Mid, and 3pt to 0.`;
+            toast.error(message, { duration: 6000 });
+            setValidation(false);
+            return;
+        }
+        return true;
+    };
+
+    const checkAllocation = (name, shotType, proportion, limit) => {
+        if (proportion > limit) {
+            const message = `${name}'s ${shotType} Proportion is greater than 15. Please set the ${shotType} Shot proportion for this player to be between 1-15.`;
+            toast.error(message, { duration: 6000 });
+            setValidation(false);
+            return false;
+        }
+
+        return true;
     };
 
     const checkValidation = () => {
         let valid = true;
         const proportionLimit = 100;
         let currentProportion = 0;
-        let insideTotal = 0;
-        let midTotal = 0;
-        let threeTotal = 0;
+        let insideTotal = 0,
+            midTotal = 0,
+            threeTotal = 0;
+
+        // Get Proportion Min & Max Limits for Inside, MidRange, and 3Pt Shooting
         const insideMin = getProportionLimits(
             gameplan.OffensiveFormation,
             'Inside',
@@ -166,6 +233,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             false
         );
 
+        // Get MinuteRequirements for each position based on Offensive Style Chosen
         let message = '';
         const pgMinuteRequirement = GetBBAMinutesRequired(
             'PG',
@@ -192,267 +260,202 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             gameplan.OffensiveStyle,
             false
         );
-        let pgMin = 0;
-        let sgMin = 0;
-        let sfMin = 0;
-        let pfMin = 0;
-        let cMin = 0;
+        const positionMinutes = {};
 
         // Check Players
         for (let i = 0; i < roster.length; i++) {
-            const r = roster[i];
-            if (r.P1Minutes < 0) {
-                message = `${roster[i].FirstName} ${roster[i].LastName} has allocated ${roster[i].P1Minutes} minutes for position 1. Please set the number of minutes to 0 or above.`;
-                setErrorMessage(message);
-                valid = false;
-                setValidation(valid);
-                return;
-            }
-            if (r.P2Minutes < 0) {
-                message = `${roster[i].FirstName} ${roster[i].LastName} has allocated ${roster[i].P2Minutes} minutes for position 2. Please set the number of minutes to 0 or above.`;
-                setErrorMessage(message);
-                valid = false;
-                setValidation(valid);
-                return;
-            }
-            if (r.P3Minutes < 0) {
-                message = `${roster[i].FirstName} ${roster[i].LastName} has allocated ${roster[i].P3} minutes for position 3. Please set the number of minutes to 0 or above.`;
-                setErrorMessage(message);
-                valid = false;
-                setValidation(valid);
-                return;
-            }
+            const player = roster[i];
+            if (!checkPlayerMinutes(player, setValidation)) return;
 
-            if (r.PositionOne === 'PG') pgMin += r.P1Minutes;
-            else if (r.PositionOne === 'SG') sgMin += r.P1Minutes;
-            else if (r.PositionOne === 'SF') sfMin += r.P1Minutes;
-            else if (r.PositionOne === 'PF') pfMin += r.P1Minutes;
-            else if (r.PositionOne === 'C') cMin += r.P1Minutes;
-            if (r.PositionTwo === 'PG') pgMin += r.P2Minutes;
-            else if (r.PositionTwo === 'SG') sgMin += r.P2Minutes;
-            else if (r.PositionTwo === 'SF') sfMin += r.P2Minutes;
-            else if (r.PositionTwo === 'PF') pfMin += r.P2Minutes;
-            else if (r.PositionTwo === 'C') cMin += r.P2Minutes;
-            if (r.PositionThree === 'PG') pgMin += r.P3Minutes;
-            else if (r.PositionThree === 'SG') sgMin += r.P3Minutes;
-            else if (r.PositionThree === 'SF') sfMin += r.P3Minutes;
-            else if (r.PositionThree === 'PF') pfMin += r.P3Minutes;
-            else if (r.PositionThree === 'C') cMin += r.P3Minutes;
+            updateMinutes(
+                player.PositionOne,
+                player.P1Minutes,
+                positionMinutes
+            );
+            updateMinutes(
+                player.PositionTwo,
+                player.P2Minutes,
+                positionMinutes
+            );
+            updateMinutes(
+                player.PositionThree,
+                player.P3Minutes,
+                positionMinutes
+            );
 
-            if (
-                r.IsRedshirting &&
-                (r.P1Minutes > 0 || r.P2Minutes > 0 || r.P3Minutes > 0)
-            ) {
-                message = `${r.FirstName} ${r.LastName} is redshirted and is allocated ${roster[i].P1Minutes} minutes. Please set the number of minutes to 0.`;
-                setErrorMessage(message);
+            if (!checkRedshirtStatus(player, setValidation)) return;
+
+            let playerTotalMinutes =
+                player.P1Minutes + player.P2Minutes + player.P3Minutes;
+
+            if (playerTotalMinutes > player.Stamina) {
+                message = `${player.FirstName} ${player.LastName}'s minutes allocation cannot exceed its Stamina.`;
+                toast.error(message, { duration: 6000 });
                 valid = false;
                 setValidation(valid);
                 return;
             }
 
-            if (
-                r.IsRedshirting &&
-                (r.InsideProportion > 0 ||
-                    r.MidRangeProportion > 0 ||
-                    r.ThreePointProportion > 0)
-            ) {
-                const t =
-                    r.InsideProportion +
-                    r.MidRangeProportion +
-                    r.ThreePointProportion;
-                message = `${r.FirstName} ${r.LastName} is redshirted and is allocated ${t} in Shot Proportion. Please set the shot proportion for Inside, Mid, and 3pt to 0.`;
-                setErrorMessage(message);
-                valid = false;
-                setValidation(valid);
-                return;
+            if (playerTotalMinutes > 4) {
+                const totalProportion =
+                    player.InsideProportion +
+                    player.MidRangeProportion +
+                    player.ThreePointProportion;
+                if (totalProportion < allocationMinimum) {
+                    message = `${player.FirstName} ${player.LastName}'s total allocation is less than or equal to 1. Because this player has minutes, please set the total shot proportion for this player to be between 1-30.`;
+                    toast.error(message, { duration: 6000 });
+                    valid = false;
+                    setValidation(valid);
+                    return;
+                }
+                if (totalProportion > totalAllocationLimit) {
+                    message = `${player.FirstName} ${player.LastName}'s total allocation is greater than 30. Because this player has minutes, please set the total shot proportion for this player to be between 1-30.`;
+                    toast.error(message, { duration: 6000 });
+                    valid = false;
+                    setValidation(valid);
+                    return;
+                }
+                if (
+                    !checkAllocation(
+                        `${player.FirstName} ${player.LastName}`,
+                        '3pt',
+                        player.ThreePointProportion,
+                        indAllocationLimit
+                    ) ||
+                    !checkAllocation(
+                        `${player.FirstName} ${player.LastName}`,
+                        'Mid Range',
+                        player.MidRangeProportion,
+                        indAllocationLimit
+                    ) ||
+                    !checkAllocation(
+                        `${player.FirstName} ${player.LastName}`,
+                        'Inside',
+                        player.InsideProportion,
+                        indAllocationLimit
+                    )
+                )
+                    return;
             }
-
-            let playerTotalMinutes = r.P1Minutes + r.P2Minutes + r.P3Minutes;
-
-            if (playerTotalMinutes > r.Stamina) {
-                message = `${r.FirstName} ${r.LastName}'s minutes allocation cannot exceed its Stamina.`;
-                setErrorMessage(message);
-                valid = false;
-                setValidation(valid);
-                return;
-            }
-
-            insideTotal += r.InsideProportion;
-            midTotal += r.MidRangeProportion;
-            threeTotal += r.ThreePointProportion;
+            insideTotal += player.InsideProportion;
+            midTotal += player.MidRangeProportion;
+            threeTotal += player.ThreePointProportion;
         }
 
         // Check Gameplan
         // Proportion Requirements
         if (!IsProportionInLimits(threeTotal, threeMin, threeMax)) {
             message = `Three Point Proportion for Gameplan ${gameplan.Game} set to ${threeTotal}. Please make sure this allocation is between ${threeMin} and ${threeMax}.`;
-            setErrorMessage(message);
+            toast.error(message, { duration: 6000 });
             valid = false;
             setValidation(valid);
-            setAllMinutes(
-                pgMin,
-                sgMin,
-                sfMin,
-                pfMin,
-                cMin,
-                insideTotal,
-                midTotal,
-                threeTotal
-            );
+            setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
             return;
         }
 
         if (!IsProportionInLimits(midTotal, midMin, midMax)) {
             message = `Mid-Range Proportion for Gameplan ${gameplan.Game} set to ${midTotal}. Please make sure this allocation is between ${midMin} and ${midMax}.`;
-            setErrorMessage(message);
+            toast.error(message, { duration: 6000 });
             valid = false;
             setValidation(valid);
-            setAllMinutes(
-                pgMin,
-                sgMin,
-                sfMin,
-                pfMin,
-                cMin,
-                insideTotal,
-                midTotal,
-                threeTotal
-            );
+            setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
             return;
         }
 
         if (!IsProportionInLimits(insideTotal, insideMin, insideMax)) {
             message = `Inside Proportion for Gameplan ${gameplan.Game} set to ${insideTotal}. Please make sure this allocation is between ${insideMin} and ${insideMax}.`;
-            setErrorMessage(message);
+            toast.error(message, { duration: 6000 });
             valid = false;
             setValidation(valid);
-            setAllMinutes(
-                pgMin,
-                sgMin,
-                sfMin,
-                pfMin,
-                cMin,
-                insideTotal,
-                midTotal,
-                threeTotal
-            );
+            setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
             return;
         }
 
+        // Check the current allocated proportion and ensure it's within the formation limits
         currentProportion = threeTotal + midTotal + insideTotal;
         if (
             currentProportion > proportionLimit ||
             currentProportion < proportionLimit
         ) {
             message = `Total Proportion for Gameplan ${gameplan.Game} set to ${currentProportion}. Please make sure your allocation adds up to 100.`;
-            setErrorMessage(message);
+            toast.error(message, { duration: 6000 });
             valid = false;
             setValidation(valid);
             return;
         }
 
-        // Style Requirement
-        if (pgMin > pgMinuteRequirement || pgMin < pgMinuteRequirement) {
-            message = `Total Minutes between all Point Guards adds up to ${pgMin}.\nPlease make overall total to ${pgMinuteRequirement}.`;
-            setErrorMessage(message);
+        // Check Total Minute Requirement based on offensive style
+        if (
+            positionMinutes['PG'] > pgMinuteRequirement ||
+            positionMinutes['PG'] < pgMinuteRequirement
+        ) {
+            message = `Total Minutes between all Point Guards adds up to ${positionMinutes['PG']}.\nPlease make overall total to ${pgMinuteRequirement}.`;
+            toast.error(message, { duration: 6000 });
             valid = false;
             setValidation(valid);
-            setAllMinutes(
-                pgMin,
-                sgMin,
-                sfMin,
-                pfMin,
-                cMin,
-                insideTotal,
-                midTotal,
-                threeTotal
-            );
+            setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
             return;
         }
 
-        if (sgMin > sgMinuteRequirement || sgMin < sgMinuteRequirement) {
-            message = `Total Minutes between all Shooting Guards adds up to ${sgMin}.\nPlease make overall total to ${sgMinuteRequirement}.`;
-            setErrorMessage(message);
+        if (
+            positionMinutes['SG'] > sgMinuteRequirement ||
+            positionMinutes['SG'] < sgMinuteRequirement
+        ) {
+            message = `Total Minutes between all Shooting Guards adds up to ${positionMinutes['SG']}.\nPlease make overall total to ${sgMinuteRequirement}.`;
+            toast.error(message, { duration: 6000 });
             valid = false;
             setValidation(valid);
-            setAllMinutes(
-                pgMin,
-                sgMin,
-                sfMin,
-                pfMin,
-                cMin,
-                insideTotal,
-                midTotal,
-                threeTotal
-            );
+            setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
             return;
         }
 
-        if (sfMin > sfMinuteRequirement || sfMin < sfMinuteRequirement) {
-            message = `Total Minutes between all Small Forwards adds up to ${sfMin}.\nPlease make overall total to ${sfMinuteRequirement}.`;
-            setErrorMessage(message);
+        if (
+            positionMinutes['SF'] > sfMinuteRequirement ||
+            positionMinutes['SF'] < sfMinuteRequirement
+        ) {
+            message = `Total Minutes between all Small Forwards adds up to ${positionMinutes['SF']}.\nPlease make overall total to ${sfMinuteRequirement}.`;
+            toast.error(message, { duration: 6000 });
             valid = false;
             setValidation(valid);
-            setAllMinutes(
-                pgMin,
-                sgMin,
-                sfMin,
-                pfMin,
-                cMin,
-                insideTotal,
-                midTotal,
-                threeTotal
-            );
+            setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
             return;
         }
 
-        if (pfMin > pfMinuteRequirement || pfMin < pfMinuteRequirement) {
-            message = `Total Minutes between all Power Forwards adds up to ${pfMin}.\nPlease make overall total to ${pfMinuteRequirement}.`;
-            setErrorMessage(message);
+        if (
+            positionMinutes['PF'] > pfMinuteRequirement ||
+            positionMinutes['PF'] < pfMinuteRequirement
+        ) {
+            message = `Total Minutes between all Power Forwards adds up to ${positionMinutes['PF']}.\nPlease make overall total to ${pfMinuteRequirement}.`;
+            toast.error(message, { duration: 6000 });
             valid = false;
             setValidation(valid);
-            setAllMinutes(
-                pgMin,
-                sgMin,
-                sfMin,
-                pfMin,
-                cMin,
-                insideTotal,
-                midTotal,
-                threeTotal
-            );
+            setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
             return;
         }
 
-        if (cMin > cMinuteRequirement || cMin < cMinuteRequirement) {
-            message = `Total Minutes between all Centers adds up to ${cMin}.\nPlease make overall total to ${cMinuteRequirement}.`;
-            setErrorMessage(message);
+        if (
+            positionMinutes['C'] > cMinuteRequirement ||
+            positionMinutes['C'] < cMinuteRequirement
+        ) {
+            message = `Total Minutes between all Centers adds up to ${positionMinutes['C']}.\nPlease make overall total to ${cMinuteRequirement}.`;
+            toast.error(message, { duration: 6000 });
             valid = false;
             setValidation(valid);
-            setAllMinutes(
-                pgMin,
-                sgMin,
-                sfMin,
-                pfMin,
-                cMin,
-                insideTotal,
-                midTotal,
-                threeTotal
-            );
+            setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
             return;
         }
-        setAllMinutes(
-            pgMin,
-            sgMin,
-            sfMin,
-            pfMin,
-            cMin,
-            insideTotal,
-            midTotal,
-            threeTotal
-        );
+        setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
         // Set the validation
         setValidation(valid);
-        setErrorMessage('');
+        toast.success('Ready to save!', { duration: 3000 });
+    };
+
+    const SaveToast = () => {
+        toast.promise(saveGameplanOptions(), {
+            loading: 'Saving...',
+            success: 'Successfully update Gameplan and Minutes!',
+            error: 'Error! Could not save gameplan. Please reach out to admins.'
+        });
     };
 
     const saveGameplanOptions = async () => {
@@ -464,16 +467,12 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             teamId: currentUser.cbb_id
         };
 
-        setServiceMessage(savingMessage);
         const save = await gameplanService.SaveGameplanOptions(
             gameplanOptionsDto,
             'cbb'
         );
 
         if (save.ok) {
-            const message = `Successfully update Gameplan and Minutes`;
-            setServiceMessage(message);
-            setTimeout(() => setServiceMessage(''), 5000);
         } else {
             alert('HTTP-Error:', save.status);
         }
@@ -587,51 +586,18 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
                                         />
                                     </div>
                                 )}
-                            {isValid ? (
-                                <div className="col-md-auto">
-                                    <button
-                                        className="btn btn-primary"
-                                        onClick={saveGameplanOptions}
-                                    >
-                                        Save
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="col-md-auto">
-                                    <button
-                                        className="btn btn-primary"
-                                        disabled
-                                    >
-                                        Save
-                                    </button>
-                                </div>
-                            )}
+                            <div className="col-md-auto">
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={SaveToast}
+                                    disabled={!isValid}
+                                >
+                                    Save
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                {serviceMessage.length > 0 ||
-                    (errorMessage.length > 0 && (
-                        <div className="row mt-2 mb-2">
-                            {serviceMessage.length > 0 &&
-                                serviceMessage !== savingMessage && (
-                                    <div className="alert alert-success">
-                                        {serviceMessage}
-                                    </div>
-                                )}
-                            {serviceMessage.length > 0 &&
-                                serviceMessage === savingMessage && (
-                                    <div className="alert alert-secondary">
-                                        {serviceMessage}
-                                    </div>
-                                )}
-                            {errorMessage.length > 0 && (
-                                <div className="alert alert-danger">
-                                    {errorMessage}
-                                </div>
-                            )}
-                        </div>
-                    ))}
 
                 <PaceModal />
                 <OffensiveFormationModal />

@@ -49,10 +49,10 @@ const BBATeamPlayerRow = (props) => {
             <td className="align-middle">{player.Height}</td>
             <td className="align-middle">{player.Stars}</td>
             <td className="align-middle">{player.OverallGrade}</td>
+            <td className="align-middle">{player.FinishingGrade}</td>
             <td className="align-middle">{player.Shooting2Grade}</td>
             <td className="align-middle">{player.Shooting3Grade}</td>
             <td className="align-middle">{player.FreeThrowGrade}</td>
-            <td className="align-middle">{player.FinishingGrade}</td>
             <td className="align-middle">{player.BallworkGrade}</td>
             <td className="align-middle">{player.ReboundingGrade}</td>
             <td className="align-middle">{player.InteriorDefenseGrade}</td>

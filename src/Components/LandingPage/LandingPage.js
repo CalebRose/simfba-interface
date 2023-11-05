@@ -105,9 +105,72 @@ const LandingPage = ({ currentUser }) => {
 
     return (
         <div className="container-fluid">
-            <div className="row mt-3 justify-content-start">
+            <div
+                className={`row mt-3 justify-content-${
+                    !isMobile ? 'start' : 'center'
+                }`}
+            >
                 {isMobile ? (
-                    ''
+                    <div className="row">
+                        <div className="btn-group-sm btn-group d-flex">
+                            {currentUser && currentUser.teamId && (
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-light btn-sm mb-2 btn-mobile"
+                                    value="CFB"
+                                    onClick={selectSport}
+                                >
+                                    <img
+                                        className="image-standings-logo"
+                                        src={cfbLogo}
+                                    />{' '}
+                                    SimCFB
+                                </button>
+                            )}
+                            {currentUser && currentUser.NFLTeamID && (
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-light btn-sm mb-2 btn-mobile"
+                                    value="NFL"
+                                    onClick={selectSport}
+                                >
+                                    <img
+                                        className="image-standings-logo"
+                                        src={nflLogo}
+                                    />{' '}
+                                    SimNFL
+                                </button>
+                            )}
+                            {currentUser && currentUser.cbb_id && (
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-light btn-sm mb-2 btn-mobile"
+                                    value="CBB"
+                                    onClick={selectSport}
+                                >
+                                    <img
+                                        className="image-standings-logo"
+                                        src={cbbLogo}
+                                    />{' '}
+                                    SimCBB
+                                </button>
+                            )}
+                            {currentUser && currentUser.NBATeamID && (
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-light btn-sm btn-mobile"
+                                    value="NBA"
+                                    onClick={selectSport}
+                                >
+                                    <img
+                                        className="image-standings-logo"
+                                        src={nbaLogo}
+                                    />{' '}
+                                    SimNBA
+                                </button>
+                            )}
+                        </div>
+                    </div>
                 ) : (
                     <div className="col-1">
                         <div className="btn-group-sm btn-group-vertical d-flex">

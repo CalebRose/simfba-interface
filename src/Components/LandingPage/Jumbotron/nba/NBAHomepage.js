@@ -54,46 +54,28 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
             matches &&
             matches.length > 0
         ) {
-            const currentWeek = cbb_Timestamp.NBAWeek;
-            let latestMatch = '';
-            if (!cbb_Timestamp.GamesARan) {
-                latestMatch = 'A';
-            } else if (!cbb_Timestamp.GamesBRan) {
-                latestMatch = 'B';
-            } else if (!cbb_Timestamp.GamesCRan) {
-                latestMatch = 'C';
-            } else if (!cbb_Timestamp.GamesDRan) {
-                latestMatch = 'D';
+            let currentMatchIdx = -1;
+            for (let i = 0; i < matches.length; i++) {
+                const match = matches[i];
+                if (match.GameComplete) continue;
+                currentMatchIdx = i;
+                break;
             }
-            let prevWeek = currentWeek - 1;
-            let nextWeek = currentWeek + 1;
-            let prevIdx = 0;
-            let nextIdx = 0;
-            if (prevWeek < 0) {
-                nextWeek = nextWeek - prevWeek;
-                prevWeek = 0;
+            let prevIdx = currentMatchIdx - 2;
+            let nextIdx = currentMatchIdx + 2;
+            if (prevIdx < 0) {
+                prevIdx = 0;
             }
-            prevIdx = matches.findIndex(
-                (x) => x.Week === prevWeek && x.MatchOfWeek === latestMatch
-            );
-            nextIdx = matches.findIndex(
-                (x) => x.Week === nextWeek && x.MatchOfWeek === latestMatch
-            );
-            while (prevIdx === -1) {
-                prevWeek += 1;
-                prevIdx = matches.findIndex(
-                    (x) => x.Week === prevWeek && x.MatchOfWeek === latestMatch
-                );
-            }
-            while (nextIdx === -1) {
-                nextWeek -= 1;
-                nextIdx = matches.findIndex(
-                    (x) => x.Week === nextWeek && x.MatchOfWeek === latestMatch
-                );
+            if (nextIdx >= matches.length) {
+                nextIdx = matches.length - 1;
             }
 
-            let gameRange = matches.slice(prevIdx, nextIdx + 1);
-            setViewableMatches(() => gameRange);
+            if (currentMatchIdx === -1) {
+                setViewableMatches(() => []);
+            } else {
+                let gameRange = matches.slice(prevIdx, nextIdx + 1);
+                setViewableMatches(() => gameRange.slice(0, 5));
+            }
         }
     }, [cbb_Timestamp, matches]);
 
@@ -152,52 +134,109 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
             </div>
             <div className="row mt-2">
                 <div className="col-md-4">
-                    <div className="row mt-2 mb-2">
-                        <div className="btn-group btn-group-sm d-flex">
-                            <Link
-                                to={routes.NBA_ROSTER}
-                                role="button"
-                                className="btn btn-primary btn-sm me-2 shadow"
-                            >
-                                Roster
-                            </Link>
-                            <Link
-                                to={routes.NBA_GAMEPLAN}
-                                role="button"
-                                className="btn btn-primary btn-md me-2 shadow"
-                            >
-                                Gameplan
-                            </Link>
-                            <Link
-                                to={routes.NBA_FREE_AGENCY}
-                                role="button"
-                                className="btn btn-primary btn-md me-2 shadow"
-                            >
-                                Free Agency
-                            </Link>
-                            <Link
-                                to={routes.NBA_TRADEBLOCK}
-                                role="button"
-                                className="btn btn-primary btn-md me-2 shadow"
-                            >
-                                Trade
-                            </Link>
-                            <Link
-                                to={routes.CBB_SCHEDULE}
-                                role="button"
-                                className="btn btn-primary btn-md me-2 shadow"
-                            >
-                                Schedule
-                            </Link>
-                            <Link
-                                to={routes.CBB_STATS}
-                                role="button"
-                                className="btn btn-primary btn-md me-2 shadow"
-                            >
-                                Stats
-                            </Link>
-                        </div>
-                    </div>
+                    {isMobile ? (
+                        <>
+                            <div className="row mt-2 mb-2">
+                                <div className="btn-group btn-group-sm d-flex">
+                                    <Link
+                                        to={routes.NBA_ROSTER}
+                                        role="button"
+                                        className="btn btn-primary btn-sm me-2 shadow"
+                                    >
+                                        Roster
+                                    </Link>
+                                    <Link
+                                        to={routes.NBA_GAMEPLAN}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                    >
+                                        Gameplan
+                                    </Link>
+                                    <Link
+                                        to={routes.NBA_TRADEBLOCK}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                    >
+                                        Trade
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className="row mt-2 mb-2">
+                                <div className="btn-group btn-group-sm d-flex">
+                                    <Link
+                                        to={routes.NBA_FREE_AGENCY}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                    >
+                                        Free Agency
+                                    </Link>
+                                    <Link
+                                        to={routes.CBB_SCHEDULE}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                    >
+                                        Schedule
+                                    </Link>
+                                    <Link
+                                        to={routes.CBB_STATS}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                    >
+                                        Stats
+                                    </Link>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="row mt-2 mb-2">
+                                <div className="btn-group btn-group-sm d-flex">
+                                    <Link
+                                        to={routes.NBA_ROSTER}
+                                        role="button"
+                                        className="btn btn-primary btn-sm me-2 shadow"
+                                    >
+                                        Roster
+                                    </Link>
+                                    <Link
+                                        to={routes.NBA_GAMEPLAN}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                    >
+                                        Gameplan
+                                    </Link>
+                                    <Link
+                                        to={routes.NBA_FREE_AGENCY}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                    >
+                                        Free Agency
+                                    </Link>
+                                    <Link
+                                        to={routes.NBA_TRADEBLOCK}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                    >
+                                        Trade
+                                    </Link>
+                                    <Link
+                                        to={routes.CBB_SCHEDULE}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                    >
+                                        Schedule
+                                    </Link>
+                                    <Link
+                                        to={routes.CBB_STATS}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                    >
+                                        Stats
+                                    </Link>
+                                </div>
+                            </div>
+                        </>
+                    )}
                     {viewableMatches && viewableMatches.length > 0 ? (
                         viewableMatches.map((x) => {
                             return (

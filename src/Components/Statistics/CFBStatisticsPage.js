@@ -28,7 +28,6 @@ import OLineHeaders from './CFBStatsComponents/OLineStats';
 import {
     NFLConferenceList,
     NFLDivisionList,
-    NFLSeasonsList,
     SeasonsList
 } from '../../Constants/CommonConstants';
 import { StatsPageButton } from '../_Common/Buttons';
@@ -295,7 +294,6 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                 return { label: x, value: x };
             })
         ];
-        setSeasons(() => (choice === 'nfl' ? NFLSeasonsList : SeasonsList));
         setWeekOptions(() => weekOptionsForm);
         setLeagueView(() => choice);
     };

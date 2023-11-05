@@ -3,6 +3,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import Select from 'react-select';
+import toast from 'react-hot-toast';
 import {
     ArchetypesListForFA,
     LetterGradesList,
@@ -233,8 +234,16 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
         let res;
         if (viewingFA || viewingPS) {
             res = await _rosterService.CreateFAOffer(offer);
+            toast(
+                `Created Free Agency Offer for ${player.Position} ${player.FirstName} ${player.LastName}`,
+                { duration: 3000 }
+            );
         } else {
             res = await _rosterService.CreateWaiverOffer(offer);
+            toast(
+                `Created Waiver Wire Offer for ${player.Position} ${player.FirstName} ${player.LastName}`,
+                { duration: 3000 }
+            );
         }
         const offerData = await res.json();
         let players = [];
@@ -297,8 +306,16 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
         let res;
         if (viewingFA || viewingPS) {
             res = await _rosterService.CancelFAOffer(offer);
+            toast(
+                `Cancelled Free Agency Offer for ${player.Position} ${player.FirstName} ${player.LastName}`,
+                { duration: 3000 }
+            );
         } else {
             res = await _rosterService.CancelWaiverOffer(offer);
+            toast(
+                `Created Waiver Wire Offer for ${player.Position} ${player.FirstName} ${player.LastName}`,
+                { duration: 3000 }
+            );
         }
         if (res) {
             let players = [];

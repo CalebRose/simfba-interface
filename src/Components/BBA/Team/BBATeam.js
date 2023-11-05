@@ -9,8 +9,8 @@ import ConfirmRedshirtModal from '../../Roster/RedshirtModal';
 import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 
 const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
-    let teamService = new BBATeamService();
-    let playerService = new BBAPlayerService();
+    let _teamService = new BBATeamService();
+    let _playerService = new BBAPlayerService();
     const [userTeam, setUserTeam] = React.useState('');
     const [team, setTeam] = React.useState('');
     const [teams, setTeams] = React.useState('');
@@ -36,13 +36,13 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
     }, [team]);
 
     const getTeamRecord = async (id) => {
-        let response = await teamService.GetTeamByTeamId(id);
+        let response = await _teamService.GetTeamByTeamId(id);
         setTeam(response);
         setUserTeam(response);
     };
 
     const getTeams = async () => {
-        let response = await teamService.GetActiveCollegeTeams();
+        let response = await _teamService.GetActiveCollegeTeams();
         response = response.filter((x) => x.ID !== currentUser.cbb_id);
         setTeams(response);
         setFilteredTeams(response);
@@ -50,7 +50,7 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
 
     const getRosterRecords = async (id) => {
         if (id !== null || id > 0) {
-            let response = await playerService.GetPlayersByTeam(id);
+            let response = await _playerService.GetPlayersByTeam(id);
             // Pad Player Attributes to have Letters instead of numbers
             setRoster(response);
         }
@@ -80,10 +80,15 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
             RedshirtStatus: true
         };
 
-        const response = await playerService.AssignRedshirt(dto);
+        const response = await _playerService.AssignRedshirt(dto);
         if (!response) return;
 
         setRoster(() => playerRoster);
+    };
+
+    const exportRoster = async () => {
+        // Removing if-check on if team is the user's...
+        let response = _playerService.ExportRoster(team.ID, team.Team);
     };
 
     const playerRows = roster ? (
@@ -161,6 +166,15 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
                                 </ul>
                             </div>
                         </div>
+                        <div className="col-md-auto">
+                            <button
+                                type="button"
+                                className="btn btn-outline-info"
+                                onClick={exportRoster}
+                            >
+                                Export
+                            </button>
+                        </div>
                     </div>
                     <div className="row mt-3 mb-5">
                         <table className={tableHoverClass}>
@@ -172,10 +186,10 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
                                     <th scope="col">Height</th>
                                     <th scope="col">Stars</th>
                                     <th scope="col">Overall</th>
+                                    <th scope="col">Finishing</th>
                                     <th scope="col">2pt Shooting</th>
                                     <th scope="col">3pt Shooting</th>
                                     <th scope="col">Free Throw</th>
-                                    <th scope="col">Finishing</th>
                                     <th scope="col">Ballwork</th>
                                     <th scope="col">Rebounding</th>
                                     <th scope="col">Int. Defense</th>

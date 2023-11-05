@@ -2,28 +2,34 @@ import React from 'react';
 import { getLogo } from '../../../Constants/getLogo';
 
 const CBBGameRow = (props) => {
-    const { idx, game, ts } = props;
+    const { idx, game, ts, viewType } = props;
 
     const currentSeason = ts.SeasonID;
     const pastSeason = game.SeasonID < currentSeason;
     const modalTarget = `#gameModal`;
     let cardClass = 'card card-small mb-3 bba-match-row';
+    const currentWeek = ts.NBAWeek;
     const ShowAGame =
         ts.GamesARan && game.Week === currentWeek && game.MatchOfWeek === 'A';
     const ShowBGame =
         ts.GamesBRan && game.Week === currentWeek && game.MatchOfWeek === 'B';
-    const currentWeek = ts.CollegeWeek;
+    const ShowCGame =
+        ts.GamesCRan && game.Week === currentWeek && game.MatchOfWeek === 'C';
+    const ShowDGame =
+        ts.GamesDRan && game.Week === currentWeek && game.MatchOfWeek === 'D';
     const homeTeam = {
         Team: game.HomeTeam,
         TeamScore: game.HomeTeamScore,
         TeamWin: game.HomeTeamWin,
-        Coach: game.HomeTeamCoach
+        Coach: game.HomeTeamCoach,
+        Rank: game.HomeTeamRank
     };
     const awayTeam = {
         Team: game.AwayTeam,
         TeamScore: game.AwayTeamScore,
         TeamWin: game.AwayTeamWin,
-        Coach: game.AwayTeamCoach
+        Coach: game.AwayTeamCoach,
+        Rank: game.AwayTeamRank
     };
     const HomeTeamLogo = getLogo(homeTeam.Team);
     const AwayTeamLogo = getLogo(awayTeam.Team);
@@ -57,7 +63,11 @@ const CBBGameRow = (props) => {
                 <div className="col-md-8 mv-description">
                     <div className="card-body">
                         <h6 className="card-title">
-                            Week {GameWeek} {homeTeam.Team} vs {awayTeam.Team}
+                            {viewType !== 'WEEK' ? <>Week {GameWeek} </> : ''}
+                            {homeTeam.Rank > 0 ? `(${homeTeam.Rank}) ` : ''}
+                            {homeTeam.Team} vs{' '}
+                            {awayTeam.Rank > 0 ? `(${awayTeam.Rank}) ` : ''}
+                            {awayTeam.Team}
                         </h6>
                         <strong className="card-subtitle">
                             Home: {homeTeam.Coach} | Away: {awayTeam.Coach}
@@ -68,6 +78,8 @@ const CBBGameRow = (props) => {
                                 (game.Week < currentWeek ||
                                     ShowAGame ||
                                     ShowBGame ||
+                                    ShowCGame ||
+                                    ShowDGame ||
                                     pastSeason) && (
                                     <>
                                         {'| '}

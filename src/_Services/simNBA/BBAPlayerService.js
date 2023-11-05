@@ -68,4 +68,50 @@ export default class BBAPlayerService {
     async CutNBAPlayerFromRoster(playerID) {
         return await GetCall(`${BBAURL}nba/players/cut/${playerID}`);
     }
+
+    async ExportRoster(teamID, teamName) {
+        let json;
+        if (teamID > 0) {
+            let fullURL = `${BBAURL}export/cbb/team/${teamID}`;
+            let response = await fetch(fullURL, {
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('token'),
+                    'Content-Type': 'text/csv'
+                },
+                responseType: 'blob'
+            })
+                .then((res) => res.blob())
+                .then((blob) => saveAs(blob, `${teamName}.csv`));
+
+            if (response.ok) {
+                alert('Export Complete');
+            } else {
+                alert('HTTP-Error:', response.status);
+            }
+        }
+        return json;
+    }
+
+    async ExportNBARoster(teamID, teamName) {
+        let json;
+        if (teamID > 0) {
+            let fullURL = `${BBAURL}export/nba/team/${teamID}`;
+            let response = await fetch(fullURL, {
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('token'),
+                    'Content-Type': 'text/csv'
+                },
+                responseType: 'blob'
+            })
+                .then((res) => res.blob())
+                .then((blob) => saveAs(blob, `${teamName}.csv`));
+
+            if (response.ok) {
+                alert('Export Complete');
+            } else {
+                alert('HTTP-Error:', response.status);
+            }
+        }
+        return json;
+    }
 }

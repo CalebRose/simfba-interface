@@ -15,7 +15,9 @@ const NBATeamPlayerRow = ({
     cut,
     extend,
     tradeblock,
-    team
+    team,
+    twoWayCount,
+    gLeagueCount
 }) => {
     let modalTarget = `#playerModal${idx}`;
     let tradeBlockTarget = `#tradeBlock${idx}`;
@@ -99,10 +101,10 @@ const NBATeamPlayerRow = ({
                     {player.Age} | {player.Year}
                 </td>
                 <td className="align-middle">{player.Overall}</td>
+                <td className="align-middle">{player.Finishing}</td>
                 <td className="align-middle">{player.Shooting2}</td>
                 <td className="align-middle">{player.Shooting3}</td>
                 <td className="align-middle">{player.FreeThrow}</td>
-                <td className="align-middle">{player.Finishing}</td>
                 <td className="align-middle">{player.Ballwork}</td>
                 <td className="align-middle">{player.Rebounding}</td>
                 <td className="align-middle">{player.InteriorDefense}</td>
@@ -193,13 +195,18 @@ const NBATeamPlayerRow = ({
                                 title="G-League"
                                 data-bs-toggle="modal"
                                 data-bs-target={gLeagueTarget}
+                                disabled={gLeagueCount > 9 && !player.IsGLeague}
                             >
                                 <i className="bi bi-person-fill-lock" />
                             </button>
                         ) : (
                             <button
                                 type="button"
-                                className="btn btn-secondary"
+                                className={`btn ${
+                                    player.IsGLeague
+                                        ? 'btn-warning'
+                                        : 'btn-secondary'
+                                }`}
                                 title="G-League"
                                 disabled
                             >
@@ -215,6 +222,7 @@ const NBATeamPlayerRow = ({
                                 title="Two-Way"
                                 data-bs-toggle="modal"
                                 data-bs-target={twoWayTarget}
+                                disabled={twoWayCount > 1 && !player.IsTwoWay}
                             >
                                 {player.IsTwoWay ? (
                                     <i className="bi bi-person-fill-up" />

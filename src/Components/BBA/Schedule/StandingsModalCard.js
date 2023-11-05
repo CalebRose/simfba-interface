@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { getLogo } from '../../../Constants/getLogo';
 import { StandingsRow } from '../../_Common/NBAStandingsCard';
 
 const StandingsCard = ({ standings }) => {

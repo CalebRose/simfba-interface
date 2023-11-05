@@ -356,6 +356,7 @@ export const logos = {
     Washington: baseUrl + '/logos/Washington_Huskies_logo.png',
     Washington_State: baseUrl + '/logos/Washington_State_Cougars_logo.png',
     Weber_State: baseUrl + '/logos/Weber_State_Wildcats_logo.png',
+    West_Georgia: `${baseUrl}/logos/West_Georgia_Wolves_logo.png`,
     West_Virginia: baseUrl + '/logos/West_Virginia_Mountaineers_logo.png',
     Western_Carolina: baseUrl + '/logos/Western_Carolina_Catamounts_logo.png',
     Western_Illinois: baseUrl + '/logos/Western_Illinois_Leathernecks_logo.png',

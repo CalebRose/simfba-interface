@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import toast from 'react-hot-toast';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
@@ -300,8 +301,11 @@ const CFBRecruitingOverview = ({
                 setRecruitingProfile(crootProfile);
                 setFilteredRecruits(filteredRecruits);
             }
+            toast.success(
+                `${recruit.Position} ${recruit.FirstName} ${recruit.LastName} has been added to your recruiting board.`
+            );
         } else {
-            alert(
+            toast.error(
                 'Nice try, but you have already reached your limit on committed recruits.'
             );
         }
@@ -326,6 +330,9 @@ const CFBRecruitingOverview = ({
             SeasonID: cfb_Timestamp.CollegeSeasonID,
             Message: message
         };
+        toast.error(
+            `Hey man I'm not gonna judge, but you should be careful. You don't want any rumors of your team popping up out of the blue...`
+        );
         setShowCollusionButton(false);
         await _easterEggService.CollusionCall(dto);
     };
@@ -554,6 +561,7 @@ const CFBRecruitingOverview = ({
                                 next={loadMoreRecords}
                                 hasMore={true}
                                 scrollThreshold={0.8}
+                                height={570}
                                 loader={
                                     <div className="row justify-content-center">
                                         Loading More Croots...

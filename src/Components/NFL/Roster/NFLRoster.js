@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
+import toast from 'react-hot-toast';
 import {
     GetTableHoverClass,
     GetTableSmallClass
@@ -224,6 +225,12 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                 r.push(roster[i]);
             }
         }
+        toast(
+            `${player.Position} ${player.FirstName} ${player.LastName} has been cut from the team.`,
+            {
+                icon: '✂️'
+            }
+        );
         const t = { ...team };
         const contract = player.Contract;
         t.Capsheet.Y1Bonus -= contract.Y1Bonus;
@@ -255,7 +262,12 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
             const offerObj = { offerData };
             r[playerIDX].Extensions.push(offerObj);
         }
-
+        toast(
+            `Successfully sent extension offer to ${player.Position} ${player.FirstName} ${player.LastName}`,
+            {
+                icon: '💰'
+            }
+        );
         setRoster(() => r);
     };
 
@@ -265,7 +277,12 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
         const playerIDX = r.findIndex((x) => x.ID === player.ID);
         const exs = r[playerIDX].Extensions.filter((x) => x.ID !== offer.ID);
         r[playerIDX].Extensions = exs;
-
+        toast(
+            `Cancelled extension offer for ${player.Position} ${player.FirstName} ${player.LastName}`,
+            {
+                icon: '😞'
+            }
+        );
         setRoster(() => r);
     };
     const TradeBlockPlayer = async (player) => {
@@ -282,7 +299,21 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                 (x) => x.ID === player.ID
             );
             currentViewRoster[viewIdx].IsOnTradeBlock = toggle;
-
+            if (currentViewRoster[viewIdx].IsOnTradeBlock) {
+                toast(
+                    `Successfully placed ${player.Position} ${player.FirstName} ${player.LastName} on the trade block.`,
+                    {
+                        icon: '🔃'
+                    }
+                );
+            } else {
+                toast(
+                    `Successfully removed ${player.Position} ${player.FirstName} ${player.LastName} from the trade block.`,
+                    {
+                        icon: '🔃'
+                    }
+                );
+            }
             setRoster(() => currentRoster);
             setViewRoster(() => currentViewRoster);
         }
@@ -299,7 +330,12 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
         const currentViewRoster = [...viewRoster];
         const viewIdx = currentViewRoster.findIndex((x) => x.ID === player.ID);
         currentViewRoster[viewIdx].IsPracticeSquad = toggle;
-
+        toast(
+            `Successfully placed ${player.Position} ${player.FirstName} ${player.LastName} on the Practice Squad.`,
+            {
+                icon: '⛔'
+            }
+        );
         setRoster(() => currentRoster);
         setViewRoster(() => currentViewRoster);
     };
@@ -315,7 +351,21 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
         const currentViewRoster = [...viewRoster];
         const viewIdx = currentViewRoster.findIndex((x) => x.ID === player.ID);
         currentViewRoster[viewIdx].InjuryReserve = toggle;
-
+        if (currentViewRoster[viewIdx].InjuryReserve) {
+            toast(
+                `Successfully placed ${player.Position} ${player.FirstName} ${player.LastName} on the Injury Reserve.`,
+                {
+                    icon: '🚑'
+                }
+            );
+        } else {
+            toast(
+                `Successfully removed ${player.Position} ${player.FirstName} ${player.LastName} from the Injury Reserve.`,
+                {
+                    icon: '💪'
+                }
+            );
+        }
         setRoster(() => currentRoster);
         setViewRoster(() => currentViewRoster);
     };

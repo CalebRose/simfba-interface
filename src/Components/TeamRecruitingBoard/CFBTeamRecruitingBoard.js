@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import toast from 'react-hot-toast';
 import { useMediaQuery } from 'react-responsive';
 import {
     SavingMessage,
@@ -8,7 +9,6 @@ import {
 import FBARecruitingService from '../../_Services/simFBA/FBARecruitingService';
 import { CalculateAdjustedPoints } from '../../_Utility/CFBRecruitingHelper';
 import { PickFromArray, RoundToTwoDecimals } from '../../_Utility/utilHelper';
-import { ServiceMessageBanner } from '../_Common/ServiceMessageBanner';
 import CFBTeamBoardSidebar from './CFBTeamRecruitingComponents/CFBTeamBoardSidebar';
 import CFBTeamMobilePlayerRow from './CFBTeamRecruitingComponents/CFBTeamRecruitingMobilePlayerRow';
 import CFBTeamDashboardPlayerRow from './CFBTeamRecruitingComponents/CFBTeamRecruitingPlayerRow';
@@ -28,8 +28,6 @@ const CFBTeamRecruitingBoard = ({
     const [recruitingProfile, setRecruitingProfile] = React.useState(null);
     const [recruits, setRecruits] = React.useState(null);
     const [isValid, setValidation] = React.useState(false);
-    const [errorMessage, setErrorMessage] = React.useState('');
-    const [serviceMessage, setServiceMessage] = React.useState('');
     const [approxPoints, setApproxPoints] = React.useState(0);
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const [loadMessage] = React.useState(() =>
@@ -95,6 +93,7 @@ const CFBTeamRecruitingBoard = ({
             );
             // reset hooks
             setRecruits(croots);
+            toast.success(`Successfully removed the croot from your board.`);
         } else {
             alert(
                 'Could not remove player from board. Please reach out to Toucan for assistance.'
@@ -130,6 +129,16 @@ const CFBTeamRecruitingBoard = ({
                 ? teamProfile.ScholarshipsAvailable + 1
                 : teamProfile.ScholarshipsAvailable - 1;
             setRecruitingProfile(() => teamProfile);
+            const croot = croots[idx].Recruit;
+            if (revokedVal) {
+                toast.error(
+                    `You really broke ${croot.FirstName} ${croot.LastName}'s heart by revoking his scholarship, you know that?`
+                );
+            } else {
+                toast.success(
+                    `Successfully Offered a Scholarship to ${croot.FirstName} ${croot.LastName}!`
+                );
+            }
         }
     };
 
@@ -164,8 +173,9 @@ const CFBTeamRecruitingBoard = ({
             if (isNaN(croot.CurrentWeeksPoints)) croot.CurrentWeeksPoints = 0;
             if (croot.CurrentWeeksPoints < 0 || croot.CurrentWeeksPoints > 20) {
                 validationCheck = false;
-                setErrorMessage(
-                    `ERROR! Recruit ${croot.Recruit.FirstName} ${croot.Recruit.LastName} must have a point allocation between 0 and 20.`
+                toast.error(
+                    `ERROR! Recruit ${croot.Recruit.FirstName} ${croot.Recruit.LastName} must have a point allocation between 0 and 20.`,
+                    { duration: 8000 }
                 );
                 break;
             }
@@ -180,14 +190,16 @@ const CFBTeamRecruitingBoard = ({
         setApproxPoints((x) => approxCount);
         setRecruitingProfile((x) => teamProfile);
         setValidation((x) => validationCheck);
-        if (validationCheck) {
-            setErrorMessage((x) => '');
-        }
+    };
+
+    const SaveToast = () => {
+        toast.promise(SavePointAllocations(), {
+            loading: SavingMessage
+        });
     };
 
     const SavePointAllocations = async () => {
         if (!isValid) return;
-        setServiceMessage(SavingMessage);
 
         const croots = [...recruits];
 
@@ -207,21 +219,13 @@ const CFBTeamRecruitingBoard = ({
         );
 
         if (res.ok) {
-            setServiceMessage(SuccessfulRecruitingBoardSaveMessage);
+            toast.success(SuccessfulRecruitingBoardSaveMessage);
         } else {
             alert(
                 'Could not save recruiting board. Please reach out to TuscanSota for assistance.'
             );
-            setServiceMessage('');
-            setErrorMessage(
-                'ERROR: Could not successfully save recruiting board.'
-            );
+            toast.error('ERROR: Could not successfully save recruiting board.');
         }
-
-        setTimeout(() => {
-            setServiceMessage('');
-            setErrorMessage('');
-        }, 5000);
     };
 
     const toggleAIBehavior = async () => {
@@ -235,21 +239,19 @@ const CFBTeamRecruitingBoard = ({
 
     return (
         <div className="container-fluid mt-3">
-            <ConfirmSaveRecruitingBoardModal save={SavePointAllocations} />
+            <ConfirmSaveRecruitingBoardModal save={SaveToast} />
             <div className="justify-content-start">
                 <h2>{cfbTeam ? cfbTeam.TeamName : 'Team'} Recruiting Board</h2>
             </div>
             <div className="row">
                 <div className="col-md-2 dashboard-sidebar">
-                    {recruitingProfile !== undefined ? (
+                    {recruitingProfile !== undefined && (
                         <CFBTeamBoardSidebar
                             cfbTeam={cfbTeam}
                             recruitingProfile={recruitingProfile}
                             theme={viewMode}
                             toggleAIBehavior={toggleAIBehavior}
                         />
-                    ) : (
-                        ''
                     )}
                 </div>
                 <div className="col-md-10 px-md-4">
@@ -289,10 +291,6 @@ const CFBTeamRecruitingBoard = ({
                             </div>
                         </div>
                     </div>
-                    <ServiceMessageBanner
-                        serMessage={serviceMessage}
-                        errMessage={errorMessage}
-                    />
                     <div
                         className={`row mt-2 dashboard-table-height${
                             viewMode === 'dark' ? '-dark' : ''
@@ -303,22 +301,21 @@ const CFBTeamRecruitingBoard = ({
                         !cfb_Timestamp.IsRecruitingLocked ? (
                             <>
                                 {recruits !== undefined &&
-                                recruits !== null &&
-                                recruits.length > 0
-                                    ? recruits.map((x, idx) => (
-                                          <CFBTeamMobilePlayerRow
-                                              key={x.ID}
-                                              idx={idx}
-                                              recruitProfile={x}
-                                              remove={RemoveRecruitFromBoard}
-                                              toggleScholarship={
-                                                  ToggleScholarship
-                                              }
-                                              changePoints={AllocatePoints}
-                                              theme={viewMode}
-                                          />
-                                      ))
-                                    : ''}
+                                    recruits !== null &&
+                                    recruits.length > 0 &&
+                                    recruits.map((x, idx) => (
+                                        <CFBTeamMobilePlayerRow
+                                            key={x.ID}
+                                            idx={idx}
+                                            recruitProfile={x}
+                                            remove={RemoveRecruitFromBoard}
+                                            toggleScholarship={
+                                                ToggleScholarship
+                                            }
+                                            changePoints={AllocatePoints}
+                                            theme={viewMode}
+                                        />
+                                    ))}
                             </>
                         ) : (
                             <table
@@ -365,26 +362,23 @@ const CFBTeamRecruitingBoard = ({
                                 </thead>
                                 <tbody className="overflow-auto">
                                     {recruits !== undefined &&
-                                    recruits !== null &&
-                                    cfb_Timestamp &&
-                                    !cfb_Timestamp.IsRecruitingLocked &&
-                                    recruits.length > 0
-                                        ? recruits.map((x, idx) => (
-                                              <CFBTeamDashboardPlayerRow
-                                                  key={x.ID}
-                                                  idx={idx}
-                                                  recruitProfile={x}
-                                                  remove={
-                                                      RemoveRecruitFromBoard
-                                                  }
-                                                  toggleScholarship={
-                                                      ToggleScholarship
-                                                  }
-                                                  changePoints={AllocatePoints}
-                                                  viewMode={viewMode}
-                                              />
-                                          ))
-                                        : ''}
+                                        recruits !== null &&
+                                        cfb_Timestamp &&
+                                        !cfb_Timestamp.IsRecruitingLocked &&
+                                        recruits.length > 0 &&
+                                        recruits.map((x, idx) => (
+                                            <CFBTeamDashboardPlayerRow
+                                                key={x.ID}
+                                                idx={idx}
+                                                recruitProfile={x}
+                                                remove={RemoveRecruitFromBoard}
+                                                toggleScholarship={
+                                                    ToggleScholarship
+                                                }
+                                                changePoints={AllocatePoints}
+                                                viewMode={viewMode}
+                                            />
+                                        ))}
                                 </tbody>
                             </table>
                         )}

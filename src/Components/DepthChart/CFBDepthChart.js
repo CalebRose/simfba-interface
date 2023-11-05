@@ -1,15 +1,10 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
+import toast from 'react-hot-toast';
 import FBADepthChartService from '../../_Services/simFBA/FBADepthChartService';
 import FBAPlayerService from '../../_Services/simFBA/FBAPlayerService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
-import {
-    SavingMessage,
-    SuccessfulDepthChartSaveMessage,
-    UnsuccessfulDepthChartSaveMessage
-} from '../../Constants/SystemMessages';
-import { ServiceMessageBanner } from '../_Common/ServiceMessageBanner';
 import DCPositionItem from './DC_PositionItem';
 import { DepthChartPositionList } from './DepthChartConstants';
 import DepthChartHeader from './DepthChartHeader';
@@ -40,12 +35,8 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
     const [availablePlayers, setAvailablePlayers] = React.useState([]);
     const [canModify, setCanModify] = React.useState(false);
     const [isValid, setValidation] = React.useState(false);
-    const [errorMessage, setErrorMessage] = React.useState('');
-    const [serviceMessage, setServiceMessage] = React.useState('');
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
-    const AttributeWarning =
-        "Attribute ratings are based on the player's original position.";
 
     // For mobile
     React.useEffect(() => {
@@ -118,6 +109,12 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
         setCurrentPosition(() => pos);
     };
 
+    const SaveToast = () => {
+        toast.promise(SaveDepthChart(), {
+            loading: 'Saving...'
+        });
+    };
+
     const SaveDepthChart = async () => {
         if (!isValid || !canModify) return;
         const dc = currentDepthChart.map((x) => ({
@@ -135,21 +132,25 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
             UpdatedPlayerPositions: dc
         };
 
-        // Save Call
-        setServiceMessage(SavingMessage);
-
         const save = await depthChartService.SaveDepthChart(
             UpdateDepthChartDTO
         );
 
         if (save.ok) {
-            setServiceMessage(SuccessfulDepthChartSaveMessage);
-            setTimeout(() => setServiceMessage(''), 5000);
+            toast.success('Successfully Saved Gameplan!', {
+                style: {
+                    border: `1px solid ${team.ColorOne}`,
+                    padding: '16px',
+                    color: team.ColorTwo
+                },
+                iconTheme: {
+                    primary: team.ColorOne,
+                    secondary: team.ColorTwo
+                },
+                duration: 4000
+            });
         } else {
-            setServiceMessage('');
-            alert('HTTP-Error:', save.status);
-            setErrorMessage(UnsuccessfulDepthChartSaveMessage);
-            setTimeout(() => setErrorMessage(''), 8000);
+            toast.error('Could not save depth chart.');
         }
 
         // Update Initial DC
@@ -214,7 +215,18 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
         const originalDepthChart = initialDC.map((x) => ({
             ...x
         }));
-
+        toast('Depth Chart has been reset', {
+            style: {
+                border: `1px solid ${team.ColorOne}`,
+                padding: '16px',
+                color: team.ColorTwo
+            },
+            iconTheme: {
+                primary: team.ColorOne,
+                secondary: team.ColorTwo
+            },
+            duration: 4000
+        });
         setCurrentDepthChart((x) => originalDepthChart);
     };
 
@@ -273,8 +285,9 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
 
     const ValidateDepthChart = () => {
         if (!canModify) {
-            setServiceMessage(
-                "Viewing other team's depth charts in read-only mode."
+            toast.error(
+                "Viewing other team's depth charts in read-only mode.",
+                { duration: 30000 }
             );
             return;
         }
@@ -290,16 +303,18 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
             let NameKey = row.FirstName + row.LastName + row.PlayerID;
             if (row.CollegePlayer.IsRedshirting) {
                 setValidation(false);
-                setErrorMessage(
-                    `${row.FirstName} ${row.LastName} is currently a redshirt player. Please swap them from their ${row.Position} position level.`
+                toast.error(
+                    `${row.FirstName} ${row.LastName} is currently a redshirt player. Please swap them from their ${row.Position} position level.`,
+                    { duration: 6000 }
                 );
                 return;
             }
             if (row.CollegePlayer.IsInjured) {
-                setValidation(() => false);
-                setErrorMessage(
-                    `${row.FirstName} ${row.LastName} is injured with ${row.CollegePlayer.InjuryType}. They are unable to play for ${row.CollegePlayer.WeeksOfRecovery} Weeks. Please swap them from their ${row.Position} position level.`
+                toast.error(
+                    `${row.FirstName} ${row.LastName} is injured with ${row.CollegePlayer.InjuryType}. They are unable to play for ${row.CollegePlayer.WeeksOfRecovery} Weeks. Please swap them from their ${row.Position} position level.`,
+                    { duration: 6000 }
                 );
+                setValidation(() => false);
                 return;
             }
             let isSpecialTeamsPosition =
@@ -337,8 +352,8 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
                         pos === 'RT';
 
                     if (isLinemenPosition) {
-                        setErrorMessage(
-                            `You have an offensive linemen set at First String for two OLine Positions. Please resolve this issue`
+                        toast.error(
+                            `You have an offensive linemen set at First String for two OLine Positions. Please resolve this issue.`
                         );
                         return;
                     }
@@ -346,8 +361,9 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
                         pos === 'DT' || pos === 'LE' || pos === 'RE';
 
                     if (isDlinePosition) {
-                        setErrorMessage(
-                            `You have a defensive linemen set at First String for two DLine Positions. Please resolve this issue`
+                        toast.error(
+                            `You have a defensive linemen set at First String for two DLine Positions. Please resolve this issue`,
+                            { duration: 6000 }
                         );
                         return;
                     }
@@ -356,9 +372,11 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
                         pos === 'LOLB' || pos === 'OLB' || pos === 'MLB';
 
                     if (isLinebackerPosition) {
-                        setErrorMessage(
-                            `You have a linebacker set at First String for Linebacker positions. Please resolve this issue`
+                        toast.error(
+                            `You have a linebacker set at First String for Linebacker positions. Please resolve this issue`,
+                            { duration: 6000 }
                         );
+
                         return;
                     }
 
@@ -366,15 +384,28 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
                         pos === 'CB' || pos === 'FS' || pos === 'SS';
 
                     if (isSecondaryPosition)
-                        setErrorMessage(
-                            `You have a defensive back set at First String for two DB Positions. Please resolve this issue`
+                        toast.error(
+                            `You have a defensive back set at First String for two DB Positions. Please resolve this issue`,
+                            { duration: 6000 }
                         );
                     return;
                 }
             }
         }
-        setServiceMessage('');
-        setErrorMessage('');
+        if (validStatus) {
+            toast.success('Ready to save!', {
+                style: {
+                    border: `1px solid ${team.ColorOne}`,
+                    padding: '16px',
+                    color: team.ColorTwo
+                },
+                iconTheme: {
+                    primary: team.ColorOne,
+                    secondary: team.ColorTwo
+                },
+                duration: 2000
+            });
+        }
         setValidation(validStatus);
     };
 
@@ -383,7 +414,6 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
             <div className="row">
                 <div className="col-md-1"></div>
                 <div className="col-md-11 px-md-4">
-                    {' '}
                     <div className="row">
                         <div className="col-md-auto justify-content-start">
                             <h2>
@@ -391,37 +421,23 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
                             </h2>
                         </div>
                         <div className="col-md-auto ms-auto">
-                            {canModify ? (
+                            {canModify && (
                                 <button
                                     className="btn btn-danger me-2"
                                     onClick={ResetCurrentDepthChart}
                                 >
                                     Reset Depth Chart
                                 </button>
-                            ) : (
-                                ''
                             )}
-                            {isValid && canModify ? (
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={SaveDepthChart}
-                                >
-                                    Save Depth Chart
-                                </button>
-                            ) : (
-                                <button className="btn btn-secondary" disabled>
-                                    Save Depth Chart
-                                </button>
-                            )}
+
+                            <button
+                                className="btn btn-primary"
+                                onClick={SaveToast}
+                                disabled={!(isValid && canModify)}
+                            >
+                                Save Depth Chart
+                            </button>
                         </div>
-                        {!isMobile ? (
-                            <ServiceMessageBanner
-                                serMessage={serviceMessage}
-                                errMessage={errorMessage}
-                            />
-                        ) : (
-                            ''
-                        )}
                     </div>
                     <div className="row">
                         <div className="col-md-auto">

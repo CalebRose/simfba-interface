@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import toast from 'react-hot-toast';
 // import { connect, useDispatch, useSelector } from 'react-redux';
 import { connect } from 'react-redux';
 import PlayerRow from './PlayerRow';
@@ -205,9 +206,14 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
 
         const response = await rosterService.AssignRedshirt(dto);
         if (!response) {
+            toast.error(
+                `${player.Position} ${player.FirstName} ${player.LastName} could not be redshirted. Please reach out to admins for assistance.`
+            );
             return;
         }
-
+        toast.success(
+            `${player.Position} ${player.FirstName} ${player.LastName} has been redshirted!`
+        );
         setRoster(() => originalRoster);
         setViewRoster(() => playerRoster);
     };

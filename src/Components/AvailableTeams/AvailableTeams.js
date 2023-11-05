@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import toast from 'react-hot-toast';
 import TeamCard from './TeamCard.js';
 import { getLogo } from '../../Constants/getLogo.js';
 import { connect } from 'react-redux';
@@ -69,7 +70,7 @@ class AvailableTeams extends Component {
                 team,
                 this.props.currentUser.username
             );
-
+            toast.success('Request Sent!');
             this.setState({ sentRequest: true });
         } else {
             alert(
@@ -97,6 +98,7 @@ class AvailableTeams extends Component {
             };
 
             await this.CFBRequestService.CreateNFLTeamRequest(requestDTO);
+            toast.success('Request Sent!');
             this.setState({ sentRequest: true });
         } else {
             alert(
@@ -110,7 +112,7 @@ class AvailableTeams extends Component {
             team,
             this.props.currentUser.username
         );
-
+        toast.success('Request Sent!');
         this.setState({ sentRequest: true });
     };
 
@@ -135,6 +137,7 @@ class AvailableTeams extends Component {
             const res = await this.BBARequestService.CreateNBATeamRequest(
                 requestDTO
             );
+            toast.success('Request Sent!');
             this.setState({ sentRequest: true });
         } else {
             alert(

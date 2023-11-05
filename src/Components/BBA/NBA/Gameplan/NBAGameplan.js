@@ -81,7 +81,8 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
         let players = await playerService.GetNBARosterByTeamID(
             currentUser.NBATeamID
         );
-        setRoster(() => players);
+        const sortedPlayers = players.sort((a, b) => b.Minutes - a.Minutes);
+        setRoster(() => sortedPlayers);
     };
 
     const updateGameplan = (name, value) => {
@@ -239,7 +240,7 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
             else if (r.PositionThree === 'C') cMin += r.P3Minutes;
 
             if (
-                r.IsRedshirting &&
+                r.IsGLeague &&
                 (r.P1Minutes > 0 || r.P2Minutes > 0 || r.P3Minutes > 0)
             ) {
                 message = `${r.FirstName} ${r.LastName} is in the G-League and is allocated ${r.P1Minutes} minutes. Please set the number of minutes to 0.`;
@@ -259,7 +260,7 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
                     r.InsideProportion +
                     r.MidRangeProportion +
                     r.ThreePointProportion;
-                message = `${r.FirstName} ${r.LastName} is redshirted and is allocated ${t} in Shot Proportion. Please set the shot proportion for Inside, Mid, and 3pt to 0.`;
+                message = `${r.FirstName} ${r.LastName} is in the G-League and is allocated ${t} in Shot Proportion. Please set the shot proportion for Inside, Mid, and 3pt to 0.`;
                 setErrorMessage(message);
                 valid = false;
                 setValidation(valid);
@@ -274,6 +275,48 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
                 valid = false;
                 setValidation(valid);
                 return;
+            }
+
+            if (playerTotalMinutes > 4) {
+                const totalProportion =
+                    r.InsideProportion +
+                    r.MidRangeProportion +
+                    r.ThreePointProportion;
+                if (totalProportion < 1) {
+                    message = `${r.FirstName} ${r.LastName}'s total allocation is less than or equal to 0. Because this player has minutes, please set the total shot proportion for this player to be between 1-30.`;
+                    setErrorMessage(message);
+                    valid = false;
+                    setValidation(valid);
+                    return;
+                }
+                if (totalProportion > 30) {
+                    message = `${r.FirstName} ${r.LastName}'s total allocation is greater than 30. Because this player has minutes, please set the total shot proportion for this player to be between 1-30.`;
+                    setErrorMessage(message);
+                    valid = false;
+                    setValidation(valid);
+                    return;
+                }
+                if (r.InsideProportion > 15) {
+                    message = `${r.FirstName} ${r.LastName}'s Inside Proportion is greater than 15. Please set the Inside Shot proportion for this player to be between 1-15.`;
+                    setErrorMessage(message);
+                    valid = false;
+                    setValidation(valid);
+                    return;
+                }
+                if (r.MidRangeProportion > 15) {
+                    message = `${r.FirstName} ${r.LastName}'s Mid Range Proportion is greater than 15. Please set the Mid Range Shot proportion for this player to be between 1-15.`;
+                    setErrorMessage(message);
+                    valid = false;
+                    setValidation(valid);
+                    return;
+                }
+                if (r.ThreePointProportion > 15) {
+                    message = `${r.FirstName} ${r.LastName}'s 3pt Proportion is greater than 15. Please set the 3pt Shot proportion for this player to be between 1-15.`;
+                    setErrorMessage(message);
+                    valid = false;
+                    setValidation(valid);
+                    return;
+                }
             }
 
             insideTotal += r.InsideProportion;
@@ -439,6 +482,7 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
             );
             return;
         }
+
         setAllMinutes(
             pgMin,
             sgMin,
@@ -608,28 +652,27 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
                     </div>
                 </div>
 
-                {serviceMessage.length > 0 ||
-                    (errorMessage.length > 0 && (
-                        <div className="row mt-2 mb-2">
-                            {serviceMessage.length > 0 &&
-                                serviceMessage !== savingMessage && (
-                                    <div className="alert alert-success">
-                                        {serviceMessage}
-                                    </div>
-                                )}
-                            {serviceMessage.length > 0 &&
-                                serviceMessage === savingMessage && (
-                                    <div className="alert alert-secondary">
-                                        {serviceMessage}
-                                    </div>
-                                )}
-                            {errorMessage.length > 0 && (
-                                <div className="alert alert-danger">
-                                    {errorMessage}
+                {(serviceMessage.length > 0 || errorMessage.length > 0) && (
+                    <div className="row mt-2 mb-2">
+                        {serviceMessage.length > 0 &&
+                            serviceMessage !== savingMessage && (
+                                <div className="alert alert-success">
+                                    {serviceMessage}
                                 </div>
                             )}
-                        </div>
-                    ))}
+                        {serviceMessage.length > 0 &&
+                            serviceMessage === savingMessage && (
+                                <div className="alert alert-secondary">
+                                    {serviceMessage}
+                                </div>
+                            )}
+                        {errorMessage.length > 0 && (
+                            <div className="alert alert-danger">
+                                {errorMessage}
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 <PaceModal />
                 <OffensiveFormationModal />

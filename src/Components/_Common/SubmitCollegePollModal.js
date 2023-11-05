@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
+import toast from 'react-hot-toast';
 import { ExtraLargeModal } from './ModalComponents';
 import BBAStandingsService from '../../_Services/simNBA/BBAStandingsService';
 import BBAPollService from '../../_Services/simNBA/BBAPollService';
@@ -248,11 +249,19 @@ export const SubmitCollegePollForm = ({ currentUser, timestamp, isCFB }) => {
         setIsLoading(() => false);
     };
 
+    const SubmitToast = () => {
+        toast.promise(SubmitPoll(), {
+            loading: 'Submitting poll...',
+            success: 'Poll Submitted!',
+            error: 'Error! Could not submit poll! Please reach to admins for assistance.'
+        });
+    };
+
     const SubmitPoll = async () => {
         const DTO = {
             ID: submissionID,
-            Week: Number(timestamp.CollegeWeek),
-            WeekID: Number(timestamp.CollegeWeekID),
+            Week: Number(timestamp.CollegeWeek) + 1,
+            WeekID: Number(timestamp.CollegeWeekID) + 1,
             SeasonID: Number(timestamp.SeasonID),
             Username: currentUser.username
         };
@@ -271,7 +280,7 @@ export const SubmitCollegePollForm = ({ currentUser, timestamp, isCFB }) => {
         <ExtraLargeModal
             id={modalId}
             header={header}
-            Submit={SubmitPoll}
+            Submit={SubmitToast}
             enableSubmit={validPoll}
         >
             {isLoading ? (

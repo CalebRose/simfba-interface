@@ -48,7 +48,8 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
     const [selectedWeek, setSelectedWeek] = useState(null);
     const [selectedConferences, setSelectedConferences] = useState('');
     const [selectedDivisions, setSelectedDivisions] = useState('');
-    const [selectedLeague, setSelectedLeague] = useState('');
+    const [selectedLeague, setSelectedLeague] = useState(null);
+    const [selectedMatchType, setSelectedMatchType] = useState('A');
     const [isLoading, setIsLoading] = useState(false);
     const [selectedTeams, setSelectedTeams] = useState('');
     const [statType, setStatType] = useState('PerGame'); // Offense, Defense, Differential
@@ -84,7 +85,6 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
         if (players.length > 0 || teams.length > 0) {
             const dataSet =
                 currentView === 'PLAYER' ? [...players] : [...teams];
-
             const fc = FilterStatsData(dataSet, viewType);
             if (fc.length > 0) {
                 const filteredDataSort = ConductSort(
@@ -111,6 +111,7 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
         currentView,
         selectedConferences,
         selectedTeams,
+        selectedLeague,
         sort,
         isAsc
     ]);
@@ -123,6 +124,15 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                 if (selectedConferences.length > 0) {
                     dataSet = dataSet.filter((x) =>
                         selectedConferences.includes(x.ConferenceID)
+                    );
+                }
+                if (
+                    selectedLeague &&
+                    leagueView === 'nba' &&
+                    selectedLeague.label.length > 0
+                ) {
+                    dataSet = dataSet.filter(
+                        (x) => selectedLeague.label === x.League
                     );
                 }
             }
@@ -147,6 +157,17 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                 if (teamList.length > 0) {
                     dataSet = dataSet.filter((x) =>
                         teamList.includes(x.TeamID)
+                    );
+                }
+
+                if (
+                    selectedLeague &&
+                    leagueView === 'nba' &&
+                    selectedLeague.value.length > 0
+                ) {
+                    dataSet = dataSet.filter(
+                        (x) =>
+                            selectedLeague.value === 'SimNBA' && x.TeamID < 33
                     );
                 }
 
@@ -183,6 +204,9 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                 // Nothing
             } else if (seasonID === 3) {
                 startingWeekID = 20;
+                if (leagueView !== 'cbb') {
+                    startingWeekID = 0;
+                }
             } else {
                 // startingWeekID = 40;
             }
@@ -192,6 +216,7 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
             leagueView,
             seasonID,
             week,
+            selectedMatchType,
             viewType
         );
         const isCBB = leagueView === 'cbb';
@@ -231,6 +256,34 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
         setDivisionOptions(() => divisionOptions);
         setPlayers(() => plList);
         setTeams(() => tList);
+    };
+
+    const ExportStats = async () => {
+        const seasonID = Number(selectedSeason.value);
+        let week = selectedWeek ? Number(selectedWeek.value) : 1;
+        if (viewType === 'WEEK') {
+            let startingWeekID = 0;
+            if (seasonID === 1 || seasonID === 2) {
+                // Nothing
+            } else if (seasonID === 3) {
+                startingWeekID = 20;
+                if (leagueView !== 'cbb') {
+                    startingWeekID = 0;
+                }
+            } else {
+                // startingWeekID = 40;
+            }
+            week += startingWeekID;
+        }
+        // League, Season, Week, Match (A,B,C,D), View Type (SEASON, WEEK), currentView (PLAYER, TEAM)
+        await _statsService.ExportStats(
+            leagueView,
+            seasonID,
+            week,
+            selectedMatchType,
+            viewType,
+            currentView
+        );
     };
 
     const SelectLeagueType = (event) => {
@@ -476,6 +529,76 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                             </div>
                         </div>
                     </div>
+                    {viewType === 'WEEK' && (
+                        <>
+                            <div className="row mt-2">
+                                <h5>Match Type (A,B,C,D)</h5>
+                            </div>
+                            <div className="row mt-1 justify-content-center mb-1">
+                                <div className="col-auto">
+                                    <div
+                                        className="btn-group btn-group-lg"
+                                        role="group"
+                                        aria-label="ViewOptions"
+                                    >
+                                        <button
+                                            type="button"
+                                            className={`btn btn-sm ${
+                                                selectedMatchType === 'A'
+                                                    ? 'btn-primary'
+                                                    : 'btn-danger'
+                                            }`}
+                                            onClick={() =>
+                                                setSelectedMatchType(() => 'A')
+                                            }
+                                        >
+                                            A
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={`btn btn-sm ${
+                                                selectedMatchType === 'B'
+                                                    ? 'btn-primary'
+                                                    : 'btn-danger'
+                                            }`}
+                                            onClick={() =>
+                                                setSelectedMatchType(() => 'B')
+                                            }
+                                        >
+                                            B
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={`btn btn-sm ${
+                                                selectedMatchType === 'C'
+                                                    ? 'btn-primary'
+                                                    : 'btn-danger'
+                                            }`}
+                                            onClick={() =>
+                                                setSelectedMatchType(() => 'C')
+                                            }
+                                        >
+                                            C
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={`btn btn-sm ${
+                                                selectedMatchType === 'D'
+                                                    ? 'btn-primary'
+                                                    : 'btn-danger'
+                                            }`}
+                                            onClick={() =>
+                                                setSelectedMatchType(() => 'D')
+                                            }
+                                        >
+                                            D
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )}
+
                     <div className="row mt-2">
                         <h5>View Options</h5>
                     </div>
@@ -578,18 +701,20 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                             />
                         </div>
                         {viewType === 'WEEK' && (
-                            <div className="col-auto">
-                                <h5 className="text-start align-middle">
-                                    Week
-                                </h5>
-                                <Select
-                                    options={weekOptions}
-                                    isMulti={false}
-                                    className="basic-multi-select btn-dropdown-width-team z-index-6"
-                                    classNamePrefix="select"
-                                    onChange={ChangeWeek}
-                                />
-                            </div>
+                            <>
+                                <div className="col-auto">
+                                    <h5 className="text-start align-middle">
+                                        Week
+                                    </h5>
+                                    <Select
+                                        options={weekOptions}
+                                        isMulti={false}
+                                        className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                        classNamePrefix="select"
+                                        onChange={ChangeWeek}
+                                    />
+                                </div>
+                            </>
                         )}
                         {currentView === 'PLAYER' && (
                             <div className="col-md-auto">
@@ -656,6 +781,15 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                                         : 'Search Week'
                                 }
                                 action={GetStatsPageInfo}
+                            />
+                        </div>
+                        <div className="col-auto">
+                            <h5 className="text-start align-middle">Export</h5>
+                            <StatsPageButton
+                                statType="export"
+                                value="export"
+                                label="Export Stats"
+                                action={ExportStats}
                             />
                         </div>
                     </div>

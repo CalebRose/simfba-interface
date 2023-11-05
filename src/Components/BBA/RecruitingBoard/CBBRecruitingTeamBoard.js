@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import toast from 'react-hot-toast';
 import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
 import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 import routes from '../../../Constants/routes';
 import BBARecruitingService from '../../../_Services/simNBA/BBARecruitingService';
-import { ServiceMessageBanner } from '../../_Common/ServiceMessageBanner';
 import { Spinner } from '../../_Common/Spinner';
 import CBBTeamDashboardMobileRow from './DashboardComponents/CBBTeamDashboardMobileRow';
 import CBBTeamDashboardPlayerRow from './DashboardComponents/CBBTeamDashboardPlayerRow';
@@ -25,8 +25,6 @@ const CBBRecruitingTeamBoard = ({
     const [recruitingProfile, setRecruitingProfile] = React.useState(null);
     const [recruits, setRecruits] = React.useState([]);
     const [isValid, setValidation] = React.useState(true);
-    const [errorMessage, setErrorMessage] = React.useState('');
-    const [serviceMessage, setServiceMessage] = React.useState('');
     const savingMessage = 'Saving Recruiting Options...';
     const successMessage = 'Saved successfully!';
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
@@ -87,6 +85,8 @@ const CBBRecruitingTeamBoard = ({
             (x) => x.RecruitID !== player.RecruitID
         );
 
+        toast.success('Successfully removed player from board :(');
+
         setRecruits(() => recruitList);
     };
 
@@ -113,12 +113,21 @@ const CBBRecruitingTeamBoard = ({
         );
         if (response.ok) {
             setRecruits(croots);
-
+            const croot = croots[idx].Recruit;
             const teamProfile = { ...recruitingProfile };
             teamProfile.ScholarshipsAvailable = !revokedVal
                 ? teamProfile.ScholarshipsAvailable + 1
                 : teamProfile.ScholarshipsAvailable - 1;
             setRecruitingProfile(() => teamProfile);
+            if (!revokedVal) {
+                toast.success(
+                    `Successfully Offered a Scholarship to ${croot.FirstName} ${croot.LastName}!`
+                );
+            } else {
+                toast.error(
+                    `You really broke ${croot.FirstName} ${croot.LastName}'s heart by revoking his scholarship, you know that?`
+                );
+            }
         }
     };
 
@@ -168,8 +177,18 @@ const CBBRecruitingTeamBoard = ({
         }
         profile.SpentPoints = currentPointsSpent;
         setRecruitingProfile(() => profile);
-        setErrorMessage(() => message);
+        if (!valid) {
+            toast.error(message, { duration: 6000 });
+        }
         setValidation(() => valid);
+    };
+
+    const SaveToast = () => {
+        toast.promise(savePointAllocations(), {
+            loading: savingMessage,
+            success: successMessage,
+            error: 'ERROR: Could not successfully save. Please reach out to admin'
+        });
     };
 
     const savePointAllocations = async () => {
@@ -182,27 +201,16 @@ const CBBRecruitingTeamBoard = ({
             TeamID: currentUser.cbb_id
         };
 
-        setServiceMessage(() => savingMessage);
-
         let response = await _recruitingService.SaveRecruitingBoard(payload);
 
         if (response.ok) {
             profile.Recruits = croots;
             setRecruitingProfile(profile);
             setRecruits(croots);
-            setServiceMessage(successMessage);
-            console.log('Saved successful for team ', payload.TeamId);
+            console.log('Saved successful for team ', payload.TeamID);
         } else {
-            setServiceMessage('');
-            setErrorMessage(
-                'ERROR: Could not successfully save. Please reach out to admin'
-            );
             alert('HTTP-Error:', response.status);
         }
-        setTimeout(() => {
-            setServiceMessage('');
-            setErrorMessage('');
-        }, 5000);
     };
 
     return (
@@ -286,7 +294,7 @@ const CBBRecruitingTeamBoard = ({
                                     !cbb_Timestamp.IsRecruitingLocked ? (
                                         <button
                                             className="btn btn-primary"
-                                            onClick={savePointAllocations}
+                                            onClick={SaveToast}
                                         >
                                             Save
                                         </button>
@@ -299,10 +307,6 @@ const CBBRecruitingTeamBoard = ({
                             </div>
                         </div>
                     </div>
-                    <ServiceMessageBanner
-                        serMessage={serviceMessage}
-                        errMessage={errorMessage}
-                    />
                     <div
                         className={`row mt-2 dashboard-table-height${
                             viewMode === 'dark' ? '-dark' : ''
@@ -313,22 +317,21 @@ const CBBRecruitingTeamBoard = ({
                         !cbb_Timestamp.IsRecruitingLocked ? (
                             <>
                                 {recruits !== undefined &&
-                                recruits !== null &&
-                                recruits.length > 0
-                                    ? recruits.map((x, idx) => (
-                                          <CBBTeamDashboardMobileRow
-                                              key={x.ID}
-                                              idx={idx}
-                                              recruitProfile={x}
-                                              remove={removeRecruitFromBoard}
-                                              toggleScholarship={
-                                                  toggleScholarship
-                                              }
-                                              changePoints={allocatePoints}
-                                              theme={viewMode}
-                                          />
-                                      ))
-                                    : ''}
+                                    recruits !== null &&
+                                    recruits.length > 0 &&
+                                    recruits.map((x, idx) => (
+                                        <CBBTeamDashboardMobileRow
+                                            key={x.ID}
+                                            idx={idx}
+                                            recruitProfile={x}
+                                            remove={removeRecruitFromBoard}
+                                            toggleScholarship={
+                                                toggleScholarship
+                                            }
+                                            changePoints={allocatePoints}
+                                            theme={viewMode}
+                                        />
+                                    ))}
                             </>
                         ) : (
                             <table className={tableHoverClass}>

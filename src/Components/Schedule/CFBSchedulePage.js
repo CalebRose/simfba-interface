@@ -149,10 +149,10 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
         setSelectedWeek(() => opts);
     };
 
-    const ChangeSeason = (options) => {
+    const ChangeSeason = async (options) => {
         const opts = { label: options.label, value: options.value };
-        GetAllGames(options.value);
         setSelectedSeason(() => opts);
+        await GetAllGames(options.value);
     };
 
     const ChangeTimeSlot = async (time, game) => {

@@ -1,13 +1,9 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import {
-    SavingMessage,
-    SuccessfulGameplanSaveMessage
-} from '../../Constants/SystemMessages';
-import { ServiceMessageBanner } from '../_Common/ServiceMessageBanner';
+import toast from 'react-hot-toast';
+import { useMediaQuery } from 'react-responsive';
 import FBAGameplanService from '../../_Services/simFBA/FBAGameplanService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
-import { useMediaQuery } from 'react-responsive';
 import {
     AirRaidFormations,
     BlitzAggressivenessOptions,
@@ -59,8 +55,6 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         []
     );
     const [isValid, setValidation] = React.useState(false);
-    const [errorMessage, setErrorMessage] = React.useState('');
-    const [serviceMessage, setServiceMessage] = React.useState('');
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:760px)` });
 
@@ -127,7 +121,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `Total Offensive Formation Ratio is set to ${currentDistribution}. Please make sure your allocation equals 100.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -141,7 +145,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `Offense Run to Pass Ratio is not with the range of ${offRunToPassRatioMin} and ${offRunToPassRatioMax} for the ${gp.OffensiveScheme} scheme. Please adjust.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -151,7 +165,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `QB Run Distribution set to ${gp.RunnerDistributionQB}. Please lower the distribution to keep within the valid range of the ${gp.OffensiveScheme} scheme.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -162,7 +186,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `BK1 Run Distribution set to ${gp.RunnerDistributionBK1}. Please lower the distribution to keep within the valid range of the ${gp.OffensiveScheme} scheme.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -170,7 +204,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `BK2 Run Distribution set to ${gp.RunnerDistributionBK2}. Please lower the distribution to keep within the valid range of the ${gp.OffensiveScheme} scheme.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -178,7 +222,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `BK3 Run Distribution set to ${gp.RunnerDistributionBK3}. Please lower the distribution to keep within the valid range of the ${gp.OffensiveScheme} scheme.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -192,7 +246,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `Total Runner Distribution is set to ${currentDistribution}. Please make sure your allocation equals 100.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -204,7 +268,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message =
                 'Run Play Distribution is out of range. Please change ranges for all inside, outside, and power plays (50 max) and all draw plays (15 max)';
             setValidation(validRunPlays);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -222,7 +296,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `Total Run Play Distribution is set to ${currentDistribution}. Please make sure your allocation equals 100.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -232,7 +316,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         if (!validPassPlays) {
             message = `Please modify the pass play distribution for all plays for the current scheme: ${gp.OffensiveScheme}`;
             setValidation(validPassPlays);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -248,7 +342,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `Total Pass Play Distribution is set to ${currentDistribution}. Please make sure your allocation equals 100.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -257,7 +361,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `TargetingWR1 Distribution is set to ${gp.TargetingWR1}. Please set it to below 60.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -265,7 +379,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `TargetingWR2 Distribution is set to ${gp.TargetingWR2}. Please set it to below 60.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -273,7 +397,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `TargetingWR3 Distribution is set to ${gp.TargetingWR3}. Please set it to below 60.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -281,7 +415,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `TargetingWR4 Distribution is set to ${gp.TargetingWR4}. Please set it to below 60.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -289,7 +433,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `TargetingWR5 Distribution is set to ${gp.TargetingWR5}. Please set it to below 60.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -297,7 +451,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `TargetingRB1 Distribution is set to ${gp.TargetingRB1}. Please set it to below 60.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -305,7 +469,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `TargetingRB2 Distribution is set to ${gp.TargetingRB2}. Please set it to below 60.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -313,7 +487,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `TargetingRB3 Distribution is set to ${gp.TargetingRB3}. Please set it to below 60.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -321,7 +505,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `TargetingTE1 Distribution is set to ${gp.TargetingTE1}. Please set it to below 60.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -329,7 +523,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `TargetingTE2 Distribution is set to ${gp.TargetingTE2}. Please set it to below 60.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -337,7 +541,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `TargetingTE3 is not ready for use. Please leave this input as 0.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -345,7 +559,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `The current Blitz Ratio is set to ${gp.BlitzRatio}%. Please set the ratio between 15% and 60%`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -366,7 +590,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `Total Targeting Distribution is set to ${currentDistribution}. Please make sure your allocation equals 100.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
@@ -378,12 +612,22 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             message = `Total Defensive Formation Distribution is set to ${currentDistribution}. Please make sure your allocation equals 100.`;
             valid = false;
             setValidation(valid);
-            setErrorMessage(message);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 10000 }
+            );
             return;
         }
 
         setValidation(valid);
-        setErrorMessage(message);
+        toast.success('Gameplan is ready to save!', { duration: 3000 });
     };
 
     const SelectUserTeam = () => {
@@ -493,6 +737,12 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         setGameplan((x) => gp);
     };
 
+    const SaveToast = () => {
+        toast.promise(SaveGameplanOptions(), {
+            loading: 'Saving...'
+        });
+    };
+
     const SaveGameplanOptions = async () => {
         CheckValidation();
         if (!isValid) return;
@@ -518,10 +768,20 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
 
         if (save.ok) {
             // YAY!
-            setServiceMessage(SuccessfulGameplanSaveMessage);
-            setTimeout(() => setServiceMessage(''), 5000);
+            toast.success('Successfully Saved Gameplan!', {
+                style: {
+                    border: `1px solid ${nflTeam.ColorOne}`,
+                    padding: '16px',
+                    color: nflTeam.ColorTwo
+                },
+                iconTheme: {
+                    primary: nflTeam.ColorOne,
+                    secondary: nflTeam.ColorTwo
+                },
+                duration: 4000
+            });
         } else {
-            alert('HTTP-Error:', save.status);
+            toast.error('Could not save Gameplan.');
         }
 
         // Response
@@ -552,10 +812,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                         Reset Gameplan
                     </button>
                     {isValid ? (
-                        <button
-                            className="btn btn-primary"
-                            onClick={SaveGameplanOptions}
-                        >
+                        <button className="btn btn-primary" onClick={SaveToast}>
                             Save Gameplan
                         </button>
                     ) : (
@@ -565,10 +822,6 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                     )}
                 </div>
             </div>
-            <ServiceMessageBanner
-                serMessage={serviceMessage}
-                errMessage={errorMessage}
-            />
             {currentUser && currentUser.roleID === 'Admin' ? (
                 <div className="row mt-3">
                     <div className="col-md-auto">

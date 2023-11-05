@@ -279,6 +279,16 @@ export const RevealResults = (game, timestamp) => {
     return false;
 };
 
+export const RevealCBBResults = (game, timestamp) => {
+    const { MatchOfWeek, GameComplete } = game;
+    if (MatchOfWeek === 'A' && timestamp.GamesARan) return GameComplete;
+    if (MatchOfWeek === 'B' && timestamp.GamesBRan) return GameComplete;
+    if (MatchOfWeek === 'C' && timestamp.GamesCRan) return GameComplete;
+    if (MatchOfWeek === 'D' && timestamp.GamesDRan) return GameComplete;
+
+    return false;
+};
+
 export const GetPredictionRound = (r) => {
     if (r === 1) {
         return 'Early First Round';

@@ -3,11 +3,12 @@ import Select from 'react-select';
 import BBAStandingsService from '../../../_Services/simNBA/BBAStandingsService';
 import { Spinner } from '../../_Common/Spinner';
 import StandingsCard from './StandingsModalCard';
+import { NBAStandingsCard } from '../../_Common/NBAStandingsCard';
 
 const CBBStandingsModal = (props) => {
     let _standingsService = new BBAStandingsService();
     const modalId = `standingsModal`;
-    const { ts } = props;
+    const { ts, isNBA } = props;
     const [conferences, setConferences] = useState([]);
     const [allStandings, setAllStandings] = useState([]);
     const [viewableStandings, setViewableStandings] = useState([]);
@@ -16,9 +17,10 @@ const CBBStandingsModal = (props) => {
 
     useEffect(() => {
         if (ts !== undefined || ts !== null) {
+            setIsLoading(() => true);
             GetAllStandingsData();
         }
-    }, [ts]);
+    }, [ts, isNBA]);
 
     useEffect(() => {
         let fcs = [...allStandings];
@@ -31,9 +33,9 @@ const CBBStandingsModal = (props) => {
     }, [selectedConferences]);
 
     const GetAllStandingsData = async () => {
-        let response = await _standingsService.GetAllConferenceStandings(
-            ts.SeasonID
-        );
+        let response = !isNBA
+            ? await _standingsService.GetAllConferenceStandings(ts.SeasonID)
+            : await _standingsService.GetAllNBAConferenceStandings(ts.SeasonID);
         let confs = response.map((x) => {
             return { label: x.ConferenceName, value: x.ConferenceID };
         });
@@ -120,7 +122,7 @@ const CBBStandingsModal = (props) => {
                                 </div>
                                 <div className="row g-2 gy-2 mb-1">
                                     {viewableStandings.map((x) => (
-                                        <StandingsCard standings={x} />
+                                        <NBAStandingsCard standings={x} />
                                     ))}
                                 </div>
                             </>

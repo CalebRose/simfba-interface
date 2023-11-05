@@ -358,12 +358,10 @@ export const SeasonsList = [
     { label: '2021', value: 1 },
     { label: '2022', value: 2 },
     { label: '2023', value: 3 },
-    { label: '2024', value: 4 }
-];
-
-export const NFLSeasonsList = [
-    { label: '2022', value: 1 },
-    { label: '2023', value: 2 }
+    { label: '2024', value: 4 },
+    { label: '2025', value: 5 },
+    { label: '2026', value: 6 },
+    { label: '2027', value: 7 }
 ];
 
 export const NFLConferenceList = [
@@ -419,6 +417,7 @@ export const RecruitingLoadMessages = [
     "Somewhere, in the middle of this recruiting sync, that highly-talented athlete is getting their NIL money and spending it on a Bentley. Or a really fancy Ford F-150. And somewhere out there, the SimNCAA is crying because they can't do anything about it.",
     'The sync is running...',
     'This is loading message #2,438',
+    'This is loading message #1,337',
     'Someone should really make a college hockey sim so that we can have THREE recruiting syncs. Also, so that Toucan can coach the Alaska Fairbanks Nanooks. Please and thank you <3',
     'I just want to take this moment on the recruiting sync load message to inform you that the Washington Huskies, do indeed, suck.',
     'I just want to take this moment on the recruiting sync load message to inform you that Ohio State, does indeed, suck.',
@@ -457,10 +456,20 @@ export const RecruitingLoadMessages = [
     'Recruiting Tip: Please recruit in Texas... The recruits are bigger there',
     'Recruiting Tip: Please recruit in Florida... The recruits are not related to Florida Man',
     'Recruiting Tip: Sending money to the Admins will not improve your odds in the recruiting sync.',
+    'Recruiting Tip: Friendly reminder that the weighted dice rolls that occur in the sync do not favor or have a bias to certain teams. Wins and wins and losses are losses.',
+    'Recruiting Tip: When all else fails, just blame Missouri.',
+    'Recruiting Tip: Take the risk, enter that recruiting battle. Who knows? You may end up signing that croot.',
     "Gameplanning Tip: If you don't have the depth, go for a higher ranked recruit and start them early. Their progressions will benefit in the long run.",
-    "Gameplanning Tip: If you're the kind of recruiter who keeps recruiting 5 stars at one position only, recruit a 1 star. Those five stars are not going to recruit at their full potential.",
+    "Gameplanning Tip: If you're the kind of recruiter who keeps recruiting 5 stars at one position only, recruit a 1 star. Those five stars are not going to develop to their full potential.",
     "Fun Fact: If you're looking to learn how to code, look up Traversy Media on youtube. He has some good tutorials on where to start. Or just ask Toucan.",
     'Fun Fact: Development on the SimFBA discord bot originally began from another project that Toucan was building involving an rpg text adventure.',
+    'Fun Fact: Toucan will likely develop a different project after work on the interface is complete. Will it be complete though?',
+    'Fun Fact: This recruiting sync runs like clockwork. As in, no button was pressed to trigger the sync. Neat, huh?',
     'Have you considered David Ross as your 2025 SimNFL First Round Pick?',
-    "In response to the IRL conference realignment, TuscanSota has decided to keep the Pac 12 together next season because no one's ever leaving and no one's getting $100M per year to be fodder for the Buckeyes :("
+    "In response to the IRL conference realignment, TuscanSota has decided to keep the Pac 12 together next season because no one's ever leaving and no one's getting $100M per year to be fodder for the Buckeyes :(",
+    'In response to the IRL conference realignment, TuscanSota has decided that the Pac 12 would be better off merging with the Big Sky Conference in order to remain competitive',
+    'In response to the IRL conference realignment, TuscanSota has decided that Oregon State and Wazzu would be better off going the Notre Dame route and remaining independent.',
+    'In response to the IRL conference realignment, TuscanSota has decided that Oregon State and Wazzu would be better off in their own conference with blackjack and hookers.',
+    'In response to the IRL conference realignment, TuscanSota has decided to wait it out because we all know IRL realignment will reimplode on itself due to lower college enrollments and declining TV deals.',
+    'In response to the IRL conference realignment, TuscanSota has decided to schedule Washington until he finally beats them just so he can end the Apple Cup on a good note :('
 ];

@@ -10,6 +10,7 @@ export const PlayerStatRow = ({ statType, idx, player, viewType, isNFL }) => {
     const year = !isNFL ? GetStatsYear(player, viewType) : player.Year;
     const teamLogo = getLogo(player.TeamAbbr);
     const opposingLogo = getLogo(s.OpposingTeam);
+
     const PassingRow = () => {
         const percentLabel =
             viewType === 'SEASON'

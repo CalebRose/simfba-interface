@@ -209,11 +209,7 @@ export const ExtendPlayerModal = ({
             y5Total
         );
 
-        const isRule5Valid = ValidateRule5(
-            BonusTotal,
-            totalOverall,
-            ts.IsNFLOffSeason
-        );
+        const isRule5Valid = ValidateRule5(BonusTotal, totalOverall, true);
 
         const isRule6Valid = ValidateRule6(
             offer.Y1BaseSalary,
@@ -376,10 +372,8 @@ export const ExtendPlayerModal = ({
                                                 !rule5Valid ? 'text-danger' : ''
                                             }
                                         >
-                                            5: Before the draft, at least 30% of
-                                            any contract must be bonus money.
-                                            After the draft, bonus can be any
-                                            amount, even 0%.
+                                            5: 30% of any extension offer must
+                                            be bonus money.
                                         </p>
                                     </div>
                                     <div className="col">

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { GetTableHoverClass } from '../../../../Constants/CSSClassHelper';
 import BBAPlayerService from '../../../../_Services/simNBA/BBAPlayerService';
@@ -31,6 +31,18 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
             getRosterRecords(team.ID);
         }
     }, [team]);
+
+    const [GLeagueCount, twoWayCount, activeRosterCount] = useMemo(() => {
+        let gCount = 0;
+        let tCount = 0;
+        let aCount = 0;
+        for (let i = 0; i < roster.length; i++) {
+            if (roster[i].IsGLeague) gCount++;
+            if (roster[i].IsTwoWay) tCount++;
+            if (!roster[i].IsGLeague && !roster[i].IsTwoWay) aCount++;
+        }
+        return [gCount, tCount, aCount];
+    }, [roster]);
 
     const getTeamRecord = async (id) => {
         let response = await _teamService.GetNBATeamByTeamID(id);
@@ -140,6 +152,11 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
         }
     };
 
+    const exportRoster = async () => {
+        // Removing if-check on if team is the user's...
+        let response = _playerService.ExportNBARoster(team.ID, team.Team);
+    };
+
     const playerRows = roster ? (
         roster.map((x, i) => {
             return (
@@ -157,6 +174,8 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
                         setToGLeague={SetToGLeague}
                         setToTwoWay={SetToTwoWay}
                         team={team}
+                        twoWayCount={twoWayCount}
+                        gLeagueCount={GLeagueCount}
                     />
                 </>
             );
@@ -221,6 +240,27 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
                                 </ul>
                             </div>
                         </div>
+                        <div className="col-md-auto">
+                            <button
+                                type="button"
+                                className="btn btn-outline-info"
+                                onClick={exportRoster}
+                            >
+                                Export
+                            </button>
+                        </div>
+                        <div className="col-auto">
+                            <h5>Active Roster Count:</h5>
+                            <p>{activeRosterCount}</p>
+                        </div>
+                        <div className="col-auto">
+                            <h5>G-League Count:</h5>
+                            <p>{GLeagueCount}</p>
+                        </div>
+                        <div className="col-auto">
+                            <h5>Two-Way Count:</h5>
+                            <p>{twoWayCount}</p>
+                        </div>
                     </div>
                     <div className="row mt-3 mb-5">
                         <table className={tableHoverClass}>
@@ -229,10 +269,10 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
                                     <th scope="col">Name</th>
                                     <th scope="col">Age | Exp</th>
                                     <th scope="col">Overall</th>
+                                    <th scope="col">Finishing</th>
                                     <th scope="col">2pt Shooting</th>
                                     <th scope="col">3pt Shooting</th>
                                     <th scope="col">Free Throw</th>
-                                    <th scope="col">Finishing</th>
                                     <th scope="col">Ballwork</th>
                                     <th scope="col">Rebounding</th>
                                     <th scope="col">Int. Defense</th>

@@ -45,6 +45,35 @@ const NFLMobileRosterRow = ({
     const injuryReservePlayer = () => {
         return ir(player);
     };
+    const { Contract, Extensions } = player;
+
+    const offeredExtensionIdx =
+        Extensions && Extensions.findIndex((x) => x.IsActive === true);
+    const acceptedExtensionIdx =
+        Extensions && Extensions.findIndex((x) => x.IsAccepted === true);
+    const offeredExtensionBool = Extensions && offeredExtensionIdx > -1;
+    const acceptedExtensionBool = Extensions && acceptedExtensionIdx > -1;
+    const offeredExtension =
+        offeredExtensionBool && Extensions[offeredExtensionIdx];
+
+    let extensionStatus = '';
+    if (
+        (offeredExtensionBool &&
+            (offeredExtension.IsRejected || offeredExtension.Rejections > 2)) ||
+        player.Rejections > 2
+    ) {
+        extensionStatus = 'btn-danger';
+    } else if (
+        (offeredExtensionBool && offeredExtension.Rejections > 0) ||
+        player.Rejections > 0
+    ) {
+        extensionStatus = 'btn-warning';
+    } else if (offeredExtensionBool) {
+        extensionStatus = 'btn-info';
+    }
+    if (acceptedExtensionBool) {
+        extensionStatus = 'btn-success';
+    }
     return (
         <>
             <CutPlayerModal
@@ -148,6 +177,19 @@ const NFLMobileRosterRow = ({
                                 title={extendPlayerTitle}
                                 data-bs-toggle="modal"
                                 data-bs-target={extendPlayerTarget}
+                                disabled={
+                                    !(
+                                        (ts.NFLWeek >= 15 ||
+                                            ts.NFLWeek === 0) &&
+                                        userView &&
+                                        canModify &&
+                                        !player.IsPracticeSquad
+                                    ) ||
+                                    Contract.ContractLength > 1 ||
+                                    player.IsPracticeSquad ||
+                                    player.Rejections > 2 ||
+                                    acceptedExtensionBool
+                                }
                             >
                                 <i class="bi bi-currency-dollar" />
                             </button>
@@ -187,7 +229,7 @@ const NFLMobileRosterRow = ({
                     <li className="list-group-item">
                         Place {player.LastName} on PS |{' '}
                         {canCutOrPracticeSquad &&
-                        (psCount <= 16 || player.IsPracticeSquad) &&
+                        psCount <= 16 &&
                         player.Experience <= 3 ? (
                             <button
                                 type="button"

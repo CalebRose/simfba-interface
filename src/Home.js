@@ -48,6 +48,7 @@ import NFLSchedulePage from './Components/NFL/Schedule/NFLSchedulePage';
 import NBAGameplan from './Components/BBA/NBA/Gameplan/NBAGameplan';
 import NBADraftPage from './Components/BBA/NBA/Draft Room/NBADraftPage';
 import NBATradePortal from './Components/BBA/Admin/NBATradePortal/NBATradePortal';
+import { Toaster } from 'react-hot-toast';
 
 const Home = ({ viewMode }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -78,6 +79,7 @@ const Home = ({ viewMode }) => {
     const footerClasses = viewMode === 'light' ? 'bg-light' : 'bg-dark';
     return (
         <div className={`App ${viewMode}`}>
+            <Toaster position="top-right" />
             <NavBar />
             <Route exact path={routes.LANDING} component={LandingPage} />
             <Route
@@ -109,7 +111,7 @@ const Home = ({ viewMode }) => {
                 exact
                 path={routes.CFB_GAMEPLAN}
                 render={() =>
-                    CFBTeam > 0 ? (
+                    CFBTeam > 0 && viewingBeta ? (
                         <CFBGameplan />
                     ) : (
                         <Redirect to={routes.LANDING} />
@@ -245,7 +247,7 @@ const Home = ({ viewMode }) => {
                 exact
                 path={routes.NFL_GAMEPLAN}
                 render={() =>
-                    NFLTeam > 0 ? (
+                    NFLTeam > 0 && viewingBeta ? (
                         <NFLGameplan />
                     ) : (
                         <Redirect to={routes.LANDING} />
@@ -421,7 +423,7 @@ const Home = ({ viewMode }) => {
                 exact
                 path={routes.CBB_SCHEDULE}
                 render={() =>
-                    CBBTeam > 0 ? (
+                    CBBTeam > 0 || NBATeam > 0 ? (
                         <CBBSchedule />
                     ) : (
                         <Redirect to={routes.LANDING} />
@@ -432,7 +434,7 @@ const Home = ({ viewMode }) => {
                 exact
                 path={routes.CBB_STATS}
                 render={() =>
-                    CBBTeam > 0 ? (
+                    CBBTeam > 0 || NBATeam > 0 ? (
                         <CBBStatistics />
                     ) : (
                         <Redirect to={routes.LANDING} />

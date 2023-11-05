@@ -24,4 +24,28 @@ export default class BBAMatchService {
     async GetNBAMatchResultData(id) {
         return await GetCall(`${url}/match/result/nba/${id}/`);
     }
+    async ExportResults(seasonID, weekID, nbaWeekID, matchType, selectedWeek) {
+        const fullURL = `${url}match/export/results/${seasonID}/${weekID}/${nbaWeekID}/${matchType}`;
+        const response = await fetch(fullURL, {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'text/csv'
+            },
+            responseType: 'blob'
+        })
+            .then((res) => res.blob())
+            .then((blob) =>
+                saveAs(
+                    blob,
+                    `wahoos_secret_${selectedWeek}${matchType}_results_list.csv`
+                )
+            );
+
+        if (response.ok) {
+            // let blob = response.blob();
+            // saveAs(blob, 'export.csv');
+        } else {
+            alert('HTTP-Error:', response.status);
+        }
+    }
 }
