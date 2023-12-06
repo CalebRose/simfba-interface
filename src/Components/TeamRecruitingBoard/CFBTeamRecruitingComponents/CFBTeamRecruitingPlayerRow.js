@@ -7,11 +7,13 @@ import ConfirmRevokeModal from './CFBTeamRevokeScholarshipModal';
 import { getLogo } from '../../../Constants/getLogo';
 
 const CFBTeamDashboardPlayerRow = (props) => {
-    const { recruitProfile, idx, viewMode } = props;
+    const { recruitProfile, idx, viewMode, retro } = props;
     const { Recruit } = recruitProfile;
     const customClass = Recruit.IsCustomCroot ? 'text-primary' : '';
     const logo =
-        Recruit && Recruit.College.length > 0 ? getLogo(Recruit.College) : '';
+        Recruit && Recruit.College.length > 0
+            ? getLogo(Recruit.College, retro)
+            : '';
     const crootModalTarget = '#crootModal' + idx;
     const revokeModalTarget = '#revokeModal' + idx;
     const removeModalTarget = '#removeModal' + idx;
@@ -30,7 +32,7 @@ const CFBTeamDashboardPlayerRow = (props) => {
         const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
 
         return competingAbbrs.map((x) => {
-            const logo = getLogo(x);
+            const logo = getLogo(x, retro);
             return (
                 <>
                     <img

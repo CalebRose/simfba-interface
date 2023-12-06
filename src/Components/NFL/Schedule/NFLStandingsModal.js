@@ -6,7 +6,7 @@ import NFLStandingsCard from '../../_Common/NFLStandingsCard';
 import { Spinner } from '../../_Common/Spinner';
 import { SeasonsList } from '../../../Constants/CommonConstants';
 
-export const NFLStandings = ({ ts, viewMode }) => {
+export const NFLStandings = ({ ts, viewMode, retro }) => {
     let _standingsService = new FBATeamService();
     const modalId = `standingsModal`;
     const [conferences, setConferences] = useState([]);
@@ -190,7 +190,10 @@ export const NFLStandings = ({ ts, viewMode }) => {
                                 </div>
                                 <div className="row g-2 gy-2 mb-1">
                                     {viewableStandings.map((x) => (
-                                        <NFLStandingsCard standings={x} />
+                                        <NFLStandingsCard
+                                            standings={x}
+                                            retro={retro}
+                                        />
                                     ))}
                                 </div>
                             </>

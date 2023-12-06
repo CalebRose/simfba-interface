@@ -773,7 +773,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                         <div className="col-auto"></div>
                     </div>
                     <HeismanModal list={heismanList} viewMode={viewMode} />
-                    <InjuryReportModal />
+                    <InjuryReportModal retro={currentUser.IsRetro} />
                     <div className="row mt-3 mb-5">
                         <InfiniteScroll
                             dataLength={viewableStats.length}
@@ -793,10 +793,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                             }
                         >
                             {isMobile ? (
-                                <>
-                                    Please use Desktop for now. Also, the
-                                    Huskies suck.
-                                </>
+                                <>Please use Desktop for now.</>
                             ) : (
                                 <table
                                     className={`table table-hover ${
@@ -829,6 +826,9 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                           isNFL={
                                                               leagueView ===
                                                               'nfl'
+                                                          }
+                                                          retro={
+                                                              currentUser.IsRetro
                                                           }
                                                       />
                                                   ) : (

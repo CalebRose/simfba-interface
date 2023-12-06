@@ -125,7 +125,7 @@ const CBBRecruitingTeamBoard = ({
                 );
             } else {
                 toast.error(
-                    `You really broke ${croot.FirstName} ${croot.LastName}'s heart by revoking his scholarship, you know that?`
+                    `${croot.FirstName} ${croot.LastName}'s scholarship has been revoked. You will not be able to recruit this player anymore.`
                 );
             }
         }
@@ -240,36 +240,43 @@ const CBBRecruitingTeamBoard = ({
                             {recruitingProfile && recruitingProfile.Region}
                         </div>
                     </div>
-                    <div className="row gx-1 mt-3 justify-content-center">
-                        <h6>Scholarships Available</h6>
-                        {recruitingProfile
-                            ? recruitingProfile.RecruitClassSize -
-                              recruitingProfile.TotalCommitments
-                            : 'N/A'}
+                    <div className="row gx-1 mt-3 gap-2 justify-content-center">
+                        <div className="col-auto">
+                            <h6>Scholarships Available</h6>
+                            {recruitingProfile
+                                ? recruitingProfile.RecruitClassSize -
+                                  recruitingProfile.TotalCommitments
+                                : 'N/A'}
+                        </div>
+                        <div className="col-auto">
+                            <h6>Offers Available</h6>
+                            {recruitingProfile
+                                ? recruitingProfile.ScholarshipsAvailable
+                                : 'N/A'}
+                        </div>
                     </div>
-                    <div className="row gx-1 mt-3 justify-content-center">
-                        <h6>Scholarship Offers Available</h6>
-                        {recruitingProfile
-                            ? recruitingProfile.ScholarshipsAvailable
-                            : 'N/A'}
+                    <div className="row gx-1 mt-3 gap-2 justify-content-center">
+                        <h5>Ratings</h5>
                     </div>
-                    <div className="row gx-1 mt-3 justify-content-center">
-                        <h6>ESPN Score</h6>
-                        {recruitingProfile
-                            ? recruitingProfile.ESPNScore
-                            : 'N/A'}
-                    </div>
-                    <div className="row gx-1 mt-3 justify-content-center">
-                        <h6>Rivals Score</h6>
-                        {recruitingProfile
-                            ? recruitingProfile.RivalsScore
-                            : 'N/A'}
-                    </div>
-                    <div className="row gx-1 mt-3 justify-content-center">
-                        <h6>247Sports Score</h6>
-                        {recruitingProfile
-                            ? recruitingProfile.Rank247Score
-                            : 'N/A'}
+                    <div className="row gx-1 mt-1 gap-2 justify-content-center">
+                        <div className="col-auto">
+                            <h6>ESPN</h6>
+                            {recruitingProfile
+                                ? recruitingProfile.ESPNScore
+                                : 'N/A'}
+                        </div>
+                        <div className="col-auto">
+                            <h6>Rivals</h6>
+                            {recruitingProfile
+                                ? recruitingProfile.RivalsScore
+                                : 'N/A'}
+                        </div>
+                        <div className="col-auto">
+                            <h6>247Sports</h6>
+                            {recruitingProfile
+                                ? recruitingProfile.Rank247Score
+                                : 'N/A'}
+                        </div>
                     </div>
                 </div>
                 <div className="col-md-10 px-md-4">
@@ -330,6 +337,7 @@ const CBBRecruitingTeamBoard = ({
                                             }
                                             changePoints={allocatePoints}
                                             theme={viewMode}
+                                            retro={currentUser.IsRetro}
                                         />
                                     ))}
                             </>

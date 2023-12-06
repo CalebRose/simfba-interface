@@ -2,7 +2,7 @@ import React from 'react';
 import { getLogo } from '../../Constants/getLogo';
 import { RevealCBBResults, RevealResults } from '../../_Utility/utilHelper';
 
-export const BBAMatchCard = ({ game, team, timestamp, isNBA }) => {
+export const BBAMatchCard = ({ game, team, timestamp, isNBA, retro }) => {
     const currentWeek = !isNBA ? timestamp.CollegeWeek : timestamp.NBAWeek;
     const teamAbbr =
         !isNBA && team ? team.Abbr : `${team.Team} ${team.Nickname}`;
@@ -22,7 +22,7 @@ export const BBAMatchCard = ({ game, team, timestamp, isNBA }) => {
             (game.AwayTeam === teamAbbr && game.HomeTeamWin));
     const awayGame =
         game.HomeTeam === teamAbbr || game.IsNeutral ? false : true;
-    const opposingTeamLogo = getLogo(opposingTeam);
+    const opposingTeamLogo = getLogo(opposingTeam, retro);
     const gameWeek = game.Week;
     const ConferenceGame = game.IsConference;
     const ConferenceLabel = team && team.Conference;

@@ -11,7 +11,7 @@ import { SeasonsList } from '../../../Constants/CommonConstants';
 import { SubmitCollegePollForm } from '../../_Common/SubmitCollegePollModal';
 import { CollegePollModal } from '../../_Common/CollegePollModal';
 
-const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
+const CBBSchedulePage = ({ currentUser, cbbTeam, nbaTeam, cbb_Timestamp }) => {
     // Services
     let _matchService = new BBAMatchService();
     let _teamService = new BBATeamService();
@@ -129,13 +129,13 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             const response = await _teamService.GetNBATeams();
             teamOptionForm = [
                 ...response.map((x) => {
-                    return { label: x.Team, value: x.Abbr };
+                    return { label: x.Team, value: `${x.Team} ${x.Nickname}` };
                 })
             ];
         } else {
             teamOptionForm = [
                 ...nbaTeams.map((x) => {
-                    return { label: x.Team, value: x.Abbr };
+                    return { label: x.Team, value: `${x.Team} ${x.Nickname}` };
                 })
             ];
         }
@@ -148,13 +148,21 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             const response = await _teamService.GetAllISLTeams();
             teamOptionForm = [
                 ...response.map((x) => {
-                    return { label: x.Team, value: x.Abbr };
+                    let val = `${x.Team.trim()} ${x.Nickname.trim()}`;
+                    return {
+                        label: x.Team,
+                        value: val.trim()
+                    };
                 })
             ];
         } else {
             teamOptionForm = [
                 ...islTeams.map((x) => {
-                    return { label: x.Team, value: x.Abbr };
+                    let val = `${x.Team.trim()} ${x.Nickname.trim()}`;
+                    return {
+                        label: x.Team,
+                        value: val.trim()
+                    };
                 })
             ];
         }
@@ -203,7 +211,9 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     };
 
     const ResetTeamViewOptions = () => {
-        setSelectedTeam(() => cbbTeam.Abbr);
+        let abbr = cbbTeam.Abbr;
+        if (leagueView === 'NBA') abbr = `${nbaTeam.Team} ${nbaTeam.Nickname}`;
+        setSelectedTeam(() => abbr);
     };
 
     const ResetWeekViewOptions = () => {
@@ -537,10 +547,12 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                     <CBBGameModal
                         game={viewGame}
                         isNBA={leagueView !== 'CBB'}
+                        retro={currentUser.IsRetro}
                     />
                     <CBBStandingsModal
                         ts={cbb_Timestamp}
                         isNBA={leagueView !== 'CBB'}
+                        retro={currentUser.IsRetro}
                     />
 
                     <SubmitCollegePollForm
@@ -567,6 +579,7 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                             ts={cbb_Timestamp}
                                             SetGame={SetGame}
                                             viewType={viewType}
+                                            retro={currentUser.IsRetro}
                                         />
                                     </>
                                 ))}
@@ -581,10 +594,12 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
 const mapStateToProps = ({
     user: { currentUser },
     cbbTeam: { cbbTeam },
+    nbaTeam: { nbaTeam },
     timestamp: { cbb_Timestamp }
 }) => ({
     currentUser,
     cbbTeam,
+    nbaTeam,
     cbb_Timestamp
 });
 

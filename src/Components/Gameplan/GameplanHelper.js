@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const GetMaxForPassPlays = (scheme, idx) => {
     let max = '20';
     if (idx === 0) {
@@ -55,12 +57,20 @@ export const ValidateRunPlayDistribution = (gp) => {
     let valid = true;
 
     if (
-        gp.RunOutsideLeft > 50 ||
-        gp.RunOutsideRight > 50 ||
-        gp.RunInsideLeft > 50 ||
-        gp.RunInsideRight > 50 ||
-        gp.RunPowerLeft > 50 ||
-        gp.RunPowerRight > 50 ||
+        gp.RunOutsideLeft > 80 ||
+        gp.RunOutsideRight > 80 ||
+        gp.RunInsideLeft > 80 ||
+        gp.RunInsideRight > 80 ||
+        gp.RunPowerLeft > 80 ||
+        gp.RunPowerRight > 80 ||
+        gp.ReadOptionLeft > 80 ||
+        gp.ReadOptionRight > 80 ||
+        gp.SpeedOptionLeft > 80 ||
+        gp.SpeedOptionRight > 80 ||
+        gp.InvertedOptionLeft > 80 ||
+        gp.InvertedOptionRight > 80 ||
+        gp.TripleOptionLeft > 80 ||
+        gp.TripleOptionRight > 80 ||
         gp.RunDrawLeft > 15 ||
         gp.RunDrawRight > 15
     ) {
@@ -177,3 +187,18 @@ export const ValidatePassPlayDistribution = (gp) => {
 
     return true;
 };
+
+export const GetDefensivePositions = (list) => {
+    return list.map((item, index) => {
+        if (item === '\n') return <br key={index} />;
+
+        return (
+            <span key={index}>
+                {item}
+                {index < list.length - 1 ? ', ' : ''}
+            </span>
+        );
+    });
+};
+
+export const GetDefaultChanges = (scheme) => {};

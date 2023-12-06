@@ -8,7 +8,7 @@ import { NBAStandingsCard } from '../../_Common/NBAStandingsCard';
 const CBBStandingsModal = (props) => {
     let _standingsService = new BBAStandingsService();
     const modalId = `standingsModal`;
-    const { ts, isNBA } = props;
+    const { ts, isNBA, retro } = props;
     const [conferences, setConferences] = useState([]);
     const [allStandings, setAllStandings] = useState([]);
     const [viewableStandings, setViewableStandings] = useState([]);
@@ -122,7 +122,10 @@ const CBBStandingsModal = (props) => {
                                 </div>
                                 <div className="row g-2 gy-2 mb-1">
                                     {viewableStandings.map((x) => (
-                                        <NBAStandingsCard standings={x} />
+                                        <NBAStandingsCard
+                                            standings={x}
+                                            retro={retro}
+                                        />
                                     ))}
                                 </div>
                             </>

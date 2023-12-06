@@ -176,6 +176,7 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
                         team={team}
                         twoWayCount={twoWayCount}
                         gLeagueCount={GLeagueCount}
+                        retro={currentUser.IsRetro}
                     />
                 </>
             );

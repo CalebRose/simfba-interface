@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import toast from 'react-hot-toast';
 import BBAPlayerService from '../../../_Services/simNBA/BBAPlayerService';
@@ -6,7 +6,7 @@ import BBAGameplanService from '../../../_Services/simNBA/BBAGameplanService';
 import GameplanPlayerRow from './CBBGameplanPlayerRow';
 import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 import { Dropdown } from '../../_Common/Dropdown';
-import { BBAToggle } from '../../_Common/SwitchToggle';
+import { FBAToggle } from '../../_Common/SwitchToggle';
 import {
     GetBBAMinutesRequired,
     getProportionLimits
@@ -17,23 +17,27 @@ import {
     OffensiveStyleModal,
     PaceModal
 } from './BBAGameplanModals';
+import { useMediaQuery } from 'react-responsive';
+import { MobileBBAGPRow } from '../../_Common/BBAMobileGPRow';
 
 const CBBGameplan = ({ currentUser, viewMode }) => {
     let playerService = new BBAPlayerService();
     let gameplanService = new BBAGameplanService();
-    const [team, setTeam] = React.useState('');
-    const [roster, setRoster] = React.useState(null);
-    const [opposingRoster, setOpposingRoster] = React.useState([]);
-    const [gameplan, setGameplan] = React.useState(null);
-    const [isValid, setValidation] = React.useState(true);
-    const [pgMinutes, setPGMinutes] = React.useState(0);
-    const [sgMinutes, setSGMinutes] = React.useState(0);
-    const [sfMinutes, setSFMinutes] = React.useState(0);
-    const [pfMinutes, setPFMinutes] = React.useState(0);
-    const [cMinutes, setCMinutes] = React.useState(0);
-    const [iProp, setIProp] = React.useState(0);
-    const [midProp, setMidProp] = React.useState(0);
-    const [thrProp, setThrProp] = React.useState(0);
+    const [team, setTeam] = useState('');
+    const [roster, setRoster] = useState([]);
+    const [opposingRoster, setOpposingRoster] = useState([]);
+    const [gameplan, setGameplan] = useState(null);
+    const [isValid, setValidation] = useState(true);
+    const [pgMinutes, setPGMinutes] = useState(0);
+    const [sgMinutes, setSGMinutes] = useState(0);
+    const [sfMinutes, setSFMinutes] = useState(0);
+    const [pfMinutes, setPFMinutes] = useState(0);
+    const [cMinutes, setCMinutes] = useState(0);
+    const [iProp, setIProp] = useState(0);
+    const [midProp, setMidProp] = useState(0);
+    const [thrProp, setThrProp] = useState(0);
+    const [viewWidth, setViewWidth] = useState(window.innerWidth);
+    const isMobile = useMediaQuery({ query: `(max-width:760px)` });
     const paceOptions = ['Very Fast', 'Fast', 'Balanced', 'Slow', 'Very Slow'];
     const totalAllocationLimit = 30;
     const indAllocationLimit = 15;
@@ -54,6 +58,20 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
     ];
     const styleList = ['Traditional', 'Small Ball', 'Microball', 'Jumbo'];
     const tableHoverClass = GetTableHoverClass(viewMode);
+
+    // Use Effects
+    useEffect(() => {
+        if (!viewWidth) {
+            setViewWidth(window.innerWidth);
+        }
+    }, [viewWidth]);
+
+    const handleResize = () => {
+        setViewWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
     useEffect(() => {
         if (currentUser) {
             setTeam(() => currentUser.cbb_team);
@@ -68,6 +86,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         }
     }, [gameplan, roster]);
 
+    // Async Functions
     const getGameplan = async () => {
         // Get Gameplan Route using team Id
         let res = await gameplanService.GetCBBGameplan(currentUser.cbb_id);
@@ -84,6 +103,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         setRoster(() => sortedPlayers);
     };
 
+    // Handle Functions
     const updateGameplan = (name, value) => {
         let gp = { ...gameplan };
         // Keep the value in range of what's being changed
@@ -102,6 +122,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
     const updatePlayer = (idx, event) => {
         let playerList = [...roster];
         let { name, value } = event.target;
+        console.log({ name, value, idx });
         playerList[idx][name] = Number(value);
         setRoster(() => playerList);
     };
@@ -137,13 +158,13 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         if (P1Minutes < 0 || P2Minutes < 0 || P3Minutes < 0) {
             const message = `${FirstName} ${LastName} has allocated negative minutes. Please set the number of minutes to 0 or above.`;
             setValidation(false);
-            toast.error(message, { duration: 6000 });
+            toast.error(message, { duration: 3000 });
             return false;
         }
         if (totalMinutes < 0) {
             const message = `${FirstName} ${LastName} has allocated negative minutes. Please set the number of minutes to 0 or above.`;
             setValidation(false);
-            toast.error(message, { duration: 6000 });
+            toast.error(message, { duration: 3000 });
             return false;
         }
 
@@ -159,7 +180,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         ) {
             const min = player.P1Minutes + player.P2Minutes + player.P3Minutes;
             const message = `${player.FirstName} ${player.LastName} is redshirted and is allocated ${min} minutes. Please set the number of minutes to 0.`;
-            toast.error(message, { duration: 6000 });
+            toast.error(message, { duration: 3000 });
             setValidation(false);
             return false;
         }
@@ -175,7 +196,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
                 player.MidRangeProportion +
                 player.ThreePointProportion;
             const message = `${player.FirstName} ${player.LastName} is redshirted and is allocated ${t} in Shot Proportion. Please set the shot proportion for Inside, Mid, and 3pt to 0.`;
-            toast.error(message, { duration: 6000 });
+            toast.error(message, { duration: 3000 });
             setValidation(false);
             return;
         }
@@ -185,7 +206,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
     const checkAllocation = (name, shotType, proportion, limit) => {
         if (proportion > limit) {
             const message = `${name}'s ${shotType} Proportion is greater than 15. Please set the ${shotType} Shot proportion for this player to be between 1-15.`;
-            toast.error(message, { duration: 6000 });
+            toast.error(message, { duration: 3000 });
             setValidation(false);
             return false;
         }
@@ -290,7 +311,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
 
             if (playerTotalMinutes > player.Stamina) {
                 message = `${player.FirstName} ${player.LastName}'s minutes allocation cannot exceed its Stamina.`;
-                toast.error(message, { duration: 6000 });
+                toast.error(message, { duration: 3000 });
                 valid = false;
                 setValidation(valid);
                 return;
@@ -303,14 +324,14 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
                     player.ThreePointProportion;
                 if (totalProportion < allocationMinimum) {
                     message = `${player.FirstName} ${player.LastName}'s total allocation is less than or equal to 1. Because this player has minutes, please set the total shot proportion for this player to be between 1-30.`;
-                    toast.error(message, { duration: 6000 });
+                    toast.error(message, { duration: 3000 });
                     valid = false;
                     setValidation(valid);
                     return;
                 }
                 if (totalProportion > totalAllocationLimit) {
                     message = `${player.FirstName} ${player.LastName}'s total allocation is greater than 30. Because this player has minutes, please set the total shot proportion for this player to be between 1-30.`;
-                    toast.error(message, { duration: 6000 });
+                    toast.error(message, { duration: 3000 });
                     valid = false;
                     setValidation(valid);
                     return;
@@ -346,7 +367,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         // Proportion Requirements
         if (!IsProportionInLimits(threeTotal, threeMin, threeMax)) {
             message = `Three Point Proportion for Gameplan ${gameplan.Game} set to ${threeTotal}. Please make sure this allocation is between ${threeMin} and ${threeMax}.`;
-            toast.error(message, { duration: 6000 });
+            toast.error(message, { duration: 3000 });
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -355,7 +376,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
 
         if (!IsProportionInLimits(midTotal, midMin, midMax)) {
             message = `Mid-Range Proportion for Gameplan ${gameplan.Game} set to ${midTotal}. Please make sure this allocation is between ${midMin} and ${midMax}.`;
-            toast.error(message, { duration: 6000 });
+            toast.error(message, { duration: 3000 });
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -364,7 +385,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
 
         if (!IsProportionInLimits(insideTotal, insideMin, insideMax)) {
             message = `Inside Proportion for Gameplan ${gameplan.Game} set to ${insideTotal}. Please make sure this allocation is between ${insideMin} and ${insideMax}.`;
-            toast.error(message, { duration: 6000 });
+            toast.error(message, { duration: 3000 });
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -378,7 +399,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             currentProportion < proportionLimit
         ) {
             message = `Total Proportion for Gameplan ${gameplan.Game} set to ${currentProportion}. Please make sure your allocation adds up to 100.`;
-            toast.error(message, { duration: 6000 });
+            toast.error(message, { duration: 3000 });
             valid = false;
             setValidation(valid);
             return;
@@ -390,7 +411,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             positionMinutes['PG'] < pgMinuteRequirement
         ) {
             message = `Total Minutes between all Point Guards adds up to ${positionMinutes['PG']}.\nPlease make overall total to ${pgMinuteRequirement}.`;
-            toast.error(message, { duration: 6000 });
+            toast.error(message, { duration: 3000 });
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -402,7 +423,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             positionMinutes['SG'] < sgMinuteRequirement
         ) {
             message = `Total Minutes between all Shooting Guards adds up to ${positionMinutes['SG']}.\nPlease make overall total to ${sgMinuteRequirement}.`;
-            toast.error(message, { duration: 6000 });
+            toast.error(message, { duration: 3000 });
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -414,7 +435,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             positionMinutes['SF'] < sfMinuteRequirement
         ) {
             message = `Total Minutes between all Small Forwards adds up to ${positionMinutes['SF']}.\nPlease make overall total to ${sfMinuteRequirement}.`;
-            toast.error(message, { duration: 6000 });
+            toast.error(message, { duration: 3000 });
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -426,7 +447,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             positionMinutes['PF'] < pfMinuteRequirement
         ) {
             message = `Total Minutes between all Power Forwards adds up to ${positionMinutes['PF']}.\nPlease make overall total to ${pfMinuteRequirement}.`;
-            toast.error(message, { duration: 6000 });
+            toast.error(message, { duration: 3000 });
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -438,7 +459,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             positionMinutes['C'] < cMinuteRequirement
         ) {
             message = `Total Minutes between all Centers adds up to ${positionMinutes['C']}.\nPlease make overall total to ${cMinuteRequirement}.`;
-            toast.error(message, { duration: 6000 });
+            toast.error(message, { duration: 3000 });
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -588,7 +609,9 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
                                 )}
                             <div className="col-md-auto">
                                 <button
-                                    className="btn btn-primary"
+                                    className={`btn btn-primary ${
+                                        isMobile ? 'mt-2' : ''
+                                    }`}
                                     onClick={SaveToast}
                                     disabled={!isValid}
                                 >
@@ -641,61 +664,61 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
                 <div className="row mt-2">
                     {gameplan && (
                         <>
-                            <BBAToggle
+                            <FBAToggle
                                 value="ToggleFN"
                                 label="Inside Shot"
                                 checkValue={gameplan.ToggleFN}
                                 change={UpdateViewableColumns}
                             />
-                            <BBAToggle
+                            <FBAToggle
                                 value="Toggle2pt"
                                 label="Mid Range Shooting"
                                 checkValue={gameplan.Toggle2pt}
                                 change={UpdateViewableColumns}
                             />
-                            <BBAToggle
+                            <FBAToggle
                                 value="Toggle3pt"
                                 label="3pt Shooting"
                                 checkValue={gameplan.Toggle3pt}
                                 change={UpdateViewableColumns}
                             />
-                            <BBAToggle
+                            <FBAToggle
                                 value="ToggleFT"
                                 label="Free Throws"
                                 checkValue={gameplan.ToggleFT}
                                 change={UpdateViewableColumns}
                             />
-                            <BBAToggle
+                            <FBAToggle
                                 value="ToggleBW"
                                 label="Ballwork"
                                 checkValue={gameplan.ToggleBW}
                                 change={UpdateViewableColumns}
                             />
-                            <BBAToggle
+                            <FBAToggle
                                 value="ToggleRB"
                                 label="Rebounding"
                                 checkValue={gameplan.ToggleRB}
                                 change={UpdateViewableColumns}
                             />
-                            <BBAToggle
+                            <FBAToggle
                                 value="ToggleID"
                                 label="Int. Defense"
                                 checkValue={gameplan.ToggleID}
                                 change={UpdateViewableColumns}
                             />
-                            <BBAToggle
+                            <FBAToggle
                                 value="TogglePD"
                                 label="Per. Defense"
                                 checkValue={gameplan.TogglePD}
                                 change={UpdateViewableColumns}
                             />
-                            <BBAToggle
+                            <FBAToggle
                                 value="ToggleP2"
                                 label="Position Two"
                                 checkValue={gameplan.ToggleP2}
                                 change={UpdateViewableColumns}
                             />
-                            <BBAToggle
+                            <FBAToggle
                                 value="ToggleP3"
                                 label="Position Three"
                                 checkValue={gameplan.ToggleP3}
@@ -704,7 +727,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
                         </>
                     )}
                 </div>
-                {roster && gameplan && roster.length > 0 && (
+                {!isMobile && gameplan && (
                     <div className="row">
                         <div
                             className={`row mt-3 mb-2 overflow-auto gameplan-table-height${
@@ -787,23 +810,41 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {roster.map((x, idx) => {
-                                        return (
-                                            <GameplanPlayerRow
-                                                key={x.ID}
-                                                idx={idx}
-                                                player={x}
-                                                updatePlayer={updatePlayer}
-                                                updatePosition={
-                                                    updatePlayerPosition
-                                                }
-                                                gameplan={gameplan}
-                                            />
-                                        );
-                                    })}
+                                    {roster &&
+                                        roster.length > 0 &&
+                                        roster.map((x, idx) => {
+                                            return (
+                                                <GameplanPlayerRow
+                                                    key={x.ID}
+                                                    idx={idx}
+                                                    player={x}
+                                                    updatePlayer={updatePlayer}
+                                                    updatePosition={
+                                                        updatePlayerPosition
+                                                    }
+                                                    gameplan={gameplan}
+                                                />
+                                            );
+                                        })}
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                )}
+                {isMobile && gameplan && (
+                    <div className="row">
+                        {roster.map((x, idx) => {
+                            return (
+                                <MobileBBAGPRow
+                                    key={x.ID}
+                                    idx={idx}
+                                    player={x}
+                                    updatePlayer={updatePlayer}
+                                    updatePosition={updatePlayerPosition}
+                                    gameplan={gameplan}
+                                />
+                            );
+                        })}
                     </div>
                 )}
             </div>

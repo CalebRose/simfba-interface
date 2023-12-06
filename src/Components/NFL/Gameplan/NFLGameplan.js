@@ -20,7 +20,7 @@ import {
     TargetingLabels,
     YesNoOptions
 } from '../../Gameplan/GameplanConstants';
-import GameplanInputItem from './../../Gameplan/GameplanInputItem';
+import { GameplanInputItem } from './../../Gameplan/GameplanInputItem';
 import {
     GetDefenseFormationLabel,
     GetMaxForPassPlays,

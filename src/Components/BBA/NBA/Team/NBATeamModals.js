@@ -131,11 +131,11 @@ export const TwoWayModal = ({ player, idx, setToTwoWay, viewMode }) => {
     );
 };
 
-export const PlayerModal = ({ team, player, idx, viewMode }) => {
+export const PlayerModal = ({ team, player, idx, viewMode, retro }) => {
     const modalId = `playerModal${idx}`;
     const modalClass = GetModalClass(viewMode);
-    const nbaLogo = getLogo(team.Team + ' ' + team.Nickname);
-    const collegeLogo = getLogo(player.College);
+    const nbaLogo = getLogo(team.Team + ' ' + team.Nickname, retro);
+    const collegeLogo = getLogo(player.College, retro);
     const { Contract, IsGLeague, IsOnTradeBlock, IsTwoWay, DraftedRound } =
         player;
     const draftedRound = GetNFLRound(DraftedRound);

@@ -8,9 +8,12 @@ const CBBTeamDashboardPlayerRow = (props) => {
     const viewMode = props.viewMode;
     const data = props.player;
     const idx = props.idx;
+    const retro = props.retro;
     const recruit = data.Recruit;
     const logo =
-        recruit && recruit.College.length > 0 ? getLogo(recruit.College) : '';
+        recruit && recruit.College.length > 0
+            ? getLogo(recruit.College, retro)
+            : '';
     const crootModalTarget = '#crootModal' + idx;
     const revokeModalTarget = '#revokeModal' + idx;
     const removeModalTarget = '#removeModal' + idx;
@@ -25,7 +28,7 @@ const CBBTeamDashboardPlayerRow = (props) => {
 
         const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
         return competingAbbrs.map((x) => {
-            const logo = getLogo(x);
+            const logo = getLogo(x, retro);
             return (
                 <>
                     <img

@@ -48,9 +48,31 @@ h2 {
     --bs-table-color: #202020;
     --bs-table-header-color: #202020;
     --bs-form-control-disabled-bg: rgba(255, 255, 255, 0.1);
+    --bs-nav-tabs-link-active-color: white !important;
+    --bs-emphasis-color: white !important;
 }
 
-.dark .btn {
+.dark .card-body .card-input {
+    opacity: 1;
+    --bs-form-control-disabled-bg: #202020;
+}
+
+.dark .card-body .card-input:disabled {
+    opacity: 0.9;
+    --bs-form-control-disabled-bg: #343a40de;
+}
+
+.dark .card-body .card-input-text {
+    --bs-tertiary-bg: #202020;
+    color: #fff !important;
+}
+
+.dark .input-group-text {
+    color: black !important;
+}
+
+.dark .btn,
+.dark .btn-sm {
     --bs-btn-color: #fff;
     font-size: 1.6vh;
 }
@@ -246,7 +268,7 @@ h2 {
 }
 
 .text-small {
-    font-size: 12px;
+    font-size: 1.35vh !important;
 }
 /* logo */
 .logo {
@@ -655,6 +677,11 @@ td {
 .image-recruit-logo {
     max-height: 50px !important;
     max-width: 50px !important;
+}
+
+.image-recruit-signed {
+    margin-left: 5rem !important;
+    margin-top: 1rem;
 }
 .image-rank-logo {
     max-height: 4vh !important;
@@ -1080,4 +1107,20 @@ hr.solid {
 
 .btn-mobile {
     height: 70px;
+}
+
+.w-20 {
+    width: 20% !important;
+}
+
+.w-80 {
+    width: 80% !important;
+}
+
+.w-86 {
+    width: 86% !important;
+}
+
+.profile-card {
+    height: 300px;
 }

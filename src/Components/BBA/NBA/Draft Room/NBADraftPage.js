@@ -14,6 +14,17 @@ import { NBAScoutPlayerRow } from './NBAScoutPlayerRow';
 import { NBADraftHelpModal, ScoutingModal } from './NBADraftModals';
 import { MapObjOptions } from '../../../../_Utility/filterHelper';
 import { PositionList } from '../../../../Constants/BBAConstants';
+import {
+    GetCurrentDraftPick,
+    GetPickTeamLogo,
+    GetNextDraftPickIdx,
+    GetNextDraftPickObj,
+    GetNextPickTeamLogo,
+    GetRecentlyDraftedPlayer,
+    GetViewablePlayersList,
+    useDraftMap
+} from '../../../../_Hooks/DraftHooks';
+import { GetStartTimer } from '../../../../_Utility/DraftHelper';
 
 const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     // Services
@@ -35,9 +46,9 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     const [nbaTeams, setNBATeams] = useState([]);
     const [draftPickList, setDraftPickList] = useState([]);
     const positions = MapObjOptions(PositionList);
-    const [selectedPositions, setPositions] = React.useState('');
+    const [selectedPositions, setPositions] = useState('');
     const [mobileView, setMobileView] = useState('DRAFT');
-    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const [viewWidth, setViewWidth] = useState(window.innerWidth);
     const [modalDraftee, setModalDraftee] = useState(null);
     const {
         allDraftPicks,
@@ -68,7 +79,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     }, [endTime, isPaused]);
 
     // For mobile
-    React.useEffect(() => {
+    useEffect(() => {
         if (!viewWidth) {
             setViewWidth(window.innerWidth);
         }
@@ -76,111 +87,47 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
 
     const isMobile = useMediaQuery({ query: `(max-width:851px)` });
 
-    const recentlyDraftedPlayer = useMemo(() => {
-        if (allDraftablePlayers) {
-            const idx = allDraftablePlayers.findIndex(
-                (x) => x.ID === recentlyDraftedPlayerID
-            );
-            if (idx > -1) {
-                const p = allDraftablePlayers[idx];
-                return `${p.OverallGrade} ${p.FirstName} ${p.LastName}`;
-            }
-        }
-        return 'P David Ross';
-    }, [allDraftablePlayers, recentlyDraftedPlayerID]);
-    const draftMap = useMemo(() => {
-        const draftMapObj = {};
-        if (allDraftPicks) {
-            for (let i = 0; i < allDraftPicks.length; i++) {
-                const pick = allDraftPicks[i];
-                if (pick.SelectedPlayerID > 0) {
-                    draftMapObj[pick.SelectedPlayerID] = true;
-                }
-            }
-        }
-        return draftMapObj;
-    }, [allDraftPicks]);
-    const currentDraftPickIdx = useMemo(() => {
-        if (allDraftPicks) {
-            return allDraftPicks.findIndex(
-                (x) => x.DraftNumber === currentPick
-            );
-        }
-        return -1;
-    }, [allDraftPicks, currentPick]);
-    const currentDraftPick = useMemo(() => {
-        if (allDraftPicks && currentDraftPickIdx >= 0) {
-            return allDraftPicks[currentDraftPickIdx];
-        }
-        return null;
-    }, [allDraftPicks, currentDraftPickIdx]);
-    const nextDraftPickIdx = useMemo(() => {
-        if (allDraftPicks) {
-            return allDraftPicks.findIndex((x) => x.DraftNumber === nextPick);
-        }
-        return -1;
-    }, [allDraftPicks, nextPick]);
+    const recentlyDraftedPlayer = GetRecentlyDraftedPlayer(
+        allDraftablePlayers,
+        recentlyDraftedPlayerID
+    );
+    const draftMap = useDraftMap(allDraftPicks);
+    const currentDraftPickIdx = (allDraftPicks, currentPick);
+    const currentDraftPick = GetCurrentDraftPick(
+        allDraftPicks,
+        currentDraftPickIdx
+    );
+    const nextDraftPickIdx = GetNextDraftPickIdx(allDraftPicks, nextPick);
 
-    const nextDraftPick = useMemo(() => {
-        if (allDraftPicks && nextDraftPickIdx >= 0) {
-            return allDraftPicks[nextDraftPickIdx];
-        }
-        return null;
-    }, [allDraftPicks, nextDraftPickIdx]);
+    const nextDraftPick = GetNextDraftPickObj(allDraftPicks, nextDraftPickIdx);
 
-    const currentPickTeamLogo = useMemo(() => {
-        if (currentDraftPick) {
-            return getLogo(currentDraftPick.Team);
-        }
-        return null;
-    }, [currentDraftPick]);
+    const currentPickTeamLogo = GetPickTeamLogo(
+        currentDraftPick,
+        currentUser.IsRetro
+    );
 
-    const nextPickTeamLogo = useMemo(() => {
-        if (nextDraftPick) {
-            return getLogo(nextDraftPick.Team);
-        }
-        return null;
-    }, [nextDraftPick]);
+    const nextPickTeamLogo = GetPickTeamLogo(
+        nextDraftPick,
+        currentUser.IsRetro
+    );
 
-    const viewablePlayers = useMemo(() => {
-        let list = [];
-        if (allDraftablePlayers) {
-            list = [...allDraftablePlayers];
-            if (selectedPositions.length > 0) {
-                list = list.filter((x) =>
-                    selectedPositions.includes(x.Position)
-                );
-            }
-        }
-        return list;
-    }, [allDraftablePlayers, selectedPositions]);
+    const viewablePlayers = GetViewablePlayersList(
+        allDraftablePlayers,
+        selectedPositions
+    );
 
     // NBA Draft Room State -- get Firebase
     // Current Round
     // Current Pick
     // Start Time
-    const StartTimer = () => {
-        const { currentPick } = data;
-        let seconds = 0;
-        if (currentPick < 32 && timeLeft === 0) {
-            seconds = 300;
-        } else if (currentPick > 32 && timeLeft === 0) {
-            seconds = 120;
-        } else if (isPaused && timeLeft > 0) {
-            seconds = timeLeft;
-        }
-        const endTime = firebase.firestore.Timestamp.fromDate(
-            new Date(Date.now() + seconds * 1000)
-        ); // Current time + 4 minutes
-        const newData = {
-            ...data,
-            endTime,
-            isPaused: false,
-            seconds,
-            startAt: firebase.firestore.Timestamp.fromDate(new Date(Date.now()))
-        }; // Current time + 4 minutes  };
-        updateData(newData);
-    };
+    const StartTimer = GetStartTimer(
+        data,
+        currentPick,
+        timeLeft,
+        isPaused,
+        updateData
+    );
+
     // End Time
     const PauseTimer = () => {
         const newData = { ...data, isPaused: true, seconds: timeLeft };
@@ -578,7 +525,10 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                     <div className="row mt-2">
                         <div className="draft-pick-container">
                             {allDraftPicks.map((x, idx) => {
-                                const TeamLogo = getLogo(x.Team);
+                                const TeamLogo = getLogo(
+                                    x.Team,
+                                    currentUser.IsRetro
+                                );
 
                                 return !isMobile ? (
                                     <div
@@ -684,7 +634,10 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                         </div>
                     </div>
                     <NBADraftHelpModal />
-                    <ScoutingModal player={modalDraftee} />
+                    <ScoutingModal
+                        player={modalDraftee}
+                        retro={currentUser.IsRetro}
+                    />
                     <div className="row mt-2 draft-war-room">
                         <div className="row">
                             <div className="col-auto text-start">

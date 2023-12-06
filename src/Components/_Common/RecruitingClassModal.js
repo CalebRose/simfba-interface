@@ -6,7 +6,7 @@ import FBARecruitingService from '../../_Services/simFBA/FBARecruitingService';
 import BBARecruitingService from '../../_Services/simNBA/BBARecruitingService';
 import { GetOverall } from '../../_Utility/RosterHelper';
 
-const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode }) => {
+const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode, retro }) => {
     let _recruitingService = new FBARecruitingService();
     let _bbaRecruitingService = new BBARecruitingService();
     const modalId = `recruitingClassModal`;
@@ -34,7 +34,7 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode }) => {
     }, [currentTeam]);
 
     useEffect(() => {
-        const logoSrc = getLogo(logoKey);
+        const logoSrc = getLogo(logoKey, retro);
         setLogo(() => logoSrc);
     }, [logoKey]);
 
@@ -153,8 +153,11 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode }) => {
                 <div className="col" title="Rebounding">
                     <h5>Reb</h5>
                 </div>
-                <div className="col" title="Defense">
-                    <h5>Def</h5>
+                <div className="col" title="Interior Defense">
+                    <h5>Int. Def</h5>
+                </div>
+                <div className="col" title="Perimeter Defense">
+                    <h5>Per. Def</h5>
                 </div>
                 <div className="col" title="Potential">
                     <h5>Pot</h5>
@@ -203,7 +206,10 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode }) => {
                     <h6>{croot.Rebounding}</h6>
                 </div>
                 <div className="col">
-                    <h6>{croot.Defense}</h6>
+                    <h6>{croot.InteriorDefense}</h6>
+                </div>
+                <div className="col">
+                    <h6>{croot.PerimeterDefense}</h6>
                 </div>
                 <div className="col">
                     <h6>{croot.PotentialGrade}</h6>

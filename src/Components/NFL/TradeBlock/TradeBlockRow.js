@@ -51,15 +51,9 @@ const DraftPickRow = ({ pick, isNFL }) => {
         <>
             <tr style={{ zIndex: -1 }}>
                 <th scope="row">{pick.Season}</th>
-                <td className="align-middle">
-                    {isNFL ? pick.Round : pick.DraftRound}
-                </td>
-                <td className="align-middle">
-                    {isNFL ? pick.PickNumber : pick.DraftNumber}
-                </td>
-                <td className="align-middle">
-                    {isNFL ? pick.TradeValue : pick.DraftValue}
-                </td>
+                <td className="align-middle">{pick.DraftRound}</td>
+                <td className="align-middle">{pick.DraftNumber}</td>
+                <td className="align-middle">{pick.DraftValue}</td>
                 <td className="align-middle">{pick.OriginalTeam}</td>
             </tr>
         </>

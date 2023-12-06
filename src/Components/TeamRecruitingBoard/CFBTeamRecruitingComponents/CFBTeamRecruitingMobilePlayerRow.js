@@ -8,10 +8,12 @@ import { getLogo } from '../../../Constants/getLogo';
 import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 
 const CFBTeamMobilePlayerRow = (props) => {
-    const { recruitProfile, idx, theme } = props;
+    const { recruitProfile, idx, theme, retro } = props;
     const { Recruit } = recruitProfile;
     const logo =
-        Recruit && Recruit.College.length > 0 ? getLogo(Recruit.College) : '';
+        Recruit && Recruit.College.length > 0
+            ? getLogo(Recruit.College, retro)
+            : '';
     const crootModalTarget = '#crootModal' + idx;
     const revokeModalTarget = '#revokeModal' + idx;
     const removeModalTarget = '#removeModal' + idx;
@@ -28,7 +30,7 @@ const CFBTeamMobilePlayerRow = (props) => {
         const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
 
         return competingAbbrs.map((x) => {
-            const logo = getLogo(x);
+            const logo = getLogo(x, retro);
             return (
                 <>
                     <img

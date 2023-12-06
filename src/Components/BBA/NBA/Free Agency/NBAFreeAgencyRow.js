@@ -56,7 +56,7 @@ export const NBAFreeAgencyRow = ({
         const offers = viewFA ? player.Offers : player.WaiverOffers;
 
         return offers.map((x) => {
-            const logo = getLogo(x.Team);
+            const logo = getLogo(x.Team, currentUser.IsRetro);
             return (
                 <>
                     <img

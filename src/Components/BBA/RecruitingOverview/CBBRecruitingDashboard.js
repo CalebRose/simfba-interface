@@ -366,36 +366,43 @@ const CBBRecruitingDashboard = ({
                                   recruitingProfile.SpentPoints
                                 : 'N/A'}
                         </div>
-                        <div className="row gx-1 mt-3 justify-content-center">
-                            <h6>Scholarships Available</h6>
-                            {recruitingProfile
-                                ? recruitingProfile.RecruitClassSize -
-                                  recruitingProfile.TotalCommitments
-                                : 'N/A'}
+                        <div className="row gx-1 mt-3 gap-2 justify-content-center">
+                            <div className="col-auto">
+                                <h6>Scholarships Available</h6>
+                                {recruitingProfile
+                                    ? recruitingProfile.RecruitClassSize -
+                                      recruitingProfile.TotalCommitments
+                                    : 'N/A'}
+                            </div>
+                            <div className="col-auto">
+                                <h6>Offers Available</h6>
+                                {recruitingProfile
+                                    ? recruitingProfile.ScholarshipsAvailable
+                                    : 'N/A'}
+                            </div>
                         </div>
-                        <div className="row gx-1 mt-3 justify-content-center">
-                            <h6>Scholarship Offers Available</h6>
-                            {recruitingProfile
-                                ? recruitingProfile.ScholarshipsAvailable
-                                : 'N/A'}
+                        <div className="row gx-1 mt-3 gap-2 justify-content-center">
+                            <h5>Ratings</h5>
                         </div>
-                        <div className="row gx-1 mt-3 justify-content-center">
-                            <h6>ESPN Score</h6>
-                            {recruitingProfile
-                                ? recruitingProfile.ESPNScore
-                                : 'N/A'}
-                        </div>
-                        <div className="row gx-1 mt-3 justify-content-center">
-                            <h6>Rivals Score</h6>
-                            {recruitingProfile
-                                ? recruitingProfile.RivalsScore
-                                : 'N/A'}
-                        </div>
-                        <div className="row gx-1 mt-3 justify-content-center">
-                            <h6>247Sports Score</h6>
-                            {recruitingProfile
-                                ? recruitingProfile.Rank247Score
-                                : 'N/A'}
+                        <div className="row gx-1 mt-1 gap-2 justify-content-center">
+                            <div className="col-auto">
+                                <h6>ESPN</h6>
+                                {recruitingProfile
+                                    ? recruitingProfile.ESPNScore
+                                    : 'N/A'}
+                            </div>
+                            <div className="col-auto">
+                                <h6>Rivals</h6>
+                                {recruitingProfile
+                                    ? recruitingProfile.RivalsScore
+                                    : 'N/A'}
+                            </div>
+                            <div className="col-auto">
+                                <h6>247Sports</h6>
+                                {recruitingProfile
+                                    ? recruitingProfile.Rank247Score
+                                    : 'N/A'}
+                            </div>
                         </div>
                     </>
                 </div>
@@ -412,19 +419,7 @@ const CBBRecruitingDashboard = ({
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-md-auto">
-                            <h5 className="text-start align-middle">
-                                Position
-                            </h5>
-                            <Select
-                                options={positions}
-                                isMulti={true}
-                                className="basic-multi-select btn-dropdown-width-team z-index-6"
-                                classNamePrefix="select"
-                                onChange={ChangePositions}
-                            />
-                        </div>
-                        <div className="col-md-auto">
+                        <div className="col-md-auto col-6">
                             <h5 className="text-start align-middle">States</h5>
                             <Select
                                 options={states}
@@ -434,7 +429,7 @@ const CBBRecruitingDashboard = ({
                                 onChange={ChangeStates}
                             />
                         </div>
-                        <div className="col-md-auto">
+                        <div className="col-md-auto col-6">
                             <h5 className="text-start align-middle">
                                 Countries
                             </h5>
@@ -446,7 +441,19 @@ const CBBRecruitingDashboard = ({
                                 onChange={ChangeCountries}
                             />
                         </div>
-                        <div className="col-md-auto">
+                        <div className="col-md-auto mb-1">
+                            <h5 className="text-start align-middle">
+                                Position
+                            </h5>
+                            <Select
+                                options={positions}
+                                isMulti={true}
+                                className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                classNamePrefix="select"
+                                onChange={ChangePositions}
+                            />
+                        </div>
+                        <div className="col-auto">
                             <h5 className="text-start align-middle">
                                 Export Croots
                             </h5>
@@ -461,7 +468,7 @@ const CBBRecruitingDashboard = ({
                         {cbb_Timestamp &&
                             cbb_Timestamp.CollegeWeek > 4 &&
                             teamProfiles.length > 0 && (
-                                <div className="col-md-auto">
+                                <div className="col-auto">
                                     <h5 className="text-start align-middle">
                                         Recruiting Class
                                     </h5>
@@ -477,7 +484,7 @@ const CBBRecruitingDashboard = ({
                             )}
                     </div>
                     <div className="row mt-2">
-                        <div className="col-md-auto">
+                        <div className="col-md-auto col-6">
                             <h5 className="text-start align-middle">
                                 Potential Grade
                             </h5>
@@ -489,7 +496,7 @@ const CBBRecruitingDashboard = ({
                                 onChange={ChangePotentialLetterGrades}
                             />
                         </div>
-                        <div className="col-md-auto">
+                        <div className="col-md-auto col-6">
                             <h5 className="text-start align-middle">Stars</h5>
                             <Select
                                 options={stars}
@@ -499,7 +506,7 @@ const CBBRecruitingDashboard = ({
                                 onChange={ChangeStars}
                             />
                         </div>
-                        <div className="col-md-auto">
+                        <div className="col-md-auto mb-1">
                             <h5 className="text-start align-middle">Status</h5>
                             <Select
                                 options={statusOptions}
@@ -511,7 +518,7 @@ const CBBRecruitingDashboard = ({
                         </div>
                         {cbb_Timestamp && cbb_Timestamp.CollegeWeek > 4 && (
                             <>
-                                <div className="col-md-auto">
+                                <div className="col-auto">
                                     <h5 className="text-start align-middle">
                                         Team Rankings
                                     </h5>
@@ -527,7 +534,7 @@ const CBBRecruitingDashboard = ({
                             </>
                         )}
                         {cbbTeam && luckyTeam >= 16 && showCollusionButton && (
-                            <div className="col-md-auto">
+                            <div className="col-auto">
                                 <h5 className="text-start align-middle">
                                     Collude?
                                 </h5>
@@ -544,11 +551,13 @@ const CBBRecruitingDashboard = ({
                     <CBBRankingsModal
                         teamProfiles={teamProfiles}
                         viewMode={viewMode}
+                        retro={currentUser.IsRetro}
                     />
                     <RecruitingClassModal
                         teams={teamProfiles}
                         userTeam={cbbTeam}
                         viewMode={viewMode}
+                        retro={currentUser.IsRetro}
                     />
                     <div
                         className={`row mt-2 dashboard-table-height${
@@ -560,7 +569,7 @@ const CBBRecruitingDashboard = ({
                                 dataLength={viewableRecruits.length}
                                 next={loadMoreRecords}
                                 hasMore={true}
-                                scrollThreshold={0.8}
+                                scrollThreshold={0.7}
                                 loader={
                                     <div className="row justify-content-center">
                                         Loading More Croots...
@@ -584,6 +593,7 @@ const CBBRecruitingDashboard = ({
                                             map={crootMap}
                                             timestamp={cbb_Timestamp}
                                             theme={viewMode}
+                                            retro={currentUser.IsRetro}
                                         />
                                     ))
                                 ) : (
@@ -736,6 +746,9 @@ const CBBRecruitingDashboard = ({
                                                                 addPlayerToProfile
                                                             }
                                                             viewMode={viewMode}
+                                                            retro={
+                                                                currentUser.IsRetro
+                                                            }
                                                         />
                                                     )
                                                 )}

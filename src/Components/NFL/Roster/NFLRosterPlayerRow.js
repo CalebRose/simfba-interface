@@ -21,6 +21,7 @@ export const NFLRosterPlayerRow = ({
     tradeblock,
     extend,
     cancelExtension,
+    retro,
     ir,
     cut
 }) => {
@@ -69,6 +70,10 @@ export const NFLRosterPlayerRow = ({
         return ir(player);
     };
 
+    const bringUpPlayer = () => {
+        return practicesquad(player);
+    };
+
     return (
         <>
             <CutPlayerModal
@@ -108,6 +113,7 @@ export const NFLRosterPlayerRow = ({
                 player={player}
                 team={team}
                 viewMode={viewMode}
+                retro={retro}
             />
             <tr>
                 <th className="align-middle">
@@ -194,34 +200,51 @@ export const NFLRosterPlayerRow = ({
                         >
                             <i className="bi bi-arrow-down-up" />
                         </button>
-                        <button
-                            type="button"
-                            className={`btn ${
-                                player.IsPracticeSquad
-                                    ? 'btn-warning'
-                                    : 'btn-secondary'
-                            }`}
-                            title={practiceSquadTitle}
-                            data-bs-toggle="modal"
-                            data-bs-target={practiceSquadTarget}
-                            disabled={
-                                !(
-                                    userView &&
-                                    canModify &&
-                                    psCount <= 16 &&
-                                    player.Experience <= 3
-                                )
-                            }
-                        >
-                            <i
-                                className={`bi ${
-                                    player.IsPracticeSquad ||
-                                    player.IsOnPracticeSquad
-                                        ? 'bi-person-fill-up'
-                                        : 'bi-person-fill-down'
+                        {userView &&
+                        canModify &&
+                        psCount <= 16 &&
+                        player.Experience <= 3 ? (
+                            <button
+                                type="button"
+                                className={`btn ${
+                                    player.IsPracticeSquad
+                                        ? 'btn-warning'
+                                        : 'btn-secondary'
                                 }`}
-                            />
-                        </button>
+                                title={practiceSquadTitle}
+                                data-bs-toggle="modal"
+                                data-bs-target={practiceSquadTarget}
+                            >
+                                <i
+                                    className={`bi ${
+                                        player.IsPracticeSquad ||
+                                        player.IsOnPracticeSquad
+                                            ? 'bi-person-fill-up'
+                                            : 'bi-person-fill-down'
+                                    }`}
+                                />
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                className={`btn ${
+                                    player.IsPracticeSquad
+                                        ? 'btn-warning'
+                                        : 'btn-secondary'
+                                }`}
+                                title={practiceSquadTitle}
+                                onClick={bringUpPlayer}
+                            >
+                                <i
+                                    className={`bi ${
+                                        player.IsPracticeSquad ||
+                                        player.IsOnPracticeSquad
+                                            ? 'bi-person-fill-up'
+                                            : 'bi-person-fill-down'
+                                    }`}
+                                />
+                            </button>
+                        )}
                     </div>
                 </td>
             </tr>

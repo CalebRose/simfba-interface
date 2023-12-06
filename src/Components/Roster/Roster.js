@@ -398,73 +398,81 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {viewRoster && viewRoster.length > 0
-                                            ? viewRoster.map((player, idx) => (
-                                                  <>
-                                                      <ConfirmRedshirtModal
-                                                          idx={idx}
-                                                          setRedshirtStatus={
-                                                              setRedshirtStatus
-                                                          }
-                                                          player={player}
-                                                          viewMode={viewMode}
-                                                      />
-                                                      <PlayerModal
-                                                          player={player}
-                                                          team={team}
-                                                          idx={idx}
-                                                          viewMode={viewMode}
-                                                      />
-                                                      <PlayerRow
-                                                          key={player.ID}
-                                                          idx={idx}
-                                                          data={player}
-                                                          width={viewWidth}
-                                                          redshirtCount={
-                                                              redshirtCount
-                                                          }
-                                                          view={viewingUserTeam}
-                                                          ts={cfb_Timestamp}
-                                                          theme={viewMode}
-                                                      />
-                                                  </>
-                                              ))
-                                            : ''}
+                                        {viewRoster &&
+                                            viewRoster.length > 0 &&
+                                            viewRoster.map((player, idx) => (
+                                                <>
+                                                    <ConfirmRedshirtModal
+                                                        idx={idx}
+                                                        setRedshirtStatus={
+                                                            setRedshirtStatus
+                                                        }
+                                                        player={player}
+                                                        viewMode={viewMode}
+                                                    />
+                                                    <PlayerModal
+                                                        player={player}
+                                                        team={team}
+                                                        idx={idx}
+                                                        viewMode={viewMode}
+                                                        retro={
+                                                            currentUser.IsRetro
+                                                        }
+                                                    />
+                                                    <PlayerRow
+                                                        key={player.ID}
+                                                        idx={idx}
+                                                        data={player}
+                                                        width={viewWidth}
+                                                        redshirtCount={
+                                                            redshirtCount
+                                                        }
+                                                        view={viewingUserTeam}
+                                                        ts={cfb_Timestamp}
+                                                        theme={viewMode}
+                                                        retro={
+                                                            currentUser.IsRetro
+                                                        }
+                                                    />
+                                                </>
+                                            ))}
                                     </tbody>
                                 </table>
                             </div>
                         ) : (
                             <>
-                                {viewRoster && viewRoster.length > 0
-                                    ? viewRoster.map((player, idx) => (
-                                          <>
-                                              <ConfirmRedshirtModal
-                                                  idx={idx}
-                                                  setRedshirtStatus={
-                                                      setRedshirtStatus
-                                                  }
-                                                  player={player}
-                                                  viewMode={viewMode}
-                                              />
-                                              <PlayerModal
-                                                  player={player}
-                                                  team={team}
-                                                  idx={idx}
-                                                  viewMode={viewMode}
-                                              />
-                                              <MobileRosterRow
-                                                  key={player.ID}
-                                                  idx={idx}
-                                                  data={player}
-                                                  width={viewWidth}
-                                                  redshirtCount={redshirtCount}
-                                                  view={viewingUserTeam}
-                                                  ts={cfb_Timestamp}
-                                                  theme={viewMode}
-                                              />
-                                          </>
-                                      ))
-                                    : ''}
+                                {viewRoster &&
+                                    viewRoster.length > 0 &&
+                                    viewRoster.map((player, idx) => (
+                                        <>
+                                            <ConfirmRedshirtModal
+                                                idx={idx}
+                                                setRedshirtStatus={
+                                                    setRedshirtStatus
+                                                }
+                                                player={player}
+                                                viewMode={viewMode}
+                                            />
+                                            <PlayerModal
+                                                player={player}
+                                                team={team}
+                                                idx={idx}
+                                                viewMode={viewMode}
+                                                retro={currentUser.IsRetro}
+                                            />
+                                            <MobileRosterRow
+                                                key={player.ID}
+                                                idx={idx}
+                                                data={player}
+                                                width={viewWidth}
+                                                redshirtCount={redshirtCount}
+                                                view={viewingUserTeam}
+                                                ts={cfb_Timestamp}
+                                                theme={viewMode}
+                                                retro={currentUser.IsRetro}
+                                            />
+                                        </>
+                                    ))}
                             </>
                         )}
                     </div>

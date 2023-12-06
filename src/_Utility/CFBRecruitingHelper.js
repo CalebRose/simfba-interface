@@ -61,3 +61,18 @@ export const CalculateAdjustedPoints = (recruitProfile) => {
 
     return Math.round(points * res * 100) / 100;
 };
+
+export const GetRecruitingTendency = (mod) => {
+    if (mod === 0.02) return 'Signing Day Decision';
+    if (mod > 1.79) {
+        return 'Signs Very Early';
+    } else if (mod < 1.8 && mod > 1.51) {
+        return 'Signs Early';
+    } else if (mod < 1.5 && mod > 1.2) {
+        return 'Average';
+    } else if (mod < 1.21 && mod > 1) {
+        return 'Signs Late';
+    } else {
+        return 'Signs Very Late';
+    }
+};

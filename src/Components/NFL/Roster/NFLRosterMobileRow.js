@@ -20,6 +20,7 @@ const NFLMobileRosterRow = ({
     practicesquad,
     tradeblock,
     extend,
+    retro,
     ir,
     cut
 }) => {
@@ -74,6 +75,10 @@ const NFLMobileRosterRow = ({
     if (acceptedExtensionBool) {
         extensionStatus = 'btn-success';
     }
+
+    const bringUpPlayer = () => {
+        return practicesquad(player);
+    };
     return (
         <>
             <CutPlayerModal
@@ -247,7 +252,20 @@ const NFLMobileRosterRow = ({
                                 )}
                             </button>
                         ) : (
-                            'Unavailable'
+                            <button
+                                type="button"
+                                className={`btn ${
+                                    player.IsPracticeSquad ? 'btn-warning' : ''
+                                }`}
+                                title={practiceSquadTitle}
+                                onClick={bringUpPlayer}
+                            >
+                                {player.IsPracticeSquad ? (
+                                    <i class="bi bi-person-fill-up" />
+                                ) : (
+                                    <i class="bi bi-person-fill-down" />
+                                )}
+                            </button>
                         )}
                     </li>
                 </ul>

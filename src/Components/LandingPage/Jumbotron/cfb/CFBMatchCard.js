@@ -2,7 +2,7 @@ import React from 'react';
 import { getLogo } from '../../../../Constants/getLogo';
 import { RevealResults } from '../../../../_Utility/utilHelper';
 
-const CFBMatchCard = ({ game, team, timestamp, isNFL }) => {
+const CFBMatchCard = ({ game, team, timestamp, isNFL, retro }) => {
     const currentWeek = !isNFL ? timestamp.CollegeWeek : timestamp.NFLWeek;
     const teamAbbr =
         !isNFL && team ? team.TeamAbbr : `${team.TeamName} ${team.Mascot}`;
@@ -20,7 +20,7 @@ const CFBMatchCard = ({ game, team, timestamp, isNFL }) => {
             (game.AwayTeam === teamAbbr && game.HomeTeamWin));
     const awayGame =
         game.HomeTeam === teamAbbr || game.IsNeutral ? false : true;
-    const opposingTeamLogo = getLogo(opposingTeam);
+    const opposingTeamLogo = getLogo(opposingTeam, retro);
     const gameWeek = game.Week;
     const ConferenceGame = game.IsConference;
     const ConferenceLabel = team && team.Conference;

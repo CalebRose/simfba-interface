@@ -7,7 +7,7 @@ import {
 } from '../../../_Utility/utilHelper';
 import { GetNFLOverall } from '../../../_Utility/RosterHelper';
 
-export const FreeAgencyPlayerModal = ({ player, idx, viewMode }) => {
+export const FreeAgencyPlayerModal = ({ player, idx, viewMode, retro }) => {
     const modalId = 'playerModal' + idx;
     const heightObj = HeightToFeetAndInches(player.Height);
     const AllOffers = player && player.Offers;
@@ -19,7 +19,7 @@ export const FreeAgencyPlayerModal = ({ player, idx, viewMode }) => {
     }
 
     const OfferingTeam = ({ offer, idx }) => {
-        const logo = getLogo(offer.Team);
+        const logo = getLogo(offer.Team, retro);
         const rank = idx + 1;
         return (
             <div className="row">

@@ -4,50 +4,34 @@ import { RoundToTwoDecimals } from '../../../../_Utility/utilHelper';
 import { getLogo } from '../../../../Constants/getLogo';
 
 const CBBCrootModal = (props) => {
-    const { crt, idx, viewMode } = props;
+    const { crt, idx, viewMode, retro } = props;
     const modalId = 'crootModal' + idx;
     const modalClass = GetModalClass(viewMode);
-    const LeadingTeam = (props) => {
-        const { lt } = props;
+    const LeadingTeam = ({ lt }) => {
         const { TeamAbbr, Odds, Scholarship } = lt;
         const displayOdds = Math.round(Odds * 100);
-        let displayStatus = '';
-        if (displayOdds > 50) {
-            displayStatus = 'Strong Favorite';
-        } else if (displayOdds > 19) {
-            displayStatus = 'In Contention';
-        } else {
-            displayStatus = 'Unlikely';
-        }
-        const logo = getLogo(TeamAbbr);
-        let winningLogo = '';
-        if (crt && crt.College.length > 0) {
-            winningLogo = getLogo(crt.College);
-        }
-        return crt && crt.College === TeamAbbr ? (
+
+        const getDisplayStatus = (odds) => {
+            if (odds > 50) return 'Strong Favorite';
+            if (odds > 19) return 'In Contention';
+            return 'Unlikely';
+        };
+        let displayStatus = getDisplayStatus(displayOdds);
+        const hasCommitted = crt && crt.College.length > 0;
+        const isCommittedToCollege = (crt, teamAbbr) =>
+            crt && crt.College === teamAbbr;
+        const logo = getLogo(TeamAbbr, retro);
+
+        return (
             <div className="row">
-                <div className="col-4">
-                    <h6 className="text-success">
-                        <img
-                            className="image-nfl-fa mx-1"
-                            src={winningLogo}
-                            alt="competing-team"
-                        />{' '}
-                        {TeamAbbr}
-                    </h6>
-                </div>
-                <div className="col-4">{Scholarship ? 'Yes' : 'No'}</div>
-                <div className="col-4">
-                    <h6>Committed!</h6>
-                </div>
-                <div className="col-4">
-                    <h6>Odds: {displayOdds}%</h6>
-                </div>
-            </div>
-        ) : (
-            <div className="row">
-                <div className="col-4">
-                    <h6>
+                <div className={`col-${hasCommitted ? '3' : '4'}`}>
+                    <h6
+                        className={
+                            isCommittedToCollege(crt, TeamAbbr)
+                                ? 'text-success'
+                                : ''
+                        }
+                    >
                         <img
                             className="image-nfl-fa mx-1"
                             src={logo}
@@ -56,20 +40,19 @@ const CBBCrootModal = (props) => {
                         {TeamAbbr}
                     </h6>
                 </div>
-                <div className="col-4">{Scholarship ? 'Yes' : 'No'}</div>
-                {crt && crt.College.length > 0 && crt.College !== TeamAbbr ? (
-                    <div className="col-4">
-                        <h6>Unlikely</h6>
-                    </div>
-                ) : (
-                    <div className="col-4">
-                        <h6>
-                            {crt &&
-                            crt.College.length > 0 &&
-                            crt.College !== TeamAbbr
-                                ? 'Odds: ' + displayOdds + '%'
-                                : displayStatus}
-                        </h6>
+                <div className={`col-${hasCommitted ? '3' : '4'}`}>
+                    {Scholarship ? 'Yes' : 'No'}
+                </div>
+                <div className={`col-${hasCommitted ? '3' : '4'}`}>
+                    <h6>
+                        {isCommittedToCollege(crt, TeamAbbr)
+                            ? 'Committed!'
+                            : displayStatus}
+                    </h6>
+                </div>
+                {hasCommitted && (
+                    <div className="col-3">
+                        <h6>{displayOdds}%</h6>
                     </div>
                 )}
             </div>
@@ -142,16 +125,15 @@ const CBBCrootModal = (props) => {
                                 {crt.Country}
                             </div>
                         </div>
-                        {crt.HasStateBonus || crt.HasRegionBonus ? (
-                            <div className="row g-2 gy-2 mb-3">
-                                <div className="col">
-                                    <h5>Bonus Applied</h5>
-                                    {crt.HasStateBonus ? 'State' : 'Region'}
+                        {crt.HasStateBonus ||
+                            (crt.HasRegionBonus && (
+                                <div className="row g-2 gy-2 mb-3">
+                                    <div className="col">
+                                        <h5>Bonus Applied</h5>
+                                        {crt.HasStateBonus ? 'State' : 'Region'}
+                                    </div>
                                 </div>
-                            </div>
-                        ) : (
-                            ''
-                        )}
+                            ))}
                         <div className="row g-2 gy-2 mb-3">
                             <div className="col">
                                 <h5>Rivals Rank:</h5>{' '}
@@ -179,6 +161,11 @@ const CBBCrootModal = (props) => {
                                     <h5>Prediction</h5>
                                 )}
                             </div>
+                            {crt && crt.College.length > 0 && (
+                                <div className="col">
+                                    <h5>Odds</h5>
+                                </div>
+                            )}
                         </div>
                         {crt &&
                             crt.LeadingTeams !== null &&

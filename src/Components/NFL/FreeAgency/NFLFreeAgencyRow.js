@@ -18,7 +18,8 @@ const NFLFreeAgencyRow = ({
     ts,
     team,
     rosterCount,
-    freeAgencyView
+    freeAgencyView,
+    retro
 }) => {
     const rank = idx + 1;
     const {
@@ -63,7 +64,7 @@ const NFLFreeAgencyRow = ({
         const offers = viewFA || viewPS ? player.Offers : player.WaiverOffers;
 
         return offers.map((x, index) => {
-            const logo = getLogo(x.Team);
+            const logo = getLogo(x.Team, retro);
             return (
                 <img
                     key={index}
@@ -118,6 +119,7 @@ const NFLFreeAgencyRow = ({
                 player={player}
                 idx={idx}
                 viewMode={viewMode}
+                retro={retro}
             />
             {viewFA || viewPS ? (
                 <FreeAgentOfferModal

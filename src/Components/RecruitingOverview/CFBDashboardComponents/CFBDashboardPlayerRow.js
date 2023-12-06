@@ -5,7 +5,7 @@ import CrootModal from './CFBDashboardCrootModal';
 
 const CFBDashboardPlayerRow = (props) => {
     const [flag, setFlag] = React.useState(false);
-    const { croot, idx, map, timestamp, theme } = props;
+    const { croot, idx, map, timestamp, theme, retro } = props;
     const rank = idx + 1;
     const name = croot.FirstName + ' ' + croot.LastName;
     const affinities = croot.AffinityTwo.length
@@ -15,7 +15,7 @@ const CFBDashboardPlayerRow = (props) => {
     const modalTarget = '#crootModal' + idx;
     const mapKey = croot.FirstName + croot.LastName + croot.HighSchool;
     const logo =
-        croot && croot.College.length > 0 ? getLogo(croot.College) : '';
+        croot && croot.College.length > 0 ? getLogo(croot.College, retro) : '';
 
     useEffect(() => {
         if (map) {
@@ -35,7 +35,7 @@ const CFBDashboardPlayerRow = (props) => {
         const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
 
         return competingAbbrs.map((x) => {
-            const logo = getLogo(x);
+            const logo = getLogo(x, retro);
             return (
                 <>
                     <img

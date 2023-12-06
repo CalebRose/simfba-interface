@@ -330,12 +330,21 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
         const currentViewRoster = [...viewRoster];
         const viewIdx = currentViewRoster.findIndex((x) => x.ID === player.ID);
         currentViewRoster[viewIdx].IsPracticeSquad = toggle;
-        toast(
-            `Successfully placed ${player.Position} ${player.FirstName} ${player.LastName} on the Practice Squad.`,
-            {
-                icon: '⛔'
-            }
-        );
+        if (currentViewRoster[viewIdx].IsPracticeSquad) {
+            toast(
+                `Successfully placed ${player.Position} ${player.FirstName} ${player.LastName} on the Practice Squad.`,
+                {
+                    icon: '⛔'
+                }
+            );
+        } else {
+            toast(
+                `Successfully removed ${player.Position} ${player.FirstName} ${player.LastName} from the Practice Squad.`,
+                {
+                    icon: '⛔'
+                }
+            );
+        }
         setRoster(() => currentRoster);
         setViewRoster(() => currentViewRoster);
     };
@@ -572,6 +581,9 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                                 ir={
                                                                     InjuryReservePlayer
                                                                 }
+                                                                retro={
+                                                                    currentUser.IsRetro
+                                                                }
                                                             />
                                                         </>
                                                     )
@@ -610,6 +622,7 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                     }
                                                     cut={CutPlayer}
                                                     ir={InjuryReservePlayer}
+                                                    retro={currentUser.IsRetro}
                                                 />
                                             </>
                                         ))}

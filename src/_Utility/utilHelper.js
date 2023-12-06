@@ -306,3 +306,23 @@ export const GetPredictionRound = (r) => {
         return 'Likely UDFA';
     }
 };
+
+export const GetCollegeYear = (player) => {
+    const isRedshirt = player.IsRedshirt;
+    if (player.Year === 5 && isRedshirt) {
+        return '(Sr)';
+    } else if (player.Year === 4 && !isRedshirt) {
+        return 'Sr';
+    } else if (player.Year === 4 && isRedshirt) {
+        return '(Jr)';
+    } else if (player.Year === 3 && !isRedshirt) {
+        return 'Jr';
+    } else if (player.Year === 3 && isRedshirt) {
+        return '(So)';
+    } else if (player.Year === 2 && !isRedshirt) {
+        return 'So';
+    } else if (player.Year === 2 && isRedshirt) {
+        return '(Fr)';
+    }
+    return 'Fr';
+};

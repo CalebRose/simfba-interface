@@ -3,7 +3,7 @@ import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
 
 const CFBDashboardRankingsModal = (props) => {
-    const { teamProfiles, viewMode } = props;
+    const { teamProfiles, viewMode, retro } = props;
     const modalId = 'rankingsModal';
     const sortedProfiles =
         teamProfiles &&

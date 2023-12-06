@@ -35,7 +35,7 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
     useEffect(() => {
         if (currentUser) {
             setTeamName(currentUser.NBATeam);
-            setLogo(getLogo(currentUser.NBATeam));
+            setLogo(getLogo(currentUser.NBATeam, currentUser.IsRetro));
         }
         if (nbaTeam) {
             setTeam(() => nbaTeam);
@@ -246,6 +246,7 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
                                         team={nbaTeam}
                                         isNBA={true}
                                         timestamp={cbb_Timestamp}
+                                        retro={currentUser.IsRetro}
                                     />
                                 </div>
                             );
@@ -274,7 +275,10 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
                                             : 'desktop-display'
                                     }
                                 >
-                                    <NBAStandingsCard standings={standings} />
+                                    <NBAStandingsCard
+                                        standings={standings}
+                                        retro={currentUser.IsRetro}
+                                    />
                                     <div className="cbb-news-feed">
                                         {newsFeed.length > 0 &&
                                             newsFeed.map((x) => (

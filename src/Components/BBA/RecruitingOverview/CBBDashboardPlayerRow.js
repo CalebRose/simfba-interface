@@ -4,14 +4,15 @@ import CBBCrootModal from '../RecruitingBoard/DashboardComponents/CBBCrootModal'
 
 const CBBDashboardPlayerRow = (props) => {
     const [flag, setFlag] = React.useState(false);
-    const { idx, timestamp, map, viewMode } = props;
+    const { idx, timestamp, map, viewMode, retro } = props;
     const data = props.player;
     const name = data.FirstName + ' ' + data.LastName;
     const keyCode =
         data.FirstName + data.LastName + data.Stars + data.State + data.Country;
     const crootModalTarget = '#crootModal' + idx;
 
-    const logo = data && data.College.length > 0 ? getLogo(data.College) : '';
+    const logo =
+        data && data.College.length > 0 ? getLogo(data.College, retro) : '';
 
     useEffect(() => {
         if (map) {
@@ -31,7 +32,7 @@ const CBBDashboardPlayerRow = (props) => {
         const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
 
         return competingAbbrs.map((x) => {
-            const logo = getLogo(x);
+            const logo = getLogo(x, retro);
             return (
                 <>
                     <img

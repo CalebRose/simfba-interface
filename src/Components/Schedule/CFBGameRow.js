@@ -19,6 +19,7 @@ const GameRow = ({
     isAdmin,
     change,
     isNFL,
+    retro,
     SetGame
 }) => {
     const modalTarget = `#gameModal`;
@@ -45,8 +46,8 @@ const GameRow = ({
         Coach: game.AwayTeamCoach
     };
 
-    const HomeTeamLogo = getLogo(homeTeam.Team);
-    const AwayTeamLogo = getLogo(awayTeam.Team);
+    const HomeTeamLogo = getLogo(homeTeam.Team, retro);
+    const AwayTeamLogo = getLogo(awayTeam.Team, retro);
     const GameWeek = game.Week;
     const ConferenceGame = game.IsConference;
     const DivisionGame = game.IsDivisional;

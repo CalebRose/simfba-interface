@@ -12,13 +12,13 @@ import {
 } from '../../../_Utility/utilHelper';
 import AttributeRow from '../../Roster/AttributeRow';
 
-export const NFLPlayerModal = ({ team, player, idx, viewMode }) => {
+export const NFLPlayerModal = ({ team, player, idx, viewMode, retro }) => {
     const modalId = 'playerModal' + idx;
     const modalClass = GetModalClass(viewMode);
     const heightObj = HeightToFeetAndInches(player.Height);
     player['priorityAttributes'] = SetNFLPriority(player);
-    const logo = getLogo(team.TeamName + ' ' + team.Mascot);
-    const CollegeLogo = getLogo(player.College);
+    const logo = getLogo(team.TeamName + ' ' + team.Mascot, retro);
+    const CollegeLogo = getLogo(player.College, retro);
     const CurrentYearSalary =
         player.Contract.Y1BaseSalary + player.Contract.Y1Bonus;
     const draftedRound = GetNFLRound(player.DraftedRound);

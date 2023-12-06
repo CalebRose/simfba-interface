@@ -56,16 +56,16 @@ const CapspaceColumn = ({ team, ts }) => {
             </div>
             <div className="row mb-1 pe-2">
                 <div className="col-3">
-                    <h5>Year</h5>
+                    <h6>Year</h6>
                 </div>
                 <div className="col-3">
-                    <h5>Bonus</h5>
+                    <h6>Bonus</h6>
                 </div>
                 <div className="col-3">
-                    <h5>Salary</h5>
+                    <h6>Salary</h6>
                 </div>
                 <div className="col-3">
-                    <h5>Space</h5>
+                    <h6>Space</h6>
                 </div>
             </div>
             <CapsheetRow
@@ -115,7 +115,7 @@ export const OptionCard = ({
     const title =
         optionType === 'Player'
             ? `${opt.Position} ${opt.FirstName} ${opt.LastName}`
-            : `${opt.Season} Round ${opt.Round}`;
+            : `${opt.Season} Round ${opt.DraftRound}`;
     const description =
         optionType === 'Player' ? (
             <>
@@ -131,12 +131,12 @@ export const OptionCard = ({
             </>
         ) : (
             <>
-                {opt.PickNumber > 0 && (
+                {opt.DraftNumber > 0 && (
                     <p className="card-text mb-0">
-                        Pick Number: {opt.PickNumber}
+                        Pick Number: {opt.DraftNumber}
                     </p>
                 )}
-                <p className="card-text">Trade Value: {opt.TradeValue}</p>
+                <p className="card-text">Trade Value: {opt.DraftValue}</p>
             </>
         );
 
@@ -165,7 +165,7 @@ export const OptionCard = ({
                         />
                     ) : (
                         <i
-                            className={`bi bi-${opt.Round}-circle-fill`}
+                            className={`bi bi-${opt.DraftRound}-circle-fill`}
                             style={{ fontSize: '20px' }}
                         />
                     )}

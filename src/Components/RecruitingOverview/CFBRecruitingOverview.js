@@ -543,12 +543,14 @@ const CFBRecruitingOverview = ({
                     <CFBDashboardRankingsModal
                         teamProfiles={teamProfiles}
                         viewMode={viewMode}
+                        retro={currentUser.IsRetro}
                     />
                     <RecruitingClassModal
                         teams={teamProfiles}
                         userTeam={cfbTeam}
                         isCFB
                         viewMode={viewMode}
+                        retro={currentUser.IsRetro}
                     />
                     <div
                         className={`row mt-3 mb-5 dashboard-table-height${
@@ -587,6 +589,9 @@ const CFBRecruitingOverview = ({
                                                       map={crootMap}
                                                       timestamp={cfb_Timestamp}
                                                       theme={viewMode}
+                                                      retro={
+                                                          currentUser.IsRetro
+                                                      }
                                                   />
                                               ))
                                             : ''}
@@ -664,6 +669,9 @@ const CFBRecruitingOverview = ({
                                                                     cfb_Timestamp
                                                                 }
                                                                 theme={viewMode}
+                                                                retro={
+                                                                    currentUser.IsRetro
+                                                                }
                                                             />
                                                         </>
                                                     )

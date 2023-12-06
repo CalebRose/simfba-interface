@@ -18,6 +18,7 @@ export const NFLFreeAgencyMobileRow = ({
     cancel,
     rosterCount,
     ts,
+    retro,
     team
 }) => {
     const rank = idx + 1;
@@ -49,7 +50,7 @@ export const NFLFreeAgencyMobileRow = ({
         }
 
         return player.Offers.map((x) => {
-            const logo = getLogo(x.Team);
+            const logo = getLogo(x.Team, retro);
             return (
                 <>
                     <img
@@ -79,6 +80,7 @@ export const NFLFreeAgencyMobileRow = ({
                 player={player}
                 idx={idx}
                 viewMode={viewMode}
+                retro={retro}
             />
             <FreeAgentOfferModal
                 key={player.ID}

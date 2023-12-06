@@ -24,7 +24,7 @@ export const NBAFreeAgencyPlayerModal = ({ player, idx, theme }) => {
     const modalClass = GetModalClass(theme);
 
     const OfferingTeam = ({ offer, idx }) => {
-        const logo = getLogo(offer.Team);
+        const logo = getLogo(offer.Team, currentUser.IsRetro);
         const rank = idx + 1;
         return (
             <div className="row">

@@ -20,7 +20,7 @@ export const SwitchToggle = ({ value, change, checkValue }) => {
     );
 };
 
-export const BBAToggle = ({ value, label, change, checkValue }) => (
+export const FBAToggle = ({ value, label, change, checkValue }) => (
     <div className="col ps-3 me-2">
         <div className="form-check form-switch">
             <input

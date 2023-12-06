@@ -74,7 +74,7 @@ export const NBADraftHelpModal = () => {
     );
 };
 
-export const ScoutingModal = ({ player }) => {
+export const ScoutingModal = ({ player, retro }) => {
     const _draftService = new BBADraftService();
     const id = `drafteeModal`;
     const header = player
@@ -97,7 +97,7 @@ export const ScoutingModal = ({ player }) => {
         return {};
     }, [data]);
 
-    const teamLogo = getLogo(TeamStandings.TeamAbbr);
+    const teamLogo = getLogo(TeamStandings.TeamAbbr, retro);
 
     useEffect(() => {
         if (

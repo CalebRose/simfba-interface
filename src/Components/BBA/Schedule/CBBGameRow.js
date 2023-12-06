@@ -2,7 +2,7 @@ import React from 'react';
 import { getLogo } from '../../../Constants/getLogo';
 
 const CBBGameRow = (props) => {
-    const { idx, game, ts, viewType } = props;
+    const { idx, game, ts, viewType, retro } = props;
 
     const currentSeason = ts.SeasonID;
     const pastSeason = game.SeasonID < currentSeason;
@@ -31,8 +31,8 @@ const CBBGameRow = (props) => {
         Coach: game.AwayTeamCoach,
         Rank: game.AwayTeamRank
     };
-    const HomeTeamLogo = getLogo(homeTeam.Team);
-    const AwayTeamLogo = getLogo(awayTeam.Team);
+    const HomeTeamLogo = getLogo(homeTeam.Team, retro);
+    const AwayTeamLogo = getLogo(awayTeam.Team, retro);
     const GameWeek = game.Week;
     const ConferenceGame = game.IsConference;
     let detailsLabel = '';

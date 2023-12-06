@@ -20,6 +20,7 @@ class AvailableTeams extends Component {
         sentRequest: false,
         selectedSport: 'CFB'
     };
+    _retroService = this.props.currentUser && this.props.currentUser.IsRetro;
     _FBTeamService = new FBATeamService();
     CFBRequestService = new FBARequestService();
     BBATeamService = new BBATeamService();
@@ -182,7 +183,7 @@ class AvailableTeams extends Component {
                         team={team.TeamName}
                         mascot={team.Mascot}
                         conference={team.Conference}
-                        logo={getLogo(team.TeamAbbr)}
+                        logo={getLogo(team.TeamAbbr, this._retroService)}
                         request={this.sendCFBRequest}
                         disable={this.state.sentRequest}
                         isFBS={team.IsFBS}
@@ -198,6 +199,7 @@ class AvailableTeams extends Component {
                         request={this.sendNFLRequest}
                         disable={this.state.sentRequest}
                         viewMode={this.props.viewMode}
+                        retro={this._retroService}
                     />
                 );
             } else if (this.state.selectedSport === constants.CBB) {
@@ -208,7 +210,7 @@ class AvailableTeams extends Component {
                         team={team.Team}
                         mascot={team.Nickname}
                         conference={team.Conference}
-                        logo={getLogo(team.Abbr)}
+                        logo={getLogo(team.Abbr, this._retroService)}
                         request={this.sendCBBRequest}
                         disable={this.state.sentRequest}
                         ovr={team.OverallGrade}
@@ -226,7 +228,7 @@ class AvailableTeams extends Component {
                         key={team.ID}
                         teamId={team.ID}
                         team={team}
-                        logo={getLogo(logoKey)}
+                        logo={getLogo(logoKey, this._retroService)}
                         request={this.sendNBARequest}
                         disable={this.state.sentRequest}
                         viewMode={this.props.viewMode}

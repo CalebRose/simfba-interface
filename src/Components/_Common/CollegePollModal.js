@@ -10,10 +10,10 @@ import {
 } from './ModalComponents';
 import { getLogo } from '../../Constants/getLogo';
 
-const RankRow = ({ row, idx, standingsMap }) => {
+const RankRow = ({ row, idx, standingsMap, retro }) => {
     const num = idx + 1;
     const { Team, TeamID, Votes, No1Votes } = row;
-    const logo = getLogo(Team);
+    const logo = getLogo(Team, retro);
     const standings = standingsMap[TeamID];
     let description = '';
     if (standings) {
@@ -196,6 +196,7 @@ export const CollegePollModal = ({
                             row={x}
                             idx={idx}
                             standingsMap={standingsMap}
+                            retro={currentUser.IsRetro}
                         />
                     ))}
                 </>

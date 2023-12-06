@@ -170,9 +170,7 @@ export const TradeDropdownItem = ({ click, option, id, isUser, isNFL }) => {
     const label =
         option.OptionType === 'Player'
             ? `${option.Position} ${option.FirstName} ${option.LastName}`
-            : `${option.Season} Round ${
-                  isNFL ? option.Round : option.DraftRound
-              } from ${option.OriginalTeam}`;
+            : `${option.Season} Round ${option.DraftRound} from ${option.OriginalTeam}`;
 
     const handleChange = () => {
         return click(option, isUser);

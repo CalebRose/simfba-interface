@@ -40,7 +40,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     useEffect(() => {
         if (currentUser) {
             setTeam(currentUser.team);
-            setLogo(getLogo(currentUser.teamAbbr));
+            setLogo(getLogo(currentUser.teamAbbr, currentUser.IsRetro));
         }
         if (!cfbTeam) {
             getTeam();
@@ -337,6 +337,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         team={cfbTeam}
                                         isNFL={false}
                                         timestamp={cfb_Timestamp}
+                                        retro={currentUser.IsRetro}
                                     />
                                 </div>
                             );
@@ -368,7 +369,10 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                             : 'desktop-display'
                                     }
                                 >
-                                    <StandingsCard standings={standings} />
+                                    <StandingsCard
+                                        standings={standings}
+                                        retro={currentUser.IsRetro}
+                                    />
                                     <div className="cfb-news-feed">
                                         {newsFeed.length > 0 &&
                                             newsFeed.map((x) => (

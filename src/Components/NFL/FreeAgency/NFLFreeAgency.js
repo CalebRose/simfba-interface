@@ -571,6 +571,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                                 cancel={CancelOffer}
                                                 extend={CreateFAOffer}
                                                 rosterCount={rosterCount}
+                                                retro={currentUser.IsRetro}
                                                 freeAgencyView={freeAgencyView}
                                             />
                                         </>
@@ -642,6 +643,9 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                                             }
                                                             rosterCount={
                                                                 rosterCount
+                                                            }
+                                                            retro={
+                                                                currentUser.IsRetro
                                                             }
                                                             freeAgencyView={
                                                                 freeAgencyView

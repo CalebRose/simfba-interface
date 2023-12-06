@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { ExtraLargeModal } from '../../_Common/ModalComponents';
 import { Spinner } from '../../_Common/Spinner';
 
-export const InjuryReportModal = () => {
+export const InjuryReportModal = ({ retro }) => {
     const _playerService = new FBAPlayerService();
     const id = `injuryReportModal`;
     const header = 'Injury Report Modal';
@@ -91,7 +91,7 @@ export const InjuryReportModal = () => {
 
                     {viewablePlayers &&
                         viewablePlayers.map((x) => {
-                            const logo = getLogo(x.TeamAbbr);
+                            const logo = getLogo(x.TeamAbbr, retro);
                             return (
                                 <div className="row mt-2">
                                     <div className="col-3">

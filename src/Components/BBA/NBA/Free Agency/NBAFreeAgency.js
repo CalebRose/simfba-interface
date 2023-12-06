@@ -613,6 +613,9 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                                             freeAgencyView={
                                                                 freeAgencyView
                                                             }
+                                                            retro={
+                                                                currentUser.IsRetro
+                                                            }
                                                         />
                                                     )
                                                 )}

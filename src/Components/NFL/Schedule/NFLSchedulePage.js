@@ -225,7 +225,11 @@ const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
                             </button>
                         </div>
                     </div>
-                    <NFLStandings ts={cfb_Timestamp} viewMode={viewMode} />
+                    <NFLStandings
+                        ts={cfb_Timestamp}
+                        viewMode={viewMode}
+                        retro={currentUser.IsRetro}
+                    />
                     <div className="col-md-10 px-md-4">
                         <div className="row mt-3 mb-5 justify-content-between">
                             {viewGames.length > 0 &&
@@ -239,6 +243,7 @@ const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
                                         change={ChangeTimeSlot}
                                         ts={cfb_Timestamp}
                                         isNFL={true}
+                                        retro={currentUser.IsRetro}
                                     />
                                 ))}
                         </div>

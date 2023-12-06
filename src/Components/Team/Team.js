@@ -25,7 +25,7 @@ const Team = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
 
     useEffect(() => {
         if (currentUser) {
-            setLogo(getLogo(currentUser.teamAbbr));
+            setLogo(getLogo(currentUser.teamAbbr, currentUser.IsRetro));
         }
     }, [currentUser]);
 

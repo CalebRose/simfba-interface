@@ -17,7 +17,8 @@ const NBATeamPlayerRow = ({
     tradeblock,
     team,
     twoWayCount,
-    gLeagueCount
+    gLeagueCount,
+    retro
 }) => {
     let modalTarget = `#playerModal${idx}`;
     let tradeBlockTarget = `#tradeBlock${idx}`;
@@ -43,6 +44,7 @@ const NBATeamPlayerRow = ({
                 viewMode={theme}
                 team={team}
                 idx={idx}
+                retro={retro}
             />
             <CutPlayerModal
                 key={player.ID}

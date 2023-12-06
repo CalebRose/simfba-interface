@@ -39,7 +39,7 @@ const LandingPage = ({ currentUser }) => {
     useEffect(() => {
         if (currentUser) {
             if (currentUser.teamId && currentUser.teamId > 0) {
-                const logo = getLogo(currentUser.teamAbbr);
+                const logo = getLogo(currentUser.teamAbbr, currentUser.IsRetro);
                 setCFBLogo(() => logo);
                 setSport('CFB');
             } else if (currentUser.NFLTeamID) {
@@ -80,7 +80,7 @@ const LandingPage = ({ currentUser }) => {
 
     const GetCBBTeam = async () => {
         let response = await _teamService.GetTeamByTeamId(currentUser.cbb_id);
-        const logo = getLogo(currentUser.cbb_abbr);
+        const logo = getLogo(currentUser.cbb_abbr, currentUser.IsRetro);
         setCBBLogo(() => logo);
         dispatch(setCBBTeam(response));
     };
@@ -89,7 +89,7 @@ const LandingPage = ({ currentUser }) => {
         let response = await teamService.GetNFLTeamByTeamID(
             currentUser.NFLTeamID
         );
-        const logo = getLogo(currentUser.NFLTeam);
+        const logo = getLogo(currentUser.NFLTeam, currentUser.IsRetro);
         setNFLLogo(() => logo);
         dispatch(setNFLTeam(response));
     };
@@ -98,7 +98,7 @@ const LandingPage = ({ currentUser }) => {
         let response = await _teamService.GetNBATeamByTeamID(
             currentUser.NBATeamID
         );
-        const logo = getLogo(currentUser.NBATeam);
+        const logo = getLogo(currentUser.NBATeam, currentUser.IsRetro);
         setNBALogo(() => logo);
         dispatch(setNBATeam(response));
     };

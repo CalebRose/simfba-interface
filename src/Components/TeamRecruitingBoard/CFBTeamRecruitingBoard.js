@@ -314,6 +314,7 @@ const CFBTeamRecruitingBoard = ({
                                             }
                                             changePoints={AllocatePoints}
                                             theme={viewMode}
+                                            retro={currentUser.IsRetro}
                                         />
                                     ))}
                             </>
@@ -377,6 +378,7 @@ const CFBTeamRecruitingBoard = ({
                                                 }
                                                 changePoints={AllocatePoints}
                                                 viewMode={viewMode}
+                                                retro={currentUser.IsRetro}
                                             />
                                         ))}
                                 </tbody>

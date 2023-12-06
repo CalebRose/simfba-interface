@@ -263,7 +263,11 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
                         </div>
                     </div>
                     <SimFBAGameModal game={viewGame} isNFL={false} />
-                    <CFBStandingsModal ts={cfb_Timestamp} viewMode={viewMode} />
+                    <CFBStandingsModal
+                        ts={cfb_Timestamp}
+                        viewMode={viewMode}
+                        retro={currentUser.IsRetro}
+                    />
                     <div className="col-md-10 px-md-4">
                         <div className="row mb-2">
                             <div className="col">
@@ -298,6 +302,7 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
                                         ts={cfb_Timestamp}
                                         isNFL={false}
                                         SetGame={SetGame}
+                                        retro={currentUser.IsRetro}
                                     />
                                 ))}
                         </div>
