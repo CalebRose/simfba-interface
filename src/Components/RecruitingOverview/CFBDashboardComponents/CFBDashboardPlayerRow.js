@@ -2,10 +2,11 @@ import React, { useEffect } from 'react';
 import { getLogo } from '../../../Constants/getLogo';
 import { GetOverall } from '../../../_Utility/RosterHelper';
 import CrootModal from './CFBDashboardCrootModal';
+import { isBadFit, isGoodFit } from '../../../_Utility/CFBRecruitingHelper';
 
 const CFBDashboardPlayerRow = (props) => {
     const [flag, setFlag] = React.useState(false);
-    const { croot, idx, map, timestamp, theme, retro } = props;
+    const { croot, idx, map, timestamp, theme, retro, teamProfile } = props;
     const rank = idx + 1;
     const name = croot.FirstName + ' ' + croot.LastName;
     const affinities = croot.AffinityTwo.length
@@ -55,12 +56,38 @@ const CFBDashboardPlayerRow = (props) => {
         return props.add(croot);
     };
 
-    const customClass = croot.IsCustomCroot
-        ? 'text-primary align-middle'
-        : 'align-middle';
+    const goodFit = isGoodFit(
+        teamProfile.OffensiveScheme,
+        teamProfile.DefensiveScheme,
+        croot.Position,
+        croot.Archetype
+    );
+
+    const badFit = isBadFit(
+        teamProfile.OffensiveScheme,
+        teamProfile.DefensiveScheme,
+        croot.Position,
+        croot.Archetype
+    );
+
+    let customClass = 'align-middle';
+    if (croot.IsCustomCroot) {
+        customClass += ' text-primary';
+    } else if (goodFit && !badFit) {
+        customClass += ' text-success';
+    } else if (!goodFit && badFit) {
+        customClass += ' text-danger';
+    }
+
     return (
         <>
-            <CrootModal key={croot.ID} crt={croot} idx={idx} viewMode={theme} />
+            <CrootModal
+                key={croot.ID}
+                crt={croot}
+                idx={idx}
+                viewMode={theme}
+                retro={retro}
+            />
             <tr style={{ backgroundColor: 'white', zIndex: -1 }}>
                 <th scope="row">
                     <h4>{rank}</h4>

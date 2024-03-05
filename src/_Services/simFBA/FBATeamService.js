@@ -6,6 +6,10 @@ export default class FBATeamService {
         return await GetCall(`${url}teams/college/all`);
     }
 
+    async GetAllCollegeTeamsForRosterPage() {
+        return await GetCall(`${url}teams/college/data/all`);
+    }
+
     async GetAllNFLTeams() {
         return await GetCall(`${url}teams/nfl/all`);
     }

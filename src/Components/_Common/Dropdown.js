@@ -68,7 +68,13 @@ export const Dropdown = ({ value, click, id, list, name }) => {
     );
 };
 
-export const BBATeamDropdown = ({ team, currentUser, selectTeam, list }) => {
+export const BBATeamDropdown = ({
+    team,
+    currentUser,
+    selectTeam,
+    list,
+    isNBA
+}) => {
     const handleUserClick = () => {
         return selectTeam(team);
     };
@@ -89,7 +95,7 @@ export const BBATeamDropdown = ({ team, currentUser, selectTeam, list }) => {
             >
                 <li>
                     <p className="dropdown-item" onClick={handleUserClick}>
-                        {currentUser.NBATeam}
+                        {isNBA ? currentUser.NBATeam : currentUser.NFLTeam}
                     </p>
                 </li>
                 <li>
@@ -108,30 +114,47 @@ export const BBATeamDropdown = ({ team, currentUser, selectTeam, list }) => {
     );
 };
 
-export const DraftDropdown = ({ value, click, id, list, name }) => {
-    const label = !value || value.length === 0 ? 'Choose Type' : value;
+export const NFLTeamDropdown = ({
+    team,
+    currentUser,
+    selectTeam,
+    list,
+    isNBA
+}) => {
+    const handleUserClick = () => {
+        return selectTeam(team);
+    };
     return (
-        <div className="drop-start btn-dropdown-width-auto">
+        <div className="dropdown">
             <button
-                name="team"
-                className="btn btn-secondary dropdown-toggle btn-dropdown-width-auto"
+                className="btn btn-secondary dropdown-toggle"
+                type="button"
                 id="dropdownMenuButton1"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
             >
-                <span>{label}</span>
+                {team && team.Team}
             </button>
-            <ul className="dropdown-menu dropdown-content">
-                <DropdownItem value={label} click={click} id={id} name={name} />
-                <hr className="dropdown-divider"></hr>
-                {list.map((x, idx) => (
-                    <DraftDropdownItem
-                        click={click}
-                        value={x.DraftNumber}
-                        id={idx}
-                        name={`${x.DraftNumber} | ${x.Team}`}
-                    />
-                ))}
+            <ul
+                className="dropdown-menu dropdown-content"
+                aria-labelledby="dropdownMenuButton1"
+            >
+                <li>
+                    <p className="dropdown-item" onClick={handleUserClick}>
+                        {isNBA ? currentUser.NBATeam : currentUser.NFLTeam}
+                    </p>
+                </li>
+                <li>
+                    <hr className="dropdown-divider" />
+                </li>
+                {list &&
+                    list.map((x) => (
+                        <NFLTeamDropdownItem
+                            key={x.ID}
+                            selectTeam={selectTeam}
+                            team={x}
+                        />
+                    ))}
             </ul>
         </div>
     );
@@ -185,6 +208,21 @@ export const TradeDropdownItem = ({ click, option, id, isUser, isNFL }) => {
                 id={id}
             >
                 {label}
+            </p>
+        </li>
+    );
+};
+
+const NFLTeamDropdownItem = (props) => {
+    let { team } = props;
+
+    const handleChange = (event) => {
+        return props.selectTeam(team);
+    };
+    return (
+        <li>
+            <p class="dropdown-item" value={team} onClick={handleChange}>
+                {team.TeamName}
             </p>
         </li>
     );

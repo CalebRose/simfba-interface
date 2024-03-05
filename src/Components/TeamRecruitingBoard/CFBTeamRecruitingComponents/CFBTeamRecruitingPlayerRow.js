@@ -1,15 +1,19 @@
 import React from 'react';
 import { GetOverall } from '../../../_Utility/RosterHelper';
-import { CalculateAdjustedPoints } from '../../../_Utility/CFBRecruitingHelper';
+import {
+    CalculateAdjustedPoints,
+    isBadFit,
+    isGoodFit
+} from '../../../_Utility/CFBRecruitingHelper';
 import CrootModal from '../../RecruitingOverview/CFBDashboardComponents/CFBDashboardCrootModal';
 import ConfirmRemovePlayerFromBoardModal from './CFBTeamRemovePlayerModal';
 import ConfirmRevokeModal from './CFBTeamRevokeScholarshipModal';
 import { getLogo } from '../../../Constants/getLogo';
 
 const CFBTeamDashboardPlayerRow = (props) => {
-    const { recruitProfile, idx, viewMode, retro } = props;
+    const { recruitProfile, idx, viewMode, retro, teamProfile } = props;
     const { Recruit } = recruitProfile;
-    const customClass = Recruit.IsCustomCroot ? 'text-primary' : '';
+
     const logo =
         Recruit && Recruit.College.length > 0
             ? getLogo(Recruit.College, retro)
@@ -67,9 +71,36 @@ const CFBTeamDashboardPlayerRow = (props) => {
         return props.remove(idx, recruitProfile);
     };
 
+    const goodFit = isGoodFit(
+        teamProfile.OffensiveScheme,
+        teamProfile.DefensiveScheme,
+        Recruit.Position,
+        Recruit.Archetype
+    );
+
+    const badFit = isBadFit(
+        teamProfile.OffensiveScheme,
+        teamProfile.DefensiveScheme,
+        Recruit.Position,
+        Recruit.Archetype
+    );
+
+    let customClass = 'align-middle';
+    if (Recruit.IsCustomCroot) {
+        customClass += ' text-primary';
+    } else if (goodFit && !badFit) {
+        customClass += ' text-success';
+    } else if (!goodFit && badFit) {
+        customClass += ' text-danger';
+    }
     return (
         <>
-            <CrootModal crt={Recruit} idx={idx} viewMode={viewMode} />
+            <CrootModal
+                crt={Recruit}
+                idx={idx}
+                viewMode={viewMode}
+                retro={retro}
+            />
             <ConfirmRevokeModal
                 idx={idx}
                 revoke={revokeScholarship}

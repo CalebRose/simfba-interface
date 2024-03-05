@@ -76,7 +76,12 @@ export const FreeAgentOfferModal = ({
                 return {
                     NFLPlayerID: player.ID,
                     TeamID: team.ID,
-                    Team: `${team.TeamName} ${team.Mascot}`
+                    Team: `${team.TeamName} ${team.Mascot}`,
+                    Y1BaseSalary: 0,
+                    Y2BaseSalary: 0,
+                    Y3BaseSalary: 0,
+                    Y4BaseSalary: 0,
+                    Y5BaseSalary: 0
                 };
             }
             setExistingOffer(() => offers[offerIdx]);
@@ -85,7 +90,12 @@ export const FreeAgentOfferModal = ({
             return {
                 NFLPlayerID: player.ID,
                 TeamID: team.ID,
-                Team: `${team.TeamName} ${team.Mascot}`
+                Team: `${team.TeamName} ${team.Mascot}`,
+                Y1BaseSalary: 0,
+                Y2BaseSalary: 0,
+                Y3BaseSalary: 0,
+                Y4BaseSalary: 0,
+                Y5BaseSalary: 0
             };
         }
     });
@@ -253,12 +263,15 @@ export const FreeAgentOfferModal = ({
             offer.Y2BaseSalary,
             offer.Y3BaseSalary,
             offer.Y4BaseSalary,
-            offer.Y5BaseSalary
+            offer.Y5BaseSalary,
+            contractLength
         );
 
-        const canMakeOffer =
-            player.IsAcceptingOffers ||
-            (player.IsNegotiating && hasExistingOffer);
+        // const canMakeOffer =
+        //     player.IsAcceptingOffers ||
+        //     (player.IsNegotiating && hasExistingOffer);
+
+        const canMakeOffer = player.IsAcceptingOffers || player.IsNegotiating;
 
         const validToExistingOffer = !existingOffer
             ? true

@@ -11,12 +11,7 @@ const MobileRosterRow = (props) => {
     let ovr = GetOverall(player.Overall, player.Year);
     const year = GetYear(player);
     const heightObj = HeightToFeetAndInches(player.Height);
-    let redshirtLabel = '';
-    if (player.IsRedshirting) {
-        redshirtLabel = 'Current Redshirt';
-    } else {
-        redshirtLabel = 'Active Player';
-    }
+
     const mobileCardClass = GetMobileCardClass(theme);
 
     return (
@@ -53,24 +48,52 @@ const MobileRosterRow = (props) => {
                     </li>
                 </ul>
                 <div className="card-body">
-                    {player.IsRedshirting ? (
-                        <i className="bi bi-check-circle-fill rounded-circle link-danger"></i>
-                    ) : redshirtCount < 15 &&
-                      !player.IsRedshirt &&
-                      ts.CollegeWeek < 5 &&
-                      view ? (
-                        <button
-                            type="button"
-                            className="btn btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target={modalTarget}
-                        >
-                            Redshirt Player{' '}
-                            <i className="bi bi-plus-circle-fill rounded-circle link-success"></i>
+                    <div className="btn-group btn-border">
+                        {player.IsRedshirting ? (
+                            <button
+                                type="button"
+                                className="btn btn-sm"
+                                disabled
+                            >
+                                <i className="bi bi-check-circle-fill rounded-circle link-danger"></i>
+                            </button>
+                        ) : redshirtCount < 15 &&
+                          !player.IsRedshirt &&
+                          ts.CollegeWeek < 5 &&
+                          view ? (
+                            <button
+                                type="button"
+                                className="btn btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target={modalTarget}
+                            >
+                                <i class="bi bi-person-fill-lock link-danger"></i>
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                className="btn btn-sm"
+                                disabled
+                            >
+                                <i
+                                    class={`bi bi-person-fill ${
+                                        player.IsRedshirt
+                                            ? 'link-danger'
+                                            : 'link-secondary'
+                                    }`}
+                                ></i>
+                            </button>
+                        )}
+                        <button type="button" className="btn btn-sm" disabled>
+                            <i
+                                className={`bi bi-shield-fill ${
+                                    player.TransferStatus === 1
+                                        ? 'link-danger'
+                                        : 'link-success'
+                                }`}
+                            ></i>
                         </button>
-                    ) : (
-                        redshirtLabel
-                    )}
+                    </div>
                 </div>
             </div>
         </>

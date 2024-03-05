@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 // import { connect, useDispatch, useSelector } from 'react-redux';
 import { connect } from 'react-redux';
@@ -26,6 +26,7 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
     const [userTeam, setUserTeam] = React.useState([]);
     const [viewingUserTeam, setViewingUserTeam] = React.useState(true);
     const [team, setTeam] = React.useState([]); // Redux value as initial value for react hook
+    const [coachMap, setCoachMap] = useState(null);
     const [teams, setTeams] = React.useState([]);
     const [roster, setRoster] = React.useState([]);
     const [viewRoster, setViewRoster] = React.useState([]);
@@ -33,6 +34,7 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
     const [isAsc, setIsAsc] = React.useState(false);
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:760px)` });
+    const coach = coachMap && coachMap[team.ID];
 
     // For mobile
     React.useEffect(() => {
@@ -77,8 +79,15 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
 
     const getTeams = async () => {
         //
-        let teams = await teamService.GetAllCollegeTeams();
-        setTeams(teams);
+        let res = await teamService.GetAllCollegeTeamsForRosterPage();
+        const { Teams, Coaches } = res;
+        const designatedMap = {};
+        for (let i = 0; i < Coaches.length; i++) {
+            const coach = Coaches[i];
+            designatedMap[coach.TeamID] = coach;
+        }
+        setCoachMap(() => designatedMap);
+        setTeams(() => Teams);
     };
 
     const getRoster = async (ID) => {
@@ -228,26 +237,92 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
             <div className="row">
                 <div className="col-md-2">
                     <div className="row mb-1">
-                        <h5>Coach: {team && team.Coach ? team.Coach : 'AI'}</h5>
-                    </div>
-                    <div className="row mb-1">
-                        <h5>Conference: {team && team.Conference}</h5>
+                        <h6>Conference: {team && team.Conference}</h6>
                     </div>
                     {team !== undefined && team.DivisionID > 0 && (
                         <div className="row mb-1">
-                            <h5>Division: {team && team.Division}</h5>
+                            <h6>Division: {team && team.Division}</h6>
                         </div>
                     )}
 
                     <div className="row mb-1">
-                        <h5>Stadium: {team && team.Stadium}</h5>
+                        <h6>Stadium: {team && team.Stadium}</h6>
                     </div>
                     <div className="row mb-1">
-                        <h5>
+                        <h6>
                             Stadium Capacity:{' '}
                             {team && numberWithCommas(team.StadiumCapacity)}
-                        </h5>
+                        </h6>
                     </div>
+                    {coach && (
+                        <>
+                            <div className="row mb-1">
+                                <h6>Coach: {coach.CoachName}</h6>
+                            </div>
+                            {coach.Age > 0 && (
+                                <div className="row mb-1">
+                                    <h6>Age: {coach.Age}</h6>
+                                </div>
+                            )}
+                            {coach.Prestige > 0 && (
+                                <div className="row mb-1">
+                                    <h6>Prestige: {coach.Prestige}</h6>
+                                </div>
+                            )}
+                            {coach.OffensiveScheme &&
+                                coach.OffensiveScheme.length > 0 && (
+                                    <div className="row mb-1">
+                                        <h6>
+                                            Offensive Scheme:{' '}
+                                            {coach.OffensiveScheme}
+                                        </h6>
+                                    </div>
+                                )}
+                            {coach.DefensiveScheme &&
+                                coach.DefensiveScheme.length > 0 && (
+                                    <div className="row mb-1">
+                                        <h6>
+                                            Defensive Scheme:{' '}
+                                            {coach.DefensiveScheme}
+                                        </h6>
+                                    </div>
+                                )}
+                            {coach.TeambuildingPreference &&
+                                coach.TeambuildingPreference.length > 0 && (
+                                    <div className="row mb-1">
+                                        <h6>
+                                            Team Building Preference:{' '}
+                                            {coach.TeambuildingPreference}
+                                        </h6>
+                                    </div>
+                                )}
+                            {coach.PromiseTendency &&
+                                coach.PromiseTendency.length > 0 && (
+                                    <div className="row mb-1">
+                                        <h6>
+                                            Promise Tendency:{' '}
+                                            {coach.PromiseTendency}
+                                        </h6>
+                                    </div>
+                                )}
+                            {coach.CareerPreference &&
+                                coach.CareerPreference.length > 0 && (
+                                    <div className="row mb-1">
+                                        <h6>
+                                            Career Preference:{' '}
+                                            {coach.CareerPreference}
+                                        </h6>
+                                    </div>
+                                )}
+                            {coach.PortalReputation > 0 && (
+                                <div className="row mb-1">
+                                    <h6>
+                                        Reputation: {coach.PortalReputation}
+                                    </h6>
+                                </div>
+                            )}
+                        </>
+                    )}
                 </div>
                 <div className="col-md-10">
                     <div className="row">
@@ -375,15 +450,10 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
                                                 <abbr title="Weight">Wt</abbr>
                                             </th>
                                             <th scope="col">
-                                                <abbr title="State">St</abbr>
+                                                <abbr title="State">State</abbr>
                                             </th>{' '}
                                             <th scope="col">
-                                                <abbr title="Stars">Sr</abbr>
-                                            </th>
-                                            <th scope="col">
-                                                <abbr title="Redshirt">
-                                                    Redshirt Status
-                                                </abbr>
+                                                <abbr title="Stars">Stars</abbr>
                                             </th>
                                             <th
                                                 scope="col"
@@ -393,6 +463,11 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
                                             >
                                                 <abbr title="Potential">
                                                     Pot
+                                                </abbr>
+                                            </th>
+                                            <th scope="col">
+                                                <abbr title="Redshirt">
+                                                    Actions
                                                 </abbr>
                                             </th>
                                         </tr>

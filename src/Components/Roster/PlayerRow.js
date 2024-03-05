@@ -10,13 +10,6 @@ const PlayerRow = (props) => {
     let ovr = GetOverall(data.Overall, data.Year);
     const year = GetYear(data);
     const heightObj = HeightToFeetAndInches(data.Height);
-    let redshirtLabel = '';
-    if (data.IsRedshirting) {
-        redshirtLabel = 'Current Redshirt';
-    } else {
-        redshirtLabel = 'Active Player';
-    }
-
     return (
         <tr>
             <th className="align-middle">
@@ -44,26 +37,48 @@ const PlayerRow = (props) => {
             <td label="Weight">{data.Weight}</td>
             <td label="State">{data.State}</td>
             <td label="Stars">{data.Stars}</td>
-            <td label="School">
-                {data.IsRedshirting ? (
-                    <i className="bi bi-check-circle-fill rounded-circle link-danger"></i>
-                ) : redshirtCount < 15 &&
-                  !data.IsRedshirt &&
-                  ts.CollegeWeek < 5 &&
-                  view ? (
-                    <button
-                        type="button"
-                        className="btn btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target={modalTarget}
-                    >
-                        <i className="bi bi-plus-circle-fill rounded-circle link-success"></i>
-                    </button>
-                ) : (
-                    redshirtLabel
-                )}
-            </td>
             <td label="Potential">{data.PotentialGrade}</td>
+            <td label="">
+                <div className="btn-group btn-border">
+                    {data.IsRedshirting ? (
+                        <button type="button" className="btn btn-sm" disabled>
+                            <i className="bi bi-check-circle-fill rounded-circle link-danger"></i>
+                        </button>
+                    ) : redshirtCount < 15 &&
+                      !data.IsRedshirt &&
+                      ts.CollegeWeek < 5 &&
+                      view ? (
+                        <button
+                            type="button"
+                            className="btn btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target={modalTarget}
+                            title="Redshirt Player"
+                        >
+                            <i class="bi bi-person-fill-lock link-danger"></i>
+                        </button>
+                    ) : (
+                        <button type="button" className="btn btn-sm" disabled>
+                            <i
+                                class={`bi bi-person-fill ${
+                                    data.IsRedshirt
+                                        ? 'link-danger'
+                                        : 'link-secondary'
+                                }`}
+                            ></i>
+                        </button>
+                    )}
+                    <button type="button" className="btn btn-sm" disabled>
+                        <i
+                            className={`bi bi-shield-fill ${
+                                data.TransferStatus === 1
+                                    ? 'link-danger'
+                                    : 'link-success'
+                            }`}
+                        ></i>
+                    </button>
+                </div>
+            </td>
         </tr>
     );
 };

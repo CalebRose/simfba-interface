@@ -3,60 +3,68 @@ import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
 import { GetRecruitingTendency } from '../../../_Utility/CFBRecruitingHelper';
 import { CommonModal } from '../../_Common/ModalComponents';
+import { getLogo } from '../../../Constants/getLogo';
 
 const CrootModal = (props) => {
-    const { crt, idx, viewMode } = props;
+    const { crt, idx, viewMode, retro } = props;
     const modalId = 'crootModal' + idx;
     const heightObj = HeightToFeetAndInches(crt.Height);
     // const leadingTeams = crt.LeadingTeams;
 
     const LeadingTeam = (props) => {
         const { lt } = props;
-        const { TeamAbbr, Odds } = lt;
+        const { TeamAbbr, Odds, HasScholarship } = lt;
         const displayOdds = Math.round(Odds * 100);
-        let displayStatus = '';
-        if (displayOdds > 45) {
-            displayStatus = 'Strong Favorite';
-        } else if (displayOdds > 24) {
-            displayStatus = 'In Contention';
-        } else if (displayOdds > 11) {
-            displayStatus = 'Just Outside';
-        } else {
-            displayStatus = 'Unlikely';
-        }
-        return crt && crt.College === TeamAbbr ? (
+
+        const getDisplayStatus = (odds) => {
+            if (odds > 45) {
+                return 'Strong Favorite';
+            } else if (odds > 24) {
+                return 'In Contention';
+            } else if (odds > 11) {
+                return 'Just Outside';
+            }
+            return 'Unlikely';
+        };
+        let displayStatus = getDisplayStatus(displayOdds);
+        const hasCommitted = crt && crt.College.length > 0;
+        const isCommittedToCollege = (crt, teamAbbr) =>
+            crt && crt.College === teamAbbr;
+        const logo = getLogo(TeamAbbr, retro);
+
+        return (
             <div className="row">
-                <div className="col">
-                    <h6 className="text-success">{TeamAbbr}</h6>
+                <div className={`col-${hasCommitted ? '3' : '4'}`}>
+                    <h6
+                        className={
+                            isCommittedToCollege(crt, TeamAbbr)
+                                ? 'text-success'
+                                : ''
+                        }
+                    >
+                        <img
+                            className="image-nfl-fa mx-1"
+                            src={logo}
+                            alt="competing-team"
+                        />{' '}
+                        {TeamAbbr}
+                    </h6>
                 </div>
-                <div className="col">
-                    <h6>Committed!</h6>
+                <div className={`col-${hasCommitted ? '3' : '4'}`}>
+                    {HasScholarship ? 'Yes' : 'No'}
                 </div>
-                <div className="col">
-                    <h6>Odds: {displayOdds}%</h6>
-                </div>
-            </div>
-        ) : (
-            <div className="row">
-                <div className="col">
-                    <h6>{TeamAbbr}</h6>
-                </div>
-                {crt && crt.College.length > 0 && crt.College !== TeamAbbr ? (
-                    <div className="col">
-                        <h6>Unlikely</h6>
-                    </div>
-                ) : (
-                    ''
-                )}
-                <div className="col">
+                <div className={`col-${hasCommitted ? '3' : '4'}`}>
                     <h6>
-                        {crt &&
-                        crt.College.length > 0 &&
-                        crt.College !== TeamAbbr
-                            ? 'Odds: ' + displayOdds + '%'
+                        {isCommittedToCollege(crt, TeamAbbr)
+                            ? 'Committed!'
                             : displayStatus}
                     </h6>
                 </div>
+                {hasCommitted && (
+                    <div className="col-3">
+                        <h6>{displayOdds}%</h6>
+                    </div>
+                )}
             </div>
         );
     };
@@ -64,7 +72,7 @@ const CrootModal = (props) => {
     const tendency = GetRecruitingTendency(crt.RecruitModifier);
 
     const modalClass = GetModalClass(viewMode);
-    const ModalHeader = `${crt.FirstName} ${crt.LastName}`;
+    const ModalHeader = `${crt.ID} ${crt.FirstName} ${crt.LastName}`;
 
     return (
         <CommonModal ID={modalId} ModalClass={modalClass} Header={ModalHeader}>
@@ -133,20 +141,32 @@ const CrootModal = (props) => {
                 </div>
             </div>
             <div className="row g-1 mb-3">
-                {crt && crt.College.length > 0 ? (
-                    <h5>Results</h5>
-                ) : (
-                    <h5>Prediction</h5>
+                <div className="col">
+                    <h5>Team</h5>
+                </div>
+                <div className="col">
+                    <h5>Scholarship</h5>
+                </div>
+                <div className="col">
+                    {crt && crt.College.length > 0 ? (
+                        <h5>Results</h5>
+                    ) : (
+                        <h5>Prediction</h5>
+                    )}
+                </div>
+                {crt && crt.College.length > 0 && (
+                    <div className="col">
+                        <h5>Odds</h5>
+                    </div>
                 )}
-
-                {crt &&
-                    crt.LeadingTeams !== null &&
-                    crt.LeadingTeams.length > 0 &&
-                    crt.LeadingTeams.map((lt) => {
-                        return <LeadingTeam lt={lt} />;
-                    })}
             </div>
-            <div className="row g-2 mb-2">
+            {crt &&
+                crt.LeadingTeams !== null &&
+                crt.LeadingTeams.length > 0 &&
+                crt.LeadingTeams.map((lt) => {
+                    return <LeadingTeam lt={lt} />;
+                })}
+            <div className="row g-2 mb-2 mt-1">
                 <div className="col">
                     <h5>Recruiting Preferences</h5>
                     <p>{crt.RecruitingBias}</p>

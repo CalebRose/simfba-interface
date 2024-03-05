@@ -28,7 +28,13 @@ export const GameplanInputItem = ({
     );
 };
 
-export const GameplanInputSm = ({ name, label, value, handleChange }) => {
+export const GameplanInputSm = ({
+    name,
+    label,
+    value,
+    handleChange,
+    isDefault
+}) => {
     return (
         <div className="input-group input-group-sm mb-3">
             <span
@@ -46,23 +52,32 @@ export const GameplanInputSm = ({ name, label, value, handleChange }) => {
                 onChange={handleChange}
                 aria-label="Sizing example input"
                 aria-describedby={name}
+                disabled={isDefault}
             />
         </div>
     );
 };
 
-export const RunInput = ({ name, label, value, handleChange, dc }) => {
+export const RunInput = ({
+    name,
+    label,
+    value,
+    isNFL,
+    handleChange,
+    isDefault,
+    dc
+}) => {
     const positionLabel = label === 'QB' ? 'QB1' : label;
     const position = positionLabel.slice(0, 2);
     const level = positionLabel.slice(2);
     const depthChartPosition = dc.find(
         (x) => x.Position === position && x.PositionLevel === level
     );
-    console.log({ position, level, dc, name, depthChartPosition });
 
-    const { CollegePlayer } = depthChartPosition;
-    const { FirstName, LastName, Position, Archetype, Overall, Year } =
-        CollegePlayer;
+    const { CollegePlayer, NFLPlayer } = depthChartPosition;
+    const { FirstName, LastName, Position, Archetype, Overall, Year } = !isNFL
+        ? CollegePlayer
+        : NFLPlayer;
     const overallGrade = GetOverall(Overall, Year);
     let archLabel = '';
     if (Archetype === 'Possession') archLabel = 'Poss.';
@@ -91,6 +106,7 @@ export const RunInput = ({ name, label, value, handleChange, dc }) => {
                 onChange={handleChange}
                 aria-label="Sizing example input"
                 aria-describedby={name}
+                disabled={isDefault}
             />
         </div>
     );
@@ -103,6 +119,8 @@ export const TargetInput = ({
     handleChange,
     handleClick,
     targetDepth,
+    isDefault,
+    isNFL,
     dc
 }) => {
     const position = label.slice(0, 2);
@@ -110,16 +128,20 @@ export const TargetInput = ({
     const depthChartPosition = dc.find(
         (x) => x.Position === position && x.PositionLevel === level
     );
-    const { CollegePlayer } = depthChartPosition;
-    const { FirstName, LastName, Position, Archetype, Overall, Year } =
-        CollegePlayer;
+    const { CollegePlayer, NFLPlayer } = depthChartPosition;
+    const { FirstName, LastName, Position, Archetype, Overall, Year } = !isNFL
+        ? CollegePlayer
+        : NFLPlayer;
     const overallGrade = GetOverall(Overall, Year);
     let archLabel = '';
     if (Archetype === 'Possession') archLabel = 'Poss.';
-    else if (Archetype === 'Red Zone Threat') archLabel = 'RZ. Threat';
-    else if (Archetype === 'Vertical Threat') archLabel = 'V. Threat';
-    else if (Archetype === 'Scrambler') archLabel = 'Scramb.';
+    else if (Archetype === 'Red Zone Threat') archLabel = 'RZT.';
+    else if (Archetype === 'Vertical Threat') archLabel = 'VT.';
+    else if (Archetype === 'Scrambler') archLabel = 'Scr.';
     else if (Archetype === 'Receiving') archLabel = 'Rec.';
+    else if (Archetype === 'Speed') archLabel = 'Spd.';
+    else if (Archetype === 'Rushing') archLabel = 'Rsh.';
+    else if (Archetype === 'Blocking') archLabel = 'Blk.';
     else {
         archLabel = Archetype;
     }
@@ -129,7 +151,7 @@ export const TargetInput = ({
     return (
         <div className="input-group input-group-sm mb-3">
             <span
-                className="input-group-text text-small"
+                className="input-group-text text-tiny"
                 id="inputGroup-sizing-sm"
             >
                 {nameLabel}
@@ -143,6 +165,7 @@ export const TargetInput = ({
                 onChange={handleChange}
                 aria-label=""
                 aria-describedby={name}
+                disabled={isDefault}
             />
             <button
                 className="btn btn-outline-secondary dropdown-toggle"

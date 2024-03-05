@@ -17,14 +17,14 @@ import {
 } from '../../../NFL/FreeAgency/FreeAgencyOfferInput';
 import { SwitchToggle } from '../../../_Common/SwitchToggle';
 
-export const NBAFreeAgencyPlayerModal = ({ player, idx, theme }) => {
+export const NBAFreeAgencyPlayerModal = ({ player, idx, theme, retro }) => {
     const modalId = 'playerModal' + idx;
 
     const AllOffers = player && player.Offers;
     const modalClass = GetModalClass(theme);
 
     const OfferingTeam = ({ offer, idx }) => {
-        const logo = getLogo(offer.Team, currentUser.IsRetro);
+        const logo = getLogo(offer.Team, retro);
         const rank = idx + 1;
         return (
             <div className="row">

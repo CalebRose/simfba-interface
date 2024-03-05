@@ -21,20 +21,18 @@ export const SwitchToggle = ({ value, change, checkValue }) => {
 };
 
 export const FBAToggle = ({ value, label, change, checkValue }) => (
-    <div className="col ps-3 me-2">
-        <div className="form-check form-switch">
-            <input
-                className="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="flexSwitchCheckDefault"
-                value={value}
-                checked={checkValue}
-                onChange={change}
-            />
-            <label className="form-check-label" for="flexSwitchCheckDefault">
-                {label}
-            </label>
-        </div>
+    <div className="form-check form-switch">
+        <input
+            className="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="flexSwitchCheckDefault"
+            value={value}
+            checked={checkValue}
+            onChange={change}
+        />
+        <label className="form-check-label" for="flexSwitchCheckDefault">
+            {label}
+        </label>
     </div>
 );

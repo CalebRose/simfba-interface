@@ -9,6 +9,8 @@ import GameRow from './CFBGameRow';
 import CFBStandingsModal from './CFBStandingsModal';
 import { SeasonsList } from '../../Constants/CommonConstants';
 import { SimFBAGameModal } from '../_Common/SimFBAGameModal';
+import { SubmitCollegePollForm } from '../_Common/SubmitCollegePollModal';
+import { CollegePollModal } from '../_Common/CollegePollModal';
 
 const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
     // Services
@@ -96,20 +98,12 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
     };
 
     const GetAllWeeks = async () => {
-        const response = await _landingService.GetWeeksInSeason(
-            cfb_Timestamp.CollegeSeasonID,
-            cfb_Timestamp.CollegeWeekID
-        );
+        const weeksForm = [];
+        for (let i = 0; i < 21; i++) {
+            weeksForm.push({ label: i, value: i });
+        }
 
-        const weekOptionsForm = [
-            ...response.map((x) => {
-                return { label: x.Week, value: x.Week };
-            })
-        ];
-
-        weekOptionsForm.unshift({ label: 0, value: 0 });
-
-        setWeekOptions(() => weekOptionsForm);
+        setWeekOptions(() => weeksForm);
     };
 
     const GetAllGames = async (seasonID) => {
@@ -261,12 +255,45 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
                                 Standings
                             </button>
                         </div>
+                        <div className="row mt-2 mb-2 justify-content-center px-2">
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#collegePollModal"
+                            >
+                                College Poll
+                            </button>
+                        </div>
+                        {cfb_Timestamp.ThursdayGames && (
+                            <div className="row mt-2 mb-2 justify-content-center px-2">
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#submitPollModal"
+                                >
+                                    Submit College Poll
+                                </button>
+                            </div>
+                        )}
                     </div>
                     <SimFBAGameModal game={viewGame} isNFL={false} />
                     <CFBStandingsModal
                         ts={cfb_Timestamp}
                         viewMode={viewMode}
                         retro={currentUser.IsRetro}
+                    />
+                    <SubmitCollegePollForm
+                        currentUser={currentUser}
+                        timestamp={cfb_Timestamp}
+                        isCFB={true}
+                    />
+                    <CollegePollModal
+                        currentUser={currentUser}
+                        timestamp={cfb_Timestamp}
+                        seasonOptions={seasons}
+                        isCFB
                     />
                     <div className="col-md-10 px-md-4">
                         <div className="row mb-2">

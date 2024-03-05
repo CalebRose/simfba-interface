@@ -8,7 +8,7 @@ import {
     GetOverall,
     GetYear
 } from '../../_Utility/RosterHelper';
-import { GetPosition } from './DepthChartHelper';
+import { GetPosition, GetShotgunRating } from './DepthChartHelper';
 import PlayerDropdownItem from './PlayerDropdownItem';
 
 const DepthChartPlayerRow = (props) => {
@@ -87,7 +87,10 @@ const DepthChartPlayerRow = (props) => {
                 positionAttributes.length > 0 &&
                 positionAttributes.map((x, idx) => {
                     if (!playerData) return '';
-                    const label = idx > 5 ? x.attr : x.label;
+                    const label =
+                        idx > 5 && x.label !== 'Shotgun Rating'
+                            ? x.attr
+                            : x.label;
                     let attr = '';
                     let pos = GetPosition(player.Position, playerData.Position);
                     if (idx > 2) {
@@ -115,6 +118,8 @@ const DepthChartPlayerRow = (props) => {
                                 : GetNFLYear(playerData);
                         } else if (label === 'PotentialGrade') {
                             attr = playerData.PotentialGrade;
+                        } else if (label === 'Shotgun Rating') {
+                            attr = GetShotgunRating(playerData.Shotgun);
                         } else {
                             let val = playerData[label];
                             // May want to go off of the original position values

@@ -1,11 +1,17 @@
 import React from 'react';
 import { Dropdown } from './Dropdown';
 
-export const MobileAttribute = ({ label, value }) => {
+export const MobileAttribute = ({ label, value, success }) => {
     return (
         <div className="col-4">
             <p className="card-text">{label}</p>
-            <p className="card-text text-body-secondary">{value}</p>
+            <p
+                className={`card-text text-body-secondary ${
+                    success ? 'text-success' : ''
+                }`}
+            >
+                {value}
+            </p>
         </div>
     );
 };

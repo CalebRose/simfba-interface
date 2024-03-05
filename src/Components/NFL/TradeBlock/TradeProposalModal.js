@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
 import { TradeDropdown } from '../../_Common/Dropdown';
@@ -199,6 +199,7 @@ export const OptionCard = ({
                                     name="SalaryPercentage"
                                     value={opt.SalaryPercentage || 0}
                                     change={helper}
+                                    disable={opt.Contract.ContractLength < 2}
                                 />
                             ) : (
                                 <h5>{salaryPercentageLabel}</h5>
@@ -281,6 +282,9 @@ export const TradeProposalModal = ({
 }) => {
     const [userOptions, setUserOptions] = useState([]);
     const [receiverOptions, setReceiverOptions] = useState([]);
+    const [userCap, setUserCap] = useState(0);
+    const [recCap, setRecCap] = useState(0);
+    const { DeadCapLimit } = ts;
     const modalId = `tradeProposalModal`;
     const modalClass = GetModalClass(theme);
     const userList = GetOptionList(userPlayers, userPicks, userOptions);
@@ -289,6 +293,45 @@ export const TradeProposalModal = ({
         tradablePicks,
         receiverOptions
     );
+
+    useEffect(() => {
+        let userDeadCap = 0;
+        let recDeadCap = 0;
+        if (userOptions.length > 0) {
+            for (let i = 0; i < userOptions.length; i++) {
+                const opt = userOptions[i];
+                if (
+                    opt.OptionType === 'Player' &&
+                    opt.Contract.ContractLength > 1
+                ) {
+                    userDeadCap += opt.Contract.Y1Bonus;
+                    if (opt.SalaryPercentage && opt.SalaryPercentage > 0) {
+                        userDeadCap +=
+                            (opt.SalaryPercentage / 100) * opt.Y1BaseSalary;
+                    }
+                }
+            }
+        }
+
+        if (receiverOptions.length > 0) {
+            for (let i = 0; i < receiverOptions.length; i++) {
+                const opt = receiverOptions[i];
+                if (
+                    opt.OptionType === 'Player' &&
+                    opt.Contract.ContractLength > 1
+                ) {
+                    recDeadCap += opt.Contract.Y1Bonus;
+                    if (opt.SalaryPercentage && opt.SalaryPercentage > 0) {
+                        recDeadCap +=
+                            (opt.SalaryPercentage / 100) * opt.Y1BaseSalary;
+                    }
+                }
+            }
+        }
+
+        setUserCap(() => userDeadCap);
+        setRecCap(() => recDeadCap);
+    }, [userOptions, receiverOptions]);
 
     const RemoveFromList = (opt, isUser) => {
         const list = isUser ? [...userOptions] : [...receiverOptions];
@@ -448,6 +491,18 @@ export const TradeProposalModal = ({
                             </div>
                             <CapspaceColumn team={currentTeam} ts={ts} />
                         </div>
+
+                        <div className="row mt-2 border-top pt-2">
+                            <div className="col-2">
+                                <h6>{userCap}</h6>
+                            </div>
+                            <div className="col-8">
+                                <h6>Dead Cap</h6>
+                            </div>
+                            <div className="col-2">
+                                <h6>{recCap}</h6>
+                            </div>
+                        </div>
                     </div>
                     <div className="modal-footer">
                         <button
@@ -463,6 +518,9 @@ export const TradeProposalModal = ({
                             className="btn btn-warning"
                             data-bs-dismiss="modal"
                             onClick={click}
+                            disabled={
+                                userCap > DeadCapLimit || recCap > DeadCapLimit
+                            }
                         >
                             Propose
                         </button>

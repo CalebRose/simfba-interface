@@ -509,7 +509,9 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                     viewablePlayers.length <
                                         allFreeAgents.length ||
                                     viewablePlayers.length <
-                                        allWaivedPlayers.length
+                                        allWaivedPlayers.length ||
+                                    viewablePlayers.length <
+                                        allInternationalPlayers.length
                                 }
                                 height={570}
                                 scrollThreshold={0.8}

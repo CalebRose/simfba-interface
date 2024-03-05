@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 import FBADepthChartService from '../../_Services/simFBA/FBADepthChartService';
 import FBAPlayerService from '../../_Services/simFBA/FBAPlayerService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
@@ -12,8 +13,9 @@ import { GetAvailablePlayers, GetPositionAttributes } from './DepthChartHelper';
 import DepthChartPlayerRow from './DepthChartPlayerRow';
 import DepthChartMobilePlayerRow from './DepthChartMobilePlayerRow';
 import { DropdownItemObj } from '../Roster/DropdownItem';
+import routes from '../../Constants/routes';
 
-const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
+const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
     // Services
     let depthChartService = new FBADepthChartService();
     let teamService = new FBATeamService();
@@ -416,11 +418,21 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode }) => {
                 <div className="col-md-11 px-md-4">
                     <div className="row">
                         <div className="col-md-auto justify-content-start">
-                            <h2>
-                                {team ? team.TeamName + ' ' : ''}Depth Chart
-                            </h2>
+                            <h2>{team && `${team.TeamName} `}Depth Chart</h2>
                         </div>
                         <div className="col-md-auto ms-auto">
+                            <Link
+                                to={
+                                    isNFL
+                                        ? routes.NFL_GAMEPLAN
+                                        : routes.CFB_GAMEPLAN
+                                }
+                                type="button"
+                                className="btn btn-primary btn-md me-2 shadow"
+                                style={teamColors ? teamColors : {}}
+                            >
+                                Gameplan
+                            </Link>
                             {canModify && (
                                 <button
                                     className="btn btn-danger me-2"

@@ -1,3 +1,4 @@
+import { GetShotgunRating } from '../Components/DepthChart/DepthChartHelper';
 import AttributeAverages from '../Constants/AttributeAverages';
 
 // Roster Helper -- helper methods related to displaying player data on the roster page
@@ -59,6 +60,11 @@ export const SetPriority = (data) => {
                         data.ThrowAccuracy,
                         data.Year
                     )
+                },
+                {
+                    Name: 'Shotgun Rating',
+                    Value: GetShotgunRating(data.Shotgun),
+                    Letter: GetShotgunRating(data.Shotgun)
                 }
             ];
             break;
@@ -838,6 +844,11 @@ export const SetNFLPriority = (player) => {
                         player.Experience,
                         hasSnaps
                     )
+                },
+                {
+                    Name: 'Shotgun Rating',
+                    Value: GetShotgunRating(player.Shotgun),
+                    Letter: GetShotgunRating(player.Shotgun)
                 }
             ];
             break;
@@ -1632,6 +1643,7 @@ export const GetDefaultOrder = (newSortValue, sort, isAsc) => {
     switch (newSortValue) {
         case 'ovr':
         case 'year':
+        case 'minv':
             return false;
 
         case 'name':

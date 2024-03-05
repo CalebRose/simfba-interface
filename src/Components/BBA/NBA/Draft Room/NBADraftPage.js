@@ -22,7 +22,8 @@ import {
     GetNextPickTeamLogo,
     GetRecentlyDraftedPlayer,
     GetViewablePlayersList,
-    useDraftMap
+    useDraftMap,
+    GetPicksByCurrentRound
 } from '../../../../_Hooks/DraftHooks';
 import { GetStartTimer } from '../../../../_Utility/DraftHelper';
 
@@ -120,13 +121,9 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     // Current Round
     // Current Pick
     // Start Time
-    const StartTimer = GetStartTimer(
-        data,
-        currentPick,
-        timeLeft,
-        isPaused,
-        updateData
-    );
+    const StartTimer = () => {
+        GetStartTimer(data, currentPick, timeLeft, isPaused, updateData);
+    };
 
     // End Time
     const PauseTimer = () => {
@@ -387,6 +384,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         //     // allDraftablePlayers: DraftablePlayers
         // };
         // updateData(newData);
+        console.log({ res });
         setWarRoom(() => res.WarRoom);
         if (res.WarRoom.ID === currentUser.NBATeamID) {
             setUserWarRoom(() => res.WarRoom);

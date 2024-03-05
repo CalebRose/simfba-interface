@@ -9,10 +9,17 @@ import ConfirmRecruitSyncModal from './ConfirmRecruitSyncModal';
 import ConfirmRESSyncModal from './ConfirmRESModal';
 import ConfirmWeekSyncModal from './ConfirmWeekSyncModal';
 import CreateCrootModal from './CreateCrootModal';
+import {
+    DefensiveSchemeOptions,
+    OffensiveSchemeOptions
+} from '../../Gameplan/GameplanConstants';
+import { SchemeDropdown } from '../../Gameplan/GameplanCommons';
 
 const ManageSim = ({ currentUser, cfb_Timestamp }) => {
     const dispatch = useDispatch();
     const [SyncComplete, setCompletion] = React.useState(false);
+    const [offensiveScheme, setOffensiveScheme] = React.useState('');
+    const [defensiveScheme, setDefensiveScheme] = React.useState('');
     const [ActionsRemaining, setRemainingActionsCount] = React.useState(13);
     const [timeslots, setTimeSlots] = React.useState({
         Thursday: false,
@@ -249,10 +256,21 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
         }
     };
 
+    const HandleTextChange = (name, value) => {
+        if (name === 'OffensiveScheme') {
+            setOffensiveScheme(() => value);
+        } else if (name === 'DefensiveScheme') {
+            setDefensiveScheme(() => value);
+        }
+    };
+
     const UpdateAIDepthCharts = async () => {
         const ts = { ...cfb_Timestamp };
 
-        let res = await _adminService.UpdateAIDepthCharts();
+        let res = await _adminService.MassUpdateAIDepthCharts(
+            offensiveScheme,
+            defensiveScheme
+        );
 
         if (!res) {
             alert('Could not sync AI Recruiting Boards!');
@@ -502,15 +520,30 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                     </div> */}
                     <div className="col-3 mb-2 g-2">
                         <h5 className="">Update CFB AI Depthcharts</h5>
+                        <SchemeDropdown
+                            scheme={offensiveScheme}
+                            name="OffensiveScheme"
+                            options={OffensiveSchemeOptions}
+                            HandleTextChange={HandleTextChange}
+                        />
+                        <SchemeDropdown
+                            scheme={defensiveScheme}
+                            name="DefensiveScheme"
+                            options={DefensiveSchemeOptions}
+                            HandleTextChange={HandleTextChange}
+                        />
                         <button
                             type="button"
                             className="btn btn-primary btn-sm-button rounded-pill  mb-2"
                             onClick={UpdateAIDepthCharts}
-                            disabled={cfb_Timestamp.AIDepthchartsSync}
+                            disabled={
+                                offensiveScheme.length === 0 ||
+                                defensiveScheme.length === 0
+                            }
                         >
                             Update
                         </button>
-                        <h5 className="mt-1">Sync AI Recruiting Boards</h5>
+                        {/* <h5 className="mt-1">Sync AI Recruiting Boards</h5>
                         <button
                             type="button"
                             className="btn btn-primary btn-sm-button rounded-pill  mb-2"
@@ -544,7 +577,7 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                             {!cfb_Timestamp.RecruitingSynced
                                 ? 'Sync'
                                 : 'Sync Complete'}
-                        </button>
+                        </button> */}
 
                         <h5 className="mt-1">Create a Croot</h5>
                         <button
@@ -562,14 +595,14 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
                         </button>
                     </div>
                     <div className="col-3 mb-2 g-2">
-                        <h5>Sync Free Agency</h5>
+                        {/* <h5>Sync Free Agency</h5>
                         <button
                             type="button"
                             className="btn btn-secondary btn-sm-button rounded-pill mb-2"
                             onClick={SyncOffseasonFreeAgency}
                         >
                             Sync
-                        </button>
+                        </button> */}
 
                         <h5>Run Games</h5>
                         <button

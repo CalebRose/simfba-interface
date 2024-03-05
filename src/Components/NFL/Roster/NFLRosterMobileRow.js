@@ -92,6 +92,7 @@ const NFLMobileRosterRow = ({
                 key={player.ID}
                 player={player}
                 idx={idx}
+                team={team}
                 extend={extend}
                 viewMode={theme}
             />
@@ -184,8 +185,7 @@ const NFLMobileRosterRow = ({
                                 data-bs-target={extendPlayerTarget}
                                 disabled={
                                     !(
-                                        (ts.NFLWeek >= 15 ||
-                                            ts.NFLWeek === 0) &&
+                                        ts.NFLWeek >= 15 &&
                                         userView &&
                                         canModify &&
                                         !player.IsPracticeSquad

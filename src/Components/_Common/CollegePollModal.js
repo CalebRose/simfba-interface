@@ -19,6 +19,7 @@ const RankRow = ({ row, idx, standingsMap, retro }) => {
     if (standings) {
         description = `${standings.TotalWins}-${standings.TotalLosses} (${standings.ConferenceWins}-${standings.ConferenceLosses})`;
     }
+    console.log({ standings });
     return (
         <div className="row mb-3">
             <div
@@ -42,7 +43,7 @@ const RankRow = ({ row, idx, standingsMap, retro }) => {
                     <div className="col-7 justify-content-start d-flex flex-row align-items-center">
                         <div className="card-body d-flex flex-row">
                             <h6 className="card-title me-2">
-                                {Team} | {standings.ConferenceName}
+                                {Team} | {standings && standings.ConferenceName}
                             </h6>
                             <p className="card-text">
                                 {description}{' '}
@@ -83,7 +84,10 @@ export const CollegePollModal = ({
 
     useEffect(() => {
         if (timestamp && officialPolls.length === 0) {
-            const obj = { label: timestamp.Season, value: timestamp.SeasonID };
+            const obj = {
+                label: timestamp.Season,
+                value: isCFB ? timestamp.CollegeSeasonID : timestamp.SeasonID
+            };
             setSeason(() => obj);
         } else if (timestamp && officialPolls.length > 0) {
             const obj = {

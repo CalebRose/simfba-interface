@@ -20,6 +20,7 @@ export const NBAFreeAgencyRow = ({
     cancel,
     ts,
     team,
+    retro,
     rosterCount,
     freeAgencyView
 }) => {
@@ -56,7 +57,7 @@ export const NBAFreeAgencyRow = ({
         const offers = viewFA ? player.Offers : player.WaiverOffers;
 
         return offers.map((x) => {
-            const logo = getLogo(x.Team, currentUser.IsRetro);
+            const logo = getLogo(x.Team, retro);
             return (
                 <>
                     <img
@@ -86,6 +87,7 @@ export const NBAFreeAgencyRow = ({
                 player={player}
                 idx={idx}
                 viewMode={viewMode}
+                retro={retro}
             />
             {viewFA ? (
                 <NBAFreeAgentOfferModal

@@ -6,6 +6,14 @@ export default class FBAPollService {
     }
 
     async GetSubmittedPoll(username) {
-        return await GetCall(`${url}/college/poll/submission/${username}`);
+        return await GetCall(`${url}college/poll/submission/${username}`);
+    }
+
+    async GetOfficialPollData(seasonID) {
+        return await GetCall(`${url}college/poll/official/season/${seasonID}`);
+    }
+
+    async SubmitPoll(dto) {
+        return await PostCall(`${url}college/poll/create/`, dto);
     }
 }

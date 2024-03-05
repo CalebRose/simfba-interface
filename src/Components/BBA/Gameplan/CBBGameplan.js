@@ -122,7 +122,6 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
     const updatePlayer = (idx, event) => {
         let playerList = [...roster];
         let { name, value } = event.target;
-        console.log({ name, value, idx });
         playerList[idx][name] = Number(value);
         setRoster(() => playerList);
     };
@@ -664,66 +663,86 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
                 <div className="row mt-2">
                     {gameplan && (
                         <>
-                            <FBAToggle
-                                value="ToggleFN"
-                                label="Inside Shot"
-                                checkValue={gameplan.ToggleFN}
-                                change={UpdateViewableColumns}
-                            />
-                            <FBAToggle
-                                value="Toggle2pt"
-                                label="Mid Range Shooting"
-                                checkValue={gameplan.Toggle2pt}
-                                change={UpdateViewableColumns}
-                            />
-                            <FBAToggle
-                                value="Toggle3pt"
-                                label="3pt Shooting"
-                                checkValue={gameplan.Toggle3pt}
-                                change={UpdateViewableColumns}
-                            />
-                            <FBAToggle
-                                value="ToggleFT"
-                                label="Free Throws"
-                                checkValue={gameplan.ToggleFT}
-                                change={UpdateViewableColumns}
-                            />
-                            <FBAToggle
-                                value="ToggleBW"
-                                label="Ballwork"
-                                checkValue={gameplan.ToggleBW}
-                                change={UpdateViewableColumns}
-                            />
-                            <FBAToggle
-                                value="ToggleRB"
-                                label="Rebounding"
-                                checkValue={gameplan.ToggleRB}
-                                change={UpdateViewableColumns}
-                            />
-                            <FBAToggle
-                                value="ToggleID"
-                                label="Int. Defense"
-                                checkValue={gameplan.ToggleID}
-                                change={UpdateViewableColumns}
-                            />
-                            <FBAToggle
-                                value="TogglePD"
-                                label="Per. Defense"
-                                checkValue={gameplan.TogglePD}
-                                change={UpdateViewableColumns}
-                            />
-                            <FBAToggle
-                                value="ToggleP2"
-                                label="Position Two"
-                                checkValue={gameplan.ToggleP2}
-                                change={UpdateViewableColumns}
-                            />
-                            <FBAToggle
-                                value="ToggleP3"
-                                label="Position Three"
-                                checkValue={gameplan.ToggleP3}
-                                change={UpdateViewableColumns}
-                            />
+                            <div className="col ps-3 me-2">
+                                <FBAToggle
+                                    value="ToggleFN"
+                                    label="Inside Shot"
+                                    checkValue={gameplan.ToggleFN}
+                                    change={UpdateViewableColumns}
+                                />
+                            </div>
+                            <div className="col ps-3 me-2">
+                                <FBAToggle
+                                    value="Toggle2pt"
+                                    label="Mid Range Shooting"
+                                    checkValue={gameplan.Toggle2pt}
+                                    change={UpdateViewableColumns}
+                                />
+                            </div>
+                            <div className="col ps-3 me-2">
+                                <FBAToggle
+                                    value="Toggle3pt"
+                                    label="3pt Shooting"
+                                    checkValue={gameplan.Toggle3pt}
+                                    change={UpdateViewableColumns}
+                                />
+                            </div>
+                            <div className="col ps-3 me-2">
+                                <FBAToggle
+                                    value="ToggleFT"
+                                    label="Free Throws"
+                                    checkValue={gameplan.ToggleFT}
+                                    change={UpdateViewableColumns}
+                                />
+                            </div>
+                            <div className="col ps-3 me-2">
+                                <FBAToggle
+                                    value="ToggleBW"
+                                    label="Ballwork"
+                                    checkValue={gameplan.ToggleBW}
+                                    change={UpdateViewableColumns}
+                                />
+                            </div>
+                            <div className="col ps-3 me-2">
+                                <FBAToggle
+                                    value="ToggleRB"
+                                    label="Rebounding"
+                                    checkValue={gameplan.ToggleRB}
+                                    change={UpdateViewableColumns}
+                                />
+                            </div>
+                            <div className="col ps-3 me-2">
+                                <FBAToggle
+                                    value="ToggleID"
+                                    label="Int. Defense"
+                                    checkValue={gameplan.ToggleID}
+                                    change={UpdateViewableColumns}
+                                />
+                            </div>
+                            <div className="col ps-3 me-2">
+                                <FBAToggle
+                                    value="TogglePD"
+                                    label="Per. Defense"
+                                    checkValue={gameplan.TogglePD}
+                                    change={UpdateViewableColumns}
+                                />
+                            </div>
+                            <div className="col ps-3 me-2">
+                                <FBAToggle
+                                    value="ToggleP2"
+                                    label="Position Two"
+                                    checkValue={gameplan.ToggleP2}
+                                    change={UpdateViewableColumns}
+                                />
+                            </div>
+                            <div className="col ps-3 me-2">
+                                <FBAToggle
+                                    value="ToggleP3"
+                                    label="Position Three"
+                                    checkValue={gameplan.ToggleP3}
+                                    change={UpdateViewableColumns}
+                                />
+                            </div>
                         </>
                     )}
                 </div>

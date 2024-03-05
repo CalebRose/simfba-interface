@@ -35,7 +35,6 @@ import CBBSchedule from './Components/BBA/Schedule/CBBSchedule';
 import CBBStatistics from './Components/BBA/Statistics/CBBStatistics';
 import ApproveNFLRequests from './Components/Admin/ApproveNFLRequests/ApproveNFLRequests';
 import NFLRoster from './Components/NFL/Roster/NFLRoster';
-import NFLGameplan from './Components/NFL/Gameplan/NFLGameplan';
 import NFLDepthChart from './Components/NFL/DepthChart/NFLDepthChart';
 import NFLFreeAgency from './Components/NFL/FreeAgency/NFLFreeAgency';
 import NFLTradeBlock from './Components/NFL/TradeBlock/NFLTradeBlock';
@@ -49,6 +48,8 @@ import NBAGameplan from './Components/BBA/NBA/Gameplan/NBAGameplan';
 import NBADraftPage from './Components/BBA/NBA/Draft Room/NBADraftPage';
 import NBATradePortal from './Components/BBA/Admin/NBATradePortal/NBATradePortal';
 import { Toaster } from 'react-hot-toast';
+import NFLDraftPage from './Components/NFL/Draft Room/NFLDraftPage';
+import TransferPortal from './Components/TransferPortal/TransferPortal';
 
 const Home = ({ viewMode }) => {
     const user = useSelector((state) => state.user.currentUser);
@@ -111,7 +112,7 @@ const Home = ({ viewMode }) => {
                 exact
                 path={routes.CFB_GAMEPLAN}
                 render={() =>
-                    CFBTeam > 0 && viewingBeta ? (
+                    CFBTeam > 0 ? (
                         <CFBGameplan />
                     ) : (
                         <Redirect to={routes.LANDING} />
@@ -212,6 +213,28 @@ const Home = ({ viewMode }) => {
             />
             <Route
                 exact
+                path={routes.CFB_TRANSFER}
+                render={() =>
+                    viewingBeta ? (
+                        <TransferPortal isCFB={true} />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
+                path={routes.CBB_TRANSFER}
+                render={() =>
+                    viewingBeta ? (
+                        <TransferPortal />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
                 path={routes.CFB_STATS}
                 render={() =>
                     CFBTeam > 0 || NFLTeam > 0 ? (
@@ -247,8 +270,8 @@ const Home = ({ viewMode }) => {
                 exact
                 path={routes.NFL_GAMEPLAN}
                 render={() =>
-                    NFLTeam > 0 && viewingBeta ? (
-                        <NFLGameplan />
+                    NFLTeam > 0 ? (
+                        <CFBGameplan isNFL />
                     ) : (
                         <Redirect to={routes.LANDING} />
                     )
@@ -298,6 +321,14 @@ const Home = ({ viewMode }) => {
                     )
                 }
             />
+
+            <Route exact path={routes.NFL_DRAFT_ROOM}>
+                {NFLTeam > 0 ? (
+                    <NFLDraftPage />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
 
             <Route exact path={routes.SIGNUP} component={SignUp} />
             <Route exact path={routes.LOGIN} component={Login} />

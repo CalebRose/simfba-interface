@@ -1,21 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import BBATeamService from '../../../_Services/simNBA/BBATeamService';
 import BBAPlayerService from '../../../_Services/simNBA/BBAPlayerService';
-
+import toast from 'react-hot-toast';
 import BBATeamPlayerRow from './BBATeamPlayerRow';
 import BBATeamDropdownItem from './BBATeamDropdownItem';
 import ConfirmRedshirtModal from '../../Roster/RedshirtModal';
 import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
+import { PromisePlayerModal } from '../../_Common/ModalComponents';
+import { PortalService } from '../../../_Services/simFBA/FBAPortalService';
 
 const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
     let _teamService = new BBATeamService();
     let _playerService = new BBAPlayerService();
-    const [userTeam, setUserTeam] = React.useState('');
-    const [team, setTeam] = React.useState('');
-    const [teams, setTeams] = React.useState('');
-    const [filteredTeams, setFilteredTeams] = React.useState('');
-    const [roster, setRoster] = React.useState([]);
+    const _portalService = new PortalService();
+    const [userTeam, setUserTeam] = useState('');
+    const [team, setTeam] = useState('');
+    const [teams, setTeams] = useState('');
+    const [filteredTeams, setFilteredTeams] = useState('');
+    const [roster, setRoster] = useState([]);
+    const [promisePlayer, setPromisePlayer] = useState(null);
     const tableHoverClass = GetTableHoverClass(viewMode);
     let redshirtCount =
         roster && roster.length > 0
@@ -86,6 +90,27 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
         setRoster(() => playerRoster);
     };
 
+    const setPromisePlayerForModal = (id) => {
+        const r = [...roster];
+        const playerIdx = r.findIndex((x) => x.PlayerID === id);
+        if (playerIdx > -1) {
+            const pl = r[playerIdx];
+            setPromisePlayer(() => pl);
+        }
+    };
+
+    const MakePromise = (dto) => {
+        toast.promise(submitPromise(dto), {
+            loading: 'Committing promise...',
+            success: 'Promise Created',
+            error: 'Error! Promise could not properly be created. Please reach out to Tuscan for assistance.'
+        });
+    };
+
+    const submitPromise = async (dto) => {
+        const res = await _portalService.CreatePromise(false, dto);
+    };
+
     const exportRoster = async () => {
         // Removing if-check on if team is the user's...
         let response = _playerService.ExportRoster(team.ID, team.Team);
@@ -108,6 +133,7 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
                         redshirtCount={redshirtCount}
                         ts={cbb_Timestamp}
                         view={userTeam.ID === team.ID}
+                        setPromisePlayer={setPromisePlayerForModal}
                     />
                 </>
             );
@@ -118,71 +144,111 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
 
     return (
         <div className="container-fluid">
+            <div className="row mb-2 mt-2">
+                <div className="col-md-2">
+                    <h4>{team && team.Team}</h4>
+                </div>
+                <div className="col-md-auto">
+                    <div className="dropdown">
+                        <button
+                            className="btn btn-secondary dropdown-toggle"
+                            type="button"
+                            id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            {team ? team.Team : ''}
+                        </button>
+                        <ul
+                            className="dropdown-menu dropdown-content"
+                            aria-labelledby="dropdownMenuButton1"
+                        >
+                            <li>
+                                <p
+                                    className="dropdown-item"
+                                    value={userTeam}
+                                    onClick={selectUserTeam}
+                                >
+                                    {currentUser.cbb_team}
+                                </p>
+                            </li>
+                            <li>
+                                <hr className="dropdown-divider" />
+                            </li>
+                            {filteredTeams
+                                ? filteredTeams.map((x) => (
+                                      <BBATeamDropdownItem
+                                          key={x.ID}
+                                          selectTeam={selectTeam}
+                                          team={x}
+                                      />
+                                  ))
+                                : ''}
+                        </ul>
+                    </div>
+                </div>
+                <div className="col-md-auto">
+                    <button
+                        type="button"
+                        className="btn btn-outline-info"
+                        onClick={exportRoster}
+                    >
+                        Export
+                    </button>
+                </div>
+            </div>
             <div className="row">
-                <div className="col-md-1" />
-                <div className="col-md-11">
-                    <div className="row mt-2">
-                        <div className="col-md-auto">
-                            <h4>{team ? team.Team : ''} Roster</h4>
-                        </div>
-                    </div>
-                    <div className="row mt-3">
-                        <div className="col-md-auto">
-                            <div className="dropdown">
-                                <button
-                                    className="btn btn-secondary dropdown-toggle"
-                                    type="button"
-                                    id="dropdownMenuButton1"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                >
-                                    {team ? team.Team : ''}
-                                </button>
-                                <ul
-                                    className="dropdown-menu dropdown-content"
-                                    aria-labelledby="dropdownMenuButton1"
-                                >
-                                    <li>
-                                        <p
-                                            className="dropdown-item"
-                                            value={userTeam}
-                                            onClick={selectUserTeam}
-                                        >
-                                            {currentUser.cbb_team}
-                                        </p>
-                                    </li>
-                                    <li>
-                                        <hr className="dropdown-divider" />
-                                    </li>
-                                    {filteredTeams
-                                        ? filteredTeams.map((x) => (
-                                              <BBATeamDropdownItem
-                                                  key={x.ID}
-                                                  selectTeam={selectTeam}
-                                                  team={x}
-                                              />
-                                          ))
-                                        : ''}
-                                </ul>
+                <div className="col-md-2">
+                    {team && (
+                        <>
+                            <div className="row mb-1">
+                                <h5>
+                                    Coach:{' '}
+                                    {team.Coach.length > 0 ? team.Coach : 'AI'}
+                                </h5>
                             </div>
-                        </div>
-                        <div className="col-md-auto">
-                            <button
-                                type="button"
-                                className="btn btn-outline-info"
-                                onClick={exportRoster}
-                            >
-                                Export
-                            </button>
-                        </div>
-                    </div>
-                    <div className="row mt-3 mb-5">
+                            <div className="row mb-1">
+                                <h5>Conference: {team.Conference}</h5>
+                            </div>
+                            <div className="row mb-1">
+                                <h5>Arena: {team.Arena}</h5>
+                            </div>
+                            <div className="row mb-1">
+                                <h5>
+                                    {team.City}, {team.State}
+                                </h5>
+                            </div>
+                            <div className="row mb-1">
+                                <h5>Grades</h5>
+                                <div className="col-4">
+                                    <h6>Overall</h6>
+                                    <p>{team.OverallGrade}</p>
+                                </div>
+                                <div className="col-4">
+                                    <h6>Offense</h6>
+                                    <p>{team.OffenseGrade}</p>
+                                </div>
+                                <div className="col-4">
+                                    <h6>Defense</h6>
+                                    <p>{team.DefenseGrade}</p>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </div>
+                <div className="col-md-10">
+                    <PromisePlayerModal
+                        promisePlayer={promisePlayer}
+                        submit={MakePromise}
+                        teams={teams}
+                        seasonID={cbb_Timestamp.SeasonID}
+                    />
+                    <div className="row mb-5">
                         <table className={tableHoverClass}>
                             <thead>
                                 <tr>
                                     <th scope="col">Name</th>
                                     <th scope="col">Year</th>
-                                    <th scope="col">Position</th>
                                     <th scope="col">Height</th>
                                     <th scope="col">Stars</th>
                                     <th scope="col">Overall</th>
@@ -197,7 +263,7 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
                                     <th scope="col">Stamina</th>
                                     <th scope="col">Potential</th>
                                     <th scope="col">Min. Expectations</th>
-                                    <th scope="col">Redshirt Status</th>
+                                    <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="">{playerRows}</tbody>

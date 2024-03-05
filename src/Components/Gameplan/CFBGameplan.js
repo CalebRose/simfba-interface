@@ -2,21 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import toast from 'react-hot-toast';
 import { useMediaQuery } from 'react-responsive';
+import { Link } from 'react-router-dom';
 import FBAGameplanService from '../../_Services/simFBA/FBAGameplanService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import {
     FormationMap,
     BlitzAggressivenessOptions,
     CoverageOptions,
-    Defense34Formations,
-    Defense43Formations,
     DefensiveSchemeOptions,
     OffensiveSchemeOptions,
     PassPlayLabels,
     RunPlayLabels,
     TargetingLabels,
     OptionPlayLabels,
-    RPOLabels
+    RPOLabels,
+    schemeDropdownClass,
+    FocusPlayList
 } from './GameplanConstants';
 import {
     GameplanInputItem,
@@ -29,39 +30,70 @@ import {
     ValidatePassPlayDistribution,
     ValidateRunPlayDistribution
 } from './GameplanHelper';
-import SchemeModal from './SchemeModal';
 import { DropdownItemObj } from '../Roster/DropdownItem';
 import { DropdownItem } from '../_Common/Dropdown';
 import { SchemeInfo } from './SchemeInfo';
 import { FBAToggle } from '../_Common/SwitchToggle';
+import {
+    DefaultSchemes,
+    DefenseDefaultSchemes
+} from '../../Constants/DefaultSchemes';
+import {
+    DefensiveSchemeModal,
+    DistributionsModal,
+    FormationModal,
+    GPTab,
+    OpposingSchemeRow,
+    SchemeDropdown,
+    SchemeModal
+} from './GameplanCommons';
+import routes from '../../Constants/routes';
+import { InputRange } from '../_Common/InputRange';
+import Select from 'react-select';
+import { MapOptions } from '../../_Utility/filterHelper';
+import { getKeyByValue } from '../../_Utility/utilHelper';
 
-const CFBGameplan = ({ currentUser, cfbTeam }) => {
+const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
     // GameplanService
     let gameplanService = new FBAGameplanService();
     let _teamService = new FBATeamService();
     const [userTeam, setUserTeam] = useState('');
-    const [team, setTeam] = useState(''); // Redux value as initial value for react hook
+    const [team, setTeam] = useState('');
     const [aiTeams, setAITeams] = useState(null);
     const [teamColors, setTeamColors] = useState('');
     const [initialGameplan, setInitialGameplan] = useState(null);
     const [gameplan, setGameplan] = useState(null);
+    const [oppGameplan, setOppGameplan] = useState(null);
     const [depthChart, setDepthChart] = useState(null);
     const [activeView, setActiveView] = useState('Offensive Formations');
     const [offenseFormationLabels, setOffenseFormationLabels] = useState([]);
     const [passTotal, setPassTotal] = useState(0);
+    const [diveFocus, setDiveFocus] = useState(50);
+    const [pitchFocus, setPitchFocus] = useState(50);
     const [tradRunTotal, setTradRunTotal] = useState(0);
     const [optRunTotal, setOptRunTotal] = useState(0);
     const [rpoTotal, setRPOTotal] = useState(0);
+    const [opponentTargets, setOpponentTargets] = useState([]);
+    const [opponentMap, setOpponentMap] = useState({});
+    const [selectedFocusPlays, setSelectedFocusPlays] = useState([]);
     const [isValid, setValidation] = useState(false);
     const [viewWidth, setViewWidth] = useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:760px)` });
+    const focusPlayOptions = MapOptions(FocusPlayList);
     const offensiveFormations =
         gameplan && gameplan.OffensiveScheme
             ? FormationMap[gameplan.OffensiveScheme].Formations
             : [];
+    const isDefaultOffense = gameplan && gameplan.DefaultOffense;
+    const isDefaultDefense = gameplan && gameplan.DefaultDefense;
     const defensiveFormations =
         gameplan && gameplan.DefensiveScheme
             ? FormationMap[gameplan.DefensiveScheme].Formations
+            : [];
+
+    const opposingFormation =
+        oppGameplan && oppGameplan.ID > 0
+            ? FormationMap[oppGameplan.OffensiveScheme].Formations
             : [];
     // UseEffects
     useEffect(() => {
@@ -80,13 +112,13 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
     useEffect(() => {
         if (currentUser) {
             // GetGameplan(currentUser.teamId);
-            setUserTeam(cfbTeam);
+            setUserTeam(!isNFL ? cfbTeam : nflTeam);
             GetAvailableTeams();
         }
     }, [currentUser]);
 
     useEffect(() => {
-        if (cfbTeam) {
+        if (cfbTeam && !isNFL) {
             setTeam(cfbTeam);
             const colors = {
                 color: '#fff',
@@ -97,7 +129,18 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             };
             setTeamColors(colors);
         }
-    }, [cfbTeam]);
+        if (nflTeam && isNFL) {
+            setTeam(nflTeam);
+            const colors = {
+                color: '#fff',
+                backgroundColor:
+                    nflTeam && nflTeam.ColorOne ? nflTeam.ColorOne : '#6c757d',
+                borderColor:
+                    nflTeam && nflTeam.ColorOne ? nflTeam.ColorOne : '#6c757d'
+            };
+            setTeamColors(colors);
+        }
+    }, [cfbTeam, nflTeam, isNFL]);
 
     useEffect(() => {
         if (team) {
@@ -124,7 +167,27 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                         </button>
                     </span>
                 ),
-                { duration: 3000 }
+                { duration: 6000 }
+            );
+            return false;
+        }
+        return true;
+    };
+
+    const ValidateDefense = (formation, label, setValidation) => {
+        if (formation.length === 0) {
+            const message = `Defensive ${label} was not selected. Please make to select a defensive formation to face against the opponent's ${label}.`;
+            setValidation(false);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
             );
             return false;
         }
@@ -144,7 +207,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                         </button>
                     </span>
                 ),
-                { duration: 3000 }
+                { duration: 6000 }
             );
             return false;
         }
@@ -170,7 +233,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                         </button>
                     </span>
                 ),
-                { duration: 3000 }
+                { duration: 6000 }
             );
             return false;
         }
@@ -205,6 +268,26 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         return true;
     };
 
+    const CheckForDistributionWeight = (formation, weight, setValidation) => {
+        if (weight > 50) {
+            const message = `Offensive Formation ${formation} has a weight set greater than 50. Please reduce the number to 50 or less.`;
+            setValidation(() => false);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
+            return false;
+        }
+        return true;
+    };
+
     // Function Handlers
     const CheckValidation = () => {
         const gp = { ...gameplan };
@@ -219,33 +302,52 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         let passDist = 0;
         let currentDistribution = 0;
         let message = '';
-        let valid = true;
         let formationCount = 0;
+        let enoughWeight = true;
         // Check Offensive formations
-        if (gp.OffFormation1Weight > 0) {
+        if (gp.OffForm1Weight > 0) {
             formationCount += 1;
+            enoughWeight = CheckForDistributionWeight('One', gp.OffForm1Weight);
         }
 
-        if (gp.OffFormation2Weight > 0) {
-            formationCount += 1;
-        }
+        if (!enoughWeight) return;
 
-        if (gp.OffFormation3Weight > 0) {
+        if (gp.OffForm2Weight > 0) {
             formationCount += 1;
+            enoughWeight = CheckForDistributionWeight('Two', gp.OffForm1Weight);
         }
+        if (!enoughWeight) return;
 
-        if (gp.OffFormation4Weight > 0) {
+        if (gp.OffForm3Weight > 0) {
             formationCount += 1;
+            enoughWeight = CheckForDistributionWeight(
+                'Three',
+                gp.OffForm1Weight
+            );
         }
+        if (!enoughWeight) return;
 
-        if (gp.OffFormation5Weight > 0) {
+        if (gp.OffForm4Weight > 0) {
             formationCount += 1;
+            enoughWeight = CheckForDistributionWeight(
+                'Four',
+                gp.OffForm1Weight
+            );
         }
+        if (!enoughWeight) return;
 
-        if (formationCount > 3) {
-            message = `You're currently weighted to use ${formationCount} different formations when the maximum is 3. Please reduce the weight of one of your formations to bring the count to 3.`;
-            valid = false;
-            setValidation(valid);
+        if (gp.OffForm5Weight > 0) {
+            formationCount += 1;
+            enoughWeight = CheckForDistributionWeight(
+                'Five',
+                gp.OffForm1Weight
+            );
+        }
+        if (!enoughWeight) return;
+
+        if (formationCount <= 1) {
+            message = `You're currently weighted to use ${formationCount} different formations when the minimum is 2. Please increase the weight of one of your unused formations to bring the count between 2 and 3.`;
+            setValidation(() => false);
             toast.error(
                 (t) => (
                     <span>
@@ -255,7 +357,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                         </button>
                     </span>
                 ),
-                { duration: 2000 }
+                { duration: 6000 }
             );
             return;
         }
@@ -269,8 +371,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
 
         if (formationDist !== totalDistribution) {
             message = `Total Offensive Formation Ratio is set to ${formationDist}. Please make sure your allocation equals 100.`;
-            valid = false;
-            setValidation(valid);
+            setValidation(() => false);
             toast.error(
                 (t) => (
                     <span>
@@ -280,7 +381,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                         </button>
                     </span>
                 ),
-                { duration: 2000 }
+                { duration: 6000 }
             );
             return;
         }
@@ -382,7 +483,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             rpoDist,
             RPO.Min,
             RPO.Max,
-            'Option Run',
+            'RPO',
             setValidation
         );
 
@@ -405,6 +506,23 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         setTradRunTotal(() => tradRunDist);
         setOptRunTotal(() => optRunDist);
         setRPOTotal(() => rpoDist);
+        const playTypeSum = passDist + tradRunDist + optRunDist + rpoDist;
+        if (playTypeSum !== 100) {
+            message = `The sum of all Play Types across all formations is ${playTypeSum}. Please set this to 100.`;
+            setValidation(() => false);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
+            return;
+        }
 
         if (!checkTradRun || !checkOptRun || !checkRPO || !checkPass) return;
         // Check Running Distribution
@@ -565,7 +683,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                         </button>
                     </span>
                 ),
-                { duration: 3000 }
+                { duration: 6000 }
             );
             return;
         }
@@ -607,7 +725,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                 'Option Run',
                 setValidation
             );
-        if (!validOption) return;
+        if (optRunDist > 0 && !validOption) return;
 
         // Check Pass Play Distribution
         const validPassPlays = ValidatePassPlayDistribution(gp);
@@ -662,9 +780,58 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                 'RPO',
                 setValidation
             );
-        if (!validRPO) return;
+        if (rpoDist > 0 && !validRPO) return;
 
-        setValidation(valid);
+        const validDefense1 = ValidateDefense(
+            gp.DefFormation1,
+            'Formation 1',
+            setValidation
+        );
+        if (!validDefense1) return;
+        const validDefense2 = ValidateDefense(
+            gp.DefFormation2,
+            'Formation 2',
+            setValidation
+        );
+        if (!validDefense2) return;
+        const validDefense3 = ValidateDefense(
+            gp.DefFormation3,
+            'Formation 3',
+            setValidation
+        );
+        if (!validDefense3) return;
+        const validDefense4 = ValidateDefense(
+            gp.DefFormation4,
+            'Formation 4',
+            setValidation
+        );
+        if (!validDefense4) return;
+        const validDefense5 = ValidateDefense(
+            gp.DefFormation5,
+            'Formation 5',
+            setValidation
+        );
+
+        if (!validDefense5) return;
+
+        if (selectedFocusPlays.length > 3) {
+            message = `ERROR: More than 3 focus plays have been selected. Please reduce to either 3 or less.`;
+            setValidation(false);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 5000 }
+            );
+            return;
+        }
+
+        setValidation(() => true);
         toast.success('Gameplan is ready to save!', { duration: 3000 });
     };
 
@@ -677,20 +844,80 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
     };
 
     const GetGameplan = async (ID) => {
-        let response = await gameplanService.GetGameplanByTeamID(ID);
-        const { CollegeGP, CollegeDC } = response;
-        const { DepthChartPlayers } = CollegeDC;
+        let response = !isNFL
+            ? await gameplanService.GetGameplanByTeamID(ID)
+            : await gameplanService.GetNFLGameplanByTeamID(ID);
+        const {
+            CollegeGP,
+            CollegeDC,
+            CollegeOpponent,
+            NFLGP,
+            NFLDC,
+            NFLOpponent,
+            CollegeOppPlayers,
+            NFLOppPlayers
+        } = response;
+        const { DepthChartPlayers } = !isNFL ? CollegeDC : NFLDC;
         const targetPositions = ['QB', 'RB', 'WR', 'TE', 'FB'];
         const positionPlayers = DepthChartPlayers.filter((x) =>
             targetPositions.includes(x.Position)
         );
-        setInitialGameplan({ ...CollegeGP });
-        setGameplan({ ...CollegeGP });
         setDepthChart([...positionPlayers]);
+
+        if (!isNFL) {
+            const playerMap = {};
+            const strPlayers = ['None'];
+            const r = [...CollegeOppPlayers];
+            for (let i = 0; i < r.length; i++) {
+                const playerStr = `${r[i].Position} ${r[i].FirstName} ${r[i].LastName}`;
+                playerMap[playerStr] = r[i].ID;
+                strPlayers.push(playerStr);
+            }
+            const { FocusPlays } = CollegeGP;
+            const fp = FocusPlays.split(',');
+            setSelectedFocusPlays(() => fp);
+            setOpponentMap(() => playerMap);
+            setOpponentTargets(strPlayers);
+            const targetName =
+                CollegeGP.DoubleTeam === 0 || CollegeGP.DoubleTeam === -1
+                    ? ''
+                    : getKeyByValue(playerMap, CollegeGP.DoubleTeam);
+
+            setInitialGameplan({ ...CollegeGP, DoubleTeam: targetName });
+            setGameplan({ ...CollegeGP, DoubleTeam: targetName });
+            setOppGameplan({ ...CollegeOpponent });
+            setPitchFocus(() => CollegeGP.PitchFocus);
+            setDiveFocus(() => CollegeGP.DiveFocus);
+        } else {
+            const playerMap = {};
+            const strPlayers = ['None'];
+            const r = [...NFLOppPlayers];
+            for (let i = 0; i < r.length; i++) {
+                const playerStr = `${r[i].Position} ${r[i].FirstName} ${r[i].LastName}`;
+                playerMap[playerStr] = r[i].ID;
+                strPlayers.push(playerStr);
+            }
+            const targetName =
+                NFLGP.DoubleTeam === 0 || NFLGP.DoubleTeam === -1
+                    ? ''
+                    : getKeyByValue(playerMap, NFLGP.DoubleTeam);
+            setOpponentMap(() => playerMap);
+            setOpponentTargets(strPlayers);
+            const { FocusPlays } = NFLGP;
+            const fp = FocusPlays.split(',');
+            setSelectedFocusPlays(() => fp);
+            setInitialGameplan({ ...NFLGP, DoubleTeam: targetName });
+            setGameplan({ ...NFLGP, DoubleTeam: targetName });
+            setOppGameplan({ ...NFLOpponent });
+            setPitchFocus(() => NFLGP.PitchFocus);
+            setDiveFocus(() => NFLGP.DiveFocus);
+        }
     };
 
     const GetAvailableTeams = async () => {
-        let res = await _teamService.GetAvailableCollegeTeams();
+        let res = !isNFL
+            ? await _teamService.GetAllCollegeTeams()
+            : await _teamService.GetAllNFLTeams();
 
         setAITeams(res);
     };
@@ -706,18 +933,27 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
         } else {
             gp[name] = value;
         }
+        if (name === 'OffensiveScheme' && gp.DefaultOffense) {
+            console.log('PING!');
+            gp = MapDefaultOptions(gp, 'DefaultOffense');
+        } else if (name === 'DefensiveScheme' && gp.DefaultDefense) {
+            gp = MapDefaultOptions(gp, 'DefaultDefense');
+        } else if (name === 'DoubleTeam') {
+            gp[name] = value === 'None' ? -1 : value;
+        }
 
-        setGameplan(gp);
+        setGameplan(() => gp);
     };
 
     const HandleToggleChange = (event) => {
         const { value } = event.target;
-        const gp = { ...gameplan };
-        console.log({ value });
+        let gp = { ...gameplan };
         gp[value] = !gp[value];
 
         if (value === 'DefaultOffense') {
+            gp = MapDefaultOptions(gp, value);
         } else if (value === 'DefaultDefense') {
+            gp = MapDefaultOptions(gp, value);
         }
 
         setGameplan(() => gp);
@@ -726,14 +962,66 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
     const HandleNumberChange = (event) => {
         let gp = { ...gameplan };
         let { name, value } = event.target;
+
         let num = Number(value);
         if (num < 0) {
             num = 0;
         }
+        console.log({ name, value, num });
         gp[name] = num;
 
         // If Value IS NOT a Number...
         setGameplan(() => gp);
+    };
+
+    const HandleRangeChange = (event) => {
+        let gp = { ...gameplan };
+        let { name, value } = event.target;
+
+        let num = Number(value);
+        if (num < 0) {
+            num = 0;
+        }
+
+        if (name === 'PitchFocus') {
+            setPitchFocus(() => num);
+        } else {
+            setDiveFocus(() => num);
+        }
+    };
+
+    const MapDefaultOptions = (gpObj, value) => {
+        const gp = { ...gpObj };
+        if (value === 'DefaultOffense' || value === 'OffensiveScheme') {
+            const defaults = DefaultSchemes[gp.OffensiveScheme];
+            if (!defaults) {
+                console.error('Invalid scheme selected!');
+                return;
+            }
+            for (const key in defaults) {
+                gp[key] = defaults[key];
+            }
+            gp['PrimaryHB'] = 75;
+        } else if (value === 'DefaultDefense' || value === 'DefensiveScheme') {
+            const defaults = DefenseDefaultSchemes[gp.DefensiveScheme];
+            const defaultsByOppScheme = defaults[oppGameplan.OffensiveScheme];
+            if (!defaults && !defaultsByOppScheme) {
+                console.error('Invalid scheme selected!');
+                return;
+            }
+            for (const key in defaultsByOppScheme) {
+                gp[key] = defaultsByOppScheme[key];
+            }
+            setPitchFocus(() => 50);
+            setDiveFocus(() => 50);
+        }
+
+        return gp;
+    };
+
+    const ChangeFocusPlays = (options) => {
+        const opts = [...options.map((x) => x.value)];
+        setSelectedFocusPlays(() => opts);
     };
 
     const SaveToast = () => {
@@ -745,6 +1033,21 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
     const SaveGameplanOptions = async () => {
         if (!isValid) return;
 
+        const oppMap = { ...opponentMap };
+        let dtValue = gameplan.DoubleTeam;
+        let id = oppMap[dtValue];
+        if (
+            dtValue === '' ||
+            dtValue === 'Select' ||
+            dtValue === 0 ||
+            dtValue === -1
+        ) {
+            id = -1;
+        }
+
+        const fp = [...selectedFocusPlays];
+        const focusPlaysStr = fp.join(',');
+
         const fullGP = {
             ...gameplan,
             OffFormation1Name: offensiveFormations[0].name,
@@ -752,34 +1055,44 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             OffFormation3Name: offensiveFormations[2].name,
             OffFormation4Name: offensiveFormations[3].name,
             OffFormation5Name: offensiveFormations[4].name,
-            DefFormation1: defensiveFormations[0].name,
-            DefFormation2: defensiveFormations[1].name,
-            DefFormation3: defensiveFormations[2].name,
-            DefFormation4: defensiveFormations[3].name,
-            DefFormation5: defensiveFormations[4].name
+            PitchFocus: pitchFocus,
+            DiveFocus: diveFocus,
+            DoubleTeam: Number(id),
+            FocusPlays: focusPlaysStr
         };
 
-        const UpdateGameplanDTO = {
-            GameplanID: gameplan.ID.toString(),
-            UpdatedGameplan: fullGP,
-            Username: currentUser.username,
-            TeamName: cfbTeam.TeamName
-        };
+        const UpdateGameplanDTO = !isNFL
+            ? {
+                  GameplanID: gameplan.ID.toString(),
+                  UpdatedGameplan: fullGP,
+                  Username: currentUser.username,
+                  TeamName: cfbTeam.TeamName
+              }
+            : {
+                  GameplanID: gameplan.ID.toString(),
+                  UpdatedNFLGameplan: fullGP,
+                  Username: currentUser.username,
+                  TeamName: nflTeam.TeamName
+              };
 
         // Save
-        const save = await gameplanService.SaveGameplan(UpdateGameplanDTO);
+        const save = !isNFL
+            ? await gameplanService.SaveGameplan(UpdateGameplanDTO)
+            : await gameplanService.SaveNFLGameplan(UpdateGameplanDTO);
 
         if (save.ok) {
             // YAY!
             toast.success('Successfully Saved Gameplan!', {
                 style: {
-                    border: `1px solid ${cfbTeam.ColorOne}`,
+                    border: `1px solid ${
+                        !isNFL ? cfbTeam.ColorOne : nflTeam.ColorOne
+                    }`,
                     padding: '16px',
-                    color: cfbTeam.ColorTwo
+                    color: !isNFL ? cfbTeam.ColorTwo : nflTeam.ColorTwo
                 },
                 iconTheme: {
-                    primary: cfbTeam.ColorOne,
-                    secondary: cfbTeam.ColorTwo
+                    primary: !isNFL ? cfbTeam.ColorOne : nflTeam.ColorOne,
+                    secondary: !isNFL ? cfbTeam.ColorTwo : nflTeam.ColorTwo
                 },
                 duration: 4000
             });
@@ -794,24 +1107,6 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
     const ResetGameplan = () => {
         const originalGameplan = { ...initialGameplan };
         setGameplan(() => originalGameplan);
-    };
-
-    // Child Component References
-    const GPTab = ({ activeView, gameplanType, setActiveView }) => {
-        const isActiveView = activeView === gameplanType;
-
-        return (
-            <li className="nav-item">
-                <button
-                    type="button"
-                    role="tab"
-                    onClick={() => setActiveView(() => gameplanType)}
-                    className={`nav-link ${isActiveView ? 'active' : ''}`}
-                >
-                    {gameplanType}
-                </button>
-            </li>
-        );
     };
 
     // Mobile classes
@@ -865,6 +1160,14 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                             </ul>
                         </div>
                     )}
+                    <Link
+                        to={isNFL ? routes.NFL_DEPTHCHART : routes.DEPTHCHART}
+                        type="button"
+                        className="btn btn-primary btn-md me-2 shadow"
+                        style={teamColors ? teamColors : {}}
+                    >
+                        Depth Chart
+                    </Link>
                     <button
                         className="btn btn-danger me-2"
                         onClick={ResetGameplan}
@@ -883,7 +1186,7 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                     </button>
                 </div>
             </div>
-            <div className="row mb-3">
+            <div className="row mb-2">
                 <ul className="nav nav-tabs">
                     <GPTab
                         activeView={activeView}
@@ -909,7 +1212,16 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
             </div>
             {gameplan && activeView === 'Offensive Formations' && (
                 <>
-                    <SchemeModal />
+                    <SchemeModal
+                        Header="Offensive Scheme Info"
+                        ModalClass="modal-content"
+                        ID="schemeModal"
+                    />
+                    <FormationModal
+                        Header="Offensive Formation Info"
+                        ModalClass="modal-content"
+                        ID="formationModal"
+                    />
                     <div className="row mt-1">
                         <div className="container offense-options">
                             <div className="row mb-1 d-flex flex-wrap">
@@ -930,39 +1242,14 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                 <i className="bi bi-info-circle" />
                                             </button>
                                         </h5>
-                                        <div className="dropdown">
-                                            <button
-                                                className="btn btn-secondary dropdown-toggle cfb-gameplan-btn scheme"
-                                                type="button"
-                                                id="dropdownMenuButton1"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
-                                                style={
-                                                    teamColors ? teamColors : {}
-                                                }
-                                            >
-                                                {gameplan
-                                                    ? gameplan.OffensiveScheme
-                                                    : 'Loading...'}
-                                            </button>
-                                            <ul
-                                                className="dropdown-menu dropdown-content"
-                                                aria-labelledby="dropdownMenuButton1"
-                                            >
-                                                {OffensiveSchemeOptions.map(
-                                                    (x) => (
-                                                        <DropdownItem
-                                                            name="OffensiveScheme"
-                                                            id="OffensiveScheme"
-                                                            value={x}
-                                                            click={
-                                                                HandleTextChange
-                                                            }
-                                                        />
-                                                    )
-                                                )}
-                                            </ul>
-                                        </div>
+                                        <SchemeDropdown
+                                            teamColors={teamColors}
+                                            scheme={gameplan.OffensiveScheme}
+                                            name="OffensiveScheme"
+                                            options={OffensiveSchemeOptions}
+                                            HandleTextChange={HandleTextChange}
+                                        />
+
                                         {gameplan &&
                                             gameplan.OffensiveScheme && (
                                                 <SchemeInfo
@@ -986,24 +1273,26 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                         type="button"
                                                         className="btn btn-sm"
                                                         data-bs-toggle="modal"
-                                                        data-bs-target="#schemeModal"
+                                                        data-bs-target="#formationModal"
                                                     >
                                                         <i className="bi bi-info-circle" />
                                                     </button>
                                                 </h5>
                                             </div>
-                                            <FBAToggle
-                                                label="Default Offense"
-                                                value="DefaultOffense"
-                                                checkValue={
-                                                    gameplan
-                                                        ? gameplan.DefaultOffense
-                                                        : false
-                                                }
-                                                change={HandleToggleChange}
-                                            />
+                                            <div className="col ps-3 me-2">
+                                                <FBAToggle
+                                                    label="Default Offense"
+                                                    value="DefaultOffense"
+                                                    checkValue={
+                                                        gameplan
+                                                            ? gameplan.DefaultOffense
+                                                            : false
+                                                    }
+                                                    change={HandleToggleChange}
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="row mb-2">
+                                        <div className="row w-90 p-1 pt-2 border rounded-2 mb-2">
                                             <div className="col-auto">
                                                 <h6 className="card-subtitle">
                                                     Traditional Run:{' '}
@@ -1055,6 +1344,9 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                 handleChange={
                                                                     HandleNumberChange
                                                                 }
+                                                                isDefault={
+                                                                    isDefaultOffense
+                                                                }
                                                             />
                                                             <GameplanInputSm
                                                                 label="Traditional Run"
@@ -1068,6 +1360,9 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                 }
                                                                 handleChange={
                                                                     HandleNumberChange
+                                                                }
+                                                                isDefault={
+                                                                    isDefaultOffense
                                                                 }
                                                             />
                                                             <GameplanInputSm
@@ -1083,6 +1378,9 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                 handleChange={
                                                                     HandleNumberChange
                                                                 }
+                                                                isDefault={
+                                                                    isDefaultOffense
+                                                                }
                                                             />
                                                             <GameplanInputSm
                                                                 label="Pass"
@@ -1097,6 +1395,9 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                 handleChange={
                                                                     HandleNumberChange
                                                                 }
+                                                                isDefault={
+                                                                    isDefaultOffense
+                                                                }
                                                             />
                                                             <GameplanInputSm
                                                                 label="RPO"
@@ -1110,6 +1411,9 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                 }
                                                                 handleChange={
                                                                     HandleNumberChange
+                                                                }
+                                                                isDefault={
+                                                                    isDefaultOffense
                                                                 }
                                                             />
                                                         </div>
@@ -1128,7 +1432,11 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                 depthChart &&
                 activeView === 'Offensive Distributions' && (
                     <>
-                        <SchemeModal />
+                        <DistributionsModal
+                            Header="Offensive Distributions Info"
+                            ModalClass="modal-content"
+                            ID="offensiveDistributionsModal"
+                        />
                         <div className="row mt-1">
                             <div className="container offense-options">
                                 <div className="row mb-1 d-flex flex-wrap">
@@ -1136,6 +1444,14 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                         <div className="card-body mb-1">
                                             <h5 className="card-title">
                                                 Offensive Distributions
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-sm"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#offensiveDistributionsModal"
+                                                >
+                                                    <i className="bi bi-info-circle" />
+                                                </button>
                                             </h5>
                                             <div className="row gap-3">
                                                 <div
@@ -1163,6 +1479,9 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                             name
                                                                         ]
                                                                     }
+                                                                    isNFL={
+                                                                        isNFL
+                                                                    }
                                                                     targetDepth={
                                                                         gameplan[
                                                                             `TargetDepth${x}`
@@ -1181,6 +1500,9 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                     handleClick={
                                                                         HandleTextChange
                                                                     }
+                                                                    isDefault={
+                                                                        isDefaultOffense
+                                                                    }
                                                                 />
                                                             );
                                                         }
@@ -1191,12 +1513,13 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                         isMobile ? '' : 'w-80'
                                                     } gx-3 row`}
                                                 >
-                                                    <div className="col-md-3 gx-3 border rounded mb-2">
+                                                    <div className="col-xl-3 col-lg-3 col-md-4 gx-3 border rounded mb-2">
                                                         <h6 className="pt-2">
                                                             Running
                                                             Distributions
                                                         </h6>
                                                         <RunInput
+                                                            isNFL={isNFL}
                                                             label="QB"
                                                             name={`RunnerDistributionQB`}
                                                             value={
@@ -1210,8 +1533,12 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                 HandleNumberChange
                                                             }
                                                             dc={depthChart}
+                                                            isDefault={
+                                                                isDefaultOffense
+                                                            }
                                                         />
                                                         <RunInput
+                                                            isNFL={isNFL}
                                                             label="RB1"
                                                             name={`RunnerDistributionRB1`}
                                                             value={
@@ -1225,8 +1552,12 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                 HandleNumberChange
                                                             }
                                                             dc={depthChart}
+                                                            isDefault={
+                                                                isDefaultOffense
+                                                            }
                                                         />
                                                         <RunInput
+                                                            isNFL={isNFL}
                                                             label="RB2"
                                                             name={`RunnerDistributionRB2`}
                                                             value={
@@ -1240,8 +1571,12 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                 HandleNumberChange
                                                             }
                                                             dc={depthChart}
+                                                            isDefault={
+                                                                isDefaultOffense
+                                                            }
                                                         />
                                                         <RunInput
+                                                            isNFL={isNFL}
                                                             label="RB3"
                                                             name={`RunnerDistributionRB3`}
                                                             value={
@@ -1255,8 +1590,12 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                 HandleNumberChange
                                                             }
                                                             dc={depthChart}
+                                                            isDefault={
+                                                                isDefaultOffense
+                                                            }
                                                         />
                                                         <RunInput
+                                                            isNFL={isNFL}
                                                             label="FB1"
                                                             name={`RunnerDistributionFB1`}
                                                             value={
@@ -1270,8 +1609,12 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                 HandleNumberChange
                                                             }
                                                             dc={depthChart}
+                                                            isDefault={
+                                                                isDefaultOffense
+                                                            }
                                                         />
                                                         <RunInput
+                                                            isNFL={isNFL}
                                                             label="FB2"
                                                             name={`RunnerDistributionFB2`}
                                                             value={
@@ -1285,8 +1628,12 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                 HandleNumberChange
                                                             }
                                                             dc={depthChart}
+                                                            isDefault={
+                                                                isDefaultOffense
+                                                            }
                                                         />
                                                         <TargetInput
+                                                            isNFL={isNFL}
                                                             label={
                                                                 gameplan[
                                                                     `RunnerDistributionWRPosition`
@@ -1320,9 +1667,12 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                             handleClick={
                                                                 HandleTextChange
                                                             }
+                                                            isDefault={
+                                                                isDefaultOffense
+                                                            }
                                                         />
                                                     </div>
-                                                    <div className="col-md-auto gx-3 border rounded mb-2">
+                                                    <div className="col-xl-auto col-lg-auto col-md-4 gx-3 border rounded mb-2">
                                                         <h6 className="pt-2">
                                                             Run Type
                                                             Distributions
@@ -1349,12 +1699,15 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                         handleChange={
                                                                             HandleNumberChange
                                                                         }
+                                                                        isDefault={
+                                                                            isDefaultOffense
+                                                                        }
                                                                     />
                                                                 );
                                                             }
                                                         )}
                                                     </div>
-                                                    <div className="col-md-2 gx-3 border rounded mb-2">
+                                                    <div className="col-xl-2 col-lg-4 col-md-4 gx-3 border rounded mb-2">
                                                         <h6 className="pt-2">
                                                             Option Distributions
                                                         </h6>
@@ -1376,12 +1729,15 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                         handleChange={
                                                                             HandleNumberChange
                                                                         }
+                                                                        isDefault={
+                                                                            isDefaultOffense
+                                                                        }
                                                                     />
                                                                 );
                                                             }
                                                         )}
                                                     </div>
-                                                    <div className="col-md-2 gx-3 border rounded mb-2">
+                                                    <div className="col-xl-2 col-lg-4 col-md-4 gx-3 border rounded mb-2">
                                                         <h6 className="pt-2">
                                                             Pass Type
                                                             Distributions
@@ -1418,13 +1774,16 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                             handleChange={
                                                                                 HandleNumberChange
                                                                             }
+                                                                            isDefault={
+                                                                                isDefaultOffense
+                                                                            }
                                                                         />
                                                                     </div>
                                                                 );
                                                             }
                                                         )}
                                                     </div>
-                                                    <div className="col-md-2 gx-3 border rounded mb-1">
+                                                    <div className="col-xl-2 col-lg-4 col-md-4 gx-3 border rounded mb-1">
                                                         <h6 className="pt-2">
                                                             RPO Distributions
                                                         </h6>
@@ -1443,6 +1802,9 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                     handleChange={
                                                                         HandleNumberChange
                                                                     }
+                                                                    isDefault={
+                                                                        isDefaultOffense
+                                                                    }
                                                                 />
                                                             );
                                                         })}
@@ -1458,12 +1820,17 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                 )}
             {gameplan && activeView === 'Defense' && (
                 <>
+                    <DefensiveSchemeModal
+                        Header="Defensive Scheme Info"
+                        ModalClass="modal-content"
+                        ID="defensiveSchemeModal"
+                    />
                     <div className="row mt-1">
                         <div className="container defense-options">
                             <div className="row mb-1 d-flex flex-wrap">
                                 <div
                                     className={`card ${
-                                        isMobile ? '' : 'w-25'
+                                        isMobile ? '' : 'w-15'
                                     } text-start`}
                                 >
                                     <div className="card-body">
@@ -1473,44 +1840,18 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                 type="button"
                                                 className="btn btn-sm"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#schemeModal"
+                                                data-bs-target="#defensiveSchemeModal"
                                             >
                                                 <i className="bi bi-info-circle" />
                                             </button>
                                         </h5>
-                                        <div className="dropdown">
-                                            <button
-                                                className="btn btn-secondary dropdown-toggle cfb-gameplan-btn scheme"
-                                                type="button"
-                                                id="dropdownMenuButton1"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
-                                                style={
-                                                    teamColors ? teamColors : {}
-                                                }
-                                            >
-                                                {gameplan
-                                                    ? gameplan.DefensiveScheme
-                                                    : 'Loading...'}
-                                            </button>
-                                            <ul
-                                                className="dropdown-menu"
-                                                aria-labelledby="dropdownMenuButton1"
-                                            >
-                                                {DefensiveSchemeOptions.map(
-                                                    (x) => (
-                                                        <DropdownItem
-                                                            name="DefensiveScheme"
-                                                            id="DefensiveScheme"
-                                                            value={x}
-                                                            click={
-                                                                HandleTextChange
-                                                            }
-                                                        />
-                                                    )
-                                                )}
-                                            </ul>
-                                        </div>
+                                        <SchemeDropdown
+                                            teamColors={teamColors}
+                                            scheme={gameplan.DefensiveScheme}
+                                            name="DefensiveScheme"
+                                            options={DefensiveSchemeOptions}
+                                            HandleTextChange={HandleTextChange}
+                                        />
                                         {gameplan.DefensiveScheme && (
                                             <SchemeInfo
                                                 formationMap={FormationMap}
@@ -1523,110 +1864,130 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                 </div>
                                 <div
                                     className={`card ${
-                                        isMobile ? '' : 'w-75'
+                                        isMobile ? '' : 'w-85'
                                     } text-start`}
                                 >
-                                    <div className="card-body text-start mb-2">
+                                    <div className="card-body text-start mb-1">
                                         <div className="row gap-2">
                                             <div className="col-md-auto">
                                                 <h5 className="card-title">
                                                     Defensive Formations
                                                 </h5>
                                             </div>
-                                            <FBAToggle
-                                                label="Default Defense"
-                                                value="DefaultDefense"
-                                                checkValue={
-                                                    gameplan
-                                                        ? gameplan.DefaultDefense
-                                                        : false
-                                                }
-                                                change={HandleToggleChange}
-                                            />
+                                            <div className="col ps-3 me-2">
+                                                <FBAToggle
+                                                    label="Default Defense"
+                                                    value="DefaultDefense"
+                                                    checkValue={
+                                                        gameplan
+                                                            ? gameplan.DefaultDefense
+                                                            : false
+                                                    }
+                                                    change={HandleToggleChange}
+                                                />
+                                            </div>
                                         </div>
 
-                                        <div className="row gap-2">
-                                            {defensiveFormations.map(
-                                                (x, idx) => {
-                                                    const num = idx + 1;
-                                                    const initLabel = `DefFormation${num}`;
-                                                    const positions =
-                                                        GetDefensivePositions(
-                                                            x.positions
-                                                        );
+                                        {oppGameplan && (
+                                            <OpposingSchemeRow
+                                                scheme={
+                                                    oppGameplan.OffensiveScheme
+                                                }
+                                            />
+                                        )}
 
-                                                    return (
-                                                        <div className="col-md-2 border rounded">
-                                                            <h6 className="pt-2">
-                                                                {x.name}
-                                                            </h6>
-                                                            <p className="text-small">
-                                                                {positions}
-                                                            </p>
-                                                            <GameplanInputSm
-                                                                label="Run to Pass"
-                                                                name={`${initLabel}RunToPass`}
-                                                                value={
-                                                                    gameplan
-                                                                        ? gameplan[
-                                                                              `${initLabel}RunToPass`
-                                                                          ]
-                                                                        : 0
-                                                                }
-                                                                handleChange={
-                                                                    HandleNumberChange
-                                                                }
-                                                            />
-                                                            <GameplanInputSm
-                                                                label="Blitz Weight"
-                                                                name={`${initLabel}BlitzWeight`}
-                                                                value={
-                                                                    gameplan
-                                                                        ? gameplan[
-                                                                              `${initLabel}BlitzWeight`
-                                                                          ]
-                                                                        : 0
-                                                                }
-                                                                handleChange={
-                                                                    HandleNumberChange
-                                                                }
-                                                            />
-                                                            <h6>
-                                                                Blitz Aggression
-                                                            </h6>
-                                                            <div className="dropdown">
-                                                                <button
-                                                                    className="btn btn-secondary dropdown-toggle cfb-gameplan-btn"
-                                                                    type="button"
-                                                                    id="dropdownMenuButton1"
-                                                                    data-bs-toggle="dropdown"
-                                                                    aria-expanded="false"
-                                                                    style={
-                                                                        teamColors
-                                                                            ? teamColors
-                                                                            : {}
-                                                                    }
-                                                                >
-                                                                    {gameplan
-                                                                        ? gameplan[
-                                                                              `${initLabel}BlitzAggression`
-                                                                          ]
-                                                                        : 'Loading...'}
-                                                                </button>
-                                                                <ul
-                                                                    className="dropdown-menu"
-                                                                    aria-labelledby="dropdownMenuButton1"
-                                                                >
-                                                                    {gameplan &&
-                                                                        BlitzAggressivenessOptions.map(
+                                        <div className="row gap-2">
+                                            {oppGameplan &&
+                                                opposingFormation.map(
+                                                    (x, idx) => {
+                                                        const num = idx + 1;
+                                                        const initLabel = `DefFormation${num}`;
+                                                        const opposingPositions =
+                                                            x.positions.join(
+                                                                ', '
+                                                            );
+                                                        const defFormationIdx =
+                                                            defensiveFormations.findIndex(
+                                                                (x) =>
+                                                                    x.name ===
+                                                                    gameplan[
+                                                                        initLabel
+                                                                    ]
+                                                            );
+                                                        const defFormation =
+                                                            defFormationIdx > -1
+                                                                ? defensiveFormations[
+                                                                      defFormationIdx
+                                                                  ]
+                                                                : {
+                                                                      name: '',
+                                                                      positions:
+                                                                          []
+                                                                  };
+                                                        const positions =
+                                                            defFormationIdx > -1
+                                                                ? GetDefensivePositions(
+                                                                      defFormation.positions
+                                                                  )
+                                                                : [];
+
+                                                        return (
+                                                            <div className="col-md pt-2 border rounded">
+                                                                <h6>
+                                                                    Opposing
+                                                                    Formation:
+                                                                </h6>
+                                                                <p className="text-small">
+                                                                    {x.name}
+                                                                </p>
+                                                                <p className="text-small">
+                                                                    <small>
+                                                                        {
+                                                                            opposingPositions
+                                                                        }
+                                                                    </small>
+                                                                </p>
+                                                                <div className="dropdown">
+                                                                    <button
+                                                                        className={
+                                                                            schemeDropdownClass
+                                                                        }
+                                                                        type="button"
+                                                                        id="dropdownMenuButton1"
+                                                                        data-bs-toggle="dropdown"
+                                                                        aria-expanded="false"
+                                                                        style={
+                                                                            teamColors
+                                                                                ? teamColors
+                                                                                : {}
+                                                                        }
+                                                                        disabled={
+                                                                            isDefaultDefense
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            gameplan[
+                                                                                initLabel
+                                                                            ]
+                                                                        }
+                                                                    </button>
+                                                                    <ul
+                                                                        className="dropdown-menu"
+                                                                        aria-labelledby="dropdownMenuButton1"
+                                                                    >
+                                                                        {defensiveFormations.map(
                                                                             (
                                                                                 x
                                                                             ) => (
                                                                                 <DropdownItem
-                                                                                    name={`${initLabel}BlitzAggression`}
-                                                                                    id={`${initLabel}BlitzAggression`}
+                                                                                    name={
+                                                                                        initLabel
+                                                                                    }
+                                                                                    id={
+                                                                                        initLabel
+                                                                                    }
                                                                                     value={
-                                                                                        x
+                                                                                        x.name
                                                                                     }
                                                                                     click={
                                                                                         HandleTextChange
@@ -1634,170 +1995,231 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                                                 />
                                                                             )
                                                                         )}
-                                                                </ul>
+                                                                    </ul>
+                                                                </div>
+                                                                <p className="text-small">
+                                                                    {positions}
+                                                                </p>
+                                                                <GameplanInputSm
+                                                                    label="Run to Pass"
+                                                                    name={`${initLabel}RunToPass`}
+                                                                    value={
+                                                                        gameplan
+                                                                            ? gameplan[
+                                                                                  `${initLabel}RunToPass`
+                                                                              ]
+                                                                            : 0
+                                                                    }
+                                                                    handleChange={
+                                                                        HandleNumberChange
+                                                                    }
+                                                                    isDefault={
+                                                                        isDefaultDefense
+                                                                    }
+                                                                />
+                                                                <GameplanInputSm
+                                                                    label="Blitz Weight"
+                                                                    name={`${initLabel}BlitzWeight`}
+                                                                    value={
+                                                                        gameplan
+                                                                            ? gameplan[
+                                                                                  `${initLabel}BlitzWeight`
+                                                                              ]
+                                                                            : 0
+                                                                    }
+                                                                    handleChange={
+                                                                        HandleNumberChange
+                                                                    }
+                                                                    isDefault={
+                                                                        isDefaultDefense
+                                                                    }
+                                                                />
+                                                                <h6>
+                                                                    Blitz
+                                                                    Aggression
+                                                                </h6>
+                                                                <SchemeDropdown
+                                                                    teamColors={
+                                                                        teamColors
+                                                                    }
+                                                                    scheme={
+                                                                        gameplan[
+                                                                            `${initLabel}BlitzAggression`
+                                                                        ]
+                                                                    }
+                                                                    name={`${initLabel}BlitzAggression`}
+                                                                    options={
+                                                                        BlitzAggressivenessOptions
+                                                                    }
+                                                                    HandleTextChange={
+                                                                        HandleTextChange
+                                                                    }
+                                                                    isDefault={
+                                                                        isDefaultDefense
+                                                                    }
+                                                                />
                                                             </div>
-                                                        </div>
-                                                    );
-                                                }
-                                            )}
+                                                        );
+                                                    }
+                                                )}
 
+                                            <div className="col-md-2 pt-2 border rounded">
+                                                <h6>Focus Plays</h6>
+                                                {selectedFocusPlays.length >
+                                                    0 && (
+                                                    <p>
+                                                        {selectedFocusPlays.map(
+                                                            (x, idx) => (
+                                                                <span>
+                                                                    {x}
+                                                                    {idx <
+                                                                    selectedFocusPlays.length -
+                                                                        1
+                                                                        ? ', '
+                                                                        : ''}
+                                                                </span>
+                                                            )
+                                                        )}
+                                                    </p>
+                                                )}
+                                                <Select
+                                                    options={focusPlayOptions}
+                                                    isMulti={true}
+                                                    className="basic-multi-select btn-dropdown-width-gp z-index-1"
+                                                    classNamePrefix="select"
+                                                    onChange={ChangeFocusPlays}
+                                                />
+                                            </div>
                                             <div className="w-86 border rounded">
                                                 <h6 className="pt-2">
                                                     Defensive Settings
                                                 </h6>
                                                 <div className="row d-flex align-items-center">
-                                                    <FBAToggle
-                                                        label="Blitz Safeties"
-                                                        value="BlitzSafeties"
-                                                        checkValue={
-                                                            gameplan
-                                                                ? gameplan.BlitzSafeties
-                                                                : false
-                                                        }
-                                                        change={
-                                                            HandleToggleChange
-                                                        }
-                                                    />
-                                                    <FBAToggle
-                                                        label="Blitz Corners"
-                                                        value="BlitzCorners"
-                                                        checkValue={
-                                                            gameplan
-                                                                ? gameplan.BlitzCorners
-                                                                : false
-                                                        }
-                                                        change={
-                                                            HandleToggleChange
-                                                        }
-                                                    />
+                                                    <div className="col-auto ps-3 me-2">
+                                                        <FBAToggle
+                                                            label="Blitz Safeties"
+                                                            value="BlitzSafeties"
+                                                            checkValue={
+                                                                gameplan
+                                                                    ? gameplan.BlitzSafeties
+                                                                    : false
+                                                            }
+                                                            change={
+                                                                HandleToggleChange
+                                                            }
+                                                        />
+                                                        <FBAToggle
+                                                            label="Blitz Corners"
+                                                            value="BlitzCorners"
+                                                            checkValue={
+                                                                gameplan
+                                                                    ? gameplan.BlitzCorners
+                                                                    : false
+                                                            }
+                                                            change={
+                                                                HandleToggleChange
+                                                            }
+                                                        />
+                                                    </div>
+                                                    <div className="col p-2 ms-2 me-2">
+                                                        <InputRange
+                                                            label="Pitch Focus"
+                                                            name="PitchFocus"
+                                                            value={pitchFocus}
+                                                            change={
+                                                                HandleRangeChange
+                                                            }
+                                                        />
+                                                    </div>
+                                                    <div className="col p-2 ms-2 me-2">
+                                                        <InputRange
+                                                            label="Dive Focus"
+                                                            name="DiveFocus"
+                                                            value={diveFocus}
+                                                            change={
+                                                                HandleRangeChange
+                                                            }
+                                                        />
+                                                    </div>
                                                     <div className="col p-2 ms-2 me-2">
                                                         <h6>
                                                             Linebacker Coverage
                                                         </h6>
-                                                        <div className="dropdown">
-                                                            <button
-                                                                className="btn btn-secondary dropdown-toggle cfb-gameplan-btn"
-                                                                type="button"
-                                                                id="dropdownMenuButton1"
-                                                                data-bs-toggle="dropdown"
-                                                                aria-expanded="false"
-                                                                style={
-                                                                    teamColors
-                                                                        ? teamColors
-                                                                        : {}
-                                                                }
-                                                            >
-                                                                {gameplan
-                                                                    ? gameplan.LinebackerCoverage
-                                                                    : 'Loading...'}
-                                                            </button>
-                                                            <ul
-                                                                className="dropdown-menu"
-                                                                aria-labelledby="dropdownMenuButton1"
-                                                            >
-                                                                {gameplan &&
-                                                                    CoverageOptions.map(
-                                                                        (x) => (
-                                                                            <DropdownItem
-                                                                                name="LinebackerCoverage"
-                                                                                id="LinebackerCoverage"
-                                                                                value={
-                                                                                    x
-                                                                                }
-                                                                                click={
-                                                                                    HandleTextChange
-                                                                                }
-                                                                            />
-                                                                        )
-                                                                    )}
-                                                            </ul>
-                                                        </div>
+                                                        <SchemeDropdown
+                                                            teamColors={
+                                                                teamColors
+                                                            }
+                                                            scheme={
+                                                                gameplan.LinebackerCoverage
+                                                            }
+                                                            name="LinebackerCoverage"
+                                                            options={
+                                                                CoverageOptions
+                                                            }
+                                                            HandleTextChange={
+                                                                HandleTextChange
+                                                            }
+                                                        />
                                                     </div>
                                                     <div className="col p-2 ms-2 me-2">
                                                         <h6>
                                                             Corners Coverage
                                                         </h6>
-                                                        <div className="dropdown">
-                                                            <button
-                                                                className="btn btn-secondary dropdown-toggle cfb-gameplan-btn"
-                                                                type="button"
-                                                                id="dropdownMenuButton1"
-                                                                data-bs-toggle="dropdown"
-                                                                aria-expanded="false"
-                                                                style={
-                                                                    teamColors
-                                                                        ? teamColors
-                                                                        : {}
-                                                                }
-                                                            >
-                                                                {gameplan
-                                                                    ? gameplan.CornersCoverage
-                                                                    : 'Loading...'}
-                                                            </button>
-                                                            <ul
-                                                                className="dropdown-menu"
-                                                                aria-labelledby="dropdownMenuButton1"
-                                                            >
-                                                                {gameplan &&
-                                                                    CoverageOptions.map(
-                                                                        (x) => (
-                                                                            <DropdownItem
-                                                                                name="CornersCoverage"
-                                                                                id="CornersCoverage"
-                                                                                value={
-                                                                                    x
-                                                                                }
-                                                                                click={
-                                                                                    HandleTextChange
-                                                                                }
-                                                                            />
-                                                                        )
-                                                                    )}
-                                                            </ul>
-                                                        </div>
+                                                        <SchemeDropdown
+                                                            teamColors={
+                                                                teamColors
+                                                            }
+                                                            scheme={
+                                                                gameplan.CornersCoverage
+                                                            }
+                                                            name="CornersCoverage"
+                                                            options={
+                                                                CoverageOptions
+                                                            }
+                                                            HandleTextChange={
+                                                                HandleTextChange
+                                                            }
+                                                        />
                                                     </div>
                                                     <div className="col p-2 ms-2 me-2">
                                                         <h6>
                                                             Safeties Coverage
                                                         </h6>
-                                                        <div className="dropdown">
-                                                            <button
-                                                                className="btn btn-secondary dropdown-toggle cfb-gameplan-btn"
-                                                                type="button"
-                                                                id="dropdownMenuButton1"
-                                                                data-bs-toggle="dropdown"
-                                                                aria-expanded="false"
-                                                                style={
-                                                                    teamColors
-                                                                        ? teamColors
-                                                                        : {}
-                                                                }
-                                                            >
-                                                                {gameplan
-                                                                    ? gameplan.SafetiesCoverage
-                                                                    : 'Loading...'}
-                                                            </button>
-                                                            <ul
-                                                                className="dropdown-menu"
-                                                                aria-labelledby="dropdownMenuButton1"
-                                                            >
-                                                                {gameplan &&
-                                                                    CoverageOptions.map(
-                                                                        (x) => (
-                                                                            <DropdownItem
-                                                                                name="SafetiesCoverage"
-                                                                                id="SafetiesCoverage"
-                                                                                value={
-                                                                                    x
-                                                                                }
-                                                                                click={
-                                                                                    HandleTextChange
-                                                                                }
-                                                                            />
-                                                                        )
-                                                                    )}
-                                                            </ul>
-                                                        </div>
+                                                        <SchemeDropdown
+                                                            teamColors={
+                                                                teamColors
+                                                            }
+                                                            scheme={
+                                                                gameplan.SafetiesCoverage
+                                                            }
+                                                            name="SafetiesCoverage"
+                                                            options={
+                                                                CoverageOptions
+                                                            }
+                                                            HandleTextChange={
+                                                                HandleTextChange
+                                                            }
+                                                        />
+                                                    </div>
+                                                    <div className="col p-2 ms-2 me-2">
+                                                        <h6>
+                                                            Double Team Coverage
+                                                        </h6>
+                                                        <SchemeDropdown
+                                                            teamColors={
+                                                                teamColors
+                                                            }
+                                                            scheme={
+                                                                gameplan.DoubleTeam
+                                                            }
+                                                            name="DoubleTeam"
+                                                            options={
+                                                                opponentTargets
+                                                            }
+                                                            HandleTextChange={
+                                                                HandleTextChange
+                                                            }
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>
@@ -1863,6 +2285,21 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
                                                     }
                                                 />
                                             </div>
+                                            <div className="col-auto">
+                                                <GameplanInputItem
+                                                    name="PrimaryHB"
+                                                    label="Primary HB"
+                                                    value={
+                                                        gameplan &&
+                                                        gameplan.PrimaryHB
+                                                    }
+                                                    min={'0'}
+                                                    max={'100'}
+                                                    handleChange={
+                                                        HandleNumberChange
+                                                    }
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1875,9 +2312,14 @@ const CFBGameplan = ({ currentUser, cfbTeam }) => {
     );
 };
 
-const mapStateToProps = ({ user: { currentUser }, cfbTeam: { cfbTeam } }) => ({
+const mapStateToProps = ({
+    user: { currentUser },
+    cfbTeam: { cfbTeam },
+    nflTeam: { nflTeam }
+}) => ({
     currentUser,
-    cfbTeam
+    cfbTeam,
+    nflTeam
 });
 
 export default connect(mapStateToProps)(CFBGameplan);

@@ -6,6 +6,9 @@ const AttributeRow = ({ data, theme }) => {
     if (theme.toLowerCase() === 'dark') {
         attributeImage = `${baseUrl}/attributes/${data.Name}_Dark.svg`;
     }
+    if (data.Name === 'Shotgun Rating' && theme.toLowerCase() === 'dark') {
+        attributeImage = `${baseUrl}/attributes/${data.Name}_Dark.png`;
+    }
     return (
         <div className="col-sm-3">
             <img src={attributeImage} className="attribute-icon" alt="" />

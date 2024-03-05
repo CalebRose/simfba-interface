@@ -180,12 +180,14 @@ const Profile = ({ currentUser, cfbTeam, viewMode }) => {
                                 {viewMode}
                             </h6>
                             <div className="row">
-                                <FBAToggle
-                                    label=""
-                                    checkValue={viewMode === 'dark'}
-                                    value={viewMode}
-                                    change={ChangeViewMode}
-                                />
+                                <div className="col ps-3 me-2">
+                                    <FBAToggle
+                                        label=""
+                                        checkValue={viewMode === 'dark'}
+                                        value={viewMode}
+                                        change={ChangeViewMode}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -203,12 +205,14 @@ const Profile = ({ currentUser, cfbTeam, viewMode }) => {
                                         : 'Deactivated'}
                                 </h6>
                                 <div className="row">
-                                    <FBAToggle
-                                        label=""
-                                        checkValue={currentUser.IsRetro}
-                                        value={currentUser.IsRetro}
-                                        change={ToggleRetroMode}
-                                    />
+                                    <div className="col ps-3 me-2">
+                                        <FBAToggle
+                                            label=""
+                                            checkValue={currentUser.IsRetro}
+                                            value={currentUser.IsRetro}
+                                            change={ToggleRetroMode}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>

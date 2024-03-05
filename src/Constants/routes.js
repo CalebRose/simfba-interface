@@ -15,6 +15,8 @@ export default {
     DEPTHCHART: '/depthchart',
     CFB_GAMEPLAN: '/cfb/team/gameplan',
     CFB_SCHEDULE: '/cfb/schedule',
+    CFB_TRANSFER: '/cfb/transferportal',
+    CBB_TRANSFER: '/cbb/transferportal',
     NFL_DEPTHCHART: '/nfl/team/depthchart',
     NFL_DRAFT_ROOM: '/nfl/draft/room',
     NFL_WAR_ROOM: '/nfl/team/warroom',

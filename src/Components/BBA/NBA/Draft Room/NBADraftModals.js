@@ -3,13 +3,25 @@ import { ExtraLargeModal, InfoModal } from '../../../_Common/ModalComponents';
 import BBADraftService from '../../../../_Services/simNBA/BBADraftService';
 import { Spinner } from '../../../_Common/Spinner';
 import { getLogo } from '../../../../Constants/getLogo';
-import { RoundToTwoDecimals } from '../../../../_Utility/utilHelper';
+import {
+    HeightToFeetAndInches,
+    RoundToTwoDecimals
+} from '../../../../_Utility/utilHelper';
+import FBADraftService from '../../../../_Services/simFBA/FBADraftService';
+import { GetScoutableAttributes } from '../../../../_Utility/DraftHelper';
+import { AttributeColumn } from '../../../_Common/DraftComponents';
+import { BBAStatsRow, FBAStatsRow } from '../../../_Common/SeasonStatsRow';
 
-export const NBADraftHelpModal = () => {
+export const NBADraftHelpModal = ({ isNBA }) => {
     return (
-        <InfoModal id="helpModal" header="NBA Draft Help Info">
+        <InfoModal
+            id="helpModal"
+            header={`${isNBA ? 'NBA' : 'NFL'} Draft Help Info`}
+        >
             <div className="row">
-                <h6>Welcome to this year's SimNBA Draft!</h6>
+                <h6>
+                    Welcome to this year's {isNBA ? 'SimNBA' : 'SimNFL'} Draft!
+                </h6>
             </div>
             <div className="row mt-2 text-start">
                 <p>
@@ -43,7 +55,9 @@ export const NBADraftHelpModal = () => {
                     The <strong>War Room</strong> keeps track of your total
                     Scouting Points, the points you use to scout talent, how
                     many Scout Points you've spent, and all draft picks that
-                    your team owns.
+                    your team owns.{' '}
+                    {!isNBA &&
+                        'You may also propose, accept, and reject trades here during the duration of the draft with other participating teams.'}
                 </p>
             </div>
             <div className="row mt-2 text-start">
@@ -74,11 +88,220 @@ export const NBADraftHelpModal = () => {
     );
 };
 
-export const ScoutingModal = ({ player, retro }) => {
-    const _draftService = new BBADraftService();
+const NBAScoutingCard = ({
+    player,
+    TeamStandings,
+    teamLogo,
+    DrafteeSeasonStats
+}) => {
+    return (
+        <>
+            <div className="row">
+                <div className="col-auto">
+                    <h5>Attributes: </h5>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-auto">
+                    <p>Shooting2:</p>
+                    <p>{player.Shooting2Grade}</p>
+                </div>
+                <div className="col-auto">
+                    <p>Shooting3:</p>
+                    <p>{player.Shooting3Grade}</p>
+                </div>
+                <div className="col-auto">
+                    <p>Free Throw:</p>
+                    <p>{player.FreeThrowGrade}</p>
+                </div>
+                <div className="col-auto">
+                    <p>Finishing:</p>
+                    <p>{player.FinishingGrade}</p>
+                </div>
+                <div className="col-auto">
+                    <p>Ballwork:</p>
+                    <p>{player.BallworkGrade}</p>
+                </div>
+                <div className="col-auto">
+                    <p>Rebounding:</p>
+                    <p>{player.ReboundingGrade}</p>
+                </div>
+                <div className="col-auto">
+                    <p>Int. Defense:</p>
+                    <p>{player.InteriorDefenseGrade}</p>
+                </div>
+                <div className="col-auto">
+                    <p>Per. Defense:</p>
+                    <p>{player.PerimeterDefenseGrade}</p>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-auto">
+                    <h5>
+                        College: {TeamStandings.TeamName}
+                        {'  '}
+                        <img
+                            src={teamLogo}
+                            alt={TeamStandings.TeamAbbr}
+                            className="image-recruit-logo"
+                        />
+                        {', '}
+                        {TeamStandings.ConferenceName}
+                    </h5>
+                </div>
+            </div>
+            <div className="row mt-1">
+                <div className="col-auto">
+                    <h6>Total Wins: {TeamStandings.TotalWins}</h6>
+                </div>
+                <div className="col-auto">
+                    <h6>Total Losses: {TeamStandings.TotalLosses}</h6>
+                </div>
+                <div className="col-auto">
+                    <h6>Conference Wins: {TeamStandings.ConferenceWins}</h6>
+                </div>
+                <div className="col-auto">
+                    <h6>Conference Losses: {TeamStandings.ConferenceLosses}</h6>
+                </div>
+                <div className="col-auto">
+                    <h6>
+                        Post-Season Status: {TeamStandings.PostSeasonStatus}
+                    </h6>
+                </div>
+            </div>
+            <div className="row mt-2">
+                <div className="col-auto">
+                    <h5>Season Stats</h5>
+                </div>
+                <div className="col-auto">
+                    <h6>Games Played</h6>
+                    <p>{DrafteeSeasonStats.GamesPlayed}</p>
+                </div>
+                <div className="ms-2 col-auto">
+                    <h6>Minutes</h6>
+                    <p>
+                        {RoundToTwoDecimals(DrafteeSeasonStats.MinutesPerGame)}
+                    </p>
+                </div>
+                <div className="col-auto">
+                    <h6>Possessions</h6>
+                    <p>
+                        {RoundToTwoDecimals(
+                            DrafteeSeasonStats.PossessionsPerGame
+                        )}
+                    </p>
+                </div>
+            </div>
+            <BBAStatsRow SeasonStats={DrafteeSeasonStats} />
+        </>
+    );
+};
+
+const NFLScoutingCard = ({
+    player,
+    profile,
+    TeamStandings,
+    teamLogo,
+    DrafteeSeasonStats,
+    wr
+}) => {
+    const { SpentPoints } = wr;
+    const attrList = GetScoutableAttributes(player.Position, player.Archetype);
+    const heightObj = HeightToFeetAndInches(player.Height);
+    return (
+        <>
+            <div className="row mb-3">
+                <div className="col-auto">
+                    <h5 className="text-start">
+                        {TeamStandings.TeamName}
+                        {'  '}
+                        <img
+                            src={teamLogo}
+                            alt={TeamStandings.TeamAbbr}
+                            className="image-recruit-logo"
+                        />
+                    </h5>
+                    <h6>{TeamStandings.ConferenceName} Conference</h6>
+                </div>
+                <div className="col-auto">
+                    <div className="row">
+                        <div className="col-auto">
+                            <h5>Attributes:</h5>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-auto">
+                            <h6>Height</h6>
+                            <p>
+                                {heightObj.feet}' {heightObj.inches}"
+                            </p>
+                        </div>
+                        <div className="col-auto">
+                            <h6>Weight</h6>
+                            <p>{player.Weight}</p>
+                        </div>
+                        <div className="col-auto">
+                            <div className="align-middle">
+                                <h6>Overall</h6>
+                                <p>
+                                    {profile.ShowCount < 4
+                                        ? player.OverallGrade
+                                        : player.Overall}
+                                </p>
+                            </div>
+                        </div>
+                        {attrList.map((x, idx) => (
+                            <AttributeColumn
+                                idx={idx}
+                                player={player}
+                                profile={profile}
+                                attr={x}
+                                SpentPoints={SpentPoints}
+                                modalView
+                            />
+                        ))}
+                    </div>
+                </div>
+            </div>
+            <div className="row mb-1">
+                <div className="col-auto">
+                    <h6>Total Wins: {TeamStandings.TotalWins}</h6>
+                </div>
+                <div className="col-auto">
+                    <h6>Total Losses: {TeamStandings.TotalLosses}</h6>
+                </div>
+                <div className="col-auto">
+                    <h6>Conference Wins: {TeamStandings.ConferenceWins}</h6>
+                </div>
+                <div className="col-auto">
+                    <h6>Conference Losses: {TeamStandings.ConferenceLosses}</h6>
+                </div>
+                <div className="col-auto">
+                    <h6>
+                        Post-Season Status: {TeamStandings.PostSeasonStatus}
+                    </h6>
+                </div>
+            </div>
+            <div className="row mt-2">
+                <div className="col-auto">
+                    <h5>Season Stats</h5>
+                </div>
+                <div className="col-auto">
+                    <h6>Games Played</h6>
+                    <p>{DrafteeSeasonStats.GamesPlayed}</p>
+                </div>
+            </div>
+            <FBAStatsRow SeasonStats={DrafteeSeasonStats} />
+        </>
+    );
+};
+
+export const ScoutingModal = ({ profile, retro, isNFL, wr, reveal }) => {
+    const _draftService = isNFL ? new FBADraftService() : new BBADraftService();
+    const Draftee = profile && profile.Draftee;
     const id = `drafteeModal`;
-    const header = player
-        ? `${player.Position} ${player.FirstName} ${player.LastName} Scouting Report Card`
+    const header = Draftee
+        ? `${Draftee.Position} ${Draftee.FirstName} ${Draftee.LastName} Scouting Report Card`
         : 'Loading...';
     const [data, setData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -101,17 +324,16 @@ export const ScoutingModal = ({ player, retro }) => {
 
     useEffect(() => {
         if (
-            player &&
-            (!data || data.DrafteeSeasonStats.CollegePlayerID !== player.ID)
+            Draftee &&
+            (!data || data.DrafteeSeasonStats.CollegePlayerID !== Draftee.ID)
         ) {
             GetPlayerData();
         }
-    }, [player, data]);
+    }, [Draftee, data]);
 
     const GetPlayerData = async () => {
         setIsLoading(() => true);
-        const res = await _draftService.GetScoutingData(player.ID);
-
+        const res = await _draftService.GetScoutingData(Draftee.ID);
         const dataObj = {
             TeamStandings: res.TeamStandings,
             DrafteeSeasonStats: res.DrafteeSeasonStats
@@ -129,252 +351,22 @@ export const ScoutingModal = ({ player, retro }) => {
         <ExtraLargeModal id={id} header={header}>
             {isLoading ? (
                 <Spinner />
+            ) : isNFL ? (
+                <NFLScoutingCard
+                    player={Draftee}
+                    profile={profile}
+                    TeamStandings={TeamStandings}
+                    teamLogo={teamLogo}
+                    DrafteeSeasonStats={DrafteeSeasonStats}
+                    wr={wr}
+                />
             ) : (
-                <>
-                    <div className="row">
-                        <div className="col-auto">
-                            <h5>Attributes: {TeamStandings.TeamName} </h5>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-auto">
-                            <p>Shooting2:</p>
-                            <p>{player.Shooting2Grade}</p>
-                        </div>
-                        <div className="col-auto">
-                            <p>Shooting3:</p>
-                            <p>{player.Shooting3Grade}</p>
-                        </div>
-                        <div className="col-auto">
-                            <p>Free Throw:</p>
-                            <p>{player.FreeThrowGrade}</p>
-                        </div>
-                        <div className="col-auto">
-                            <p>Finishing:</p>
-                            <p>{player.FinishingGrade}</p>
-                        </div>
-                        <div className="col-auto">
-                            <p>Ballwork:</p>
-                            <p>{player.BallworkGrade}</p>
-                        </div>
-                        <div className="col-auto">
-                            <p>Rebounding:</p>
-                            <p>{player.ReboundingGrade}</p>
-                        </div>
-                        <div className="col-auto">
-                            <p>Int. Defense:</p>
-                            <p>{player.InteriorDefenseGrade}</p>
-                        </div>
-                        <div className="col-auto">
-                            <p>Per. Defense:</p>
-                            <p>{player.PerimeterDefenseGrade}</p>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-auto">
-                            <h5>
-                                College: {TeamStandings.TeamName}
-                                {'  '}
-                                <img
-                                    src={teamLogo}
-                                    alt={TeamStandings.TeamAbbr}
-                                    className="image-recruit-logo"
-                                />
-                                {', '}
-                                {TeamStandings.ConferenceName}
-                            </h5>
-                        </div>
-                    </div>
-                    <div className="row mt-1">
-                        <div className="col-auto">
-                            <h6>Total Wins: {TeamStandings.TotalWins}</h6>
-                        </div>
-                        <div className="col-auto">
-                            <h6>Total Losses: {TeamStandings.TotalLosses}</h6>
-                        </div>
-                        <div className="col-auto">
-                            <h6>
-                                Conference Wins: {TeamStandings.ConferenceWins}
-                            </h6>
-                        </div>
-                        <div className="col-auto">
-                            <h6>
-                                Conference Losses:{' '}
-                                {TeamStandings.ConferenceLosses}
-                            </h6>
-                        </div>
-                        <div className="col-auto">
-                            <h6>
-                                Post-Season Status:{' '}
-                                {TeamStandings.PostSeasonStatus}
-                            </h6>
-                        </div>
-                    </div>
-                    <div className="row mt-2">
-                        <div className="col-auto">
-                            <h5>Season Stats</h5>
-                        </div>
-                        <div className="col-auto">
-                            <h6>Games Played</h6>
-                            <p>{DrafteeSeasonStats.GamesPlayed}</p>
-                        </div>
-                        <div className="ms-2 col-auto">
-                            <h6>Minutes</h6>
-                            <p>
-                                {RoundToTwoDecimals(
-                                    DrafteeSeasonStats.MinutesPerGame
-                                )}
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>Possessions</h6>
-                            <p>
-                                {RoundToTwoDecimals(
-                                    DrafteeSeasonStats.PossessionsPerGame
-                                )}
-                            </p>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-auto">
-                            <h6>PPG</h6>
-                            <p>{RoundToTwoDecimals(DrafteeSeasonStats.PPG)}</p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>FG Made</h6>
-                            <p>
-                                {RoundToTwoDecimals(DrafteeSeasonStats.FGMPG)}
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>FG Attempts</h6>
-                            <p>
-                                {RoundToTwoDecimals(DrafteeSeasonStats.FGAPG)}
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>FG Percentage</h6>
-                            <p>
-                                {RoundToTwoDecimals(
-                                    DrafteeSeasonStats.FGPercent * 100
-                                )}
-                                %
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>3pt Made</h6>
-                            <p>
-                                {RoundToTwoDecimals(
-                                    DrafteeSeasonStats.ThreePointsMadePerGame
-                                )}
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>3pt Attempts</h6>
-                            <p>
-                                {RoundToTwoDecimals(
-                                    DrafteeSeasonStats.ThreePointAttemptsPerGame
-                                )}
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>3pt Percentage</h6>
-                            <p>
-                                {RoundToTwoDecimals(
-                                    DrafteeSeasonStats.ThreePointPercent * 100
-                                )}
-                                %
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>FT Made</h6>
-                            <p>
-                                {RoundToTwoDecimals(DrafteeSeasonStats.FTMPG)}
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>FT Attempts</h6>
-                            <p>
-                                {RoundToTwoDecimals(DrafteeSeasonStats.FTAPG)}
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>FT Percent</h6>
-                            <p>
-                                {RoundToTwoDecimals(
-                                    DrafteeSeasonStats.FTPercent * 100
-                                )}
-                                %
-                            </p>
-                        </div>
-                    </div>
-                    <div className="row mt-1">
-                        <div className="col-auto">
-                            <h6>Assists</h6>
-                            <p>
-                                {RoundToTwoDecimals(
-                                    DrafteeSeasonStats.AssistsPerGame
-                                )}
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>Total Rebounds</h6>
-                            <p>
-                                {RoundToTwoDecimals(
-                                    DrafteeSeasonStats.ReboundsPerGame
-                                )}
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>Offensive Rebounds</h6>
-                            <p>
-                                {RoundToTwoDecimals(
-                                    DrafteeSeasonStats.OffReboundsPerGame
-                                )}
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>Defensive Rebounds</h6>
-                            <p>
-                                {RoundToTwoDecimals(
-                                    DrafteeSeasonStats.DefReboundsPerGame
-                                )}
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>Steals</h6>
-                            <p>
-                                {RoundToTwoDecimals(
-                                    DrafteeSeasonStats.StealsPerGame
-                                )}
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>Blocks</h6>
-                            <p>
-                                {RoundToTwoDecimals(
-                                    DrafteeSeasonStats.BlocksPerGame
-                                )}
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>Turnovers</h6>
-                            <p>
-                                {RoundToTwoDecimals(
-                                    DrafteeSeasonStats.TurnoversPerGame
-                                )}
-                            </p>
-                        </div>
-                        <div className="col-auto">
-                            <h6>Fouls</h6>
-                            <p>
-                                {RoundToTwoDecimals(
-                                    DrafteeSeasonStats.FoulsPerGame
-                                )}
-                            </p>
-                        </div>
-                    </div>
-                </>
+                <NBAScoutingCard
+                    player={Draftee}
+                    TeamStandings={TeamStandings}
+                    teamLogo={teamLogo}
+                    DrafteeSeasonStats={DrafteeSeasonStats}
+                />
             )}
         </ExtraLargeModal>
     );

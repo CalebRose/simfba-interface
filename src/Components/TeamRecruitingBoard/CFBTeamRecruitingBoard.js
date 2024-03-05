@@ -14,6 +14,7 @@ import CFBTeamMobilePlayerRow from './CFBTeamRecruitingComponents/CFBTeamRecruit
 import CFBTeamDashboardPlayerRow from './CFBTeamRecruitingComponents/CFBTeamRecruitingPlayerRow';
 import ConfirmSaveRecruitingBoardModal from './CFBTeamRecruitingComponents/CFBTeamSaveBoardModal';
 import { RecruitingLoadMessages } from '../../Constants/CommonConstants';
+import { CFBRecruitingAIConfigModal } from './CFBTeamRecruitingComponents/CFBAIRecruitingModal';
 
 const CFBTeamRecruitingBoard = ({
     currentUser,
@@ -59,7 +60,9 @@ const CFBTeamRecruitingBoard = ({
         let profile = response.TeamProfile;
 
         let recruits =
-            profile !== undefined && profile.Recruits.length > 0
+            profile !== undefined &&
+            profile.Recruits &&
+            profile.Recruits.length > 0
                 ? profile.Recruits
                 : [];
 
@@ -228,13 +231,28 @@ const CFBTeamRecruitingBoard = ({
         }
     };
 
-    const toggleAIBehavior = async () => {
-        await _recruitingService.ToggleAIBehavior(recruitingProfile.ID);
-
-        const isAI = recruitingProfile.IsAI;
-
-        const profile = { ...recruitingProfile, IsAI: !isAI };
-        setRecruitingProfile(() => profile);
+    const saveAIBehavior = async (config) => {
+        const newRecruitingProfile = {
+            ...recruitingProfile,
+            AIMinThreshold: config.AIMinThreshold,
+            AIMaxThreshold: config.AIMaxThreshold,
+            AIStarMin: config.AIStarMin,
+            AIStarMax: config.AIStarMax,
+            AIAutoOfferscholarships: config.AIAutoOfferscholarships,
+            OffensiveScheme: config.OffensiveScheme,
+            DefensiveScheme: config.DefensiveScheme,
+            IsAI: config.IsAI
+        };
+        const SaveAIProfileDTO = {
+            Profile: newRecruitingProfile
+        };
+        await _recruitingService.ToggleAIBehavior(SaveAIProfileDTO);
+    };
+    const colors = {
+        color: '#fff',
+        backgroundColor:
+            cfbTeam && cfbTeam.ColorOne ? cfbTeam.ColorOne : '#6c757d',
+        borderColor: cfbTeam && cfbTeam.ColorOne ? cfbTeam.ColorOne : '#6c757d'
     };
 
     return (
@@ -250,10 +268,17 @@ const CFBTeamRecruitingBoard = ({
                             cfbTeam={cfbTeam}
                             recruitingProfile={recruitingProfile}
                             theme={viewMode}
-                            toggleAIBehavior={toggleAIBehavior}
+                            toggleAIBehavior={saveAIBehavior}
                         />
                     )}
                 </div>
+                {recruitingProfile && (
+                    <CFBRecruitingAIConfigModal
+                        recruitingProfile={recruitingProfile}
+                        teamColors={colors}
+                        Save={saveAIBehavior}
+                    />
+                )}
                 <div className="col-md-10 px-md-4">
                     <div className="row">
                         <div className="col-md-auto ms-auto">
@@ -315,6 +340,7 @@ const CFBTeamRecruitingBoard = ({
                                             changePoints={AllocatePoints}
                                             theme={viewMode}
                                             retro={currentUser.IsRetro}
+                                            teamProfile={recruitingProfile}
                                         />
                                     ))}
                             </>
@@ -379,6 +405,7 @@ const CFBTeamRecruitingBoard = ({
                                                 changePoints={AllocatePoints}
                                                 viewMode={viewMode}
                                                 retro={currentUser.IsRetro}
+                                                teamProfile={recruitingProfile}
                                             />
                                         ))}
                                 </tbody>

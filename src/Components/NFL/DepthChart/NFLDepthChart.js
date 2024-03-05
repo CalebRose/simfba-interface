@@ -146,9 +146,6 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
             UpdatedPlayerPositions: dc
         };
 
-        // Save Call
-        setServiceMessage(() => SavingMessage);
-
         const save = await depthChartService.SaveNFLDepthChart(
             UpdateDepthChartDTO
         );

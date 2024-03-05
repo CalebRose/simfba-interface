@@ -217,6 +217,7 @@ class AvailableTeams extends Component {
                         off={team.OffenseGrade}
                         def={team.DefenseGrade}
                         coach={team.Coach}
+                        isUser={team.IsUserCoached}
                         viewMode={this.props.viewMode}
                     />
                 );

@@ -30,6 +30,11 @@ export default class FBATradeService {
         return response;
     }
 
+    async ProcessDraftTrade(dto) {
+        const response = PostCall(`${url}trades/nfl/draft/process`, dto);
+        return response;
+    }
+
     async AcceptTradeProposal(ProposalID) {
         return await GetActionCall(
             `${url}trades/nfl/proposal/accept/${ProposalID}`

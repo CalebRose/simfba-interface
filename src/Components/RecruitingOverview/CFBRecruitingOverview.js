@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import Select from 'react-select';
 import { connect } from 'react-redux';
@@ -15,7 +15,6 @@ import {
 } from '../../Constants/CommonConstants';
 import FBARecruitingService from '../../_Services/simFBA/FBARecruitingService';
 import CFBDashboardPlayerRow from './CFBDashboardComponents/CFBDashboardPlayerRow';
-import CrootModal from './CFBDashboardComponents/CFBDashboardCrootModal';
 import { MapObjOptions, MapOptions } from '../../_Utility/filterHelper';
 import {
     ValidateAffinity,
@@ -42,34 +41,32 @@ const CFBRecruitingOverview = ({
 
     // Hooks
     const positions = MapObjOptions(PositionList);
-    const [selectedPositions, setSelectedPositions] = React.useState('');
+    const [selectedPositions, setSelectedPositions] = useState('');
     const states = MapOptions(StatesList);
-    const [selectedStates, setSelectedStates] = React.useState('');
+    const [selectedStates, setSelectedStates] = useState('');
     const affinities = MapOptions(AffinitiesList);
     const letterGrades = MapOptions(LetterGradesList);
     const stars = MapOptions(StarsList);
     const overallLetterGrades = MapOptions(SimpleLetterGrades);
     const [selectedPotentialLetterGrades, setSelectedPotentialLetterGrades] =
-        React.useState('');
+        useState('');
     const [selectedOverallLetterGrades, setSelectedOverallLetterGrades] =
-        React.useState('');
-    const [selectedAffinities, setSelectedAffinities] = React.useState('');
-    const [selectedStars, setSelectedStars] = React.useState('');
-    const [selectedStatuses, setStatuses] = React.useState('');
-    const [recruits, setRecruits] = React.useState([]);
-    const [filteredRecruits, setFilteredRecruits] = React.useState([]);
-    const [viewableRecruits, setViewableRecruits] = React.useState([]);
-    const [count, SetCount] = React.useState(100);
-    const [recruitingProfile, setRecruitingProfile] = React.useState(null);
-    const [teamProfiles, setTeamProfiles] = React.useState([]);
-    const [recruitingNeeds, setRecruitingNeeds] = React.useState(null);
-    const [crootMap, setCrootMap] = React.useState({});
-    const [teamColors, setTeamColors] = React.useState('');
-    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
-    const [loadMessage] = React.useState(() =>
-        PickFromArray(RecruitingLoadMessages)
-    );
-    const [showCollusionButton, setShowCollusionButton] = React.useState(true);
+        useState('');
+    const [selectedAffinities, setSelectedAffinities] = useState('');
+    const [selectedStars, setSelectedStars] = useState('');
+    const [selectedStatuses, setStatuses] = useState('');
+    const [recruits, setRecruits] = useState([]);
+    const [filteredRecruits, setFilteredRecruits] = useState([]);
+    const [viewableRecruits, setViewableRecruits] = useState([]);
+    const [count, SetCount] = useState(100);
+    const [recruitingProfile, setRecruitingProfile] = useState(null);
+    const [teamProfiles, setTeamProfiles] = useState([]);
+    const [recruitingNeeds, setRecruitingNeeds] = useState(null);
+    const [crootMap, setCrootMap] = useState({});
+    const [teamColors, setTeamColors] = useState('');
+    const [viewWidth, setViewWidth] = useState(window.innerWidth);
+    const [loadMessage] = useState(() => PickFromArray(RecruitingLoadMessages));
+    const [showCollusionButton, setShowCollusionButton] = useState(true);
     const statusOptions = MapOptions([
         'Not Ready',
         'Hearing Offers',
@@ -82,7 +79,7 @@ const CFBRecruitingOverview = ({
     // Setup Modals?
 
     // For mobile
-    React.useEffect(() => {
+    useEffect(() => {
         if (!viewWidth) {
             setViewWidth(window.innerWidth);
         }
@@ -139,6 +136,7 @@ const CFBRecruitingOverview = ({
     //
     const GetCroots = async () => {
         let croots = await _recruitingService.GetRecruits();
+
         setRecruits([...croots]);
         const fc = FilterCroots(croots);
         setFilteredRecruits((x) => [...fc]);
@@ -282,7 +280,8 @@ const CFBRecruitingOverview = ({
                 AffinityOneEligible: affinityOneValid,
                 AffinityTwoEligible: affinityTwoValid,
                 PlayerRecruit: recruit,
-                RES: recruitingProfile.RecruitingEfficiencyScore
+                RES: recruitingProfile.RecruitingEfficiencyScore,
+                Recruiter: currentUser.username
             };
 
             let newProfile =
@@ -363,17 +362,15 @@ const CFBRecruitingOverview = ({
             <div className="row">
                 <div className="col-md-2 dashboard-sidebar">
                     {recruitingProfile !== undefined &&
-                    recruitingNeeds !== null &&
-                    cfbTeam ? (
-                        <CFBDashboardSidebar
-                            cfbTeam={cfbTeam}
-                            teamNeeds={recruitingNeeds}
-                            recruitingProfile={recruitingProfile}
-                            theme={viewMode}
-                        />
-                    ) : (
-                        ''
-                    )}
+                        recruitingNeeds !== null &&
+                        cfbTeam && (
+                            <CFBDashboardSidebar
+                                cfbTeam={cfbTeam}
+                                teamNeeds={recruitingNeeds}
+                                recruitingProfile={recruitingProfile}
+                                theme={viewMode}
+                            />
+                        )}
                 </div>
                 <div className="col-md-10 px-md-4">
                     <div className="row mt-3 justify-content-between">
@@ -488,7 +485,7 @@ const CFBRecruitingOverview = ({
                                 onChange={ChangeRecruitingStatus}
                             />
                         </div>
-                        {cfb_Timestamp && cfb_Timestamp.CollegeWeek >= 4 ? (
+                        {cfb_Timestamp && cfb_Timestamp.CollegeWeek >= 4 && (
                             <div className="col-md-auto">
                                 <h5 className="text-start align-middle">
                                     Team Rankings
@@ -503,11 +500,9 @@ const CFBRecruitingOverview = ({
                                     Recruiting Rankings
                                 </button>
                             </div>
-                        ) : (
-                            ''
                         )}
 
-                        {!cfb_Timestamp.IsRecruitingLocked ? (
+                        {!cfb_Timestamp.IsRecruitingLocked && (
                             <div className="col-md-auto">
                                 <h5 className="text-start align-middle">
                                     Export Croots
@@ -520,8 +515,6 @@ const CFBRecruitingOverview = ({
                                     Export
                                 </button>
                             </div>
-                        ) : (
-                            ''
                         )}
                         {cfbTeam && luckyTeam >= 16 && showCollusionButton ? (
                             <div className="col-md-auto">
@@ -545,13 +538,15 @@ const CFBRecruitingOverview = ({
                         viewMode={viewMode}
                         retro={currentUser.IsRetro}
                     />
-                    <RecruitingClassModal
-                        teams={teamProfiles}
-                        userTeam={cfbTeam}
-                        isCFB
-                        viewMode={viewMode}
-                        retro={currentUser.IsRetro}
-                    />
+                    {cfb_Timestamp && cfb_Timestamp.CollegeWeek >= 4 && (
+                        <RecruitingClassModal
+                            teams={teamProfiles}
+                            userTeam={cfbTeam}
+                            isCFB
+                            viewMode={viewMode}
+                            retro={currentUser.IsRetro}
+                        />
+                    )}
                     <div
                         className={`row mt-3 mb-5 dashboard-table-height${
                             viewMode === 'dark' ? '-dark' : ''
@@ -591,6 +586,9 @@ const CFBRecruitingOverview = ({
                                                       theme={viewMode}
                                                       retro={
                                                           currentUser.IsRetro
+                                                      }
+                                                      teamProfile={
+                                                          recruitingProfile
                                                       }
                                                   />
                                               ))
@@ -671,6 +669,9 @@ const CFBRecruitingOverview = ({
                                                                 theme={viewMode}
                                                                 retro={
                                                                     currentUser.IsRetro
+                                                                }
+                                                                teamProfile={
+                                                                    recruitingProfile
                                                                 }
                                                             />
                                                         </>

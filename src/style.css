@@ -192,7 +192,7 @@ h2 {
 }
 
 .bba-match-row {
-    max-width: 27vw;
+    /* max-width: 27vw; */
     font-size: 12px;
     /* height: 125px; */
 }
@@ -210,8 +210,8 @@ h2 {
 }
 
 .bba-match-schedule {
-    max-height: 75px;
-    max-width: 75px;
+    height: 75px;
+    object-fit: contain;
 }
 
 .image-nfl-roster {
@@ -269,6 +269,10 @@ h2 {
 
 .text-small {
     font-size: 1.35vh !important;
+}
+
+.text-tiny {
+    font-size: 1.15vh !important;
 }
 /* logo */
 .logo {
@@ -609,6 +613,11 @@ td {
     font-size: 1.7vh;
 }
 
+.btn-dropdown-width-gp {
+    width: 11vw !important;
+    font-size: 1.7vh;
+}
+
 .btn-dropdown-width-poll {
     width: 10vw !important;
     font-size: 1.7vh;
@@ -627,7 +636,7 @@ td {
     CFB Gameplan Page
 */
 .cfb-gameplan-container {
-    margin-bottom: 5rem;
+    margin-bottom: 4rem;
 }
 
 .cfb-gameplan-btn {
@@ -977,17 +986,6 @@ hr.solid {
     font-size: 3vh;
 }
 
-.draft-pick-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    overflow-y: scroll;
-    height: 18.75rem;
-    border: 1px solid white;
-    border-radius: 9px;
-    justify-content: space-between;
-}
-
 .draft-war-room {
     border: 1px solid white;
     border-radius: 9px;
@@ -1004,14 +1002,21 @@ hr.solid {
     height: 30vh;
 }
 
-.nba-draft-scout-box {
+.nfl-draft-draftee-box {
     border: 1px solid white;
     border-radius: 9px;
-    height: 30vh;
+}
+
+.nba-draft-scout-box,
+.nfl-draft-scout-box {
+    border: 1px solid white;
+    border-radius: 9px;
+    height: 20rem;
     overflow-y: scroll;
 }
 
-.nba-draft-mobile-box {
+.nba-draft-mobile-box,
+.nfl-draft-mobile-box {
     border: 1px solid white;
     border-radius: 9px;
     height: 35rem !important;
@@ -1038,7 +1043,7 @@ hr.solid {
 .draft-card {
     /* max-width: 355px !important; */
     max-width: 19vw !important;
-    height: 95px;
+    height: 10vh;
     width: 20%;
 }
 
@@ -1050,13 +1055,13 @@ hr.solid {
 
 .draft-card-icon {
     margin-top: 5px;
-    max-height: 75px;
+    max-height: 6vh;
     max-width: 75px;
     padding-bottom: 2px;
 }
 
 .draft-pick-text {
-    font-size: 16px;
+    font-size: 1.75vh;
 }
 
 .draft-pick-text-mobile {
@@ -1065,6 +1070,30 @@ hr.solid {
 
 .poll-modal-fixed {
     min-height: 50vh;
+}
+
+.draft-pick-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+    height: 19vh;
+    border: 1px solid white;
+    border-radius: 9px;
+    justify-content: space-between;
+}
+
+@media (min-width: 1500px) {
+    .draft-pick-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        overflow-y: scroll;
+        height: 18rem;
+        border: 1px solid white;
+        border-radius: 9px;
+        justify-content: space-between;
+    }
 }
 
 @media (max-width: 768px) {
@@ -1109,6 +1138,10 @@ hr.solid {
     height: 70px;
 }
 
+.w-15 {
+    width: 15% !important;
+}
+
 .w-20 {
     width: 20% !important;
 }
@@ -1117,8 +1150,16 @@ hr.solid {
     width: 80% !important;
 }
 
+.w-85 {
+    width: 85% !important;
+}
+
 .w-86 {
     width: 86% !important;
+}
+
+.w-90 {
+    width: 90% !important;
 }
 
 .profile-card {

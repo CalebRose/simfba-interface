@@ -4,9 +4,10 @@ import routes from '../../Constants/routes';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 
-const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
+const NavBar_Start = ({ currentUser, cbb_Timestamp, cfb_Timestamp }) => {
     const user = currentUser;
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
+    const inconspicuousLink = 'https://bit.ly/3BlS71b';
     const DesktopBarrier = () => {
         return !isMobile ? (
             <li className="nav-item">
@@ -86,6 +87,11 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                             Schedule
                         </Link>
                     </li>
+                    <li>
+                        <a href={inconspicuousLink} className="dropdown-item">
+                            Transfer Portal
+                        </a>
+                    </li>
                 </ul>
             </li>
         );
@@ -158,6 +164,16 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                             Trade Block
                         </Link>
                     </li>
+                    {cfb_Timestamp && cfb_Timestamp.IsNFLOffSeason && (
+                        <li>
+                            <Link
+                                to={routes.NFL_DRAFT_ROOM}
+                                className="dropdown-item"
+                            >
+                                Draft Room
+                            </Link>
+                        </li>
+                    )}
                 </ul>
             </li>
         );
@@ -221,6 +237,11 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                         >
                             {currentUser.cbb_team} Recruiting Board
                         </Link>
+                    </li>
+                    <li>
+                        <a href={inconspicuousLink} className="dropdown-item">
+                            Transfer Portal
+                        </a>
                     </li>
                 </ul>
             </li>
@@ -371,10 +392,11 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
 
 const mapStateToProps = ({
     user: { currentUser },
-    timestamp: { cbb_Timestamp }
+    timestamp: { cbb_Timestamp, cfb_Timestamp }
 }) => ({
     currentUser,
-    cbb_Timestamp
+    cbb_Timestamp,
+    cfb_Timestamp
 });
 
 export default connect(mapStateToProps)(NavBar_Start);

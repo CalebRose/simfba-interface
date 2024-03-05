@@ -158,7 +158,7 @@ const NBATeamPlayerRow = ({
                                 <i className="bi bi-currency-dollar" />
                             </button>
                         )}
-                        {ts.NBAWeek <= 9 && userView && canModify ? (
+                        {ts.NBAWeek <= 10 && userView && canModify ? (
                             <button
                                 type="button"
                                 className={`btn ${

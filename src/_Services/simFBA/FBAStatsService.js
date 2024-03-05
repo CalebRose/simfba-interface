@@ -20,6 +20,12 @@ export default class FBAStatsService {
         return json;
     }
 
+    async GetCollegeSeasonStatsByPlayerID(playerID, seasonID) {
+        return await GetCall(
+            `${url}/stats/player/${playerID}/season/${seasonID}`
+        );
+    }
+
     async GetHeismanList() {
         let json;
         let response = await fetch(url + 'collegeplayers/heisman/', {

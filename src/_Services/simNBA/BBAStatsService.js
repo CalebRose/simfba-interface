@@ -8,6 +8,12 @@ export default class BBAStatsService {
         );
     }
 
+    async GetCollegeSeasonStatsByPlayerID(playerID, seasonID) {
+        return await GetCall(
+            `${url}/stats/player/${playerID}/season/${seasonID}`
+        );
+    }
+
     async ExportStats(
         league,
         seasonID,

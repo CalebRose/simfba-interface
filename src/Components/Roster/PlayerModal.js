@@ -12,7 +12,7 @@ const PlayerModal = (props) => {
     const ovr = GetOverall(player.Overall, player.Year);
     const playerModalID = 'playerModal' + idx;
     const modalClass = GetModalClass(viewMode);
-    const modalHeader = `${player.FirstName} ${player.LastName}`;
+    const modalHeader = `${player.ID} ${player.FirstName} ${player.LastName}`;
     return (
         <CommonModal
             ID={playerModalID}

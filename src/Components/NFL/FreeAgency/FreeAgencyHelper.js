@@ -158,12 +158,13 @@ export const ValidateRule5 = (bonus, total, isOffseason) => {
     return bonus / total >= 0.3;
 };
 
-export const ValidateRule6 = (s1, s2, s3, s4, s5) => {
+export const ValidateRule6 = (s1, s2, s3, s4, s5, len) => {
+    if (s1 < 0 || s2 < 0 || s3 < 0 || s4 < 0 || s5 < 0) return false;
     const arr = [s1, s2, s3, s4, s5];
     let valid = true;
-    for (let i = 0; i < arr.length; i++) {
+    for (let i = 0; i < len; i++) {
         const salary = arr[i];
-        if (salary > 0) valid = salary >= 0.5;
+        valid = salary === 0 || salary >= 0.5;
         if (!valid) return valid;
     }
     return valid;
@@ -225,13 +226,13 @@ const checkYearlyRange = (val1, val2) => {
 };
 
 export const CheckForOffer = (player, teamID) => {
-    if (player.Offers !== null && player.Offers.length > 0) {
+    if (player.Offers && player.Offers.length > 0) {
         const offerIdx = player.Offers.findIndex((x) => x.TeamID === teamID);
         if (offerIdx > -1) {
             return true;
         }
     }
-    if (player.WaiverOffers !== null && player.WaiverOffers.length > 0) {
+    if (player.WaiverOffers && player.WaiverOffers.length > 0) {
         const offerIdx = player.WaiverOffers.findIndex(
             (x) => x.TeamID === teamID
         );

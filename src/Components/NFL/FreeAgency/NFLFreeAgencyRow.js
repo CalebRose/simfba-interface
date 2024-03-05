@@ -81,7 +81,7 @@ const NFLFreeAgencyRow = ({
 
     const canMakeOffer =
         canModify &&
-        (ts.IsOffseason ||
+        (ts.IsNFLOffSeason ||
             ts.NFLPreseason ||
             (!ts.IsNFLOffSeason && !ts.NFLPreseason && rosterCount < 56)) &&
         (!IsNegotiating || (IsNegotiating && hasOffer));

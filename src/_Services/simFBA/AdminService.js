@@ -66,4 +66,8 @@ export default class AdminService {
             `${url}gameplan/college/depthchart/ai/update/`
         );
     }
+
+    async MassUpdateAIDepthCharts(off, def) {
+        return await GetActionCall(`${url}simfba/mass/${off}/${def}/`);
+    }
 }

@@ -258,11 +258,14 @@ export const SubmitCollegePollForm = ({ currentUser, timestamp, isCFB }) => {
     };
 
     const SubmitPoll = async () => {
+        let seasonID = !isCFB
+            ? Number(timestamp.SeasonID)
+            : Number(timestamp.CollegeSeasonID);
         const DTO = {
             ID: submissionID,
             Week: Number(timestamp.CollegeWeek) + 1,
             WeekID: Number(timestamp.CollegeWeekID) + 1,
-            SeasonID: Number(timestamp.SeasonID),
+            SeasonID: seasonID,
             Username: currentUser.username
         };
         for (let i = 0; i < ranks.length; i++) {

@@ -1,4 +1,19 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+    cbbPromiseTypes,
+    cfbPromiseTypes
+} from '../../Constants/CommonConstants';
+import BBAStatsService from '../../_Services/simNBA/BBAStatsService';
+import FBAStatsService from '../../_Services/simFBA/FBAStatsService';
+import {
+    GetPromiseWeight,
+    RoundToTwoDecimals
+} from '../../_Utility/utilHelper';
+import { BBAStatsRow } from './SeasonStatsRow';
+import { MapOptions } from '../../_Utility/filterHelper';
+import Select from 'react-select';
+import { MinMaxRange } from './InputRange';
+import { PortalService } from '../../_Services/simFBA/FBAPortalService';
 
 export const InfoModal = (props) => (
     <div
@@ -157,6 +172,9 @@ export const CommonModal = (props) => {
 };
 
 export const ConfirmModal = (props) => {
+    const confirm = () => {
+        return props.ConfirmChanges();
+    };
     return (
         <div
             className="modal fade"
@@ -191,7 +209,7 @@ export const ConfirmModal = (props) => {
                             type="button"
                             className="btn btn-primary"
                             data-bs-dismiss="modal"
-                            onClick={props.ConfirmChanges}
+                            onClick={() => confirm()}
                         >
                             Confirm
                         </button>
@@ -199,5 +217,295 @@ export const ConfirmModal = (props) => {
                 </div>
             </div>
         </div>
+    );
+};
+
+export const PromisePlayerModal = (props) => {
+    const { promisePlayer, submit, isCFB, teams, seasonID } = props;
+    const _statsService = isCFB ? new FBAStatsService() : new BBAStatsService();
+    const _portalService = new PortalService();
+    const id = 'promiseModal';
+    const [promise, setPromise] = useState(null);
+    const [promiseType, setPromiseType] = useState('');
+    const [promiseWeight, setPromiseWeight] = useState('');
+    const [benchmark, setBenchmark] = useState(0);
+    const [minRange, setMinRange] = useState(1);
+    const [maxRange, setMaxRange] = useState(100);
+    const [isNumericPromise, setIsNumericPromise] = useState(false);
+    const [seasonStats, setSeasonStats] = useState(null);
+    const [isValid, setIsValid] = useState(false);
+    const [validMessage, setValidMessage] = useState('');
+    const header = promisePlayer
+        ? `${promisePlayer.PlayerID} ${promisePlayer.Position} ${
+              promisePlayer.FirstName
+          } ${promisePlayer.LastName} ${
+              validMessage.length > 0 ? ` | ${validMessage}` : ''
+          }`
+        : 'Promise a Player';
+    const promiseTypes = isCFB ? cfbPromiseTypes : cbbPromiseTypes;
+    const promiseTypeList = MapOptions(promiseTypes);
+    const coachPreferenceBias = 'Prefers to play for a specific coach';
+    const legacyPreferenceBias = 'Legacy';
+    const legacyTeamIDX =
+        promisePlayer && promisePlayer.RecruitingBias === legacyPreferenceBias
+            ? teams.findIndex((x) => x.ID === promisePlayer.LegacyID)
+            : -1;
+
+    const legacyTeam = legacyTeamIDX > -1 ? teams[legacyTeamIDX] : null;
+    const legacyTeamAbbr = useMemo(() => {
+        return legacyTeam && isCFB
+            ? legacyTeam.TeamAbbr
+            : legacyTeam && !isCFB
+            ? legacyTeam.Abbr
+            : null;
+    }, [legacyTeam, isCFB]);
+
+    useEffect(() => {
+        if (promisePlayer) {
+            getSeasonStatsByPlayerID(promisePlayer.PlayerID, seasonID);
+            getPromiseByPlayerID(promisePlayer.PlayerID, promisePlayer.TeamID);
+        }
+    }, [promisePlayer]);
+
+    useEffect(() => {
+        if (!promisePlayer) return;
+        const isNumeric =
+            promiseType === 'Wins' ||
+            promiseType === 'Snaps' ||
+            promiseType === 'Minutes';
+        setIsNumericPromise(() => isNumeric);
+        if (promiseType === 'Wins') {
+            const maxR = isCFB ? 17 : 40;
+            setMaxRange(() => maxR);
+        }
+        if (promiseType === 'Minutes') {
+            setMaxRange(() => promisePlayer.Stamina);
+        }
+        if (promiseType === 'Snaps') {
+            setMaxRange(() => 60);
+        }
+        const weight = GetPromiseWeight(
+            promiseType,
+            benchmark,
+            promisePlayer.Position,
+            isCFB
+        );
+        setPromiseWeight(() => weight);
+        ValidatePromise(promiseType, benchmark, promisePlayer, isCFB);
+    }, [promiseType, benchmark, promisePlayer, isCFB]);
+
+    const getSeasonStatsByPlayerID = async (playerID, seasonID) => {
+        const res = await _statsService.GetCollegeSeasonStatsByPlayerID(
+            playerID,
+            seasonID
+        );
+        if (res) {
+            setSeasonStats(() => res);
+        }
+    };
+
+    const getPromiseByPlayerID = async (playerID, teamID) => {
+        const res = await _portalService.GetCollegePromiseByPlayerID(
+            isCFB,
+            playerID,
+            teamID
+        );
+
+        console.log({ res });
+
+        if (res && res.ID > 0) {
+            setPromise(() => res);
+            setPromiseType(() => res.PromiseType);
+            setPromiseWeight(() => res.PromiseWeight);
+            setBenchmark(() => res.Benchmark);
+        }
+    };
+
+    const ChangePromiseType = (options) => {
+        setPromiseType(() => options.value);
+    };
+
+    const ChangeBenchmark = (event) => {
+        const { value } = event.target;
+        setBenchmark(() => value);
+    };
+
+    const ValidatePromise = (pt, benchmark, player, isCFB) => {
+        let valid = true;
+
+        if (pt === 'Home State Game' && player.Country !== 'USA') {
+            valid = false;
+            setValidMessage(
+                () =>
+                    'Error: Cannot schedule a game outside of the United States.'
+            );
+        }
+
+        if (!isCFB && pt === 'Minutes' && benchmark > player.Stamina) {
+            valid = false;
+            setValidMessage(
+                () => "Error: Cannot playing time beyond the player's stamina."
+            );
+        }
+        if (
+            pt === 'No Redshirt' &&
+            (player.IsRedshirting || player.IsRedshirt)
+        ) {
+            valid = false;
+            setValidMessage(
+                () =>
+                    "Error: You cannot promise this player that is currently redshirting or has redshirted. It's a bit late for that."
+            );
+        }
+
+        if (valid) {
+            setValidMessage(() => 'This is a valid promise.');
+        }
+        setIsValid(() => valid);
+    };
+
+    const commitPromise = async () => {
+        const p = promise ? { ...promise } : null;
+        let promiseID = p ? p.ID : 0;
+        const dto = {
+            ID: promiseID,
+            PromiseType: promiseType,
+            CollegePlayerID: promisePlayer.PlayerID,
+            TeamID: promisePlayer.TeamID,
+            PromiseWeight: promiseWeight,
+            Benchmark: Number(benchmark),
+            BenchmarkStr: promisePlayer.State,
+            IsActive: true,
+            PromiseMade: false,
+            IsFulfilled: false
+        };
+        return await submit(dto);
+    };
+
+    return (
+        <ExtraLargeModal
+            header={header}
+            id={id}
+            enableSubmit={isValid}
+            Submit={commitPromise}
+        >
+            {promisePlayer && (
+                <>
+                    <div className="row">
+                        <div className="col-6">
+                            <div className="row">
+                                <div className="col-3">
+                                    <h6>Recruiting Bias</h6>
+                                    <p>{promisePlayer.RecruitingBias}</p>
+                                </div>
+                                <div className="col-3">
+                                    <h6>Transfer Likeliness</h6>
+                                    <p>{promisePlayer.TransferLikeliness}</p>
+                                </div>
+                                <div className="col-3">
+                                    <h6>Expected Minutes</h6>
+                                    <p>{promisePlayer.PlaytimeExpectations}</p>
+                                </div>
+                                {promisePlayer.LegacyID > 0 && (
+                                    <div className="col-3">
+                                        <h6>
+                                            {promisePlayer.RecruitingBias ===
+                                            coachPreferenceBias
+                                                ? 'Preferred Coach'
+                                                : 'Preferred Team'}
+                                        </h6>
+                                        <p>
+                                            {promisePlayer.RecruitingBias ===
+                                            coachPreferenceBias
+                                                ? ''
+                                                : legacyTeamAbbr}
+                                        </p>
+                                    </div>
+                                )}
+                                <div className="col-3">
+                                    <h6>Personality</h6>
+                                    <p>{promisePlayer.Personality}</p>
+                                </div>
+                            </div>
+                            {seasonStats && (
+                                <>
+                                    <div className="row mt-2">
+                                        <div className="col-auto">
+                                            <h5>Season Stats</h5>
+                                        </div>
+                                        <div className="col-auto">
+                                            <h6>Games Played</h6>
+                                            <p>{seasonStats.GamesPlayed}</p>
+                                        </div>
+                                        <div className="ms-2 col-auto">
+                                            <h6>Minutes</h6>
+                                            <p>
+                                                {RoundToTwoDecimals(
+                                                    seasonStats.MinutesPerGame
+                                                )}
+                                            </p>
+                                        </div>
+                                        <div className="col-auto">
+                                            <h6>Possessions</h6>
+                                            <p>
+                                                {RoundToTwoDecimals(
+                                                    seasonStats.PossessionsPerGame
+                                                )}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <BBAStatsRow SeasonStats={seasonStats} />
+                                </>
+                            )}
+                        </div>
+                        <div className="col-6">
+                            <div className="row justify-content-center">
+                                <div className="col-auto">
+                                    <h5>Make a Promise</h5>
+                                </div>
+                            </div>
+                            <div className="row mt-2 justify-content-start">
+                                <div className="col-auto">
+                                    <h6>Promise Type: {promiseType}</h6>
+                                    <Select
+                                        options={promiseTypeList}
+                                        isMulti={false}
+                                        className="basic-multi-select btn-dropdown-width-team z-index-5"
+                                        classNamePrefix="select"
+                                        onChange={ChangePromiseType}
+                                    />
+                                </div>
+                                <div className="col-auto">
+                                    <h6>Promise Weight</h6>
+                                    <p>{promiseWeight}</p>
+                                </div>
+                            </div>
+                            <div className="row mt-2 d-flex justify-content-start">
+                                {promiseType === 'Home State Game' && (
+                                    <>
+                                        <h6>Home State</h6>
+                                        <p>{promisePlayer.State}</p>
+                                    </>
+                                )}
+
+                                {isNumericPromise && (
+                                    <div className="px-3">
+                                        <MinMaxRange
+                                            id={promiseType}
+                                            name="Benchmark"
+                                            label={promiseType}
+                                            value={benchmark}
+                                            min={minRange}
+                                            max={maxRange}
+                                            change={ChangeBenchmark}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
+        </ExtraLargeModal>
     );
 };

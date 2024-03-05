@@ -7,6 +7,7 @@ import GameRow from '../../Schedule/CFBGameRow';
 import { connect } from 'react-redux';
 import { SeasonsList } from '../../../Constants/CommonConstants';
 import acronyms from '../../../Constants/acronyms';
+import { SimFBAGameModal } from '../../_Common/SimFBAGameModal';
 
 const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
     // Services
@@ -19,6 +20,7 @@ const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
     const [seasons, setSeasons] = useState(SeasonsList);
     const [allGames, setAllGames] = useState([]);
     const [viewGames, setViewGames] = useState([]);
+    const [viewGame, setViewGame] = useState(null);
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [selectedWeek, setSelectedWeek] = useState(null);
     const [selectedSeason, setSelectedSeason] = useState(null);
@@ -141,6 +143,10 @@ const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
         setAllGames(() => ag);
     };
 
+    const SetGame = (game) => {
+        setViewGame(() => game);
+    };
+
     // Return
     return (
         <div className="container-fluid">
@@ -225,6 +231,7 @@ const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
                             </button>
                         </div>
                     </div>
+                    <SimFBAGameModal game={viewGame} isNFL={true} />
                     <NFLStandings
                         ts={cfb_Timestamp}
                         viewMode={viewMode}
@@ -243,6 +250,7 @@ const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
                                         change={ChangeTimeSlot}
                                         ts={cfb_Timestamp}
                                         isNFL={true}
+                                        SetGame={SetGame}
                                         retro={currentUser.IsRetro}
                                     />
                                 ))}

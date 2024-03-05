@@ -1,5 +1,5 @@
 import url from '../../Constants/url';
-import { GetCall } from './FetchHelper.js';
+import { GetCall, PostCall } from './FetchHelper.js';
 import { saveAs } from 'file-saver';
 
 export default class FBARecruitingService {
@@ -244,7 +244,7 @@ export default class FBARecruitingService {
         return json;
     }
 
-    async ToggleAIBehavior(id) {
-        return await GetCall(`${url}recruiting/toggle/ai/${id}`);
+    async ToggleAIBehavior(dto) {
+        return await PostCall(`${url}recruiting/save/ai/`, dto);
     }
 }

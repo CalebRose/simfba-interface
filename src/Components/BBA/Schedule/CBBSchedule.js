@@ -567,20 +567,22 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, nbaTeam, cbb_Timestamp }) => {
                     />
 
                     <div className="col-md-10 px-md-4">
-                        <div className="row mt-3 mb-5 justify-content-between">
+                        <div className="row d-flex mt-3 mb-5 justify-content-between">
                             {viewMatches &&
                                 viewMatches.length > 0 &&
                                 viewMatches.map((x, idx) => (
                                     <>
-                                        <CBBGameRow
-                                            idx={idx}
-                                            key={x.ID}
-                                            game={x}
-                                            ts={cbb_Timestamp}
-                                            SetGame={SetGame}
-                                            viewType={viewType}
-                                            retro={currentUser.IsRetro}
-                                        />
+                                        <div className="col-12 col-md-6 col-lg-4 col-xl-4">
+                                            <CBBGameRow
+                                                idx={idx}
+                                                key={x.ID}
+                                                game={x}
+                                                ts={cbb_Timestamp}
+                                                SetGame={SetGame}
+                                                viewType={viewType}
+                                                retro={currentUser.IsRetro}
+                                            />
+                                        </div>
                                     </>
                                 ))}
                         </div>

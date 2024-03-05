@@ -1,7 +1,6 @@
 import React from 'react';
 import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
-import { baseUrl } from '../../../Constants/logos';
 import { GetNFLOverall } from '../../../_Utility/RosterHelper';
 import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
 import { CancelOfferModal } from './CancelOfferModal';
@@ -22,7 +21,7 @@ export const NFLFreeAgencyMobileRow = ({
     team
 }) => {
     const rank = idx + 1;
-    const NameLabel = player.FirstName + ' ' + player.LastName;
+    const NameLabel = `Rank ${rank} | ${player.FirstName} ${player.LastName}`;
     const modalTarget = '#playerModal' + idx;
     const offerTarget = '#offerModal' + idx;
     const cancelTarget = '#cancelOffer' + idx;
@@ -68,7 +67,7 @@ export const NFLFreeAgencyMobileRow = ({
 
     const canMakeOffer =
         canModify &&
-        (ts.IsOffseason ||
+        (ts.IsNFLOffSeason ||
             ts.NFLPreseason ||
             (!ts.IsNFLOffSeason && !ts.NFLPreseason && rosterCount < 56)) &&
         (!player.IsNegotiating || (player.IsNegotiating && hasOffer));
@@ -101,9 +100,7 @@ export const NFLFreeAgencyMobileRow = ({
             />
             <div className={`${mobileCardClass} mb-2`}>
                 <div className="card-body">
-                    <h5 className="card-title">
-                        Rank:{rank} | {player.FirstName} {player.LastName}
-                    </h5>
+                    <h5 className="card-title">{NameLabel}</h5>
                     <h6 className="card-subtitle mb-2 text-muted">
                         {year === 'R' ? 'Rookie' : `${year} Year`}{' '}
                         {player.Archetype} {player.Position} from{' '}

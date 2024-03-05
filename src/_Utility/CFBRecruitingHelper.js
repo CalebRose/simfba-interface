@@ -1,6 +1,7 @@
 import { LowerCaseCheck } from './utilHelper';
 import StateMatcher from './stateMatcher.json';
 import RegionMatcher from './regionMatcher.json';
+import { FormationMap } from '../Components/Gameplan/GameplanConstants';
 
 export const ValidateAffinity = (CrootAffinity, TeamRecruitingProfile) => {
     const TeamAffinityList = TeamRecruitingProfile.Affinities;
@@ -75,4 +76,52 @@ export const GetRecruitingTendency = (mod) => {
     } else {
         return 'Signs Very Late';
     }
+};
+
+export const isGoodFit = (offensiveScheme, defensiveScheme, pos, arch) => {
+    let scheme = offensiveScheme;
+    if (
+        pos === 'DT' ||
+        pos === 'DE' ||
+        pos === 'ILB' ||
+        pos === 'OLB' ||
+        pos === 'CB' ||
+        pos === 'FS' ||
+        pos === 'SS'
+    ) {
+        scheme = defensiveScheme;
+    }
+
+    const schemeMap = FormationMap[scheme];
+    const { SchemeFits } = schemeMap;
+    const label = `${arch} ${pos}`;
+    const idx = SchemeFits.findIndex((x) => x === label);
+    if (idx > -1) {
+        return true;
+    }
+    return false;
+};
+
+export const isBadFit = (offensiveScheme, defensiveScheme, pos, arch) => {
+    let scheme = offensiveScheme;
+    if (
+        pos === 'DT' ||
+        pos === 'DE' ||
+        pos === 'ILB' ||
+        pos === 'OLB' ||
+        pos === 'CB' ||
+        pos === 'FS' ||
+        pos === 'SS'
+    ) {
+        scheme = defensiveScheme;
+    }
+
+    const schemeMap = FormationMap[scheme];
+    const { BadFits } = schemeMap;
+    const label = `${arch} ${pos}`;
+    const idx = BadFits.findIndex((x) => x === label);
+    if (idx > -1) {
+        return true;
+    }
+    return false;
 };

@@ -275,7 +275,7 @@ export const FormationMap = {
         Ranges: {
             TraditionalRun: { Min: 5, Max: 40 },
             OptionRun: { Min: 0, Max: 0 },
-            RPO: { Min: 5, Max: 20 },
+            RPO: { Min: 0, Max: 20 },
             Pass: { Min: 40, Max: 80 }
         },
         Notes: 'This scheme focuses on long passes and passes far more often than it runs.'
@@ -517,7 +517,7 @@ export const FormationMap = {
         },
         Notes: 'This scheme offers up the ability to run a lot more option-type plays, but is almost entirely run-focused.'
     },
-    'Front 7 Man': {
+    'Old School': {
         Formations: [
             {
                 name: '4-4 Base',
@@ -611,23 +611,16 @@ export const FormationMap = {
             }
         ],
         SchemeFits: [
-            'Run Stopper DT',
+            'Run Stopper DE',
             'Run Stopper OLB',
             'Field General ILB',
-            'Run Stopper ILB',
-            'Man Coverage DB'
+            'Run Stopper ILB'
         ],
-        BadFits: [
-            'Nose Tackle DT',
-            'Coverage OLB',
-            'Coverage ILB',
-            'Zone Coverage DB'
-        ],
-        Notes: 'This scheme offers up the ability to run a lot more option-type plays, but is almost entirely run-focused.',
+        BadFits: ['Nose Tackle DT', 'Coverage OLB', 'Coverage ILB'],
         Strengths: ['Flexbone', 'Wishbone'],
         Weaknesses: ['Vertical', 'West Coast']
     },
-    '2-Gap Zone': {
+    '2-Gap': {
         Formations: [
             {
                 name: '3-4 Okie',
@@ -725,21 +718,19 @@ export const FormationMap = {
             'Nose Tackle DT',
             'Pass Rush OLB',
             'Run Stopper OLB',
-            'Run Stopper ILB',
-            'Zone Coverage DB'
+            'Run Stopper ILB'
         ],
         BadFits: [
             'Speed Rusher DE',
             'Pass Rusher DT',
             'Speed OLB',
-            'Speed ILB',
-            'Zone Coverage DB'
+            'Speed ILB'
         ],
-        Notes: 'This scheme offers up the ability to run a lot more option-type plays, but is almost entirely run-focused.',
+
         Strengths: ['Wing-T', 'Double Wing'],
         Weaknesses: ['Spread Option', 'Pistol']
     },
-    '4-man Front Spread Stopper Zone': {
+    '4-Man Front Spread Stopper': {
         Formations: [
             {
                 name: '4-2-5 Base',
@@ -836,8 +827,7 @@ export const FormationMap = {
             'Speed Rush DE',
             'Pass Rusher DT',
             'Coverage OLB',
-            'Coverage ILB',
-            'Zone Coverage DB'
+            'Coverage ILB'
         ],
         BadFits: [
             'Run Stopper DE',
@@ -845,14 +835,13 @@ export const FormationMap = {
             'Run Stopper OLB',
             'Run Stopper ILB',
             'Run Stopper FS',
-            'Run Stopper SS',
-            'Man Coverage DB'
+            'Run Stopper SS'
         ],
-        Notes: 'This scheme offers up the ability to run a lot more option-type plays, but is almost entirely run-focused.',
+
         Strengths: ['Air Raid', 'Pistol'],
         Weaknesses: ['Flexbone', 'Wishbone']
     },
-    '3-man Front Spread Stopper Zone': {
+    '3-Man Front Spread Stopper': {
         Formations: [
             {
                 name: '3-3-5 Base',
@@ -945,28 +934,22 @@ export const FormationMap = {
                 ]
             }
         ],
-        SchemeFits: [
-            'Nose Tackle DT',
-            'Pass Rush OLB',
-            'Coverage ILB',
-            'Zone Coverage DB'
-        ],
+        SchemeFits: ['Nose Tackle DT', 'Pass Rush OLB', 'Coverage ILB'],
         BadFits: [
-            'Run Stopper DT',
+            'Run Stopper DE',
             'Run Stopper OLB',
             'Run Stopper ILB',
             'Run Stopper FS',
             'Run Stopper SS',
             'Speed OLB',
             'Speed ILB',
-            'Field General ILB',
-            'Man Coverage DB'
+            'Field General ILB'
         ],
-        Notes: 'This scheme offers up the ability to run a lot more option-type plays, but is almost entirely run-focused.',
+
         Strengths: ['Run and Shoot', 'Spread Option'],
         Weaknesses: ['Power Run', 'I-Option']
     },
-    'Speed Man': {
+    Speed: {
         Formations: [
             {
                 name: '4-3 Base',
@@ -1064,21 +1047,19 @@ export const FormationMap = {
             'Pass Rusher DT',
             'Speed OLB',
             'Coverage OLB',
-            'Speed ILB',
-            'Man Coverage DB'
+            'Speed ILB'
         ],
         BadFits: [
             'Run Stopper DE',
             'Nose Tackle DT',
             'Pass Rush OLB',
-            'Field General ILB',
-            'Zone Coverage DB'
+            'Field General ILB'
         ],
-        Notes: 'This scheme offers up the ability to run a lot more option-type plays, but is almost entirely run-focused.',
+
         Strengths: ['Vertical', 'West Coast'],
         Weaknesses: ['Wing-T', 'Double Wing']
     },
-    'Multiple Man': {
+    Multiple: {
         Formations: [
             {
                 name: '4-3 Base',
@@ -1176,17 +1157,15 @@ export const FormationMap = {
             'Speed OLB',
             'Speed ILB',
             'Field General ILB',
-            'Man Coverage DB',
             'Run Stopper DB'
         ],
         BadFits: [
             'Speed Rush DE',
             'Pass Rusher DT',
             'Coverage OLB',
-            'Coverage ILB',
-            'Zone Coverage DB'
+            'Coverage ILB'
         ],
-        Notes: 'This scheme offers up the ability to run a lot more option-type plays, but is almost entirely run-focused.',
+
         Strengths: ['Power Run', 'I-Option'],
         Weaknesses: ['Run and Shoot', 'Air Raid']
     }
@@ -1263,12 +1242,12 @@ export const TargetDepthLabel = ['Quick', 'Short', 'Long', 'None'];
 export const WRRunnerList = ['WR1', 'WR2', 'WR3', 'WR4', 'WR5'];
 
 export const DefensiveSchemeOptions = [
-    'Front 7 Man',
-    '2-Gap Zone',
-    '4-man Front Spread Stopper Zone',
-    '3-man Front Spread Stopper Zone',
-    'Speed Man',
-    'Multiple Man'
+    'Old School',
+    '2-Gap',
+    '4-Man Front Spread Stopper',
+    '3-Man Front Spread Stopper',
+    'Speed',
+    'Multiple'
 ];
 
 export const Defense34Formations = ['Base 3-4', 'Nickel 3-3-5', 'Dime 3-2-6'];
@@ -1281,3 +1260,24 @@ export const BlitzAggressivenessOptions = [
 
 export const YesNoOptions = ['Yes', 'No'];
 export const CoverageOptions = ['Man', 'Zone'];
+export const schemeDropdownClass =
+    'btn btn-secondary dropdown-toggle cfb-gameplan-btn scheme';
+
+export const FocusPlayList = [
+    'Outside Run',
+    'Inside Run',
+    'Power Run',
+    'Draw',
+    'Read Option',
+    'Speed Option',
+    'Inverted Option',
+    'Triple Option',
+    'RPO Choice',
+    'RPO Peek',
+    'Quick Pass',
+    'Short Pass',
+    'Long Pass',
+    'Screen Pass',
+    'Play Action Short',
+    'Play Action Long'
+];

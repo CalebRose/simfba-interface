@@ -14,6 +14,7 @@ export const PositionList = [
     { name: 'Cornerbacks', abbr: 'CB' },
     { name: 'Free Safeties', abbr: 'FS' },
     { name: 'Strong Safeties', abbr: 'SS' },
+    { name: 'Athletes', abbr: 'ATH' },
     { name: 'Punters', abbr: 'P' },
     { name: 'Kickers', abbr: 'K' }
 ];
@@ -311,6 +312,8 @@ export const SmallSchool = 'Small School';
 export const Frontrunner = 'Frontrunner';
 export const SmallTown = 'Small Town';
 export const BigCity = 'Big City';
+export const RisingStars = 'Rising Stars';
+export const MediaSpotlight = 'Media Spotlight';
 export const NoAffinity = '';
 
 export const AffinitiesList = [
@@ -323,6 +326,8 @@ export const AffinitiesList = [
     Frontrunner,
     SmallTown,
     BigCity,
+    RisingStars,
+    MediaSpotlight,
     NoAffinity
 ];
 
@@ -351,7 +356,8 @@ export const NewsTypeList = [
     { name: 'Commitment', abbr: 'Commitment' },
     { name: 'Free Agency', abbr: 'FreeAgency' },
     { name: 'Trade Block', abbr: 'TradeBlock' },
-    { name: 'Graduation', abbr: 'Graduation' }
+    { name: 'Graduation', abbr: 'Graduation' },
+    { name: 'Transfer Portal', abbr: 'Transfer Portal' }
 ];
 
 export const SeasonsList = [
@@ -473,3 +479,28 @@ export const RecruitingLoadMessages = [
     'In response to the IRL conference realignment, TuscanSota has decided to wait it out because we all know IRL realignment will reimplode on itself due to lower college enrollments and declining TV deals.',
     'In response to the IRL conference realignment, TuscanSota has decided to schedule Washington until he finally beats them just so he can end the Apple Cup on a good note :('
 ];
+
+export const cbbPromiseTypes = [
+    'No Redshirt',
+    'Minutes',
+    'Wins',
+    'Home State Game',
+    'Conference Championship',
+    'Playoffs',
+    'Elite 8',
+    'Final Four',
+    'National Championship'
+];
+export const cfbPromiseTypes = [
+    'No Redshirt',
+    'Snap Count',
+    'Wins',
+    'Bowl Game',
+    'Home State Game',
+    'Conference Championship',
+    'Playoffs',
+    'National Championship',
+    'Good Gameplan Fit',
+    'Not Bad Gameplan Fit'
+];
+export const weightValues = ['Very Low', 'Low', 'Medium', 'High', 'Very High'];

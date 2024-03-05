@@ -10,14 +10,11 @@ import { GetNFLOverall } from '../../../_Utility/RosterHelper';
 export const FreeAgencyPlayerModal = ({ player, idx, viewMode, retro }) => {
     const modalId = 'playerModal' + idx;
     const heightObj = HeightToFeetAndInches(player.Height);
-    const AllOffers = player && player.Offers;
+    let AllOffers = player && player.Offers;
+    if (AllOffers === undefined) AllOffers = player && player.WaiverOffers;
     const modalClass = GetModalClass(viewMode);
     const ovr = GetNFLOverall(player.Overall, player.ShowLetterGrade);
     const { SeasonStats } = player;
-    if (player.ID === 60519) {
-        console.log({ player });
-    }
-
     const OfferingTeam = ({ offer, idx }) => {
         const logo = getLogo(offer.Team, retro);
         const rank = idx + 1;
@@ -51,7 +48,7 @@ export const FreeAgencyPlayerModal = ({ player, idx, viewMode, retro }) => {
                 <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="playerModalLabel">
-                            {player.Archetype} {player.Position}{' '}
+                            {player.ID} {player.Archetype} {player.Position}{' '}
                             {player.FirstName} {player.LastName}
                         </h4>
                         <button

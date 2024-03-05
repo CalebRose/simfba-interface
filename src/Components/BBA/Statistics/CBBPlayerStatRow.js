@@ -2,7 +2,8 @@ import React from 'react';
 import { GetYear } from '../../../_Utility/RosterHelper';
 
 const CBBPlayerStatRow = ({ statType, idx, player, viewType }) => {
-    const name = player.FirstName + ' ' + player.LastName;
+    const name =
+        player.Position + ' ' + player.FirstName + ' ' + player.LastName;
     const s = viewType === 'SEASON' ? player.SeasonStats : player.Stats;
     const games = player.SeasonStats ? player.SeasonStats.GamesPlayed : 0;
     const year = GetYear(player);

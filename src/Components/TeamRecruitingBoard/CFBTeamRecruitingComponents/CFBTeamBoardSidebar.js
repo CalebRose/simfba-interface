@@ -5,12 +5,7 @@ import { Link } from 'react-router-dom';
 import routes from '../../../Constants/routes';
 import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 
-const CFBTeamBoardSidebar = ({
-    cfbTeam,
-    recruitingProfile,
-    theme,
-    toggleAIBehavior
-}) => {
+const CFBTeamBoardSidebar = ({ cfbTeam, recruitingProfile, theme }) => {
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     const mobileClass = GetMobileCardClass(theme);
@@ -51,8 +46,6 @@ const CFBTeamBoardSidebar = ({
 
     const applicableAffinities = hasApplicableAffinities(affinityList);
 
-    const handleClick = () => toggleAIBehavior();
-
     const DesktopRender = () => {
         return (
             <>
@@ -70,23 +63,24 @@ const CFBTeamBoardSidebar = ({
                     </div>
                 </div>
                 <div className="row mt-2 justify-content-center">
-                    <h5>Toggle AI</h5>
+                    <h6>AI Settings</h6>
                     <button
                         className="btn btn-md btn-secondary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#recruitingAIModal"
                         type="button"
-                        onClick={handleClick}
                     >
-                        {isAI ? 'AI Activated' : 'AI Disabled'}
+                        View
                     </button>
                 </div>
                 <div className="row mt-3">
                     <div className="justify-content-center">
-                        <h5>Home State</h5>
+                        <h6>Home State</h6>
                         {cfbTeam.State}
                     </div>
                 </div>
                 <div className="row mt-3 justify-content-center">
-                    <h5>Active Affinities</h5>
+                    <h6>Active Affinities</h6>
                     {applicableAffinities &&
                     affinityList &&
                     affinityList.length > 0 ? (
@@ -106,11 +100,11 @@ const CFBTeamBoardSidebar = ({
                     )}
                 </div>
                 <div className="row mt-3 justify-content-center">
-                    <h5>Recruiting Efficiency Score</h5>
+                    <h6>Recruiting Efficiency Score</h6>
                     {recruitingProfile ? `${RES}%` : 'N/A'}
                 </div>
                 <div className="row mt-3 justify-content-center">
-                    <h5>Recruiting Class Score</h5>
+                    <h6>Recruiting Class Score</h6>
                     {recruitingProfile
                         ? RoundToTwoDecimals(
                               recruitingProfile.ESPNScore +
@@ -120,17 +114,24 @@ const CFBTeamBoardSidebar = ({
                         : 'N/A'}
                 </div>
                 <div className="row mt-3 justify-content-center">
-                    <h5>Scholarships Available</h5>
+                    <h6>Scholarships Available</h6>
                     {recruitingProfile
                         ? recruitingProfile.RecruitClassSize -
                           recruitingProfile.TotalCommitments
                         : 'N/A'}
                 </div>
                 <div className="row mt-3 justify-content-center">
-                    <h5>Scholarship Offers Available</h5>
+                    <h6>Scholarship Offers Available</h6>
                     {recruitingProfile
                         ? recruitingProfile.ScholarshipsAvailable
                         : 'N/A'}
+                </div>
+                <div className="row mt-3 justify-content-center">
+                    <h6>Recruiting Battle Record</h6>
+                    {recruitingProfile &&
+                        `${recruitingProfile.BattlesWon || 0}-${
+                            recruitingProfile.BattlesLost || 0
+                        }`}
                 </div>
             </>
         );
@@ -144,10 +145,10 @@ const CFBTeamBoardSidebar = ({
                         <h4 className="card-title">
                             {cfbTeam ? cfbTeam.TeamName : 'Team'} Profile
                         </h4>
-                        <h5 className="card-subtitle mb-2 text-muted">
+                        <h6 className="card-subtitle mb-2 text-muted">
                             Home State: {cfbTeam.State}
-                        </h5>
-                        <h5 className="card-text mb-1">Active Affinities</h5>
+                        </h6>
+                        <h6 className="card-text mb-1">Active Affinities</h6>
                     </div>
                     <ul className="list-group list-group-flush">
                         {applicableAffinities &&
@@ -168,11 +169,11 @@ const CFBTeamBoardSidebar = ({
                     </ul>
                     <ul className="list-group list-group-flush mt-1">
                         <li className="list-group-item">
-                            <h5>Recruiting Efficiency Score</h5>
+                            <h6>Recruiting Efficiency Score</h6>
                             {recruitingProfile ? `${RES}%` : 'N/A'}
                         </li>
                         <li className="list-group-item">
-                            <h5>Recruiting Class Score</h5>
+                            <h6>Recruiting Class Score</h6>
                             {recruitingProfile
                                 ? RoundToTwoDecimals(
                                       recruitingProfile.ESPNScore +
@@ -182,13 +183,13 @@ const CFBTeamBoardSidebar = ({
                                 : 'N/A'}
                         </li>
                         <li className="list-group-item">
-                            <h5>Scholarships Available</h5>
+                            <h6>Scholarships Available</h6>
                             {recruitingProfile
                                 ? 25 - recruitingProfile.TotalCommitments
                                 : 'N/A'}
                         </li>
                         <li className="list-group-item">
-                            <h5>Scholarship Offers Available</h5>
+                            <h6>Scholarship Offers Available</h6>
                             {recruitingProfile
                                 ? recruitingProfile.ScholarshipsAvailable
                                 : 'N/A'}

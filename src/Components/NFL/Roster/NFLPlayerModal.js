@@ -42,7 +42,7 @@ export const NFLPlayerModal = ({ team, player, idx, viewMode, retro }) => {
                 <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="playerModalLabel">
-                            {player.Archetype} {player.Position}{' '}
+                            {player.ID} {player.Archetype} {player.Position}{' '}
                             {player.FirstName} {player.LastName}
                         </h4>
                         <button
@@ -132,10 +132,10 @@ export const NFLPlayerModal = ({ team, player, idx, viewMode, retro }) => {
                                         : ''}
                                 </div>
                             </div>
-                            <div className="col-auto">
+                            <div className="col-2">
                                 <div className="row g-1 mb-2">
                                     <div className="col">
-                                        <h5>Contract</h5>
+                                        <h6>Contract</h6>
                                         <p>
                                             {player.Contract.ContractLength}{' '}
                                             Years
@@ -146,19 +146,19 @@ export const NFLPlayerModal = ({ team, player, idx, viewMode, retro }) => {
                                 </div>
                                 <div className="row g-1 mb-2">
                                     <div className="col">
-                                        <h5>Work Ethic</h5>
+                                        <h6>Work Ethic</h6>
                                         <p>{player.WorkEthic}</p>
                                     </div>
                                 </div>
                                 <div className="row g-1 mb-2">
                                     <div className="col">
-                                        <h5>Free Agency Bias</h5>
+                                        <h6>FA Bias</h6>
                                         <p>{player.FreeAgency}</p>
                                     </div>
                                 </div>
                                 <div className="row g-1 mb-2">
                                     <div className="col">
-                                        <h5>Personality</h5>
+                                        <h6>Personality</h6>
                                         <p>{player.Personality}</p>
                                     </div>
                                 </div>

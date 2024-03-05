@@ -63,9 +63,16 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             let currentMatchIdx = -1;
             for (let i = 0; i < matches.length; i++) {
                 const match = matches[i];
-                if (match.GameComplete) continue;
-                currentMatchIdx = i;
-                break;
+                if (
+                    match.Week === cbb_Timestamp.CollegeWeek &&
+                    ((match.MatchOfWeek === 'A' && !cbb_Timestamp.GamesARan) ||
+                        match.MatchOfWeek === 'B' ||
+                        match.MatchOfWeek === 'C' ||
+                        match.MatchOfWeek === 'D')
+                ) {
+                    currentMatchIdx = i;
+                    break;
+                }
             }
             let prevIdx = currentMatchIdx - 2;
             let nextIdx = currentMatchIdx + 2;

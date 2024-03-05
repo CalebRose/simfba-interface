@@ -1,3 +1,28 @@
+/* 
+    I recognize that this is not a fool-proof method that is not 
+    cryptographically secure, but because this is only 
+    game data, I think it's okay to use this function
+    */
+export const GenerateUniqueID = () => {
+    const length = 32;
+    const timestamp = new Date().getTime().toString(36);
+    let randomString = '';
+    const characters =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (let i = 0; i < length - timestamp.length; i++) {
+        randomString += characters.charAt(
+            Math.floor(Math.random() * characters.length)
+        );
+    }
+
+    return timestamp + randomString;
+};
+
+export const getKeyByValue = (object, value) => {
+    return Object.keys(object).find((key) => object[key] === value);
+};
+
 export const LowerCaseCheck = (stringA, stringB) => {
     return stringA.toLowerCase() === stringB.toLowerCase();
 };
@@ -325,4 +350,58 @@ export const GetCollegeYear = (player) => {
         return '(Fr)';
     }
     return 'Fr';
+};
+
+export const GetPromiseWeight = (promise, benchmark, position, isCFB) => {
+    if (promise.length === 0) {
+        return 'Very Low';
+    }
+    if ((promise === 'Wins' && !isCFB) || promise === 'Minutes') {
+        if (benchmark <= 5) return 'Very Low';
+        if (benchmark <= 10) return 'Low';
+        if (benchmark <= 20) return 'Medium';
+        if (benchmark <= 25) return 'High';
+        return 'Very High';
+    } else if (promise === 'Wins' && isCFB) {
+        if (benchmark <= 4) return 'Very Low';
+        if (benchmark <= 6) return 'Low';
+        if (benchmark <= 8) return 'Medium';
+        if (benchmark <= 11) return 'High';
+        return 'Very High';
+    } else if (promise === 'Snaps') {
+        if (position !== 'K' || position !== 'P') {
+            if (benchmark <= 5) return 'Low';
+            if (benchmark <= 8) return 'Medium';
+            if (benchmark <= 10) return 'High';
+        } else {
+            if (benchmark <= 10) return 'Very Low';
+            if (benchmark <= 20) return 'Low';
+            if (benchmark <= 30) return 'Medium';
+            if (benchmark <= 50) return 'High';
+            return 'Very High';
+        }
+    } else if (promise === 'Home State Game') {
+        return 'Medium';
+    } else if (promise === 'No Redshirt') {
+        return 'Low';
+    } else if (promise === 'Not Bad Gameplan Fit') {
+        return 'Low';
+    } else if (promise === 'Good Gameplan Fit') {
+        return 'Medium';
+    } else if (promise === 'Conference Championship') {
+        return 'High';
+    } else if (promise === 'Playoffs' && isCFB) {
+        return 'High';
+    } else if (promise === 'Playoffs' && !isCFB) {
+        return 'Medium';
+    } else if (promise === 'Bowl Game') {
+        return 'Medium';
+    } else if (promise === 'Elite 8') {
+        return 'High';
+    } else if (promise === 'Final Four') {
+        return 'Very High';
+    } else if (promise === 'National Championship') {
+        return 'Very High';
+    }
+    return 'Very Low';
 };

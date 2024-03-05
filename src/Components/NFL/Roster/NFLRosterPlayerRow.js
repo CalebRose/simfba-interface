@@ -162,7 +162,7 @@ export const NFLRosterPlayerRow = ({
                             data-bs-target={extendPlayerTarget}
                             disabled={
                                 !(
-                                    (ts.NFLWeek >= 15 || ts.NFLWeek === 0) &&
+                                    ts.NFLWeek >= 15 &&
                                     userView &&
                                     canModify &&
                                     !player.IsPracticeSquad
@@ -182,7 +182,9 @@ export const NFLRosterPlayerRow = ({
                             }`}
                             title="Place player on IR"
                             onClick={injuryReservePlayer}
-                            disabled={!player.IsInjured}
+                            disabled={
+                                !player.IsInjured || !userView || !canModify
+                            }
                         >
                             <i class="bi bi-bandaid" />
                         </button>
@@ -200,6 +202,7 @@ export const NFLRosterPlayerRow = ({
                         >
                             <i className="bi bi-arrow-down-up" />
                         </button>
+
                         {userView &&
                         canModify &&
                         psCount <= 16 &&
@@ -214,6 +217,7 @@ export const NFLRosterPlayerRow = ({
                                 title={practiceSquadTitle}
                                 data-bs-toggle="modal"
                                 data-bs-target={practiceSquadTarget}
+                                disabled={!userView || !canModify}
                             >
                                 <i
                                     className={`bi ${
@@ -234,6 +238,7 @@ export const NFLRosterPlayerRow = ({
                                 }`}
                                 title={practiceSquadTitle}
                                 onClick={bringUpPlayer}
+                                disabled={!userView || !canModify}
                             >
                                 <i
                                     className={`bi ${

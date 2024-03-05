@@ -605,6 +605,7 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                     key={player.ID}
                                                     idx={idx}
                                                     player={player}
+                                                    team={team}
                                                     psCount={practiceSquadCount}
                                                     userView={viewingUserTeam}
                                                     ts={cfb_Timestamp}

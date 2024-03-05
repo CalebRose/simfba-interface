@@ -7,16 +7,16 @@ export const CutPlayerModal = ({ player, idx, cut, viewMode }) => {
     const name = `${player.FirstName} ${player.LastName}`;
 
     const confirmChange = () => {
+        console.log('PING!');
         return cut(player);
     };
 
-    const modalClass = GetModalClass(viewMode);
     const modalHeader = `Cut ${name}`;
 
     return (
         <ConfirmModal
             ModalID={modalId}
-            modalClass={modalClass}
+            ModalClass="modal-content"
             Header={modalHeader}
             ConfirmChanges={confirmChange}
         >

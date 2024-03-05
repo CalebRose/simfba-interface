@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const BBATeamPlayerRow = (props) => {
-    const { player, idx, redshirtCount, ts, view } = props;
+    const { player, idx, redshirtCount, ts, view, setPromisePlayer } = props;
     let modalTarget = '#redshirtModal' + idx;
+    const promiseModalTarget = '#promiseModal';
 
     // Row Functions
     const getYear = (player) => {
@@ -24,28 +25,23 @@ const BBATeamPlayerRow = (props) => {
         }
         return 'Fr';
     };
-
-    const GetRedshirtStatus = (p) => {
-        if (p.IsRedshirt) {
-            return 'Former Redshirt';
-        } else if (p.IsRedshirting) {
-            return 'Redshirting';
-        } else {
-            return 'Available';
-        }
-    };
+    useEffect(() => {});
 
     // Row Variables
     let year = getYear(player);
-    let redshirtStatus = GetRedshirtStatus(player);
+
+    const promiseHelper = () => {
+        return setPromisePlayer(player.PlayerID);
+    };
 
     return (
         <tr>
             <th scope="row" className="align-middle">
-                <h6>{player.FirstName + ' ' + player.LastName}</h6>
-            </th>{' '}
+                <h6>
+                    {player.Position} {player.FirstName} {player.LastName}
+                </h6>
+            </th>
             <td className="align-middle">{year}</td>
-            <td className="align-middle">{player.Position}</td>
             <td className="align-middle">{player.Height}</td>
             <td className="align-middle">{player.Stars}</td>
             <td className="align-middle">{player.OverallGrade}</td>
@@ -61,23 +57,52 @@ const BBATeamPlayerRow = (props) => {
             <td className="align-middle">{player.PotentialGrade}</td>
             <td className="align-middle">{player.PlaytimeExpectations}</td>
             <td label="redshirt-status" className="align-middle">
-                {player.IsRedshirting ? (
-                    <i className="bi bi-check-circle-fill rounded-circle link-danger"></i>
-                ) : redshirtCount < 4 &&
-                  !player.IsRedshirt &&
-                  ts.CollegeWeek < 3 &&
-                  view ? (
+                <div className="btn-group btn-border">
+                    {player.IsRedshirting ? (
+                        <button type="button" className="btn btn-sm" disabled>
+                            <i className="bi bi-check-circle-fill rounded-circle link-danger"></i>
+                        </button>
+                    ) : redshirtCount < 4 &&
+                      !player.IsRedshirt &&
+                      ts.CollegeWeek < 3 &&
+                      view ? (
+                        <button
+                            type="button"
+                            className="btn btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target={modalTarget}
+                            title="Redshirt Player"
+                        >
+                            <i class="bi bi-person-fill-lock link-danger"></i>
+                        </button>
+                    ) : (
+                        <button type="button" className="btn btn-sm" disabled>
+                            <i
+                                class={`bi bi-person-fill ${
+                                    player.IsRedshirt
+                                        ? 'link-danger'
+                                        : 'link-secondary'
+                                }`}
+                            ></i>
+                        </button>
+                    )}
                     <button
                         type="button"
                         className="btn btn-sm"
+                        onClick={promiseHelper}
                         data-bs-toggle="modal"
-                        data-bs-target={modalTarget}
+                        data-bs-target={promiseModalTarget}
+                        disabled={player.TransferStatus < 1}
                     >
-                        <i className="bi bi-plus-circle-fill rounded-circle link-success"></i>
+                        <i
+                            className={`bi bi-shield-fill ${
+                                player.TransferStatus === 1
+                                    ? 'link-danger'
+                                    : 'link-success'
+                            }`}
+                        ></i>
                     </button>
-                ) : (
-                    redshirtStatus
-                )}
+                </div>
             </td>
             {/* <td className="align-middle">{redshirtStatus}</td> */}
         </tr>
