@@ -221,7 +221,7 @@ export const ConfirmModal = (props) => {
 };
 
 export const PromisePlayerModal = (props) => {
-    const { promisePlayer, submit, isCFB, teams, seasonID } = props;
+    const { promisePlayer, submit, isCFB, teams, seasonID, teamID } = props;
     const _statsService = isCFB ? new FBAStatsService() : new BBAStatsService();
     const _portalService = new PortalService();
     const id = 'promiseModal';
@@ -263,7 +263,7 @@ export const PromisePlayerModal = (props) => {
     useEffect(() => {
         if (promisePlayer) {
             getSeasonStatsByPlayerID(promisePlayer.PlayerID, seasonID);
-            getPromiseByPlayerID(promisePlayer.PlayerID, promisePlayer.TeamID);
+            getPromiseByPlayerID(promisePlayer.PlayerID, teamID);
         }
     }, [promisePlayer]);
 
@@ -310,8 +310,6 @@ export const PromisePlayerModal = (props) => {
             playerID,
             teamID
         );
-
-        console.log({ res });
 
         if (res && res.ID > 0) {
             setPromise(() => res);
@@ -371,7 +369,7 @@ export const PromisePlayerModal = (props) => {
             ID: promiseID,
             PromiseType: promiseType,
             CollegePlayerID: promisePlayer.PlayerID,
-            TeamID: promisePlayer.TeamID,
+            TeamID: teamID,
             PromiseWeight: promiseWeight,
             Benchmark: Number(benchmark),
             BenchmarkStr: promisePlayer.State,

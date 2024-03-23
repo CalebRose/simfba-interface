@@ -769,8 +769,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
             gp.PeekOutside +
             gp.PeekInside +
             gp.ChoicePower +
-            gp.PeekPower +
-            gp.LeftVsRight;
+            gp.PeekPower;
 
         const validRPO =
             rpoDist > 0 &&
@@ -939,7 +938,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
         } else if (name === 'DefensiveScheme' && gp.DefaultDefense) {
             gp = MapDefaultOptions(gp, 'DefaultDefense');
         } else if (name === 'DoubleTeam') {
-            gp[name] = value === 'None' ? -1 : value;
+            gp[name] = value === 'None' ? 'None' : value;
         }
 
         setGameplan(() => gp);
@@ -1038,7 +1037,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
         let id = oppMap[dtValue];
         if (
             dtValue === '' ||
-            dtValue === 'Select' ||
+            dtValue === 'None' ||
             dtValue === 0 ||
             dtValue === -1
         ) {

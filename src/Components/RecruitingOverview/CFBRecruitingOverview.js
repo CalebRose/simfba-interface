@@ -333,7 +333,7 @@ const CFBRecruitingOverview = ({
             `Hey man I'm not gonna judge, but you should be careful. You don't want any rumors of your team popping up out of the blue...`
         );
         setShowCollusionButton(false);
-        await _easterEggService.CollusionCall(dto);
+        await _easterEggService.CollusionCall(true, dto);
     };
 
     const Export = async () => {
@@ -516,7 +516,7 @@ const CFBRecruitingOverview = ({
                                 </button>
                             </div>
                         )}
-                        {cfbTeam && luckyTeam >= 16 && showCollusionButton ? (
+                        {cfbTeam && luckyTeam >= 16 && showCollusionButton && (
                             <div className="col-md-auto">
                                 <h5 className="text-start align-middle">
                                     Collude?
@@ -529,8 +529,6 @@ const CFBRecruitingOverview = ({
                                     You Know You Want To
                                 </button>
                             </div>
-                        ) : (
-                            ''
                         )}
                     </div>
                     <CFBDashboardRankingsModal
@@ -574,25 +572,22 @@ const CFBRecruitingOverview = ({
                             >
                                 {isMobile ? (
                                     <>
-                                        {viewableRecruits.length > 0
-                                            ? viewableRecruits.map((x, idx) => (
-                                                  <CFBDashboardMobilePlayerRow
-                                                      key={x.ID}
-                                                      croot={x}
-                                                      idx={idx}
-                                                      add={AddRecruitToBoard}
-                                                      map={crootMap}
-                                                      timestamp={cfb_Timestamp}
-                                                      theme={viewMode}
-                                                      retro={
-                                                          currentUser.IsRetro
-                                                      }
-                                                      teamProfile={
-                                                          recruitingProfile
-                                                      }
-                                                  />
-                                              ))
-                                            : ''}
+                                        {viewableRecruits.length > 0 &&
+                                            viewableRecruits.map((x, idx) => (
+                                                <CFBDashboardMobilePlayerRow
+                                                    key={x.ID}
+                                                    croot={x}
+                                                    idx={idx}
+                                                    add={AddRecruitToBoard}
+                                                    map={crootMap}
+                                                    timestamp={cfb_Timestamp}
+                                                    theme={viewMode}
+                                                    retro={currentUser.IsRetro}
+                                                    teamProfile={
+                                                        recruitingProfile
+                                                    }
+                                                />
+                                            ))}
                                     </>
                                 ) : (
                                     <table

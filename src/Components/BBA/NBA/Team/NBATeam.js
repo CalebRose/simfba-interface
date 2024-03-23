@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
+import toast from 'react-hot-toast';
 import { GetTableHoverClass } from '../../../../Constants/CSSClassHelper';
 import BBAPlayerService from '../../../../_Services/simNBA/BBAPlayerService';
 import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
@@ -96,7 +97,71 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
         setTeam(() => t);
     };
 
-    const ExtendPlayer = () => {};
+    const ExtendPlayer = async (player, offer) => {
+        let res = await _playerService.CreateExtensionOffer(offer);
+        const offerData = await res.json();
+        const r = [...roster];
+        const playerIDX = r.findIndex((x) => x.ID === player.ID);
+        if (offer.ID > 0) {
+            const offerIDX = r[playerIDX].Extensions.findIndex(
+                (x) => x.ID === offer.ID
+            );
+            r[playerIDX].Extensions[offerIDX] = offerData;
+        } else {
+            const offerObj = { offerData };
+            r[playerIDX].Extensions.push(offerObj);
+        }
+        toast(
+            `Successfully sent extension offer to ${player.Position} ${player.FirstName} ${player.LastName}`,
+            {
+                icon: '💰'
+            }
+        );
+        setRoster(() => r);
+    };
+
+    const CancelOffer = async (player, offer) => {
+        let res = await _playerService.CancelExtensionOffer(offer);
+        const r = [...roster];
+        const playerIDX = r.findIndex((x) => x.ID === player.ID);
+        const exs = r[playerIDX].Extensions.filter((x) => x.ID !== offer.ID);
+        r[playerIDX].Extensions = exs;
+        toast(
+            `Cancelled extension offer for ${player.Position} ${player.FirstName} ${player.LastName}`,
+            {
+                icon: '😞'
+            }
+        );
+        setRoster(() => r);
+    };
+
+    const ActivateOption = async (id) => {
+        const res = _playerService.ActivatePlayerOption(id);
+    };
+
+    const ActivateToast = (id) => {
+        toast.promise(ActivateOption(id), {
+            loading: SavingMessage,
+            success: 'Activated Next Year Option!',
+            error: 'Error! Could not activate option.'
+        });
+    };
+
+    const ExtendToast = (player, offer) => {
+        toast.promise(ExtendPlayer(), {
+            loading: SavingMessage,
+            success: 'Successfully extended offer to player!',
+            error: 'Error! Could not extend offer.'
+        });
+    };
+
+    const CancelToast = (player, offer) => {
+        toast.promise(CancelOffer(), {
+            loading: SavingMessage,
+            success: 'Cancelled the extension offer!',
+            error: 'Error! Could cancel extension offer.'
+        });
+    };
 
     const PlacePlayerOnTradeBlock = async (player) => {
         const res = await _tradeService.PlaceNBAPlayerOnTradeBlock(player.ID);
@@ -166,7 +231,9 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
                         view={userTeam.ID === team.ID}
                         theme={viewMode}
                         cut={CutPlayerFromRoster}
-                        extend={ExtendPlayer}
+                        extend={ExtendToast}
+                        cancel={CancelToast}
+                        activateOption={ActivateToast}
                         tradeblock={PlacePlayerOnTradeBlock}
                         setToGLeague={SetToGLeague}
                         setToTwoWay={SetToTwoWay}

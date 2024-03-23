@@ -188,10 +188,12 @@ const CBBRecruitingDashboard = ({
     const getCroots = async () => {
         if (recruits.length < 1) {
             let croots = await playerService.GetRecruits();
-            setRecruits(() => [...croots]);
-            const fc = filterCroots(croots);
-            setFilteredRecruits(() => [...fc]);
-            setViewableRecruits(() => [...fc].slice(0, count));
+            if (croots.length > 0) {
+                setRecruits(() => [...croots]);
+                const fc = filterCroots(croots);
+                setFilteredRecruits(() => [...fc]);
+                setViewableRecruits(() => [...fc].slice(0, count));
+            }
         }
     };
 

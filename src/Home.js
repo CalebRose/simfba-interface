@@ -226,7 +226,7 @@ const Home = ({ viewMode }) => {
                 exact
                 path={routes.CBB_TRANSFER}
                 render={() =>
-                    viewingBeta ? (
+                    CBBTeam > 0 ? (
                         <TransferPortal />
                     ) : (
                         <Redirect to={routes.LANDING} />

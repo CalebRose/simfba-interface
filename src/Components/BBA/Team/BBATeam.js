@@ -99,6 +99,26 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
         }
     };
 
+    const CutPlayer = async (player) => {
+        const res = await _playerService.CutCBBPlayerFromRoster(
+            player.PlayerID
+        );
+        const currentRoster = [...roster];
+        setRoster(() => []);
+        const filteredRoster = currentRoster.filter(
+            (x) => x.PlayerID !== player.PlayerID
+        );
+        setRoster(() => filteredRoster);
+    };
+
+    const CutToast = (player) => {
+        toast.promise(CutPlayer(player), {
+            loading: 'Cutting player...',
+            success: 'Player has been released to the transfer portal.',
+            error: 'Error! Promise could not cut player from team.'
+        });
+    };
+
     const MakePromise = (dto) => {
         toast.promise(submitPromise(dto), {
             loading: 'Committing promise...',
@@ -131,9 +151,11 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
                         player={x}
                         idx={i}
                         redshirtCount={redshirtCount}
+                        rosterCount={roster.length}
                         ts={cbb_Timestamp}
                         view={userTeam.ID === team.ID}
                         setPromisePlayer={setPromisePlayerForModal}
+                        cutPlayer={CutToast}
                     />
                 </>
             );
@@ -242,6 +264,7 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
                         submit={MakePromise}
                         teams={teams}
                         seasonID={cbb_Timestamp.SeasonID}
+                        teamID={userTeam.ID}
                     />
                     <div className="row mb-5">
                         <table className={tableHoverClass}>

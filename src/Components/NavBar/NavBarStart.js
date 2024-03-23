@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import routes from '../../Constants/routes';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
+import { inconspicuousLink } from '../../_Utility/utilHelper';
 
 const NavBar_Start = ({ currentUser, cbb_Timestamp, cfb_Timestamp }) => {
     const user = currentUser;
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
-    const inconspicuousLink = 'https://bit.ly/3BlS71b';
     const DesktopBarrier = () => {
         return !isMobile ? (
             <li className="nav-item">
@@ -239,9 +239,12 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp, cfb_Timestamp }) => {
                         </Link>
                     </li>
                     <li>
-                        <a href={inconspicuousLink} className="dropdown-item">
+                        <Link
+                            to={routes.CBB_TRANSFER}
+                            className="dropdown-item"
+                        >
                             Transfer Portal
-                        </a>
+                        </Link>
                     </li>
                 </ul>
             </li>

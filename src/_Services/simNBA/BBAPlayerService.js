@@ -57,12 +57,28 @@ export default class BBAPlayerService {
         return await PostCall(`${BBAURL}nba/freeagency/cancel/waiver`, dto);
     }
 
+    async CreateExtensionOffer(dto) {
+        return await PostCall(`${BBAURL}nba/extension/create/offer`, dto);
+    }
+
+    async CancelExtensionOffer(dto) {
+        return await PostCall(`${BBAURL}nba/extension/cancel/offer`, dto);
+    }
+
+    async ActivatePlayerOption(id) {
+        return await GetCall(`${BBAURL}nba/players/activate/option/${id}`);
+    }
+
     async PlaceNBAPlayerInGLeague(playerID) {
         return await GetCall(`${BBAURL}nba/players/place/gleague/${playerID}`);
     }
 
     async AssignPlayerAsTwoWay(playerID) {
         return await GetCall(`${BBAURL}nba/players/place/twoway/${playerID}`);
+    }
+
+    async CutCBBPlayerFromRoster(playerID) {
+        return await GetCall(`${BBAURL}cbb/players/cut/${playerID}`);
     }
 
     async CutNBAPlayerFromRoster(playerID) {

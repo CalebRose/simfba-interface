@@ -30,8 +30,12 @@ export default class EasterEggService {
         return formBody;
     }
 
-    async CollusionCall(dto) {
-        let postRequest = await fetch(url + 'easter/egg/collude/', {
+    async CollusionCall(isCFB, dto) {
+        const u = isCFB ? url : BBAUrl;
+        const fullURL = isCFB
+            ? `${u}easter/egg/collude`
+            : `${u}cbb/easter/egg/collude/`;
+        let postRequest = await fetch(fullURL, {
             headers: {
                 authorization: localStorage.getItem('token'),
                 'Content-Type': 'application/json'

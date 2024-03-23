@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from 'react';
 
 const BBATeamPlayerRow = (props) => {
-    const { player, idx, redshirtCount, ts, view, setPromisePlayer } = props;
+    const {
+        player,
+        idx,
+        redshirtCount,
+        ts,
+        view,
+        setPromisePlayer,
+        rosterCount,
+        cutPlayer
+    } = props;
     let modalTarget = '#redshirtModal' + idx;
     const promiseModalTarget = '#promiseModal';
-
+    const cutPlayerTitle = `Cut ${player.FirstName}`;
+    const cut = () => {
+        return cutPlayer(player);
+    };
     // Row Functions
     const getYear = (player) => {
         let isRedshirt = player.IsRedshirt;
@@ -92,7 +104,7 @@ const BBATeamPlayerRow = (props) => {
                         onClick={promiseHelper}
                         data-bs-toggle="modal"
                         data-bs-target={promiseModalTarget}
-                        disabled={player.TransferStatus < 1}
+                        disabled={player.TransferStatus < 1 || !view}
                     >
                         <i
                             className={`bi bi-shield-fill ${
@@ -101,6 +113,15 @@ const BBATeamPlayerRow = (props) => {
                                     : 'link-success'
                             }`}
                         ></i>
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        title={cutPlayerTitle}
+                        disabled={rosterCount < 10 || !view}
+                        onClick={cut}
+                    >
+                        <i className="bi bi-scissors" />
                     </button>
                 </div>
             </td>

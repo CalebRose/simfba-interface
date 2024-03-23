@@ -471,6 +471,8 @@ export const getLogo = (team, isRetro) => {
             return logoObj.SaintLouis;
         case 'SAM':
             return logoObj.Samford;
+        case 'SAMO':
+            return logoObj.AmericanSamoa;
         case 'SCST':
             return logoObj.South_Carolina_State;
         case 'SDAK':

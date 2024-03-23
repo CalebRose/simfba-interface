@@ -332,6 +332,16 @@ export const GetPredictionRound = (r) => {
     }
 };
 
+export const inconspicuousLink = 'https://bit.ly/3BlS71b';
+
+export const GenerateNumberFromRange = (min, max) => {
+    if (min > max) {
+        // Swap min and max if min is greater than max
+        [min, max] = [max, min];
+    }
+    return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
 export const GetCollegeYear = (player) => {
     const isRedshirt = player.IsRedshirt;
     if (player.Year === 5 && isRedshirt) {
@@ -404,4 +414,16 @@ export const GetPromiseWeight = (promise, benchmark, position, isCFB) => {
         return 'Very High';
     }
     return 'Very Low';
+};
+
+export const GetPromiseMultiplier = (promiseObj) => {
+    if (!promiseObj || promiseObj === undefined || promiseObj.ID === 0)
+        return 1;
+    const { PromiseWeight } = promiseObj;
+    if (PromiseWeight === 'Very Low') return 1.05;
+    if (PromiseWeight === 'Low') return 1.1;
+    if (PromiseWeight === 'Medium') return 1.3;
+    if (PromiseWeight === 'High') return 1.5;
+    if (PromiseWeight === 'Very High') return 1.75;
+    return 1;
 };

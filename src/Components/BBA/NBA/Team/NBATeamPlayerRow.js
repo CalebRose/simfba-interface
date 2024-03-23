@@ -14,10 +14,12 @@ const NBATeamPlayerRow = ({
     setToTwoWay,
     cut,
     extend,
+    cancel,
     tradeblock,
     team,
     twoWayCount,
     gLeagueCount,
+    activateOption,
     retro
 }) => {
     let modalTarget = `#playerModal${idx}`;
@@ -33,7 +35,7 @@ const NBATeamPlayerRow = ({
     const tradeBlockTitle = `Place ${player.FirstName} on the Trade Block.`;
     // Row Functions
     const aav = player.Contract.TotalRemaining / player.Contract.YearsRemaining;
-
+    const { Contract } = player;
     // Row Variables
 
     return (
@@ -59,6 +61,10 @@ const NBATeamPlayerRow = ({
                 idx={idx}
                 extend={extend}
                 viewMode={theme}
+                team={team}
+                cancel={cancel}
+                ts={ts}
+                activateOption={activateOption}
             />
             <TradeBlockModal
                 key={player.ID}
@@ -145,6 +151,10 @@ const NBATeamPlayerRow = ({
                                 title={extendPlayerTitle}
                                 data-bs-toggle="modal"
                                 data-bs-target={extendPlayerTarget}
+                                disabled={
+                                    Contract.YearsRemaining > 1 &&
+                                    !Contract.Year2Opt
+                                }
                             >
                                 <i className="bi bi-currency-dollar" />
                             </button>

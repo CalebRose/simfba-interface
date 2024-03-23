@@ -38,6 +38,7 @@ export const MobileInputRow = ({ label, name, value, change, disable }) => {
                 value={value}
                 onChange={change}
                 disabled={disable}
+                min="0"
             />
         </div>
     );

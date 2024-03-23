@@ -166,13 +166,26 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                             >
                                 Gameplan
                             </Link>
-                            <Link
-                                to={routes.CBB_RECRUITING}
-                                role="button"
-                                className="btn btn-primary btn-md me-2 shadow"
-                            >
-                                Recruit
-                            </Link>
+                            {cbb_Timestamp &&
+                                !cbb_Timestamp.CollegeSeasonOver && (
+                                    <Link
+                                        to={routes.CBB_RECRUITING}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                    >
+                                        Recruit
+                                    </Link>
+                                )}
+                            {cbb_Timestamp &&
+                                cbb_Timestamp.CollegeSeasonOver && (
+                                    <Link
+                                        to={routes.CBB_TRANSFER}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                    >
+                                        Transfer Portal
+                                    </Link>
+                                )}
                             <Link
                                 to={routes.CBB_SCHEDULE}
                                 role="button"

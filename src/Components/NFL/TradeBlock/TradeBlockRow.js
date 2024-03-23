@@ -1,16 +1,18 @@
 import React from 'react';
 import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
+import { GetNFLOverall } from '../../../_Utility/RosterHelper';
 
 const PlayerRow = ({ player }) => {
     const { Contract } = player;
     const NameLabel = `${player.FirstName} ${player.LastName}`;
+    let ovr = GetNFLOverall(player.Overall, player.ShowLetterGrade);
     return (
         <>
             <tr style={{ zIndex: -1 }}>
                 <th scope="row">{NameLabel}</th>
                 <td className="align-middle">{player.Position}</td>
                 <td className="align-middle">{player.Archetype}</td>
-                <td className="align-middle">{player.Overall}</td>
+                <td className="align-middle">{ovr}</td>
                 <td className="align-middle">{player.Age}</td>
                 <td className="align-middle">{player.Experience}</td>
                 <td className="align-middle">{player.PotentialGrade}</td>
