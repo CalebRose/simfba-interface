@@ -535,20 +535,6 @@ const CBBRecruitingDashboard = ({
                                 </div>
                             </>
                         )}
-                        {cbbTeam && luckyTeam >= 16 && showCollusionButton && (
-                            <div className="col-auto">
-                                <h5 className="text-start align-middle">
-                                    Collude?
-                                </h5>
-                                <button
-                                    type="button"
-                                    className="btn btn-danger"
-                                    onClick={CollusionButton}
-                                >
-                                    You Know You Want To
-                                </button>
-                            </div>
-                        )}
                     </div>
                     <CBBRankingsModal
                         teamProfiles={teamProfiles}
@@ -649,6 +635,14 @@ const CBBRecruitingDashboard = ({
                                                 <th
                                                     scope="col"
                                                     onClick={() =>
+                                                        ChangeSort('Finishing')
+                                                    }
+                                                >
+                                                    Finishing
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
                                                         ChangeSort('Shooting2')
                                                     }
                                                 >
@@ -669,14 +663,6 @@ const CBBRecruitingDashboard = ({
                                                     }
                                                 >
                                                     FT
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    onClick={() =>
-                                                        ChangeSort('Finishing')
-                                                    }
-                                                >
-                                                    Finishing
                                                 </th>
                                                 <th
                                                     scope="col"

@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { GetModalClass } from '../../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../../Constants/getLogo';
-import { RoundToTwoDecimals } from '../../../../_Utility/utilHelper';
+import {
+    RoundToTwoDecimals,
+    ShuffleList
+} from '../../../../_Utility/utilHelper';
 import {
     GetMaxPercentage,
     GetNBACapSpace,
@@ -16,11 +19,15 @@ import {
     TotalInput
 } from '../../../NFL/FreeAgency/FreeAgencyOfferInput';
 import { SwitchToggle } from '../../../_Common/SwitchToggle';
+import { BBAStatsRow } from '../../../_Common/SeasonStatsRow';
 
 export const NBAFreeAgencyPlayerModal = ({ player, idx, theme, retro }) => {
     const modalId = 'playerModal' + idx;
 
     const AllOffers = player && player.Offers;
+    const { SeasonStats } = player;
+    const teamsList = AllOffers && AllOffers.map((x) => x.Team);
+    const shuffledTeamList = teamsList && ShuffleList(teamsList);
     const modalClass = GetModalClass(theme);
 
     const OfferingTeam = ({ offer, idx }) => {
@@ -108,8 +115,18 @@ export const NBAFreeAgencyPlayerModal = ({ player, idx, theme, retro }) => {
                             </div>
                         </div>
                         <div className="row g-2 mb-3">
-                            <div className="col"></div>
-                            <div className="col"></div>
+                            <div className="col">
+                                <h5>Work Ethic</h5>
+                                <p>{player.WorkEthic}</p>
+                            </div>
+                            <div className="col">
+                                <h5>Free Agency Bias</h5>
+                                <p>{player.FreeAgency}</p>
+                            </div>
+                            <div className="col">
+                                <h5>Personality</h5>
+                                <p>{player.Personality}</p>
+                            </div>
                             <div className="col">
                                 <h5>Region</h5>
                                 {player.Country === 'USA'
@@ -124,6 +141,7 @@ export const NBAFreeAgencyPlayerModal = ({ player, idx, theme, retro }) => {
                             </div>
                         </div>
                         {player &&
+                            !player.IsNegotiating &&
                             AllOffers !== null &&
                             AllOffers.length > 0 && (
                                 <div className="row g-1 mb-3">
@@ -135,27 +153,104 @@ export const NBAFreeAgencyPlayerModal = ({ player, idx, theme, retro }) => {
                                     })}
                                 </div>
                             )}
+                        {player && player.IsNegotiating && (
+                            <div className="row g-1 mb-3">
+                                <h5>This player is now negotiating.</h5>
+                                <p>
+                                    Teams with an offer will have one more week
+                                    to update their offers before the player
+                                    signs. Until then, all contract info will
+                                    remain hidden.
+                                </p>
+                                <h6>Teams Negotiating</h6>
+                                {shuffledTeamList.map((x) => (
+                                    <p>{x}</p>
+                                ))}
+                            </div>
+                        )}
                         <div className="row">
                             <div className="col">
                                 <h5>Career Stats</h5>
+                                <div className="row mt-2">
+                                    <div className="col-auto">
+                                        <h6>Games Played</h6>
+                                        <p className="text-small">
+                                            {SeasonStats.GamesPlayed}
+                                        </p>
+                                    </div>
+                                    <div className="ms-2 col-auto">
+                                        <h6>Minutes</h6>
+                                        <p className="text-small">
+                                            {RoundToTwoDecimals(
+                                                SeasonStats.MinutesPerGame
+                                            )}
+                                        </p>
+                                    </div>
+                                    <div className="col-auto">
+                                        <h6>Possessions</h6>
+                                        <p className="text-small">
+                                            {RoundToTwoDecimals(
+                                                SeasonStats.PossessionsPerGame
+                                            )}
+                                        </p>
+                                    </div>
+                                </div>
+                                <BBAStatsRow SeasonStats={SeasonStats} />
                             </div>
                             <div className="col">
-                                <div className="row g-2 mb-2">
-                                    <div className="col">
-                                        <h5>Work Ethic</h5>
-                                        <p>{player.WorkEthic}</p>
+                                <h5>Attributes</h5>
+                                <div className="row">
+                                    <div className="col-3">
+                                        <p className="text-small">Finishing</p>
+                                        <p className="text-small">
+                                            {player.Finishing}
+                                        </p>
                                     </div>
-                                </div>
-                                <div className="row g-2 mb-2">
-                                    <div className="col">
-                                        <h5>Free Agency Bias</h5>
-                                        <p>{player.FreeAgency}</p>
+                                    <div className="col-3">
+                                        <p className="text-small">Shooting2</p>
+                                        <p className="text-small">
+                                            {player.Shooting2}
+                                        </p>
                                     </div>
-                                </div>
-                                <div className="row g-2 mb-2">
-                                    <div className="col">
-                                        <h5>Personality</h5>
-                                        <p>{player.Personality}</p>
+                                    <div className="col-3">
+                                        <p className="text-small">Shooting3</p>
+                                        <p className="text-small">
+                                            {player.Shooting3}
+                                        </p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p className="text-small">Free Throw</p>
+                                        <p className="text-small">
+                                            {player.FreeThrow}
+                                        </p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p className="text-small">Ballwork</p>
+                                        <p className="text-small">
+                                            {player.Ballwork}
+                                        </p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p className="text-small">Rebounding</p>
+                                        <p className="text-small">
+                                            {player.Rebounding}
+                                        </p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p className="text-small">
+                                            Int. Defense
+                                        </p>
+                                        <p className="text-small">
+                                            {player.InteriorDefense}
+                                        </p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p className="text-small">
+                                            Per. Defense
+                                        </p>
+                                        <p className="text-small">
+                                            {player.PerimeterDefense}
+                                        </p>
                                     </div>
                                 </div>
                             </div>

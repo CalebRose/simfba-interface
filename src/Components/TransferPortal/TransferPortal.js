@@ -40,7 +40,6 @@ const TransferPortal = ({
     cbb_Timestamp,
     viewMode
 }) => {
-    const _easterEggService = new EasterEggService();
     const _portalService = new PortalService();
     const [isLoading, setIsLoading] = useState(true);
     const [teamProfile, setTeamProfile] = useState(null);
@@ -64,7 +63,6 @@ const TransferPortal = ({
     const [selectedOverallGrades, setOverallGrades] = useState('');
     const [selectedPotentialGrades, setPotentialGrades] = useState('');
     const [selectedStars, setStars] = useState('');
-    const [showCollusionButton, setShowCollusionButton] = useState(true);
     const [count, setCount] = useState(100);
     const [sort, setSort] = useState('Rank');
     const [isAsc, setIsAsc] = useState(false);
@@ -75,7 +73,6 @@ const TransferPortal = ({
     const letterGrades = MapOptions(LetterGradesList);
     const simpleGrades = MapOptions(SimpleLetterGrades);
     const stars = MapOptions(StarsList);
-    let luckyTeam = Math.floor(Math.random() * (50 - 1) + 1);
 
     // For mobile
     useEffect(() => {
@@ -110,7 +107,9 @@ const TransferPortal = ({
 
     const GetTransferPortalData = async (id) => {
         const res = await _portalService.GetTransferPortalPageData(isCFB, id);
-        setPortalProfiles(() => res.TeamBoard);
+        let board = res.TeamBoard;
+        if (board === null || board === undefined) board = [];
+        setPortalProfiles(() => board);
         setTeamProfile(() => res.Team);
         setAllPlayers(() => res.Players);
         const fp = filterPlayers([...res.Players]);
@@ -123,7 +122,7 @@ const TransferPortal = ({
             return { label: x.Team, value: x.ID };
         });
         const pMap = {};
-        for (let i = 0; i < res.TeamBoard.length; i++) {
+        for (let i = 0; i < board.length; i++) {
             pMap[res.TeamBoard[i].CollegePlayerID] = true;
         }
         setTeamList(() => tl);
@@ -355,40 +354,6 @@ const TransferPortal = ({
         setTimeout(() => loadRecords(), 500);
     };
 
-    const CollusionButton = async () => {
-        const coinFlip = GenerateNumberFromRange(1, 10);
-        if (coinFlip === 1) {
-            window.open(inconspicuousLink, '_blank');
-            setShowCollusionButton(false);
-            return;
-        }
-        let randomInt = GenerateNumberFromRange(1, allPlayers.length - 1);
-        if (randomInt >= allPlayers.length) {
-            randomInt = allPlayers.length - 1;
-        }
-        const randomCroot =
-            randomInt > -1 && randomInt < allPlayers.length
-                ? allPlayers[randomInt]
-                : allPlayers[Math.floor(Math.random() * allPlayers.length - 1)];
-        const message = !isCFB
-            ? GetBBallTransferPortalStatements(
-                  currentUser,
-                  cbbTeam,
-                  randomCroot
-              )
-            : '';
-        const dto = {
-            WeekID: ts.CollegeWeekID,
-            SeasonID: isCFB ? ts.CollegeSeasonID : ts.SeasonID,
-            Message: message
-        };
-        toast.error(
-            `Hey man I'm not gonna judge, but you should be careful. You don't want any rumors of your team popping up out of the blue...`
-        );
-        setShowCollusionButton(false);
-        await _easterEggService.CollusionCall(isCFB, dto);
-    };
-
     return (
         <>
             <div className="container-fluid mt-3">
@@ -440,28 +405,6 @@ const TransferPortal = ({
                                                 <p>{teamPromises.length}</p>
                                             </div>
                                         </div>
-                                        {((cbbTeam && !isCFB) ||
-                                            (cfbTeam && isCFB)) &&
-                                            luckyTeam >= 48 &&
-                                            showCollusionButton && (
-                                                <div className="row mb-2 d-flex justify-column-center">
-                                                    <div className="col-sm">
-                                                        <h5 className="text-start align-middle">
-                                                            Collude?
-                                                        </h5>
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-danger"
-                                                            onClick={
-                                                                CollusionButton
-                                                            }
-                                                        >
-                                                            Your Reputation Goes
-                                                            Up If You Click
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            )}
                                     </>
                                 ) : (
                                     <>
@@ -503,28 +446,6 @@ const TransferPortal = ({
                                                 <p>{teamPromises.length}</p>
                                             </div>
                                         </div>
-                                        {((cbbTeam && !isCFB) ||
-                                            (cfbTeam && isCFB)) &&
-                                            luckyTeam >= 48 &&
-                                            showCollusionButton && (
-                                                <div className="row mb-2 d-flex justify-column-center">
-                                                    <div className="col-sm">
-                                                        <h5 className="text-start align-middle">
-                                                            Collude?
-                                                        </h5>
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-danger"
-                                                            onClick={
-                                                                CollusionButton
-                                                            }
-                                                        >
-                                                            Your Reputation Goes
-                                                            Up If You Click
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            )}
                                     </>
                                 )}
                             </div>

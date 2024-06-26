@@ -23,9 +23,17 @@ import {
     GetRecentlyDraftedPlayer,
     GetViewablePlayersList,
     useDraftMap,
-    GetPicksByCurrentRound
+    GetPicksByCurrentRound,
+    GetCurrentDraftPickIdx
 } from '../../../../_Hooks/DraftHooks';
-import { GetStartTimer } from '../../../../_Utility/DraftHelper';
+import {
+    GetPauseTimer,
+    GetResetTimer,
+    GetStartTimer
+} from '../../../../_Utility/DraftHelper';
+import { WarRoomPick, WarRoomTab } from '../../../_Common/DraftComponents';
+import { NBAArchetypesList } from '../../../../Constants/CommonConstants';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     // Services
@@ -47,14 +55,21 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     const [nbaTeams, setNBATeams] = useState([]);
     const [draftPickList, setDraftPickList] = useState([]);
     const positions = MapObjOptions(PositionList);
+    const archetypes = MapObjOptions(NBAArchetypesList);
     const [selectedPositions, setPositions] = useState('');
+    const [selectedArchetypes, setArchetypes] = useState('');
+    const [colleges, setColleges] = useState([]);
+    const [selectedColleges, setSelectedColleges] = useState('');
     const [mobileView, setMobileView] = useState('DRAFT');
+    const [activeView, setActiveView] = useState('War Room');
+    const [allDraftablePlayers, setAllDraftablePlayers] = useState([]);
     const [viewWidth, setViewWidth] = useState(window.innerWidth);
+    const [viewCount, setViewCount] = useState(100);
     const [modalDraftee, setModalDraftee] = useState(null);
     const {
         allDraftPicks,
-        allDraftablePlayers,
         currentPick,
+        currentRound,
         nextPick,
         recentlyDraftedPlayerID,
         seconds,
@@ -88,19 +103,40 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
 
     const isMobile = useMediaQuery({ query: `(max-width:851px)` });
 
+    const currentDraftPicks = GetPicksByCurrentRound(
+        allDraftPicks,
+        currentRound
+    );
+
     const recentlyDraftedPlayer = GetRecentlyDraftedPlayer(
         allDraftablePlayers,
         recentlyDraftedPlayerID
     );
+
     const draftMap = useDraftMap(allDraftPicks);
-    const currentDraftPickIdx = (allDraftPicks, currentPick);
+    const currentDraftPickIdx = GetCurrentDraftPickIdx(
+        allDraftPicks,
+        currentPick,
+        currentRound
+    );
     const currentDraftPick = GetCurrentDraftPick(
         allDraftPicks,
-        currentDraftPickIdx
+        currentDraftPickIdx,
+        currentPick,
+        currentRound
     );
-    const nextDraftPickIdx = GetNextDraftPickIdx(allDraftPicks, nextPick);
+    const nextDraftPickIdx = GetCurrentDraftPickIdx(
+        allDraftPicks,
+        nextPick,
+        currentRound
+    );
 
-    const nextDraftPick = GetNextDraftPickObj(allDraftPicks, nextDraftPickIdx);
+    const nextDraftPick = GetCurrentDraftPick(
+        allDraftPicks,
+        nextDraftPickIdx,
+        nextPick,
+        currentRound
+    );
 
     const currentPickTeamLogo = GetPickTeamLogo(
         currentDraftPick,
@@ -114,7 +150,10 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
 
     const viewablePlayers = GetViewablePlayersList(
         allDraftablePlayers,
-        selectedPositions
+        selectedPositions,
+        selectedColleges,
+        selectedArchetypes,
+        viewCount
     );
 
     // NBA Draft Room State -- get Firebase
@@ -127,29 +166,11 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
 
     // End Time
     const PauseTimer = () => {
-        const newData = { ...data, isPaused: true, seconds: timeLeft };
-        updateData(newData);
+        GetPauseTimer(data, timeLeft, updateData);
     };
 
     const ResetTimer = () => {
-        const { currentPick } = data;
-        let seconds = 0;
-        if (currentPick < 32) {
-            seconds = 300;
-        } else {
-            seconds = 120;
-        }
-        const endTime = firebase.firestore.Timestamp.fromDate(
-            new Date(Date.now() + seconds * 1000)
-        ); // Current time + 4 minutes
-        const newData = {
-            ...data,
-            endTime,
-            isPaused: true,
-            seconds,
-            startAt: firebase.firestore.Timestamp.fromDate(new Date(Date.now()))
-        }; // Current time + 4 minutes  };
-        updateData(newData);
+        GetResetTimer(data, updateData);
     };
 
     // Options for filters
@@ -158,12 +179,17 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
 
     // Use Effects
     useEffect(() => {
-        if (currentUser && data) {
+        if (currentUser) {
             const adminStatus = currentUser.bba_roleID === 'Admin';
             if (!warRoom && nbaTeams.length === 0) {
                 GetDraftPageData(currentUser.NBATeamID);
             }
             setIsAdmin(() => adminStatus);
+        }
+    }, [currentUser, warRoom, nbaTeams]);
+
+    useEffect(() => {
+        if (data) {
             if (data.endTime) {
                 setEndTime(() => data.endTime.toDate());
             }
@@ -173,7 +199,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                 setStartTime(() => data.startAt.toDate());
             }
         }
-    }, [currentUser, data, warRoom, nbaTeams]);
+    }, [data]);
 
     // Click Functionality
     const adminSelectTeam = async (team) => {
@@ -209,7 +235,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
             }
             setWarRoom(() => wr);
         }
-        const keyCode = `${player.FirstName}${player.LastName}${player.Position}${player.State}${player.Country}`;
+        const keyCode = `${player.ID}`;
         const scoutingMap = { ...scoutMap };
         scoutingMap[keyCode] = true;
         setScoutMap(() => scoutingMap);
@@ -276,11 +302,25 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
             SelectedPlayerName: `${player.FirstName} ${player.LastName}`,
             SelectedPlayerPosition: player.Position
         };
-        const draftPicks = [...allDraftPicks];
-        draftPicks[currentDraftPickIdx] = {
-            ...draftPicks[currentDraftPickIdx],
+        const draftPicks = { ...allDraftPicks };
+        draftPicks[currentRound][currentDraftPickIdx] = {
+            ...draftPicks[currentRound][currentDraftPickIdx],
             ...draftedPlayerInfo
         };
+
+        let currRound = currentRound;
+        if (currentDraftPickIdx === draftPicks[currentRound].length - 1) {
+            currRound += 1;
+        }
+
+        const theNextPick = nextPick;
+        const finalDraftPick =
+            draftPicks[2][draftPicks[2].length - 1].DraftNumber;
+        const finalPick = currentPick === finalDraftPick;
+        if (finalPick) {
+            currRound = 1;
+        }
+
         // Update Player Info
         const draftablePlayers = [...allDraftablePlayers];
         const teamInfoFromDP = {
@@ -304,15 +344,15 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
             ...teamInfoFromDP
         };
 
-        const theNextPick = nextPick;
-        const finalPick = currentPick === allDraftPicks.length;
         const newData = {
             ...data,
             currentPick: theNextPick,
             nextPick: theNextPick + 1,
+            currentRound: currRound,
             recentlyDraftedPlayerID: player.ID,
             allDraftPicks: draftPicks,
-            allDraftablePlayers: draftablePlayers,
+            draftingTeam: nextDraftPick.Team,
+            draftingTeamID: nextDraftPick.TeamID,
             isPaused: true
         };
         updateData(newData);
@@ -333,9 +373,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                 seconds,
                 startAt: firebase.firestore.Timestamp.fromDate(
                     new Date(Date.now())
-                ),
-                draftingTeam: nextDraftPick.Team,
-                draftingTeamID: nextDraftPick.TeamID
+                )
             };
             updateData(resetTimerData);
         }, 10000);
@@ -345,8 +383,15 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         if (exportComplete) {
             return;
         }
-
-        const draftpicks = [...allDraftPicks];
+        const draftPickMap = { ...allDraftPicks };
+        const draftpicks = [];
+        for (let i = 1; i < 3; i++) {
+            const roundOfPicks = draftPickMap[i];
+            for (let j = 0; j < roundOfPicks.length; j++) {
+                const pick = roundOfPicks[j];
+                draftpicks.push(pick);
+            }
+        }
         const dto = { DraftPicks: draftpicks };
 
         const res = await _draftService.ExportPlayers(dto);
@@ -369,23 +414,36 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
             const profile = ScoutProfiles[i];
             if (profile.Draftee) {
                 const { Draftee } = profile;
-                const { FirstName, LastName, Position, State, Country } =
-                    Draftee;
-                scoutingMap[
-                    FirstName + LastName + Position + State + Country
-                ] = true;
+                const { ID } = Draftee;
+                scoutingMap[ID] = true;
             }
         }
+        const collegeList = [];
+        for (let i = 0; i < res.CollegeTeams.length; i++) {
+            const college = res.CollegeTeams[i];
+            const collegeObj = {
+                name: college.Team,
+                abbr: college.Abbr
+            };
+            collegeList.push(collegeObj);
+        }
+        setColleges(MapObjOptions(collegeList));
+
         // In the event we need to re-upload the draft picks
-        // const { AllDraftPicks, DraftablePlayers } = res;
+        // const { AllDraftPicks } = res;
+        // const allDraftObj = {};
+        // for (let i = 0; i < AllDraftPicks.length; i++) {
+        //     const num = i + 1;
+        //     allDraftObj[num] = AllDraftPicks[i];
+        // }
         // const newData = {
         //     ...data,
-        //     allDraftPicks: AllDraftPicks
-        //     // allDraftablePlayers: DraftablePlayers
+        //     allDraftPicks: allDraftObj
         // };
         // updateData(newData);
-        console.log({ res });
+        // setDraftPickList(() => res.AllDraftPicks);
         setWarRoom(() => res.WarRoom);
+        setAllDraftablePlayers(() => res.DraftablePlayers);
         if (res.WarRoom.ID === currentUser.NBATeamID) {
             setUserWarRoom(() => res.WarRoom);
         }
@@ -394,6 +452,25 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         }
         setScoutMap(() => scoutingMap);
         setIsLoading(() => false);
+    };
+
+    // Table Functions
+    const loadRecords = () => {
+        setViewCount((x) => x + 100);
+    };
+
+    const loadMoreRecords = () => {
+        setTimeout(() => loadRecords(), 500);
+    };
+
+    const ChangeArchetypes = (options) => {
+        const opts = [...options.map((x) => x.value)];
+        setArchetypes(opts);
+    };
+
+    const ChangeColleges = (options) => {
+        const opts = [...options.map((x) => x.value)];
+        setSelectedColleges(opts);
     };
 
     // Secondary Components
@@ -522,7 +599,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
 
                     <div className="row mt-2">
                         <div className="draft-pick-container">
-                            {allDraftPicks.map((x, idx) => {
+                            {currentDraftPicks.map((x, idx) => {
                                 const TeamLogo = getLogo(
                                     x.Team,
                                     currentUser.IsRetro
@@ -631,225 +708,302 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                             })}
                         </div>
                     </div>
-                    <NBADraftHelpModal />
+                    <NBADraftHelpModal isNBA />
                     <ScoutingModal
-                        player={modalDraftee}
+                        profile={modalDraftee}
                         retro={currentUser.IsRetro}
+                        wr={warRoom}
                     />
-                    <div className="row mt-2 draft-war-room">
-                        <div className="row">
-                            <div className="col-auto text-start">
-                                <h4>{warRoom.Team} War Room</h4>
-                            </div>
-                            <div className="col-auto">
-                                <h5>Total Points: {warRoom.ScoutingPoints}</h5>
-                            </div>
-                            <div className="col-auto">
-                                <h5>Spent Points: {warRoom.SpentPoints}</h5>
-                            </div>
-                            <div className="col-auto">
-                                <h5>Draft Picks:</h5>
-                            </div>
-                            {warRoom.DraftPicks.length > 0 &&
-                                warRoom.DraftPicks.map((x) => (
-                                    <div className="col-1">
-                                        <span>
-                                            Round {x.DraftRound}, Pick{' '}
-                                            {x.DraftNumber}
-                                        </span>
-                                    </div>
-                                ))}
-                        </div>
-                        <div className="row mt-2">
-                            <div className="col-md-auto">
-                                <h6 className="text-start align-middle">
-                                    Position
-                                </h6>
-                                <Select
-                                    options={positions}
-                                    isMulti={true}
-                                    className="basic-multi-select btn-dropdown-width-team z-index-6"
-                                    classNamePrefix="select"
-                                    onChange={ChangePositions}
-                                />
-                            </div>
-                        </div>
+                    <div className="row mt-3">
+                        <ul className="nav nav-tabs">
+                            <WarRoomTab
+                                activeView={activeView}
+                                warRoomType="War Room"
+                                setActiveView={setActiveView}
+                            />
+                            <WarRoomTab
+                                activeView={activeView}
+                                warRoomType="Draft List"
+                                setActiveView={setActiveView}
+                            />
+                            <WarRoomTab
+                                activeView={activeView}
+                                warRoomType="Scouting Board"
+                                setActiveView={setActiveView}
+                            />
+                            <li className="nav-item">
+                                <button
+                                    type="button"
+                                    className="nav-link"
+                                    role="tab"
+                                    disabled
+                                >
+                                    Total Points: {warRoom.ScoutingPoints}
+                                </button>
+                            </li>
+                            <li className="nav-item">
+                                <button
+                                    type="button"
+                                    className="nav-link"
+                                    role="tab"
+                                    disabled
+                                >
+                                    Spent Points: {warRoom.SpentPoints}
+                                </button>
+                            </li>
+                        </ul>
                     </div>
-                    {!isMobile ? (
-                        <div className="row mt-2">
-                            <div className="col-4 px-2 nba-draft-draftee-box">
-                                <table
-                                    className={`${tableHoverClass} table-responsive`}
-                                >
-                                    <thead
-                                        style={{
-                                            position: 'sticky',
-                                            top: 0,
-                                            backgroundColor:
-                                                viewMode === 'dark'
-                                                    ? '#202020'
-                                                    : 'white',
-                                            zIndex: 3,
-                                            fontSize: '1.5vh'
-                                        }}
-                                    >
-                                        <tr>
-                                            <th scope="col">Rank</th>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Age</th>
-                                            <th scope="col">Ht.</th>
-                                            <th scope="col">College</th>
-                                            <th scope="col">Region</th>
-                                            <th scope="col">Ovr</th>
-                                            <th scope="col">Scout</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {viewablePlayers.map((x, idx) => (
-                                            <NBADrafteeRow
-                                                player={x}
-                                                ts={cbb_Timestamp}
-                                                map={scoutMap}
-                                                draftMap={draftMap}
-                                                add={addPlayerToScoutingBoard}
-                                                idx={idx}
-                                                theme={viewMode}
-                                            />
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="col-8 px-2 nba-draft-scout-box">
-                                <table
-                                    className={`${tableHoverClass} table-responsive`}
-                                >
-                                    <thead
-                                        style={{
-                                            position: 'sticky',
-                                            top: 0,
-                                            backgroundColor:
-                                                viewMode === 'dark'
-                                                    ? '#202020'
-                                                    : 'white',
-                                            zIndex: 3,
-                                            fontSize: '1.5vh'
-                                        }}
-                                    >
-                                        <tr>
-                                            <th
-                                                scope="col"
-                                                onClick={() =>
-                                                    ChangeSort('Name')
-                                                }
-                                            >
-                                                Name
-                                            </th>
-                                            <th scope="col">Age</th>
-                                            <th scope="col">Height</th>
-                                            <th
-                                                scope="col"
-                                                onClick={() =>
-                                                    ChangeSort('College')
-                                                }
-                                            >
-                                                College
-                                            </th>
-                                            <th scope="col">Overall</th>
-                                            <th scope="col">2pt.</th>
-                                            <th scope="col">3pt.</th>
-                                            <th scope="col">FT</th>
-                                            <th scope="col">Finishing</th>
-                                            <th scope="col">Ballwork</th>
-                                            <th scope="col">Rebounding</th>
-                                            <th scope="col">Int. Defense</th>
-                                            <th scope="col">Per. Defense</th>
-                                            <th scope="col">Pot.</th>
-                                            <th scope="col">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="overflow-auto">
-                                        {warRoom &&
-                                            warRoom.ScoutProfiles.length > 0 &&
-                                            warRoom.ScoutProfiles.map(
-                                                (x, idx) => (
-                                                    <NBAScoutPlayerRow
-                                                        key={x.ID}
-                                                        profile={x}
-                                                        idx={idx}
-                                                        ts={cbb_Timestamp}
-                                                        viewMode={viewMode}
-                                                        currentDraftPick={
-                                                            currentDraftPick
-                                                        }
-                                                        map={draftMap}
-                                                        draft={draftPlayer}
-                                                        remove={
-                                                            removePlayerFromBoard
-                                                        }
-                                                        wr={warRoom}
-                                                        reveal={revealAttribute}
-                                                        setDraftee={
-                                                            setModalDraftee
-                                                        }
-                                                    />
-                                                )
-                                            )}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    ) : (
+                    {activeView === 'War Room' && (
                         <>
-                            <div className="row mt-2">
-                                <div
-                                    className="btn-group"
-                                    role="group"
-                                    aria-label="Basic example"
-                                >
-                                    <button
-                                        type="button"
-                                        className={`btn ${
-                                            mobileView !== 'DRAFT'
-                                                ? 'btn-outline-info'
-                                                : 'btn-info'
-                                        }`}
-                                        value="DRAFT"
-                                        onClick={selectMobileView}
-                                    >
-                                        Draft Board
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={`btn ${
-                                            mobileView !== 'SCOUT'
-                                                ? 'btn-outline-info'
-                                                : 'btn-info'
-                                        }`}
-                                        value="SCOUT"
-                                        onClick={selectMobileView}
-                                    >
-                                        Scouting Board
-                                    </button>
+                            <div className="row mt-2 draft-war-room">
+                                <div className="row mb-2 d-flex">
+                                    <h4 className="text-start">
+                                        {warRoom.Team} War Room
+                                    </h4>
+                                </div>
+                                <div className="row">
+                                    <div className="col-auto">
+                                        <h5>Draft Picks:</h5>
+                                    </div>
+                                    {warRoom.DraftPicks.length > 0 &&
+                                        warRoom.DraftPicks.map((x) => (
+                                            <WarRoomPick pick={x} />
+                                        ))}
                                 </div>
                             </div>
-                            <div className="row mt-2 nba-draft-mobile-box">
-                                {mobileView === 'DRAFT' ? (
-                                    <>
-                                        {viewablePlayers.map((x, idx) => (
-                                            <NBADrafteeRow
-                                                player={x}
-                                                ts={cbb_Timestamp}
-                                                map={scoutMap}
-                                                draftMap={draftMap}
-                                                add={addPlayerToScoutingBoard}
-                                                idx={idx}
-                                                theme={viewMode}
-                                                isMobile={true}
-                                            />
-                                        ))}
-                                    </>
-                                ) : (
-                                    <>
+                        </>
+                    )}
+                    {activeView === 'Draft List' && (
+                        <>
+                            <div className="row mt-2 mb-1">
+                                <div className="col-md-auto">
+                                    <h6 className="text-start align-middle">
+                                        Position
+                                    </h6>
+                                    <Select
+                                        options={positions}
+                                        isMulti={true}
+                                        className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                        classNamePrefix="select"
+                                        onChange={ChangePositions}
+                                    />
+                                </div>
+                                <div className="col-md-auto">
+                                    <h6 className="text-start align-middle">
+                                        Archetype
+                                    </h6>
+                                    <Select
+                                        options={archetypes}
+                                        isMulti={true}
+                                        className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                        classNamePrefix="select"
+                                        onChange={ChangeArchetypes}
+                                    />
+                                </div>
+                                <div className="col-md-auto">
+                                    <h6 className="text-start align-middle">
+                                        School
+                                    </h6>
+                                    <Select
+                                        options={colleges}
+                                        isMulti={true}
+                                        className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                        classNamePrefix="select"
+                                        onChange={ChangeColleges}
+                                    />
+                                </div>
+                            </div>
+                            <div
+                                className={`${
+                                    !isMobile
+                                        ? 'row px-2 nfl-draft-draftee-box'
+                                        : ''
+                                }`}
+                            >
+                                <InfiniteScroll
+                                    dataLength={viewablePlayers.length}
+                                    next={loadMoreRecords}
+                                    hasMore={
+                                        viewablePlayers.length <
+                                        allDraftablePlayers.length
+                                    }
+                                    height={282}
+                                    scrollThreshold={0.7}
+                                >
+                                    {!isMobile ? (
+                                        <>
+                                            <table
+                                                className={`${tableHoverClass} table-responsive`}
+                                            >
+                                                <thead
+                                                    style={{
+                                                        position: 'sticky',
+                                                        top: 0,
+                                                        backgroundColor:
+                                                            viewMode === 'dark'
+                                                                ? '#202020'
+                                                                : 'white',
+                                                        zIndex: 3,
+                                                        fontSize: '1.5vh'
+                                                    }}
+                                                >
+                                                    <tr>
+                                                        <th scope="col">
+                                                            Rank
+                                                        </th>
+                                                        <th scope="col">
+                                                            Name
+                                                        </th>
+                                                        <th scope="col">Age</th>
+                                                        <th scope="col">Ht.</th>
+                                                        <th scope="col">
+                                                            College
+                                                        </th>
+                                                        <th scope="col">
+                                                            Region
+                                                        </th>
+                                                        <th scope="col">Ovr</th>
+                                                        <th scope="col">
+                                                            Scout
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {viewablePlayers.map(
+                                                        (x, idx) => (
+                                                            <NBADrafteeRow
+                                                                player={x}
+                                                                ts={
+                                                                    cbb_Timestamp
+                                                                }
+                                                                map={scoutMap}
+                                                                draftMap={
+                                                                    draftMap
+                                                                }
+                                                                add={
+                                                                    addPlayerToScoutingBoard
+                                                                }
+                                                                idx={idx}
+                                                                theme={viewMode}
+                                                            />
+                                                        )
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </>
+                                    ) : (
+                                        <>
+                                            {viewablePlayers.map((x, idx) => (
+                                                <NBADrafteeRow
+                                                    player={x}
+                                                    ts={cbb_Timestamp}
+                                                    map={scoutMap}
+                                                    draftMap={draftMap}
+                                                    add={
+                                                        addPlayerToScoutingBoard
+                                                    }
+                                                    idx={idx}
+                                                    theme={viewMode}
+                                                    isMobile={true}
+                                                />
+                                            ))}
+                                        </>
+                                    )}
+                                </InfiniteScroll>
+                            </div>
+                        </>
+                    )}
+                    {activeView === 'Scouting Board' && (
+                        <>
+                            {!isMobile ? (
+                                <div className="row mt-2 nfl-draft-scout-box">
+                                    <table
+                                        className={`${tableHoverClass} table-responsive`}
+                                    >
+                                        <thead
+                                            style={{
+                                                position: 'sticky',
+                                                top: 0,
+                                                backgroundColor:
+                                                    viewMode === 'dark'
+                                                        ? '#202020'
+                                                        : 'white',
+                                                zIndex: 3,
+                                                fontSize: '1.5vh'
+                                            }}
+                                        >
+                                            <tr>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort('Name')
+                                                    }
+                                                >
+                                                    Name
+                                                </th>
+                                                <th scope="col">Age</th>
+                                                <th scope="col">Height</th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        ChangeSort('College')
+                                                    }
+                                                >
+                                                    College
+                                                </th>
+                                                <th scope="col">Overall</th>
+                                                <th scope="col">Finishing</th>
+                                                <th scope="col">2pt.</th>
+                                                <th scope="col">3pt.</th>
+                                                <th scope="col">FT</th>
+                                                <th scope="col">Ballwork</th>
+                                                <th scope="col">Rebounding</th>
+                                                <th scope="col">
+                                                    Int. Defense
+                                                </th>
+                                                <th scope="col">
+                                                    Per. Defense
+                                                </th>
+                                                <th scope="col">Pot.</th>
+                                                <th scope="col">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="overflow-auto">
+                                            {warRoom &&
+                                                warRoom.ScoutProfiles.length >
+                                                    0 &&
+                                                warRoom.ScoutProfiles.map(
+                                                    (x, idx) => (
+                                                        <NBAScoutPlayerRow
+                                                            key={x.ID}
+                                                            profile={x}
+                                                            idx={idx}
+                                                            ts={cbb_Timestamp}
+                                                            viewMode={viewMode}
+                                                            currentDraftPick={
+                                                                currentDraftPick
+                                                            }
+                                                            map={draftMap}
+                                                            draft={draftPlayer}
+                                                            remove={
+                                                                removePlayerFromBoard
+                                                            }
+                                                            wr={warRoom}
+                                                            reveal={
+                                                                revealAttribute
+                                                            }
+                                                            setDraftee={
+                                                                setModalDraftee
+                                                            }
+                                                        />
+                                                    )
+                                                )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="row mt-2 nfl-draft-mobile-box">
                                         {warRoom &&
                                             warRoom.ScoutProfiles.length > 0 &&
                                             warRoom.ScoutProfiles.map(
@@ -877,9 +1031,9 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                                     />
                                                 )
                                             )}
-                                    </>
-                                )}
-                            </div>
+                                    </div>
+                                </>
+                            )}
                         </>
                     )}
                 </>

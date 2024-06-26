@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const SchemeInfo = ({ formationMap, scheme }) => {
+export const SchemeInfo = ({ formationMap, scheme, isGPPage }) => {
     const schemeMap = formationMap[`${scheme}`];
     const { SchemeFits, BadFits, Notes, Strengths, Weaknesses, Ranges } =
         schemeMap;
@@ -30,7 +30,7 @@ export const SchemeInfo = ({ formationMap, scheme }) => {
                     <p className="text-small">{weaknessLabel}</p>
                 </div>
             )}
-            {Ranges && (
+            {Ranges && isGPPage && (
                 <div className="row mb-2">
                     <h6>Min-Max Ranges (0 to 100)</h6>
                     <p className="text-small">

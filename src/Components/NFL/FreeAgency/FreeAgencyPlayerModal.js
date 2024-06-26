@@ -3,18 +3,23 @@ import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
 import {
     HeightToFeetAndInches,
-    RoundToTwoDecimals
+    RoundToTwoDecimals,
+    ShuffleList
 } from '../../../_Utility/utilHelper';
-import { GetNFLOverall } from '../../../_Utility/RosterHelper';
+import { GetNFLOverall, SetNFLPriority } from '../../../_Utility/RosterHelper';
+import AttributeRow from '../../Roster/AttributeRow';
 
 export const FreeAgencyPlayerModal = ({ player, idx, viewMode, retro }) => {
     const modalId = 'playerModal' + idx;
     const heightObj = HeightToFeetAndInches(player.Height);
     let AllOffers = player && player.Offers;
     if (AllOffers === undefined) AllOffers = player && player.WaiverOffers;
+    const { IsNegotiating, SeasonStats } = player;
     const modalClass = GetModalClass(viewMode);
     const ovr = GetNFLOverall(player.Overall, player.ShowLetterGrade);
-    const { SeasonStats } = player;
+    player['priorityAttributes'] = SetNFLPriority(player);
+    const teamsList = AllOffers.map((x) => x.Team);
+    const shuffledTeamList = ShuffleList(teamsList);
     const OfferingTeam = ({ offer, idx }) => {
         const logo = getLogo(offer.Team, retro);
         const rank = idx + 1;
@@ -120,6 +125,7 @@ export const FreeAgencyPlayerModal = ({ player, idx, viewMode, retro }) => {
                             </div>
                         </div>
                         {player &&
+                            !IsNegotiating &&
                             AllOffers !== null &&
                             AllOffers.length > 0 && (
                                 <div className="row g-1 mb-3">
@@ -131,6 +137,21 @@ export const FreeAgencyPlayerModal = ({ player, idx, viewMode, retro }) => {
                                     })}
                                 </div>
                             )}
+                        {IsNegotiating && (
+                            <div className="row g-1 mb-3">
+                                <h5>This player is now negotiating.</h5>
+                                <p>
+                                    Teams with an offer will have one more week
+                                    to update their offers before the player
+                                    signs. Until then, all contract info will
+                                    remain hidden.
+                                </p>
+                                <h6>Teams Negotiating</h6>
+                                {shuffledTeamList.map((x) => (
+                                    <p>{x}</p>
+                                ))}
+                            </div>
+                        )}
                         <div className="row">
                             {SeasonStats.ID > 0 && (
                                 <div className="col">
@@ -355,6 +376,22 @@ export const FreeAgencyPlayerModal = ({ player, idx, viewMode, retro }) => {
                                         <h6>Personality</h6>
                                         <p>{player.Personality}</p>
                                     </div>
+                                </div>
+                            </div>
+                            <div className="col">
+                                <h6>Attributes</h6>
+                                <div className="row g-2">
+                                    {player.priorityAttributes &&
+                                        player.priorityAttributes.length > 0 &&
+                                        player.priorityAttributes.map(
+                                            (attribute) => (
+                                                <AttributeRow
+                                                    key={attribute.Name}
+                                                    data={attribute}
+                                                    theme={viewMode}
+                                                />
+                                            )
+                                        )}
                                 </div>
                             </div>
                         </div>

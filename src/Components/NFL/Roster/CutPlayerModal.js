@@ -7,7 +7,6 @@ export const CutPlayerModal = ({ player, idx, cut, viewMode }) => {
     const name = `${player.FirstName} ${player.LastName}`;
 
     const confirmChange = () => {
-        console.log('PING!');
         return cut(player);
     };
 

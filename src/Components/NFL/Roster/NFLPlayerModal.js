@@ -119,17 +119,16 @@ export const NFLPlayerModal = ({ team, player, idx, viewMode, retro }) => {
                             <div className="col">
                                 <div className="row g-2 mb-2">
                                     {player.priorityAttributes &&
-                                    player.priorityAttributes.length > 0
-                                        ? player.priorityAttributes.map(
-                                              (attribute) => (
-                                                  <AttributeRow
-                                                      key={attribute.Name}
-                                                      data={attribute}
-                                                      theme={viewMode}
-                                                  />
-                                              )
-                                          )
-                                        : ''}
+                                        player.priorityAttributes.length > 0 &&
+                                        player.priorityAttributes.map(
+                                            (attribute) => (
+                                                <AttributeRow
+                                                    key={attribute.Name}
+                                                    data={attribute}
+                                                    theme={viewMode}
+                                                />
+                                            )
+                                        )}
                                 </div>
                             </div>
                             <div className="col-2">

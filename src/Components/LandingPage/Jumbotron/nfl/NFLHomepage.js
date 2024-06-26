@@ -106,6 +106,10 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                 setViewableMatches(() => []);
             } else {
                 let gameRange = games.slice(prevIdx, nextIdx + 1);
+                gameRange = gameRange.filter(
+                    (x) => x.WeekID >= cfb_Timestamp.NFLWeekID
+                );
+
                 setViewableMatches(() => gameRange);
             }
         }

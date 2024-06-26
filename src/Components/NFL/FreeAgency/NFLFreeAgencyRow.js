@@ -50,6 +50,9 @@ const NFLFreeAgencyRow = ({
     const hasOffer = CheckForOffer(player, teamID);
 
     const leadingTeamsMapper = (player) => {
+        if (IsNegotiating) {
+            return 'Negotiating...';
+        }
         if (
             ((viewFA || viewPS) &&
                 (player.Offers === null || player.Offers.length === 0)) ||

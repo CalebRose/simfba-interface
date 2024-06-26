@@ -79,6 +79,9 @@ export const GetRecruitingTendency = (mod) => {
 };
 
 export const isGoodFit = (offensiveScheme, defensiveScheme, pos, arch) => {
+    if (offensiveScheme.length === 0 || defensiveScheme.length === 0) {
+        return false;
+    }
     let scheme = offensiveScheme;
     if (
         pos === 'DT' ||
@@ -103,6 +106,9 @@ export const isGoodFit = (offensiveScheme, defensiveScheme, pos, arch) => {
 };
 
 export const isBadFit = (offensiveScheme, defensiveScheme, pos, arch) => {
+    if (offensiveScheme.length === 0 || defensiveScheme.length === 0) {
+        return false;
+    }
     let scheme = offensiveScheme;
     if (
         pos === 'DT' ||

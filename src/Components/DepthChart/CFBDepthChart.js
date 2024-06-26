@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import toast from 'react-hot-toast';
@@ -14,6 +14,8 @@ import DepthChartPlayerRow from './DepthChartPlayerRow';
 import DepthChartMobilePlayerRow from './DepthChartMobilePlayerRow';
 import { DropdownItemObj } from '../Roster/DropdownItem';
 import routes from '../../Constants/routes';
+import { SchemeInfo } from '../Gameplan/SchemeInfo';
+import { FormationMap } from '../Gameplan/GameplanConstants';
 
 const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
     // Services
@@ -22,26 +24,30 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
     let rosterService = new FBAPlayerService();
 
     // Hooks
-    const [userTeam, setUserTeam] = React.useState('');
-    const [team, setTeam] = React.useState('');
-    const [teamColors, setTeamColors] = React.useState('');
-    const [collegeTeams, setCollegeTeams] = React.useState('');
-    const [roster, setRoster] = React.useState([]);
-    const [initialDC, setInitialDC] = React.useState([]);
-    const [currentDepthChart, setCurrentDepthChart] = React.useState(null);
-    const [positions, setPositions] = React.useState([]);
-    const [currentPosition, setCurrentPosition] = React.useState(null);
-    const [positionAttributes, setPositionAttributes] = React.useState([]);
+    const [userTeam, setUserTeam] = useState('');
+    const [team, setTeam] = useState('');
+    const [teamColors, setTeamColors] = useState('');
+    const [collegeTeams, setCollegeTeams] = useState('');
+    const [roster, setRoster] = useState([]);
+    const [initialDC, setInitialDC] = useState([]);
+    const [currentDepthChart, setCurrentDepthChart] = useState(null);
+    const [offensiveScheme, setOffensiveScheme] = useState(null);
+    const [defensiveScheme, setDefensiveScheme] = useState(null);
+    const [currentScheme, setCurrentScheme] = useState(null);
+    const [isOffense, setIsOffense] = useState(true);
+    const [positions, setPositions] = useState([]);
+    const [currentPosition, setCurrentPosition] = useState(null);
+    const [positionAttributes, setPositionAttributes] = useState([]);
     const [currentDepthChartPositions, setCurrentDepthChartPositions] =
-        React.useState([]);
-    const [availablePlayers, setAvailablePlayers] = React.useState([]);
-    const [canModify, setCanModify] = React.useState(false);
-    const [isValid, setValidation] = React.useState(false);
-    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+        useState([]);
+    const [availablePlayers, setAvailablePlayers] = useState([]);
+    const [canModify, setCanModify] = useState(false);
+    const [isValid, setValidation] = useState(false);
+    const [viewWidth, setViewWidth] = useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
 
     // For mobile
-    React.useEffect(() => {
+    useEffect(() => {
         if (!viewWidth) {
             setViewWidth(window.innerWidth);
         }
@@ -109,6 +115,25 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
 
     const SelectPosition = (pos) => {
         setCurrentPosition(() => pos);
+        const { abbr } = pos;
+        if (
+            abbr === 'QB' ||
+            abbr === 'FB' ||
+            abbr === 'RB' ||
+            abbr === 'WR' ||
+            abbr === 'TE' ||
+            abbr === 'LT' ||
+            abbr === 'RT' ||
+            abbr === 'LG' ||
+            abbr === 'RG' ||
+            abbr === 'C'
+        ) {
+            setCurrentScheme(() => offensiveScheme);
+            setIsOffense(() => true);
+        } else {
+            setIsOffense(() => false);
+            setCurrentScheme(() => defensiveScheme);
+        }
     };
 
     const SaveToast = () => {
@@ -200,14 +225,22 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
 
     const GetDepthChart = async (ID) => {
         if (ID !== null || ID > 0) {
-            let depthChartResponse =
-                await depthChartService.GetDepthChartByTeamID(ID);
-            setCurrentDepthChart((x) =>
-                depthChartResponse.DepthChartPlayers.map((x) => ({ ...x }))
-            );
-            setInitialDC((x) =>
-                depthChartResponse.DepthChartPlayers.map((x) => ({ ...x }))
-            );
+            let res = await depthChartService.GetDepthChartByTeamID(ID);
+
+            if (res) {
+                const depthChartResponse = res.CFBDepthChart;
+                const gp = res.CFBGameplan;
+                setOffensiveScheme(() => gp.OffensiveScheme);
+                setCurrentScheme(() => gp.OffensiveScheme);
+                setDefensiveScheme(() => gp.DefensiveScheme);
+
+                setCurrentDepthChart((x) =>
+                    depthChartResponse.DepthChartPlayers.map((x) => ({ ...x }))
+                );
+                setInitialDC((x) =>
+                    depthChartResponse.DepthChartPlayers.map((x) => ({ ...x }))
+                );
+            }
         }
     };
 
@@ -288,8 +321,16 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
     const ValidateDepthChart = () => {
         if (!canModify) {
             toast.error(
-                "Viewing other team's depth charts in read-only mode.",
-                { duration: 30000 }
+                (t) => (
+                    <span>
+                        Viewing other team's depth charts in read-only mode.
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+
+                { duration: 6000 }
             );
             return;
         }
@@ -306,15 +347,35 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
             if (row.CollegePlayer.IsRedshirting) {
                 setValidation(false);
                 toast.error(
-                    `${row.FirstName} ${row.LastName} is currently a redshirt player. Please swap them from their ${row.Position} position level.`,
-                    { duration: 6000 }
+                    (t) => (
+                        <span>
+                            {row.FirstName} {row.LastName} is currently a
+                            redshirt player. Please swap them from their{' '}
+                            {row.Position} position level.
+                            <button onClick={() => toast.dismiss(t.id)}>
+                                Dismiss
+                            </button>
+                        </span>
+                    ),
+                    { duration: 10000 }
                 );
                 return;
             }
             if (row.CollegePlayer.IsInjured) {
                 toast.error(
-                    `${row.FirstName} ${row.LastName} is injured with ${row.CollegePlayer.InjuryType}. They are unable to play for ${row.CollegePlayer.WeeksOfRecovery} Weeks. Please swap them from their ${row.Position} position level.`,
-                    { duration: 6000 }
+                    (t) => (
+                        <span>
+                            {row.FirstName} {row.LastName} is injured with{' '}
+                            {row.CollegePlayer.InjuryType}. They are unable to
+                            play for {row.CollegePlayer.WeeksOfRecovery} Weeks.
+                            Please swap them from their {row.Position} position
+                            level.
+                            <button onClick={() => toast.dismiss(t.id)}>
+                                Dismiss
+                            </button>
+                        </span>
+                    ),
+                    { duration: 10000 }
                 );
                 setValidation(() => false);
                 return;
@@ -413,44 +474,67 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
 
     return (
         <div className="container-fluid mt-3 cfb-depthchart-container">
-            <div className="row">
-                <div className="col-md-1"></div>
-                <div className="col-md-11 px-md-4">
-                    <div className="row">
-                        <div className="col-md-auto justify-content-start">
-                            <h2>{team && `${team.TeamName} `}Depth Chart</h2>
-                        </div>
-                        <div className="col-md-auto ms-auto">
-                            <Link
-                                to={
-                                    isNFL
-                                        ? routes.NFL_GAMEPLAN
-                                        : routes.CFB_GAMEPLAN
-                                }
-                                type="button"
-                                className="btn btn-primary btn-md me-2 shadow"
-                                style={teamColors ? teamColors : {}}
-                            >
-                                Gameplan
-                            </Link>
-                            {canModify && (
-                                <button
-                                    className="btn btn-danger me-2"
-                                    onClick={ResetCurrentDepthChart}
-                                >
-                                    Reset Depth Chart
-                                </button>
-                            )}
+            <div className="row mb-2">
+                <div className="col-md-auto justify-content-start">
+                    <h2>{team && `${team.TeamName} `}Depth Chart</h2>
+                </div>
+                <div className="col-md-auto ms-auto">
+                    <Link
+                        to={isNFL ? routes.NFL_GAMEPLAN : routes.CFB_GAMEPLAN}
+                        type="button"
+                        className="btn btn-primary btn-md me-2 shadow"
+                        style={teamColors ? teamColors : {}}
+                    >
+                        Gameplan
+                    </Link>
+                    {canModify && (
+                        <button
+                            className="btn btn-danger me-2"
+                            onClick={ResetCurrentDepthChart}
+                        >
+                            Reset Depth Chart
+                        </button>
+                    )}
 
-                            <button
-                                className="btn btn-primary"
-                                onClick={SaveToast}
-                                disabled={!(isValid && canModify)}
-                            >
-                                Save Depth Chart
-                            </button>
+                    <button
+                        className="btn btn-primary"
+                        onClick={SaveToast}
+                        disabled={!(isValid && canModify)}
+                    >
+                        Save Depth Chart
+                    </button>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-md-2 mb-2">
+                    {currentScheme && canModify && (
+                        <div className={`card text-start`}>
+                            <div className="card-body">
+                                <h5 className="card-title">Current Scheme</h5>
+                                <h6>{currentScheme}</h6>
+
+                                <SchemeInfo
+                                    formationMap={FormationMap}
+                                    scheme={currentScheme}
+                                />
+                            </div>
                         </div>
-                    </div>
+                    )}
+                    {!canModify && (
+                        <div className={`card text-start`}>
+                            <div className="card-body">
+                                <h5 className="card-title">Current Scheme</h5>
+                                <h6>Read-Only Mode</h6>
+                                <p>
+                                    When viewing another team in read-only mode,
+                                    the scheme the team is using cannot be
+                                    viewed.
+                                </p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+                <div className="col-md-10 px-md-4 py-md-2 border rounded">
                     <div className="row">
                         <div className="col-md-auto">
                             <div className="drop-start btn-dropdown-width-team mt-1 mb-1">
@@ -542,7 +626,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="row depth-chart-table mt-1 mb-5">
+                    <div className="row depth-chart-table mt-1 mb-4">
                         {isMobile ? (
                             <>
                                 {currentDepthChartPositions &&

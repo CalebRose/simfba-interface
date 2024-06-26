@@ -8,6 +8,13 @@ const CFBMatchCard = ({ game, team, timestamp, isNFL, retro }) => {
         !isNFL && team ? team.TeamAbbr : `${team.TeamName} ${team.Mascot}`;
     const opposingTeam =
         game.HomeTeam === teamAbbr ? game.AwayTeam : game.HomeTeam;
+    let opposingTeamLabel = opposingTeam;
+    if (game.HomeTeam === teamAbbr && game.AwayTeamRank > 0) {
+        opposingTeamLabel = `(${game.AwayTeamRank}) ${opposingTeam}`;
+    }
+    if (game.HomeTeam !== teamAbbr && game.HomeTeamRank > 0) {
+        opposingTeamLabel = `(${game.HomeTeamRank}) ${opposingTeam}`;
+    }
     const opposingCoach =
         game.HomeTeam === teamAbbr ? game.AwayTeamCoach : game.HomeTeamCoach;
     const wonTheMatch =
@@ -50,7 +57,7 @@ const CFBMatchCard = ({ game, team, timestamp, isNFL, retro }) => {
 
     const cardTitle = `Week ${gameWeek} ${
         awayGame ? 'at ' : 'vs '
-    } ${opposingTeam}`;
+    } ${opposingTeamLabel}`;
 
     return (
         <div className={cardClass} style={{ maxWidth: '540px' }}>

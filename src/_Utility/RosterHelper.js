@@ -1904,7 +1904,7 @@ export const GetNFLLetterGrade = (attr, value, year, meetsSnapCount) => {
 };
 
 export const GetNFLRound = (r) => {
-    if (r === 0) return '';
+    if (r === 0) return 'UDFA';
     if (r === 1) return '1st';
     if (r === 2) return '2nd';
     if (r === 3) return '3rd';

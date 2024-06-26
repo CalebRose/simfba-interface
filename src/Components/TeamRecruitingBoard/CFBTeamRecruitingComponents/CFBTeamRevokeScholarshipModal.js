@@ -7,7 +7,7 @@ const ConfirmRevokeModal = (props) => {
     const modalId = 'revokeModal' + idx;
 
     const confirmChange = () => {
-        return props.toggleScholarship();
+        return props.revoke();
     };
     const modalClass = GetModalClass(viewMode);
     const header = 'Confirm Revoke Scholarship';

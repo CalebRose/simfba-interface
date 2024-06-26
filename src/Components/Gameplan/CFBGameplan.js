@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
 import toast from 'react-hot-toast';
 import { useMediaQuery } from 'react-responsive';
@@ -45,7 +45,8 @@ import {
     GPTab,
     OpposingSchemeRow,
     SchemeDropdown,
-    SchemeModal
+    SchemeModal,
+    ViewFormationModal
 } from './GameplanCommons';
 import routes from '../../Constants/routes';
 import { InputRange } from '../_Common/InputRange';
@@ -63,10 +64,10 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
     const [teamColors, setTeamColors] = useState('');
     const [initialGameplan, setInitialGameplan] = useState(null);
     const [gameplan, setGameplan] = useState(null);
-    const [oppGameplan, setOppGameplan] = useState(null);
+    const [opponentScheme, setOpponentScheme] = useState(null);
     const [depthChart, setDepthChart] = useState(null);
     const [activeView, setActiveView] = useState('Offensive Formations');
-    const [offenseFormationLabels, setOffenseFormationLabels] = useState([]);
+    const [selectedFormation, setSelectedFormation] = useState('');
     const [passTotal, setPassTotal] = useState(0);
     const [diveFocus, setDiveFocus] = useState(50);
     const [pitchFocus, setPitchFocus] = useState(50);
@@ -80,10 +81,14 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
     const [viewWidth, setViewWidth] = useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:760px)` });
     const focusPlayOptions = MapOptions(FocusPlayList);
-    const offensiveFormations =
-        gameplan && gameplan.OffensiveScheme
-            ? FormationMap[gameplan.OffensiveScheme].Formations
-            : [];
+    const offensiveFormations = useMemo(() => {
+        if (gameplan && gameplan.OffensiveScheme.length > 0) {
+            const forms = FormationMap[gameplan.OffensiveScheme].Formations;
+            return forms.length > 0 ? forms : [];
+        }
+        return [];
+    }, [gameplan]);
+
     const isDefaultOffense = gameplan && gameplan.DefaultOffense;
     const isDefaultDefense = gameplan && gameplan.DefaultDefense;
     const defensiveFormations =
@@ -91,10 +96,9 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
             ? FormationMap[gameplan.DefensiveScheme].Formations
             : [];
 
-    const opposingFormation =
-        oppGameplan && oppGameplan.ID > 0
-            ? FormationMap[oppGameplan.OffensiveScheme].Formations
-            : [];
+    const opposingFormation = opponentScheme
+        ? FormationMap[opponentScheme].Formations
+        : [];
     // UseEffects
     useEffect(() => {
         if (!viewWidth) {
@@ -156,7 +160,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
 
     const ValidatePlayDistribution = (dist, total, playType, setValidation) => {
         if (dist !== total) {
-            const message = `Total ${playType} Distribution is set to ${dist}. Please make sure your allocation equals 100.`;
+            const message = `Total ${playType} Distribution is set to ${dist}. Please navigate to the Offense Distribution Tab make sure your allocation equals 100.`;
             setValidation(false);
             toast.error(
                 (t) => (
@@ -196,7 +200,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
 
     const CheckWeightDistribution = (weight, playType, setValidation) => {
         if (weight < 0 || weight > 10) {
-            const message = `The ${playType} Weight Distribution is set to ${dist}. Please make sure the number is between 0 and 10.`;
+            const message = `The ${playType} Weight Distribution is set to ${weight}. Please make sure the number is between 0 and 10.`;
             setValidation(false);
             toast.error(
                 (t) => (
@@ -307,14 +311,22 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
         // Check Offensive formations
         if (gp.OffForm1Weight > 0) {
             formationCount += 1;
-            enoughWeight = CheckForDistributionWeight('One', gp.OffForm1Weight);
+            enoughWeight = CheckForDistributionWeight(
+                'One',
+                gp.OffForm1Weight,
+                setValidation
+            );
         }
 
         if (!enoughWeight) return;
 
         if (gp.OffForm2Weight > 0) {
             formationCount += 1;
-            enoughWeight = CheckForDistributionWeight('Two', gp.OffForm1Weight);
+            enoughWeight = CheckForDistributionWeight(
+                'Two',
+                gp.OffForm2Weight,
+                setValidation
+            );
         }
         if (!enoughWeight) return;
 
@@ -322,7 +334,8 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
             formationCount += 1;
             enoughWeight = CheckForDistributionWeight(
                 'Three',
-                gp.OffForm1Weight
+                gp.OffForm3Weight,
+                setValidation
             );
         }
         if (!enoughWeight) return;
@@ -331,7 +344,8 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
             formationCount += 1;
             enoughWeight = CheckForDistributionWeight(
                 'Four',
-                gp.OffForm1Weight
+                gp.OffForm4Weight,
+                setValidation
             );
         }
         if (!enoughWeight) return;
@@ -340,7 +354,8 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
             formationCount += 1;
             enoughWeight = CheckForDistributionWeight(
                 'Five',
-                gp.OffForm1Weight
+                gp.OffForm5Weight,
+                setValidation
             );
         }
         if (!enoughWeight) return;
@@ -459,6 +474,26 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
             'Traditional Run',
             setValidation
         );
+
+        if (
+            gp.OffensiveScheme === 'Air Raid' &&
+            gp.OffForm3TraditionalRun > 0
+        ) {
+            message = `The Empty Gun formation does not have a runningback and thus cannot support traditional run plays. Please set this value to 0.`;
+            setValidation(() => false);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
+            return;
+        }
 
         optRunDist =
             gp.OffForm1OptionRun +
@@ -731,7 +766,11 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
         const validPassPlays = ValidatePassPlayDistribution(gp);
 
         if (!validPassPlays) {
-            message = `Please modify the pass play distribution for all plays for the current scheme: ${gp.OffensiveScheme}`;
+            const schemeNote =
+                gp.OffensiveScheme === 'Air Raid'
+                    ? 'Please note: Long Plays and PA Long Plays are totaled together with a max of 50 for Air Raid.'
+                    : '';
+            message = `Please modify the pass play distribution for all plays for the current scheme: ${gp.OffensiveScheme}. ${schemeNote}`;
             setValidation(validPassPlays);
             toast.error(
                 (t) => (
@@ -849,10 +888,9 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
         const {
             CollegeGP,
             CollegeDC,
-            CollegeOpponent,
+            OpponentScheme,
             NFLGP,
             NFLDC,
-            NFLOpponent,
             CollegeOppPlayers,
             NFLOppPlayers
         } = response;
@@ -862,6 +900,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
             targetPositions.includes(x.Position)
         );
         setDepthChart([...positionPlayers]);
+        setOpponentScheme(() => OpponentScheme);
 
         if (!isNFL) {
             const playerMap = {};
@@ -884,7 +923,6 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
 
             setInitialGameplan({ ...CollegeGP, DoubleTeam: targetName });
             setGameplan({ ...CollegeGP, DoubleTeam: targetName });
-            setOppGameplan({ ...CollegeOpponent });
             setPitchFocus(() => CollegeGP.PitchFocus);
             setDiveFocus(() => CollegeGP.DiveFocus);
         } else {
@@ -907,7 +945,6 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
             setSelectedFocusPlays(() => fp);
             setInitialGameplan({ ...NFLGP, DoubleTeam: targetName });
             setGameplan({ ...NFLGP, DoubleTeam: targetName });
-            setOppGameplan({ ...NFLOpponent });
             setPitchFocus(() => NFLGP.PitchFocus);
             setDiveFocus(() => NFLGP.DiveFocus);
         }
@@ -933,7 +970,6 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
             gp[name] = value;
         }
         if (name === 'OffensiveScheme' && gp.DefaultOffense) {
-            console.log('PING!');
             gp = MapDefaultOptions(gp, 'DefaultOffense');
         } else if (name === 'DefensiveScheme' && gp.DefaultDefense) {
             gp = MapDefaultOptions(gp, 'DefaultDefense');
@@ -966,7 +1002,9 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
         if (num < 0) {
             num = 0;
         }
-        console.log({ name, value, num });
+        if (num > 100) {
+            num = 100;
+        }
         gp[name] = num;
 
         // If Value IS NOT a Number...
@@ -989,6 +1027,14 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
         }
     };
 
+    const HandleFormation = (event) => {
+        event.preventDefault();
+        const value = event.currentTarget.getAttribute('value');
+        if (value && value.length > 0) {
+            setSelectedFormation(() => value);
+        }
+    };
+
     const MapDefaultOptions = (gpObj, value) => {
         const gp = { ...gpObj };
         if (value === 'DefaultOffense' || value === 'OffensiveScheme') {
@@ -1003,7 +1049,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
             gp['PrimaryHB'] = 75;
         } else if (value === 'DefaultDefense' || value === 'DefensiveScheme') {
             const defaults = DefenseDefaultSchemes[gp.DefensiveScheme];
-            const defaultsByOppScheme = defaults[oppGameplan.OffensiveScheme];
+            const defaultsByOppScheme = defaults[opponentScheme];
             if (!defaults && !defaultsByOppScheme) {
                 console.error('Invalid scheme selected!');
                 return;
@@ -1209,6 +1255,13 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
                     />
                 </ul>
             </div>
+            {offensiveFormations.length > 0 &&
+                defensiveFormations.length > 0 && (
+                    <ViewFormationModal
+                        Header={selectedFormation}
+                        ID="viewFormationModal"
+                    />
+                )}
             {gameplan && activeView === 'Offensive Formations' && (
                 <>
                     <SchemeModal
@@ -1256,6 +1309,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
                                                     scheme={
                                                         gameplan.OffensiveScheme
                                                     }
+                                                    isGPPage={true}
                                                 />
                                             )}
                                     </div>
@@ -1316,109 +1370,126 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
                                         </div>
 
                                         <div className="row gap-3">
-                                            {offensiveFormations.map(
-                                                (x, idx) => {
-                                                    const num = idx + 1;
-                                                    const initLabel = `OffForm${num}`;
-                                                    const positions =
-                                                        x.positions.join(', ');
-                                                    return (
-                                                        <div className="col-md-2 gx-3 border rounded">
-                                                            <h6 className="pt-2">
-                                                                {x.name}
-                                                            </h6>
-                                                            <p className="text-small">
-                                                                {positions}
-                                                            </p>
-                                                            <GameplanInputSm
-                                                                label="Weight"
-                                                                name={`${initLabel}Weight`}
-                                                                value={
-                                                                    gameplan
-                                                                        ? gameplan[
-                                                                              `${initLabel}Weight`
-                                                                          ]
-                                                                        : 0
-                                                                }
-                                                                handleChange={
-                                                                    HandleNumberChange
-                                                                }
-                                                                isDefault={
-                                                                    isDefaultOffense
-                                                                }
-                                                            />
-                                                            <GameplanInputSm
-                                                                label="Traditional Run"
-                                                                name={`${initLabel}TraditionalRun`}
-                                                                value={
-                                                                    gameplan
-                                                                        ? gameplan[
-                                                                              `${initLabel}TraditionalRun`
-                                                                          ]
-                                                                        : 0
-                                                                }
-                                                                handleChange={
-                                                                    HandleNumberChange
-                                                                }
-                                                                isDefault={
-                                                                    isDefaultOffense
-                                                                }
-                                                            />
-                                                            <GameplanInputSm
-                                                                label="Option Run"
-                                                                name={`${initLabel}OptionRun`}
-                                                                value={
-                                                                    gameplan
-                                                                        ? gameplan[
-                                                                              `${initLabel}OptionRun`
-                                                                          ]
-                                                                        : 0
-                                                                }
-                                                                handleChange={
-                                                                    HandleNumberChange
-                                                                }
-                                                                isDefault={
-                                                                    isDefaultOffense
-                                                                }
-                                                            />
-                                                            <GameplanInputSm
-                                                                label="Pass"
-                                                                name={`${initLabel}Pass`}
-                                                                value={
-                                                                    gameplan
-                                                                        ? gameplan[
-                                                                              `${initLabel}Pass`
-                                                                          ]
-                                                                        : 0
-                                                                }
-                                                                handleChange={
-                                                                    HandleNumberChange
-                                                                }
-                                                                isDefault={
-                                                                    isDefaultOffense
-                                                                }
-                                                            />
-                                                            <GameplanInputSm
-                                                                label="RPO"
-                                                                name={`${initLabel}RPO`}
-                                                                value={
-                                                                    gameplan
-                                                                        ? gameplan[
-                                                                              `${initLabel}RPO`
-                                                                          ]
-                                                                        : 0
-                                                                }
-                                                                handleChange={
-                                                                    HandleNumberChange
-                                                                }
-                                                                isDefault={
-                                                                    isDefaultOffense
-                                                                }
-                                                            />
-                                                        </div>
-                                                    );
-                                                }
-                                            )}
+                                            {offensiveFormations.length > 0 &&
+                                                offensiveFormations.map(
+                                                    (x, idx) => {
+                                                        const num = idx + 1;
+                                                        const initLabel = `OffForm${num}`;
+                                                        const positions =
+                                                            x.positions.join(
+                                                                ', '
+                                                            );
+                                                        return (
+                                                            <div className="col-md-2 gx-3 border rounded">
+                                                                <h6 className="pt-2">
+                                                                    {x.name}{' '}
+                                                                    <button
+                                                                        type="button"
+                                                                        className="btn btn-sm"
+                                                                        data-bs-toggle="modal"
+                                                                        value={
+                                                                            x.name
+                                                                        }
+                                                                        onClick={
+                                                                            HandleFormation
+                                                                        }
+                                                                        data-bs-target="#viewFormationModal"
+                                                                    >
+                                                                        <i className="bi bi-info-circle" />
+                                                                    </button>
+                                                                </h6>
+                                                                <p className="text-small">
+                                                                    {positions}
+                                                                </p>
+                                                                <GameplanInputSm
+                                                                    label="Weight"
+                                                                    name={`${initLabel}Weight`}
+                                                                    value={
+                                                                        gameplan
+                                                                            ? gameplan[
+                                                                                  `${initLabel}Weight`
+                                                                              ]
+                                                                            : 0
+                                                                    }
+                                                                    handleChange={
+                                                                        HandleNumberChange
+                                                                    }
+                                                                    isDefault={
+                                                                        isDefaultOffense
+                                                                    }
+                                                                />
+                                                                <GameplanInputSm
+                                                                    label="Traditional Run"
+                                                                    name={`${initLabel}TraditionalRun`}
+                                                                    value={
+                                                                        gameplan
+                                                                            ? gameplan[
+                                                                                  `${initLabel}TraditionalRun`
+                                                                              ]
+                                                                            : 0
+                                                                    }
+                                                                    handleChange={
+                                                                        HandleNumberChange
+                                                                    }
+                                                                    isDefault={
+                                                                        isDefaultOffense
+                                                                    }
+                                                                />
+                                                                <GameplanInputSm
+                                                                    label="Option Run"
+                                                                    name={`${initLabel}OptionRun`}
+                                                                    value={
+                                                                        gameplan
+                                                                            ? gameplan[
+                                                                                  `${initLabel}OptionRun`
+                                                                              ]
+                                                                            : 0
+                                                                    }
+                                                                    handleChange={
+                                                                        HandleNumberChange
+                                                                    }
+                                                                    isDefault={
+                                                                        isDefaultOffense
+                                                                    }
+                                                                />
+                                                                <GameplanInputSm
+                                                                    label="Pass"
+                                                                    name={`${initLabel}Pass`}
+                                                                    value={
+                                                                        gameplan
+                                                                            ? gameplan[
+                                                                                  `${initLabel}Pass`
+                                                                              ]
+                                                                            : 0
+                                                                    }
+                                                                    handleChange={
+                                                                        HandleNumberChange
+                                                                    }
+                                                                    isDefault={
+                                                                        isDefaultOffense
+                                                                    }
+                                                                />
+                                                                <GameplanInputSm
+                                                                    label="RPO"
+                                                                    name={`${initLabel}RPO`}
+                                                                    value={
+                                                                        gameplan
+                                                                            ? gameplan[
+                                                                                  `${initLabel}RPO`
+                                                                              ]
+                                                                            : 0
+                                                                    }
+                                                                    handleChange={
+                                                                        HandleNumberChange
+                                                                    }
+                                                                    isDefault={
+                                                                        isDefaultOffense
+                                                                    }
+                                                                />
+                                                            </div>
+                                                        );
+                                                    }
+                                                )}
                                         </div>
                                     </div>
                                 </div>
@@ -1857,6 +1928,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
                                                 scheme={
                                                     gameplan.DefensiveScheme
                                                 }
+                                                isGPPage={true}
                                             />
                                         )}
                                     </div>
@@ -1887,16 +1959,14 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
                                             </div>
                                         </div>
 
-                                        {oppGameplan && (
+                                        {opponentScheme && (
                                             <OpposingSchemeRow
-                                                scheme={
-                                                    oppGameplan.OffensiveScheme
-                                                }
+                                                scheme={opponentScheme}
                                             />
                                         )}
 
                                         <div className="row gap-2">
-                                            {oppGameplan &&
+                                            {opponentScheme &&
                                                 opposingFormation.map(
                                                     (x, idx) => {
                                                         const num = idx + 1;
@@ -1995,6 +2065,22 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
                                                                             )
                                                                         )}
                                                                     </ul>
+                                                                    <button
+                                                                        type="button"
+                                                                        className="btn btn-sm"
+                                                                        data-bs-toggle="modal"
+                                                                        value={
+                                                                            gameplan[
+                                                                                initLabel
+                                                                            ]
+                                                                        }
+                                                                        onClick={
+                                                                            HandleFormation
+                                                                        }
+                                                                        data-bs-target="#viewFormationModal"
+                                                                    >
+                                                                        <i className="bi bi-info-circle" />
+                                                                    </button>
                                                                 </div>
                                                                 <p className="text-small">
                                                                     {positions}

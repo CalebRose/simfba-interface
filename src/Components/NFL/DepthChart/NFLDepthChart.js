@@ -88,9 +88,7 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
     const SelectTeam = async (selectedTeam) => {
         setCanModify(
             () =>
-                (selectedTeam.ID === currentUser.NFLTeamID &&
-                    (currentUser.NFLRole === 'Owner' ||
-                        currentUser.NFLRole === 'Coach')) ||
+                selectedTeam.ID === currentUser.NFLTeamID ||
                 currentUser.roleID === 'Admin'
         );
         await GetRoster(selectedTeam.ID);
@@ -307,8 +305,15 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
     const ValidateDepthChart = () => {
         if (!canModify) {
             toast.error(
-                "Viewing other team's depth charts in read-only mode.",
-                { duration: 30000 }
+                (t) => (
+                    <span>
+                        {"Viewing other team's depth charts in read-only mode."}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 7000 }
             );
             return;
         }
@@ -341,7 +346,7 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
             if (row.NFLPlayer.IsInjured) {
                 setValidation(() => false);
                 toast.error(
-                    `${row.FirstName} ${row.LastName} is injured with ${row.NFLPlayer.InjuryType}. They are unable to play for ${row.CollegePlayer.WeeksOfRecovery} Weeks. Please swap them from their ${row.Position} position level.`,
+                    `${row.FirstName} ${row.LastName} is injured with ${row.NFLPlayer.InjuryType}. They are unable to play for ${row.NFLPlayer.WeeksOfRecovery} Weeks. Please swap them from their ${row.Position} position level.`,
                     { duration: 6000 }
                 );
                 return;

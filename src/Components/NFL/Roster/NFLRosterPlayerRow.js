@@ -1,6 +1,9 @@
 import React from 'react';
 import { GetNFLOverall } from '../../../_Utility/RosterHelper';
-import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
+import {
+    HeightToFeetAndInches,
+    RoundToTwoDecimals
+} from '../../../_Utility/utilHelper';
 import { CutPlayerModal } from './CutPlayerModal';
 import { ExtendPlayerModal } from './ExtendPlayerModal';
 import { NFLPlayerModal } from './NFLPlayerModal';
@@ -64,6 +67,10 @@ export const NFLRosterPlayerRow = ({
     }
     if (acceptedExtensionBool) {
         extensionStatus = 'btn-success';
+    }
+    let healthStatus = 'Healthy';
+    if (player.IsInjured) {
+        healthStatus = `${player.InjuryType} ${player.InjuryName}, ${player.WeeksOfRecovery} Games`;
     }
 
     const injuryReservePlayer = () => {
@@ -135,12 +142,27 @@ export const NFLRosterPlayerRow = ({
                 <td label="Position">{player.Position}</td>
                 <td label="Year">{year ? year : ''}</td>
                 <td label="Overall">{ovr ? ovr : ''}</td>
-                <td label="Height">
-                    {heightObj.feet}' {heightObj.inches}"
+                <td label="Health">{healthStatus}</td>
+                <td label="Y1Bonus">{RoundToTwoDecimals(Contract.Y1Bonus)}</td>
+                <td label="Y1Salary">
+                    {RoundToTwoDecimals(Contract.Y1BaseSalary)}
                 </td>
-                <td label="Weight">{player.Weight}</td>
-                <td label="Bonus">{Contract.Y1Bonus}</td>
-                <td label="Salary">{Contract.Y1BaseSalary}</td>
+                <td label="Y2Bonus">{RoundToTwoDecimals(Contract.Y2Bonus)}</td>
+                <td label="Y2Salary">
+                    {RoundToTwoDecimals(Contract.Y2BaseSalary)}
+                </td>
+                <td label="Y3Bonus">{RoundToTwoDecimals(Contract.Y3Bonus)}</td>
+                <td label="Y3Salary">
+                    {RoundToTwoDecimals(Contract.Y3BaseSalary)}
+                </td>
+                <td label="Y4Bonus">{RoundToTwoDecimals(Contract.Y4Bonus)}</td>
+                <td label="Y4Salary">
+                    {RoundToTwoDecimals(Contract.Y4BaseSalary)}
+                </td>
+                <td label="Y5Bonus">{RoundToTwoDecimals(Contract.Y5Bonus)}</td>
+                <td label="Y5Salary">
+                    {RoundToTwoDecimals(Contract.Y5BaseSalary)}
+                </td>
                 <td label="YearsRemaining">{Contract.ContractLength}</td>
                 <td>
                     <div className="btn-group btn-border">
@@ -217,7 +239,11 @@ export const NFLRosterPlayerRow = ({
                                 title={practiceSquadTitle}
                                 data-bs-toggle="modal"
                                 data-bs-target={practiceSquadTarget}
-                                disabled={!userView || !canModify}
+                                disabled={
+                                    !userView ||
+                                    !canModify ||
+                                    player.Experience > 3
+                                }
                             >
                                 <i
                                     className={`bi ${
@@ -238,7 +264,11 @@ export const NFLRosterPlayerRow = ({
                                 }`}
                                 title={practiceSquadTitle}
                                 onClick={bringUpPlayer}
-                                disabled={!userView || !canModify}
+                                disabled={
+                                    !userView ||
+                                    !canModify ||
+                                    player.Experience > 3
+                                }
                             >
                                 <i
                                     className={`bi ${

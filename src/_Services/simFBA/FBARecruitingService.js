@@ -138,16 +138,19 @@ export default class FBARecruitingService {
     }
 
     async ToggleScholarship(dto) {
-        let response = await fetch(url + 'recruiting/toggleScholarship/', {
-            headers: {
-                authorization: localStorage.getItem('token'),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify(dto),
-            mode: 'cors'
-        });
+        let response = await PostCall(
+            `${url}recruiting/toggleScholarship/`,
+            dto
+        );
+        // let response = await fetch(url + 'recruiting/toggleScholarship/', {
+        //     headers: {
+        //         authorization: localStorage.getItem('token'),
+        //         'Content-Type': 'application/json',
+        //         Accept: 'application/json'
+        //     },
+        //     method: 'POST',
+        //     body: JSON.stringify(dto)
+        // });
 
         if (response.ok) {
             console.log('Successfully modified scholarship status');
@@ -225,7 +228,7 @@ export default class FBARecruitingService {
 
     async GetRecruitingClass(id) {
         let json;
-        let response = await fetch(`${url}croots/ds/class/${id}`, {
+        let response = await fetch(`${url}ds/cfb/croots/class/${id}`, {
             method: 'GET',
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token')

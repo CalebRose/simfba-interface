@@ -131,8 +131,10 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                     leagueView === 'nba' &&
                     selectedLeague.label.length > 0
                 ) {
-                    dataSet = dataSet.filter(
-                        (x) => selectedLeague.label === x.League
+                    dataSet = dataSet.filter((x) =>
+                        leagueView === 'nba'
+                            ? !x.IsInternational
+                            : x.IsInternational
                     );
                 }
             }

@@ -59,10 +59,7 @@ class AvailableTeams extends Component {
 
     NBAGetAvailableTeams = async () => {
         let teams = await this.BBATeamService.GetAllProfessionalTeams();
-        const sortedTeams = teams.sort(
-            (a, b) => '' + a.Team.localeCompare(b.Team)
-        );
-        this.setState({ teams: teams, filterTeams: sortedTeams });
+        this.setState({ teams: teams, filterTeams: teams });
     };
 
     sendCFBRequest = async (team) => {
@@ -320,7 +317,7 @@ class AvailableTeams extends Component {
                     </div>
                     <div className="col-md-10">
                         <div className="availableScrollbar available-ui-height availableTeams">
-                            <div className="row row-cols-1 row-cols-md-3 g-4 mb-2">
+                            <div className="row row-cols-1 row-cols-md-4 g-4 mb-2">
                                 {teamCards}
                             </div>
                         </div>

@@ -285,15 +285,11 @@ h2 {
 }
 
 .availableTeams {
-    padding: 24px;
     overflow-y: auto;
-    overflow-x: hidden;
 }
 
 .availableScrollbar {
     padding: 6px;
-    margin: auto;
-    max-width: 75%;
     overflow-x: hidden;
 }
 
@@ -367,7 +363,7 @@ h2 {
 }
 
 .card-content {
-    margin-top: 1em;
+    margin-top: 1rem;
 }
 
 .card-titles {
@@ -376,9 +372,9 @@ h2 {
 }
 
 .imageSize {
-    margin-top: 1rem !important;
-    max-height: 180px;
-    max-width: 180px;
+    height: 80px;
+    max-width: 95px;
+    object-fit: contain;
 }
 
 .disable {
@@ -1164,4 +1160,20 @@ hr.solid {
 
 .profile-card {
     height: 300px;
+}
+
+.game-record {
+    max-width: 40vw;
+}
+
+@media (min-width: 992px) {
+    .modal-xl {
+        --bs-modal-width: 85vw;
+    }
+}
+
+@media (max-width: 991px) {
+    .game-record {
+        max-width: 100vw;
+    }
 }

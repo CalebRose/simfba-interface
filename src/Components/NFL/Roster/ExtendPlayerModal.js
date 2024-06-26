@@ -491,9 +491,9 @@ export const ExtendNBAPlayerModal = ({
 }) => {
     const [existingOffer, setExistingOffer] = useState(null);
     const [offer, setOffer] = useState(() => {
-        const offers = player.Offers;
+        const offers = player.Extensions;
         if (offers && offers.length > 0) {
-            const offerIdx = player.Offers.findIndex(
+            const offerIdx = player.Extensions.findIndex(
                 (x) => x.TeamID === team.ID
             );
             if (offerIdx < 0) {
@@ -1150,7 +1150,7 @@ export const ExtendNBAPlayerModal = ({
                                     <TotalInput
                                         name="Y1Remaining"
                                         value={RoundToTwoDecimals(
-                                            offer.Y1Remaining
+                                            offer.Y2Remaining
                                         )}
                                         change={handleInputChange}
                                         label="Cap Year 1"
@@ -1159,7 +1159,7 @@ export const ExtendNBAPlayerModal = ({
                                     <TotalInput
                                         name="Y2Remaining"
                                         value={RoundToTwoDecimals(
-                                            offer.Y2Remaining
+                                            offer.Y3Remaining
                                         )}
                                         change={handleInputChange}
                                         label="Cap Year 2"
@@ -1168,7 +1168,7 @@ export const ExtendNBAPlayerModal = ({
                                     <TotalInput
                                         name="Y3Remaining"
                                         value={RoundToTwoDecimals(
-                                            offer.Y3Remaining
+                                            offer.Y4Remaining
                                         )}
                                         change={handleInputChange}
                                         label="Cap Year 3"
@@ -1177,7 +1177,7 @@ export const ExtendNBAPlayerModal = ({
                                     <TotalInput
                                         name="Y4Remaining"
                                         value={RoundToTwoDecimals(
-                                            offer.Y4Remaining
+                                            offer.Y5Remaining
                                         )}
                                         change={handleInputChange}
                                         label="Cap Year 4"
@@ -1186,7 +1186,7 @@ export const ExtendNBAPlayerModal = ({
                                     <TotalInput
                                         name="Y5Remaining"
                                         value={RoundToTwoDecimals(
-                                            offer.Y5Remaining
+                                            offer.Y5Remaining + 5
                                         )}
                                         change={handleInputChange}
                                         label="Cap Year 5"

@@ -85,30 +85,27 @@ export const ValidatePassPlayDistribution = (gp) => {
 
     switch (scheme) {
         case 'Air Raid':
+        case 'Vertical':
+        case 'West Coast':
+        case 'Run and Shoot':
             if (gp.PassQuick > 50) {
                 return false;
             }
 
-            if (gp.PassShort > 50) {
+            if (gp.PassShort + gp.PassPAShort > 50) {
                 return false;
             }
-            if (gp.PassLong > 50) {
+            if (gp.PassLong + gp.PassPALong > 50) {
                 return false;
             }
 
             if (gp.PassScreen > 20) {
                 return false;
             }
-
-            if (gp.PassPAShort > 20) {
-                return false;
-            }
-
-            if (gp.PassPALong > 20) {
-                return false;
-            }
             break;
         case 'Pro':
+        case 'Power Run':
+        case 'I Option':
             if (gp.PassQuick > 45) {
                 return false;
             }
@@ -133,6 +130,9 @@ export const ValidatePassPlayDistribution = (gp) => {
             }
             break;
         case 'Double Wing Option':
+        case 'Wing-T':
+        case 'Flexbone':
+        case 'Wishbone':
             if (gp.PassQuick > 50) {
                 return false;
             }
@@ -158,6 +158,7 @@ export const ValidatePassPlayDistribution = (gp) => {
             }
             break;
         case 'Spread Option':
+        case 'Pistol':
             if (gp.PassQuick > 50) {
                 return false;
             }
@@ -173,11 +174,11 @@ export const ValidatePassPlayDistribution = (gp) => {
                 return false;
             }
 
-            if (gp.PassPAShort > 20) {
+            if (gp.PassPAShort > 25) {
                 return false;
             }
 
-            if (gp.PassPALong > 20) {
+            if (gp.PassPALong > 25) {
                 return false;
             }
             break;

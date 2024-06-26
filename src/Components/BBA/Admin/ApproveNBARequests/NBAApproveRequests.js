@@ -108,7 +108,7 @@ const NBAApproveRequests = ({ currentUser }) => {
             throw ('HTTP-Error: Approval incomplete', res.status);
         }
         // Filter Requests
-        const filterRequests = requests.filter((x) => x.ID !== payload.id);
+        const filterRequests = requests.filter((x) => x.ID !== payload.ID);
         setRequests(filterRequests);
     };
 

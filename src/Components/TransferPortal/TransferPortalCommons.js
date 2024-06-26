@@ -24,19 +24,13 @@ const CFBTransferPortalHeader = ({ viewMode }) => {
                 <th scope="col" style={{ width: 175 }}>
                     Archetype
                 </th>
-                <th scope="col" style={{ width: 175 }}>
-                    High School
-                </th>
-                <th scope="col" style={{ width: 175 }}>
-                    City
-                </th>
+                <th scope="col">Prev. Team</th>
                 <th scope="col">State</th>
+                <th scope="col">Year</th>
                 <th scope="col">Stars</th>
                 <th scope="col">Overall</th>
                 <th scope="col">Potential</th>
-                <th scope="col">Affinities</th>
                 <th scope="col">Leading Schools</th>
-                <th scope="col">Status</th>
                 <th scope="col">Add</th>
             </tr>
         </thead>
@@ -116,7 +110,39 @@ export const TPOverviewHeader = ({ isCFB, viewMode }) => {
     );
 };
 
-const CFBTransferBoardHeader = ({ viewMode }) => {};
+const CFBTransferBoardHeader = ({ viewMode }) => {
+    return (
+        <>
+            <thead
+                style={{
+                    position: 'sticky',
+                    top: 0,
+                    backgroundColor: viewMode === 'dark' ? '#202020' : 'white',
+                    zIndex: 3
+                }}
+            >
+                <tr>
+                    <th scope="col">Position</th>
+                    <th scope="col" style={{ width: 175 }}>
+                        Archetype
+                    </th>
+                    <th scope="col" style={{ width: 175 }}>
+                        Name
+                    </th>
+                    <th scope="col">State</th>
+                    <th scope="col">Stars</th>
+                    <th scope="col">Overall</th>
+                    <th scope="col">Potential</th>
+                    <th scope="col">Leading Teams</th>
+                    <th scope="col">Allocate</th>
+                    <th scope="col">Multiplier</th>
+                    <th scope="col">Total Points</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+        </>
+    );
+};
 
 const CBBTransferBoardHeader = ({ viewMode, ChangeSort }) => {
     return (

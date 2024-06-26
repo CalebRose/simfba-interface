@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver';
 import url from '../../Constants/url.js';
-import { GetCall, PostCall } from './FetchHelper.js';
+import { GetActionCall, GetCall, PostCall } from './FetchHelper.js';
 
 export default class FBAPlayerService {
     async GetPlayersByTeam(teamID) {
@@ -66,8 +66,10 @@ export default class FBAPlayerService {
         return json;
     }
 
-    async AssignRedshirt(dto) {
-        return await PostCall(`${url}collegeplayers/assign/redshirt/`, dto);
+    async AssignRedshirt(playerID) {
+        return await GetActionCall(
+            `${url}collegeplayers/assign/redshirt/${playerID}`
+        );
     }
 
     async CutNFLPlayerFromRoster(PlayerID) {

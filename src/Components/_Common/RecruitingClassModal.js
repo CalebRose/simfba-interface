@@ -52,7 +52,12 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode, retro }) => {
             res = await _bbaRecruitingService.GetRecruitingClass(currentTeam);
         }
 
-        const result = isCFB ? res.Recruits : res;
+        let cfbRecruits = [];
+        if (isCFB && res.Recruits) {
+            cfbRecruits = res.Recruits;
+        }
+
+        const result = isCFB ? cfbRecruits : res;
 
         setClass(() => result);
     };
@@ -99,8 +104,12 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode, retro }) => {
                         {croot.FirstName} {croot.LastName}
                     </h6>
                 </div>
-                <div className="col">{croot.Position}</div>
-                <div className="col">{croot.Archetype}</div>
+                <div className="col">
+                    <p>{croot.Position}</p>
+                </div>
+                <div className="col">
+                    <p>{croot.Archetype}</p>
+                </div>
                 <div className="col">
                     <h6>{croot.City}</h6>
                 </div>

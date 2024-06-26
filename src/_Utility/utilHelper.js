@@ -427,3 +427,42 @@ export const GetPromiseMultiplier = (promiseObj) => {
     if (PromiseWeight === 'Very High') return 1.75;
     return 1;
 };
+
+export const GetDownStr = (down) => {
+    if (down === 0 || down === '0') return down;
+    if (down === 1 || down === '1') return '1st';
+    if (down === 2 || down === '2') return '2nd';
+    if (down === 3 || down === '3') return '3rd';
+    if (down === 4 || down === '4') return '4th';
+    return '';
+};
+
+export const ShuffleList = (list) => {
+    const newList = [...list];
+    let currentIndex = list.length;
+
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+        // Pick a remaining element...
+        let randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [newList[currentIndex], newList[randomIndex]] = [
+            newList[randomIndex],
+            newList[currentIndex]
+        ];
+    }
+
+    return newList;
+};
+
+export const GetAdjStaminaByPace = (sta, pace) => {
+    let mod = 0;
+    if (pace === 'Balanced') return sta;
+    else if (pace === 'Fast') mod -= 3;
+    else if (pace === 'Very Fast') mod -= 6;
+    else if (pace === 'Slow') mod += 3;
+    else if (pace === 'Very Slow') mod += 6;
+    return sta + mod;
+};

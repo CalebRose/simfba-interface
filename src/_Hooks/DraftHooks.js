@@ -56,10 +56,13 @@ export const useDraftMap = (allDraftPicks) => {
     const draftMap = useMemo(() => {
         const draftMapObj = {};
         if (allDraftPicks) {
-            for (let i = 0; i < allDraftPicks.length; i++) {
-                const pick = allDraftPicks[i];
-                if (pick.SelectedPlayerID > 0) {
-                    draftMapObj[pick.SelectedPlayerID] = true;
+            for (let i = 1; i < 2; i++) {
+                const roundOfPicks = allDraftPicks[i];
+                for (let j = 0; j < roundOfPicks.length; j++) {
+                    const pick = roundOfPicks[j];
+                    if (pick.SelectedPlayerID > 0) {
+                        draftMapObj[pick.SelectedPlayerID] = true;
+                    }
                 }
             }
         }

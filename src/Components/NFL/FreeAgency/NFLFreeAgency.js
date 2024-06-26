@@ -66,12 +66,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     useEffect(() => {
         if (allPlayers.length === 0 && currentUser) {
             GetAvailablePlayers(currentUser.NFLTeamID);
-            setCanModify(
-                () =>
-                    currentUser.NFLRole === 'Owner' ||
-                    currentUser.NFLRole === 'Manager' ||
-                    currentUser.roleID === 'Admin'
-            );
+            setCanModify(() => true);
         }
     }, [allPlayers, currentUser]);
 

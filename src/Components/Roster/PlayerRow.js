@@ -10,9 +10,17 @@ const PlayerRow = (props) => {
     let ovr = GetOverall(data.Overall, data.Year);
     const year = GetYear(data);
     const heightObj = HeightToFeetAndInches(data.Height);
+    let healthStatus = 'Healthy';
+    if (data.IsInjured) {
+        healthStatus = `${data.InjuryType} ${data.InjuryName}, ${data.WeeksOfRecovery} Games`;
+    }
     return (
         <tr>
-            <th className="align-middle">
+            <th
+                className={`align-middle ${
+                    data.IsInjured ? 'text-danger' : ''
+                }`}
+            >
                 {props.data.FirstName + ' ' + props.data.LastName}
                 <button
                     type="button"
@@ -38,6 +46,9 @@ const PlayerRow = (props) => {
             <td label="State">{data.State}</td>
             <td label="Stars">{data.Stars}</td>
             <td label="Potential">{data.PotentialGrade}</td>
+            <td label="Health">
+                <p className="text-small">{healthStatus}</p>
+            </td>
             <td label="">
                 <div className="btn-group btn-border">
                     {data.IsRedshirting ? (
@@ -47,6 +58,7 @@ const PlayerRow = (props) => {
                     ) : redshirtCount < 15 &&
                       !data.IsRedshirt &&
                       ts.CollegeWeek < 5 &&
+                      !ts.CFBSpringGames &&
                       view ? (
                         <button
                             type="button"

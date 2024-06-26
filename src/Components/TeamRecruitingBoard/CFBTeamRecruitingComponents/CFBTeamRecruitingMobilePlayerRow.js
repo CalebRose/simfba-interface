@@ -99,10 +99,7 @@ const CFBTeamMobilePlayerRow = (props) => {
     return (
         <>
             <CrootModal crt={Recruit} idx={idx} retro={retro} />
-            <ConfirmRevokeModal
-                idx={idx}
-                toggleScholarship={toggleScholarship}
-            />
+            <ConfirmRevokeModal idx={idx} revoke={toggleScholarship} />
             <ConfirmRemovePlayerFromBoardModal
                 idx={idx}
                 removePlayer={removePlayerFromBoard}

@@ -9,6 +9,7 @@ import ConfirmRedshirtModal from '../../Roster/RedshirtModal';
 import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 import { PromisePlayerModal } from '../../_Common/ModalComponents';
 import { PortalService } from '../../../_Services/simFBA/FBAPortalService';
+import { useMediaQuery } from 'react-responsive';
 
 const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
     let _teamService = new BBATeamService();
@@ -20,7 +21,21 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
     const [filteredTeams, setFilteredTeams] = useState('');
     const [roster, setRoster] = useState([]);
     const [promisePlayer, setPromisePlayer] = useState(null);
+    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     const tableHoverClass = GetTableHoverClass(viewMode);
+    // For mobile
+    React.useEffect(() => {
+        if (!viewWidth) {
+            setViewWidth(window.innerWidth);
+        }
+    }, [viewWidth]);
+
+    const handleResize = () => {
+        setViewWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
     let redshirtCount =
         roster && roster.length > 0
             ? roster.filter((player) => player.IsRedshirting).length
@@ -147,6 +162,7 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
                         viewMode={viewMode}
                     />
                     <BBATeamPlayerRow
+                        isMobile={isMobile}
                         key={x.ID}
                         player={x}
                         idx={i}
@@ -286,6 +302,7 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
                                     <th scope="col">Stamina</th>
                                     <th scope="col">Potential</th>
                                     <th scope="col">Min. Expectations</th>
+                                    <th scope="col">Health</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>

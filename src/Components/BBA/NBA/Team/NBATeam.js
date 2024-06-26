@@ -8,6 +8,7 @@ import BBATeamDropdownItem from '../../Team/BBATeamDropdownItem';
 import { NBASidebar } from '../Sidebar/NBASidebar';
 import NBATeamPlayerRow from './NBATeamPlayerRow';
 import BBATradeService from '../../../../_Services/simNBA/BBATradeService';
+import { useMediaQuery } from 'react-responsive';
 
 const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
     let _teamService = new BBATeamService();
@@ -18,7 +19,21 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
     const [teams, setTeams] = React.useState('');
     const [filteredTeams, setFilteredTeams] = React.useState('');
     const [roster, setRoster] = React.useState([]);
+    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     const tableHoverClass = GetTableHoverClass(viewMode);
+    // For mobile
+    React.useEffect(() => {
+        if (!viewWidth) {
+            setViewWidth(window.innerWidth);
+        }
+    }, [viewWidth]);
+
+    const handleResize = () => {
+        setViewWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
 
     useEffect(() => {
         if (currentUser) {
@@ -141,23 +156,23 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
 
     const ActivateToast = (id) => {
         toast.promise(ActivateOption(id), {
-            loading: SavingMessage,
+            loading: 'Saving...',
             success: 'Activated Next Year Option!',
             error: 'Error! Could not activate option.'
         });
     };
 
     const ExtendToast = (player, offer) => {
-        toast.promise(ExtendPlayer(), {
-            loading: SavingMessage,
+        toast.promise(ExtendPlayer(player, offer), {
+            loading: 'Extending...',
             success: 'Successfully extended offer to player!',
             error: 'Error! Could not extend offer.'
         });
     };
 
     const CancelToast = (player, offer) => {
-        toast.promise(CancelOffer(), {
-            loading: SavingMessage,
+        toast.promise(CancelOffer(player, offer), {
+            loading: 'Cancelling...',
             success: 'Cancelled the extension offer!',
             error: 'Error! Could cancel extension offer.'
         });
@@ -241,6 +256,7 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
                         twoWayCount={twoWayCount}
                         gLeagueCount={GLeagueCount}
                         retro={currentUser.IsRetro}
+                        isMobile={isMobile}
                     />
                 </>
             );
@@ -333,16 +349,18 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
                                     <th scope="col">Name</th>
                                     <th scope="col">Age | Exp</th>
                                     <th scope="col">Overall</th>
-                                    <th scope="col">Finishing</th>
-                                    <th scope="col">2pt Shooting</th>
-                                    <th scope="col">3pt Shooting</th>
-                                    <th scope="col">Free Throw</th>
-                                    <th scope="col">Ballwork</th>
-                                    <th scope="col">Rebounding</th>
-                                    <th scope="col">Int. Defense</th>
-                                    <th scope="col">Per. Defense</th>
-                                    <th scope="col">Stamina</th>
                                     <th scope="col">Potential</th>
+                                    <th scope="col">Health</th>
+                                    <th scope="col">Stamina</th>
+                                    <th scope="col">Minutes Expectations</th>
+                                    <th scope="col">Draft Info</th>
+                                    <th scope="col">Accolades</th>
+                                    <th scope="col">Contract Length</th>
+                                    <th scope="col">Year 1</th>
+                                    <th scope="col">Year 2</th>
+                                    <th scope="col">Year 3</th>
+                                    <th scope="col">Year 4</th>
+                                    <th scope="col">Year 5</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>

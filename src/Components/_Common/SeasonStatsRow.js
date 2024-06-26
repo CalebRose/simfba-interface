@@ -169,29 +169,37 @@ export const BBAStatsRow = ({ SeasonStats }) => {
             <div className="row">
                 <div className="col-auto">
                     <h6>PPG</h6>
-                    <p>{RoundToTwoDecimals(SeasonStats.PPG)}</p>
+                    <p className="text-small">
+                        {RoundToTwoDecimals(SeasonStats.PPG)}
+                    </p>
                 </div>
                 <div className="col-auto">
                     <h6>FG Made</h6>
-                    <p>{RoundToTwoDecimals(SeasonStats.FGMPG)}</p>
+                    <p className="text-small">
+                        {RoundToTwoDecimals(SeasonStats.FGMPG)}
+                    </p>
                 </div>
                 <div className="col-auto">
                     <h6>FG Attempts</h6>
-                    <p>{RoundToTwoDecimals(SeasonStats.FGAPG)}</p>
+                    <p className="text-small">
+                        {RoundToTwoDecimals(SeasonStats.FGAPG)}
+                    </p>
                 </div>
                 <div className="col-auto">
                     <h6>FG Percentage</h6>
-                    <p>{RoundToTwoDecimals(SeasonStats.FGPercent * 100)}%</p>
+                    <p className="text-small">
+                        {RoundToTwoDecimals(SeasonStats.FGPercent * 100)}%
+                    </p>
                 </div>
                 <div className="col-auto">
                     <h6>3pt Made</h6>
-                    <p>
+                    <p className="text-small">
                         {RoundToTwoDecimals(SeasonStats.ThreePointsMadePerGame)}
                     </p>
                 </div>
                 <div className="col-auto">
                     <h6>3pt Attempts</h6>
-                    <p>
+                    <p className="text-small">
                         {RoundToTwoDecimals(
                             SeasonStats.ThreePointAttemptsPerGame
                         )}
@@ -199,7 +207,7 @@ export const BBAStatsRow = ({ SeasonStats }) => {
                 </div>
                 <div className="col-auto">
                     <h6>3pt Percentage</h6>
-                    <p>
+                    <p className="text-small">
                         {RoundToTwoDecimals(
                             SeasonStats.ThreePointPercent * 100
                         )}
@@ -208,49 +216,71 @@ export const BBAStatsRow = ({ SeasonStats }) => {
                 </div>
                 <div className="col-auto">
                     <h6>FT Made</h6>
-                    <p>{RoundToTwoDecimals(SeasonStats.FTMPG)}</p>
+                    <p className="text-small">
+                        {RoundToTwoDecimals(SeasonStats.FTMPG)}
+                    </p>
                 </div>
                 <div className="col-auto">
                     <h6>FT Attempts</h6>
-                    <p>{RoundToTwoDecimals(SeasonStats.FTAPG)}</p>
+                    <p className="text-small">
+                        {RoundToTwoDecimals(SeasonStats.FTAPG)}
+                    </p>
                 </div>
                 <div className="col-auto">
                     <h6>FT Percent</h6>
-                    <p>{RoundToTwoDecimals(SeasonStats.FTPercent * 100)}%</p>
+                    <p className="text-small">
+                        {RoundToTwoDecimals(SeasonStats.FTPercent * 100)}%
+                    </p>
                 </div>
             </div>
             <div className="row mt-1">
                 <div className="col-auto">
                     <h6>Assists</h6>
-                    <p>{RoundToTwoDecimals(SeasonStats.AssistsPerGame)}</p>
+                    <p className="text-small">
+                        {RoundToTwoDecimals(SeasonStats.AssistsPerGame)}
+                    </p>
                 </div>
                 <div className="col-auto">
                     <h6>Total Rebounds</h6>
-                    <p>{RoundToTwoDecimals(SeasonStats.ReboundsPerGame)}</p>
+                    <p className="text-small">
+                        {RoundToTwoDecimals(SeasonStats.ReboundsPerGame)}
+                    </p>
                 </div>
                 <div className="col-auto">
                     <h6>Offensive Rebounds</h6>
-                    <p>{RoundToTwoDecimals(SeasonStats.OffReboundsPerGame)}</p>
+                    <p className="text-small">
+                        {RoundToTwoDecimals(SeasonStats.OffReboundsPerGame)}
+                    </p>
                 </div>
                 <div className="col-auto">
                     <h6>Defensive Rebounds</h6>
-                    <p>{RoundToTwoDecimals(SeasonStats.DefReboundsPerGame)}</p>
+                    <p className="text-small">
+                        {RoundToTwoDecimals(SeasonStats.DefReboundsPerGame)}
+                    </p>
                 </div>
                 <div className="col-auto">
                     <h6>Steals</h6>
-                    <p>{RoundToTwoDecimals(SeasonStats.StealsPerGame)}</p>
+                    <p className="text-small">
+                        {RoundToTwoDecimals(SeasonStats.StealsPerGame)}
+                    </p>
                 </div>
                 <div className="col-auto">
                     <h6>Blocks</h6>
-                    <p>{RoundToTwoDecimals(SeasonStats.BlocksPerGame)}</p>
+                    <p className="text-small">
+                        {RoundToTwoDecimals(SeasonStats.BlocksPerGame)}
+                    </p>
                 </div>
                 <div className="col-auto">
                     <h6>Turnovers</h6>
-                    <p>{RoundToTwoDecimals(SeasonStats.TurnoversPerGame)}</p>
+                    <p className="text-small">
+                        {RoundToTwoDecimals(SeasonStats.TurnoversPerGame)}
+                    </p>
                 </div>
                 <div className="col-auto">
                     <h6>Fouls</h6>
-                    <p>{RoundToTwoDecimals(SeasonStats.FoulsPerGame)}</p>
+                    <p className="text-small">
+                        {RoundToTwoDecimals(SeasonStats.FoulsPerGame)}
+                    </p>
                 </div>
             </div>
         </>

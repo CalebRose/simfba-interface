@@ -112,18 +112,32 @@ const CBBCrootModal = (props) => {
                             </div>
                         </div>
                         <div className="row g-2 mb-3">
-                            <div className="col">
+                            <div
+                                className={crt.RelativeID > 0 ? 'col-3' : 'col'}
+                            >
                                 <h5>Height:</h5> {crt.Height}
                             </div>
                             {crt.State.length > 0 && (
-                                <div className="col">
+                                <div
+                                    className={
+                                        crt.RelativeID > 0 ? 'col-3' : 'col'
+                                    }
+                                >
                                     <h5>State:</h5> {crt.State}
                                 </div>
                             )}
-                            <div className="col">
+                            <div
+                                className={crt.RelativeID > 0 ? 'col-3' : 'col'}
+                            >
                                 <h5>Country</h5>
                                 {crt.Country}
                             </div>
+                            {crt.RelativeID > 0 && (
+                                <div className="col-3">
+                                    <h5>Notes</h5>
+                                    <p>{crt.Notes}</p>
+                                </div>
+                            )}
                         </div>
                         {crt.HasStateBonus ||
                             (crt.HasRegionBonus && (

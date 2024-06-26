@@ -59,6 +59,7 @@ const MobileRosterRow = (props) => {
                             </button>
                         ) : redshirtCount < 15 &&
                           !player.IsRedshirt &&
+                          !ts.CFBSpringGames &&
                           ts.CollegeWeek < 5 &&
                           view ? (
                             <button

@@ -636,7 +636,8 @@ export const FormationMap = {
                     '\n',
                     'CB1',
                     'CB2',
-                    'FS1'
+                    'FS1',
+                    'SS1'
                 ]
             },
             {
@@ -824,7 +825,7 @@ export const FormationMap = {
             }
         ],
         SchemeFits: [
-            'Speed Rush DE',
+            'Speed Rusher DE',
             'Pass Rusher DT',
             'Coverage OLB',
             'Coverage ILB'
@@ -1043,7 +1044,7 @@ export const FormationMap = {
             }
         ],
         SchemeFits: [
-            'Speed Rush DE',
+            'Speed Rusher DE',
             'Pass Rusher DT',
             'Speed OLB',
             'Coverage OLB',
@@ -1160,7 +1161,7 @@ export const FormationMap = {
             'Run Stopper DB'
         ],
         BadFits: [
-            'Speed Rush DE',
+            'Speed Rusher DE',
             'Pass Rusher DT',
             'Coverage OLB',
             'Coverage ILB'

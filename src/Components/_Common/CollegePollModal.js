@@ -19,7 +19,7 @@ const RankRow = ({ row, idx, standingsMap, retro }) => {
     if (standings) {
         description = `${standings.TotalWins}-${standings.TotalLosses} (${standings.ConferenceWins}-${standings.ConferenceLosses})`;
     }
-    console.log({ standings });
+
     return (
         <div className="row mb-3">
             <div

@@ -232,7 +232,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
             } else if (seasonID === 3) {
                 startingWeekID = isCFB ? 43 : 21;
             } else if (seasonID === 4) {
-                startingWeekID = isCFB ? 64 : 43;
+                startingWeekID = isCFB ? 65 : 26;
             }
         }
         week = week + startingWeekID;

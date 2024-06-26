@@ -88,4 +88,9 @@ export default class BBARequestService {
     async RevokeNBARequest(dto) {
         return await PostCall(`${url}nba/requests/revoke/`, dto);
     }
+
+    async RemoveUserFromNBATeamRequest(teamID, dto) {
+        let res = await PostCall(url + 'nba/requests/remove/' + teamID, dto);
+        return res;
+    }
 }

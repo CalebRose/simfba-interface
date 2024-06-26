@@ -1,156 +1,40 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { setCBBTimestamp } from '../../../../Redux/timestamp/timestamp.actions';
 import BBAAdminService from '../../../../_Services/simNBA/BBAAdminService';
 import BBARecruitingService from '../../../../_Services/simNBA/BBARecruitingService';
 import BBACreateCrootModal from './BBACreateCrootModal';
+import { SwitchToggle } from '../../../_Common/SwitchToggle';
+import BBARequestService from '../../../../_Services/simNBA/BBARequestService';
+import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
+import { GPTab } from '../../../Gameplan/GameplanCommons';
+import {
+    ProfessionalCapsheetRow,
+    ProfessionalTeamRow
+} from '../../../_Common/ProfessionalTeamRow';
+import firebase from 'firebase';
 
-const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
+const BBAManageSim = ({ cbb_Timestamp }) => {
     let _adminService = new BBAAdminService();
     let _recruitingService = new BBARecruitingService();
+    let _requestService = new BBARequestService();
+    const _teamService = new BBATeamService();
     const dispatch = useDispatch();
-    const [timestamp, setTimestamp] = React.useState(null);
-    const [SyncComplete, setCompletion] = React.useState(false);
-    const [ActionsRemaining, setRemainingActionsCount] = React.useState(3);
+    const [timestamp, setTimestamp] = useState(null);
+    const [nbaTeams, setNBATeams] = useState([]);
+    const [view, setView] = useState('Teams');
+
+    useEffect(() => {
+        if (nbaTeams.length === 0) {
+            GetNBATeams();
+        }
+    }, [nbaTeams]);
 
     useEffect(() => {
         if (cbb_Timestamp) {
             setTimestamp(() => cbb_Timestamp);
         }
     }, [cbb_Timestamp]);
-
-    const IsWeekComplete = () => {
-        if (timestamp && timestamp.IsOffSeason) {
-            return timestamp.RecruitingSynced && timestamp.GMActionsComplete;
-        } else {
-            return (
-                timestamp.GamesARan &&
-                timestamp.GamesBRan &&
-                timestamp.GamesCRan &&
-                timestamp.GamesDRan &&
-                timestamp.RecruitingSynced &&
-                timestamp.GMActionsComplete
-            );
-        }
-    };
-
-    const SyncResults = async (event) => {
-        const { value } = event.target;
-        const timeslot = value;
-        const ts = { ...timestamp };
-        switch (timeslot) {
-            case 'A':
-                ts.ShowAGames = !ts.ShowAGames;
-                break;
-            case 'B':
-                ts.ShowBGames = !ts.ShowBGames;
-                break;
-            case 'C':
-                ts.ShowCGames = !ts.ShowCGames;
-                break;
-            case 'D':
-                ts.ShowDGames = !ts.ShowDGames;
-                break;
-            default:
-                break;
-        }
-        dispatch(setCBBTimestamp(ts));
-        const res = await _adminService.ShowGames(value);
-        if (res) {
-            alert(`${timeslot} Sync Complete`);
-        }
-    };
-
-    const syncRecruiting = async () => {
-        if (timestamp.RecruitingSynced) {
-            return;
-        }
-        const newTimestamp = { ...timestamp };
-        const response = await _adminService.SyncRecruiting();
-        if (response) {
-            newTimestamp.RecruitingSynced = true;
-            // API Call to Sync A Games
-            setTimestamp({ ...newTimestamp });
-            dispatch(setCBBTimestamp({ ...timestamp, ...newTimestamp }));
-            setCompletion(() => IsWeekComplete());
-        }
-    };
-
-    const syncAIBoards = async () => {
-        const ts = { ...timestamp };
-
-        const response = await _adminService.SyncAIBoards();
-
-        if (response) {
-            ts.AIPointAllocationComplete = !ts.AIPointAllocationComplete;
-            setTimestamp(() => ts);
-            dispatch(setCBBTimestamp({ ...timestamp }));
-        }
-    };
-
-    const lockRecruiting = async () => {
-        const ts = { ...timestamp };
-
-        const response = await _adminService.LockRecruiting();
-
-        if (response) {
-            ts.IsRecruitingLocked = !ts.IsRecruitingLocked;
-            setTimestamp(() => ts);
-            dispatch(setCBBTimestamp({ ...timestamp }));
-        }
-    };
-
-    const SyncManagementActions = async () => {
-        const newTimestamp = { ...timestamp };
-
-        if (newTimestamp.IsNBAOffseason) {
-            newTimestamp.FreeAgencyRound = newTimestamp.FreeAgencyRound + 1;
-        } else {
-            newTimestamp.GMActionsComplete = true;
-        }
-
-        const res = await _adminService.SyncFreeAgency();
-        if (!res) {
-            alert('Could not sync free agency!');
-        } else {
-            setTimestamp({ ...newTimestamp });
-            dispatch(setCBBTimestamp(newTimestamp));
-            setCompletion(IsWeekComplete());
-        }
-    };
-
-    const ChangeDraftTime = async () => {
-        const newTimestamp = { ...timestamp };
-        newTimestamp.IsDraftTime = !newTimestamp.IsDraftTime;
-
-        const res = await _adminService.ChangeDraftTime();
-        if (!res) {
-            alert('Could not change draft time!');
-        } else {
-            setTimestamp({ ...newTimestamp });
-            dispatch(setCBBTimestamp(newTimestamp));
-            setCompletion(IsWeekComplete());
-        }
-    };
-
-    const syncToNextWeek = () => {
-        let response = _adminService.SyncWeek();
-        const newTimestamp = { ...timestamp };
-        // API Call to Sync to Next week and receive new timestamp
-        // Test data for now
-        if (response) {
-            newTimestamp.NBAWeekId++;
-            newTimestamp.CollegeWeekId++;
-            newTimestamp.NBAWeek++;
-            newTimestamp.CollegeWeek++;
-            newTimestamp.GamesARan = false;
-            newTimestamp.GamesBRan = false;
-            newTimestamp.RecruitingSynced = false;
-            newTimestamp.GMActionsComplete = false;
-            setTimestamp({ ...timestamp, ...newTimestamp });
-            dispatch(setCBBTimestamp({ ...timestamp, ...newTimestamp }));
-        }
-    };
 
     const SaveRecruit = async (croot) => {
         const RecruitDTO = { ...croot };
@@ -165,16 +49,78 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
         }
     };
 
+    const ToggleRunCron = async () => {
+        const ts = { ...cbb_Timestamp };
+
+        let res = await _adminService.RunCron();
+
+        if (!res) {
+            alert('Could not toggle cron jobs!');
+        } else {
+            ts.RunCron = !ts.RunCron;
+            dispatch(setCBBTimestamp(ts));
+        }
+    };
+
+    const GetNBATeams = async () => {
+        const res = await _teamService.GetAllProfessionalTeams();
+        setNBATeams(() => res);
+    };
+
+    const removeUserFromTeam = async (event) => {
+        event.preventDefault();
+        const value = event.currentTarget.getAttribute('value');
+        const name = event.currentTarget.getAttribute('name');
+        const dto = {
+            NBATeamID: Number(name),
+            Username: value
+        };
+        const res = await _requestService.RevokeNBARequest(dto);
+        const nt = [...nbaTeams];
+        // Firebase Call
+        const firestore = firebase.firestore();
+
+        let userRef = await firestore
+            .collection('users')
+            .where('username', '==', value)
+            .get();
+
+        userRef.forEach(async (doc) => {
+            let emptyObj = {
+                username: payload.username,
+                NBARole: '',
+                NBATeam: '',
+                NBATeamAbbreviation: '',
+                NBATeamID: 0
+            };
+            await doc.ref.update(emptyObj);
+        });
+        const ntIdx = nt.findIndex((x) => x.ID === Number(name));
+        if (ntIdx > -1) {
+            const nbaTeam = nt[ntIdx];
+            if (nbaTeam.NBAOwnerName === value) {
+                nt[ntIdx].NBAOwnerName = '';
+            } else if (nbaTeam.NBAGMName === value) {
+                nt[ntIdx].NBAGMName = '';
+            } else if (nbaTeam.NBACoachName === value) {
+                nt[ntIdx].NBACoachName = '';
+            } else {
+                nt[ntIdx].NBAAssistantName = '';
+            }
+        }
+        setNBATeams(() => nt);
+    };
+
     return (
         <div className="container">
             {timestamp && (
                 <>
-                    <div className="row mt-3">
+                    <div className="row mt-3 mb-4">
                         <div className="col">
                             <h2>Manage Basketball Sim</h2>
                         </div>
                     </div>
-                    <div className="row mt-4">
+                    <div className="row mb-5">
                         <div className="col  col-md-3">
                             <h3>Season: {timestamp.Season}</h3>
                         </div>
@@ -185,184 +131,14 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                             <h3>FA Round: {timestamp.FreeAgencyRound}</h3>
                         </div>
                         <div className="col col-md-3">
-                            <h3>
-                                {SyncComplete
-                                    ? 'All Actions Completed'
-                                    : ActionsRemaining + ' Actions Remaining'}
-                            </h3>
+                            <SwitchToggle
+                                value="Run Cron"
+                                change={ToggleRunCron}
+                                checkValue={timestamp.RunCron}
+                            />
                         </div>
                     </div>
-                    <div className="row mt-3">
-                        <div className="col-3 mb-2 g-2 justify-content-center text-center">
-                            <div className="d-flex align-items-center justify-content-center">
-                                <div
-                                    className="btn-group-vertical btn-group-lg justify-content-center align-items-center"
-                                    role="group"
-                                    aria-label="TimeslotOptions"
-                                >
-                                    <h5>Sync Results</h5>
-                                    <button
-                                        type="button"
-                                        className={
-                                            SyncComplete
-                                                ? 'btn btn-primary btn-sm'
-                                                : 'btn btn-secondary btn-sm'
-                                        }
-                                        disabled={!SyncComplete}
-                                        onClick={syncToNextWeek}
-                                    >
-                                        Week
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={
-                                            timestamp.IsOffSeason
-                                                ? 'btn btn-secondary btn-sm'
-                                                : 'btn btn-primary btn-sm'
-                                        }
-                                        // disabled={timestamp.GamesARan}
-                                        disabled
-                                        value="A"
-                                        onClick={SyncResults}
-                                    >
-                                        A Games
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={
-                                            timestamp.IsOffSeason
-                                                ? 'btn btn-secondary btn-sm'
-                                                : 'btn btn-primary btn-sm'
-                                        }
-                                        // disabled={timestamp.GamesBRan}
-                                        disabled
-                                        value="B"
-                                        onClick={SyncResults}
-                                    >
-                                        B Games
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={
-                                            timestamp.IsOffSeason
-                                                ? 'btn btn-secondary btn-sm'
-                                                : 'btn btn-primary btn-sm'
-                                        }
-                                        // disabled={timestamp.GamesCRan}
-                                        disabled
-                                        value="C"
-                                        onClick={SyncResults}
-                                    >
-                                        C Games
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={
-                                            timestamp.IsOffSeason
-                                                ? 'btn btn-secondary btn-sm'
-                                                : 'btn btn-primary btn-sm'
-                                        }
-                                        // disabled={timestamp.GamesDRan}
-                                        disabled
-                                        value="D"
-                                        onClick={SyncResults}
-                                    >
-                                        D Games
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-3 mb-2 g-2 justify-content-center text-center">
-                            <div className="d-flex align-items-center justify-content-center">
-                                <div
-                                    className="btn-group-vertical btn-group-lg justify-content-center align-items-center"
-                                    role="group"
-                                    aria-label="College Options"
-                                >
-                                    <h5>Recruiting</h5>
-                                    <button
-                                        type="button"
-                                        className={
-                                            !timestamp.IsRecruitingLocked
-                                                ? 'btn btn-primary btn-sm'
-                                                : 'btn btn-secondary btn-sm'
-                                        }
-                                        onClick={lockRecruiting}
-                                    >
-                                        {!timestamp.IsRecruitingLocked
-                                            ? 'Lock Recruiting'
-                                            : 'Unlock Recruiting'}
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={'btn btn-primary btn-sm'}
-                                        onClick={syncRecruiting}
-                                        // disabled={
-                                        //     timestamp.AIPointAllocationComplete ||
-                                        //     timestamp.AIBoardsCreated
-                                        // }
-                                        disabled
-                                    >
-                                        Sync AI Boards
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={'btn btn-primary btn-sm'}
-                                        onClick={syncRecruiting}
-                                        // disabled={timestamp.AIBoardsCreated}
-                                        disabled
-                                    >
-                                        Fill AI Boards
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={'btn btn-primary btn-sm'}
-                                        onClick={syncRecruiting}
-                                        // disabled={
-                                        //     timestamp.RecruitingSynced ||
-                                        //     !timestamp.AIPointAllocationComplete
-                                        // }
-                                        disabled
-                                    >
-                                        Sync Recruits
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-3 mb-2 g-2 justify-content-center text-center">
-                            <div className="d-flex align-items-center justify-content-center">
-                                <div
-                                    className="btn-group-vertical btn-group-lg justify-content-center align-items-center"
-                                    role="group"
-                                    aria-label="Professional Options"
-                                >
-                                    <h5>NBA Management</h5>
-                                    <button
-                                        type="button"
-                                        className={'btn btn-primary btn-sm'}
-                                        onClick={SyncManagementActions}
-                                        disabled={timestamp.GMActionsComplete}
-                                    >
-                                        Run Free Agency
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={
-                                            !timestamp.IsDraftTime
-                                                ? 'btn btn-primary btn-sm'
-                                                : 'btn btn-secondary btn-sm'
-                                        }
-                                        onClick={ChangeDraftTime}
-                                    >
-                                        {!timestamp.IsDraftTime
-                                            ? 'Activate Draft'
-                                            : 'Deactivate Draft'}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row mt-5">
+                    <div className="row mb-5">
                         <button
                             type="button"
                             className="btn btn-primary btn-sm"
@@ -375,6 +151,42 @@ const BBAManageSim = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                         <h6>Note: Only available in off-season</h6>
                     </div>
                     <BBACreateCrootModal handleChange={SaveRecruit} />
+                    <div className="row mb-1">
+                        <ul className="nav nav-tabs">
+                            <GPTab
+                                activeView={view}
+                                setActiveView={setView}
+                                gameplanType="Teams"
+                            />
+                            <GPTab
+                                activeView={view}
+                                setActiveView={setView}
+                                gameplanType="Capsheet"
+                            />
+                        </ul>
+                    </div>
+                    <div className="row mb-5">
+                        {view === 'Teams' &&
+                            nbaTeams.length > 0 &&
+                            nbaTeams.map((x) => {
+                                return (
+                                    <ProfessionalTeamRow
+                                        team={x}
+                                        click={removeUserFromTeam}
+                                    />
+                                );
+                            })}
+                        {view === 'Capsheet' &&
+                            nbaTeams.length > 0 &&
+                            nbaTeams.map((x) => {
+                                return (
+                                    <ProfessionalCapsheetRow
+                                        team={x}
+                                        ts={cbb_Timestamp}
+                                    />
+                                );
+                            })}
+                    </div>
                 </>
             )}
         </div>

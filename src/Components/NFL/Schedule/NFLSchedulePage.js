@@ -8,6 +8,8 @@ import { connect } from 'react-redux';
 import { SeasonsList } from '../../../Constants/CommonConstants';
 import acronyms from '../../../Constants/acronyms';
 import { SimFBAGameModal } from '../../_Common/SimFBAGameModal';
+import { useMediaQuery } from 'react-responsive';
+import { FBAToggle } from '../../_Common/SwitchToggle';
 
 const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
     // Services
@@ -25,8 +27,16 @@ const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
     const [selectedWeek, setSelectedWeek] = useState(null);
     const [selectedSeason, setSelectedSeason] = useState(null);
     const [viewType, setViewType] = useState('TEAM');
+    const [viewAdmin, setViewAdmin] = useState(false);
     const isAdmin = currentUser && currentUser.roleID === acronyms.ADMIN;
-
+    const [viewWidth, setViewWidth] = useState(window.innerWidth);
+    const isMobile = useMediaQuery({ query: `(max-width:851px)` });
+    // For mobile
+    useEffect(() => {
+        if (!viewWidth) {
+            setViewWidth(window.innerWidth);
+        }
+    }, [viewWidth]);
     // Use Effects
     useEffect(() => {
         if (nflTeam && cfb_Timestamp) {
@@ -147,6 +157,11 @@ const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
         setViewGame(() => game);
     };
 
+    const toggleAdminView = () => {
+        const av = viewAdmin;
+        setViewAdmin(() => !av);
+    };
+
     // Return
     return (
         <div className="container-fluid">
@@ -187,6 +202,18 @@ const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
                                 </div>
                             </div>
                         </div>
+                        {isAdmin && (
+                            <div className="row mt-2 justify-content-center">
+                                <div className="col-6">
+                                    <FBAToggle
+                                        change={toggleAdminView}
+                                        label="View Games"
+                                        value={viewAdmin}
+                                        checkValue={viewAdmin}
+                                    />
+                                </div>
+                            </div>
+                        )}
                         {viewType === 'TEAM' ? (
                             <div className="row mt-2 mb-2">
                                 <h6>Teams</h6>
@@ -231,7 +258,11 @@ const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
                             </button>
                         </div>
                     </div>
-                    <SimFBAGameModal game={viewGame} isNFL={true} />
+                    <SimFBAGameModal
+                        game={viewGame}
+                        isNFL={true}
+                        isMobile={isMobile}
+                    />
                     <NFLStandings
                         ts={cfb_Timestamp}
                         viewMode={viewMode}
@@ -246,7 +277,7 @@ const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
                                         key={x.ID}
                                         game={x}
                                         viewMode={viewMode}
-                                        isAdmin={isAdmin}
+                                        isAdmin={viewAdmin}
                                         change={ChangeTimeSlot}
                                         ts={cfb_Timestamp}
                                         isNFL={true}

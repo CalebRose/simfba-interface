@@ -88,9 +88,12 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp, cfb_Timestamp }) => {
                         </Link>
                     </li>
                     <li>
-                        <a href={inconspicuousLink} className="dropdown-item">
+                        <Link
+                            to={routes.CFB_TRANSFER}
+                            className="dropdown-item"
+                        >
                             Transfer Portal
-                        </a>
+                        </Link>
                     </li>
                 </ul>
             </li>

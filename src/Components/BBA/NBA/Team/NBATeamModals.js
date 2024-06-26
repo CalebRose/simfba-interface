@@ -139,6 +139,8 @@ export const PlayerModal = ({ team, player, idx, viewMode, retro }) => {
     const { Contract, IsGLeague, IsOnTradeBlock, IsTwoWay, DraftedRound } =
         player;
     const draftedRound = GetNFLRound(DraftedRound);
+    const draftLabel =
+        DraftedRound > 0 ? `${draftedRound} - ${player.DraftPick}` : 'UDFA';
     let status = 'Active Player';
     if (IsGLeague) status = 'In GLeague';
     else if (IsTwoWay) status = 'Two-Way Player';
@@ -147,7 +149,6 @@ export const PlayerModal = ({ team, player, idx, viewMode, retro }) => {
     if (player.IsFirstTeamANBA) awardStatus = '1st Team All-SimNBA';
     else if (player.IsDPOY) awardStatus = 'Defensive Player of the Year';
     else if (player.IsMVP) awardStatus = 'MVP';
-    let origin = player.Country === 'USA' ? player.State : player.Country;
     return (
         <div
             className="modal fade"
@@ -171,13 +172,13 @@ export const PlayerModal = ({ team, player, idx, viewMode, retro }) => {
                         ></button>
                     </div>
                     <div className="modal-body">
-                        <div className="row g-2 gy-2 mb-2">
+                        <div className="row g-2 gy-2 mb-3">
                             <div className="col">
                                 <img src={nbaLogo} className="image-nfl-team" />
                             </div>
                             <div className="col">
                                 <h5>Experience</h5>
-                                {player.Experience}
+                                {player.Year}
                             </div>
                             <div className="col">
                                 <h5>Age</h5>
@@ -188,7 +189,7 @@ export const PlayerModal = ({ team, player, idx, viewMode, retro }) => {
                                 {status}
                             </div>
                         </div>
-                        <div className="row g-2 gy-2 mb-2">
+                        <div className="row g-2 gy-2 mb-3">
                             <div className="col">
                                 <h5>Overall:</h5> {player.Overall}
                             </div>
@@ -199,10 +200,10 @@ export const PlayerModal = ({ team, player, idx, viewMode, retro }) => {
                                 <h5>Height:</h5> {player.Height}
                             </div>
                             <div className="col">
-                                <h5>Recent Awards</h5> {awardStatus}
+                                <h5>Accolades</h5> {awardStatus}
                             </div>
                         </div>
-                        <div className="row g-2 gy-2 mb-2">
+                        <div className="row g-2 gy-2 mb-3">
                             <div className="col">
                                 <h5>College</h5>{' '}
                                 <img
@@ -212,90 +213,62 @@ export const PlayerModal = ({ team, player, idx, viewMode, retro }) => {
                                 <p>{player.College}</p>
                             </div>
                             <div className="col">
-                                <h5>Origin:</h5>
-                                {origin}
-                            </div>
-                            <div className="col">
                                 <h5>Drafted Team</h5>
                                 <p>
                                     {player.DraftedTeamAbbr.length > 0
                                         ? player.DraftedTeamAbbr
                                         : 'N/A'}
                                 </p>
-                                <p>
-                                    {draftedRound.length > 0
-                                        ? `${draftedRound} Round, Pick ${player.DraftPick}`
-                                        : ''}
-                                </p>
+                                <p>{draftLabel}</p>
                             </div>
-                            <div className="col">
-                                <h5>Years in League</h5> {player.Year}
-                            </div>
-                        </div>
-                        <div className="row g-2 gy-2 mb-2">
+                            {player.PreviousTeamID > 0 && (
+                                <div className="col">
+                                    <h5>Previous Team</h5>
+                                    <p>
+                                        {player.PreviousTeam.length > 0
+                                            ? player.PreviousTeam
+                                            : 'N/A'}
+                                    </p>
+                                </div>
+                            )}
                             <div className="col">
                                 <h5>Minimum Value</h5> ${player.MinimumValue}
                             </div>
-                            <div className="col">
-                                <h5>Contract Value</h5> $
-                                {Contract.ContractValue}
-                            </div>
-                            <div className="col">
-                                <h5>Total Remaining</h5> $
-                                {Contract.TotalRemaining}M
-                            </div>
-                            <div className="col">
-                                <h5>Years Left</h5> {Contract.YearsRemaining}
-                            </div>
                         </div>
                         <div className="row g-2 gy-2 mb-2">
-                            <h6>Year 1</h6>
-                            <p className="fs-6">
-                                Total: $
-                                {RoundToTwoDecimals(Contract.Year1Total)}
-                            </p>
-                            {Contract.Year1Opt && <p>Year 1 Option</p>}
+                            <div className="col-3">
+                                <h6>Finishing</h6>
+                                <p>{player.Finishing}</p>
+                            </div>
+                            <div className="col-3">
+                                <h6>2pt Shooting</h6>
+                                <p>{player.Shooting2}</p>
+                            </div>
+                            <div className="col-3">
+                                <h6>3pt Shooting</h6>
+                                <p>{player.Shooting3}</p>
+                            </div>
+                            <div className="col-3">
+                                <h6>Free Throw</h6>
+                                <p>{player.FreeThrow}</p>
+                            </div>
+                            <div className="col-3">
+                                <h6>Ballwork</h6>
+                                <p>{player.Ballwork}</p>
+                            </div>
+                            <div className="col-3">
+                                <h6>Rebounding</h6>
+                                <p>{player.Rebounding}</p>
+                            </div>
+                            <div className="col-3">
+                                <h6>Int. Defense</h6>
+                                <p>{player.InteriorDefense}</p>
+                            </div>
+                            <div className="col-3">
+                                <h6>Per. Defense</h6>
+                                <p>{player.PerimeterDefense}</p>
+                            </div>
                         </div>
-                        {Contract.YearsRemaining > 1 && (
-                            <div className="row mb-1">
-                                <h6>Year 2</h6>
-                                <p className="fs-6">
-                                    Total: $
-                                    {RoundToTwoDecimals(Contract.Year2Total)}
-                                </p>
-                                {Contract.Year2Opt && <p>Year 2 Option</p>}
-                            </div>
-                        )}
-                        {Contract.YearsRemaining > 2 && (
-                            <div className="row mb-1">
-                                <h6>Year 3</h6>
-                                <p className="fs-6">
-                                    Total: $
-                                    {RoundToTwoDecimals(Contract.Year3Total)}
-                                </p>
-                                {Contract.Year3Opt && <p>Year 3 Option</p>}
-                            </div>
-                        )}
-                        {Contract.YearsRemaining > 3 && (
-                            <div className="row mb-1">
-                                <h6>Year 4</h6>
-                                <p className="fs-6">
-                                    Total: $
-                                    {RoundToTwoDecimals(Contract.Year4Total)}
-                                </p>
-                                {Contract.Year4Opt && <p>Year 4 Option</p>}
-                            </div>
-                        )}
-                        {Contract.YearsRemaining > 4 && (
-                            <div className="row mb-1">
-                                <h6>Year 5</h6>
-                                <p className="fs-6">
-                                    Total: $
-                                    {RoundToTwoDecimals(Contract.Year5Total)}
-                                </p>
-                                {Contract.Year5Opt && <p>Year 5 Option</p>}
-                            </div>
-                        )}
                     </div>
                     <div className="modal-footer">
                         <button

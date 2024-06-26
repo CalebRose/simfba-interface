@@ -37,7 +37,8 @@ export const NBAScoutPlayerRow = ({
         !ts.IsDraftTime;
 
     const setModal = () => {
-        return setDraftee(() => Draftee);
+        const obj = { Draftee: Draftee };
+        return setDraftee(() => obj);
     };
 
     return !isMobile ? (
@@ -58,6 +59,23 @@ export const NBAScoutPlayerRow = ({
                         : Draftee.Overall}
                 </td>
                 <td className="align-middle">
+                    {!profile.ShowFinishing ? (
+                        <button
+                            type="button"
+                            className="btn btn-small btn-outline-light"
+                            onClick={revealAttr}
+                            name="Finishing"
+                            value={4}
+                            disabled={SpentPoints + 4 > 300}
+                            style={{ fontSize: '1.6vh' }}
+                        >
+                            {Draftee.FinishingGrade}
+                        </button>
+                    ) : (
+                        Draftee.Finishing
+                    )}
+                </td>
+                <td className="align-middle">
                     {!profile.ShowShooting2 ? (
                         <button
                             type="button"
@@ -65,7 +83,7 @@ export const NBAScoutPlayerRow = ({
                             onClick={revealAttr}
                             name="Shooting2"
                             value={4}
-                            disabled={SpentPoints + 4 > 100}
+                            disabled={SpentPoints + 4 > 300}
                             style={{ fontSize: '1.6vh' }}
                         >
                             {Draftee.Shooting2Grade}
@@ -82,7 +100,7 @@ export const NBAScoutPlayerRow = ({
                             onClick={revealAttr}
                             name="Shooting3"
                             value={4}
-                            disabled={SpentPoints + 4 > 100}
+                            disabled={SpentPoints + 4 > 300}
                             style={{ fontSize: '1.6vh' }}
                         >
                             {Draftee.Shooting3Grade}
@@ -99,30 +117,13 @@ export const NBAScoutPlayerRow = ({
                             onClick={revealAttr}
                             name="FreeThrow"
                             value={4}
-                            disabled={SpentPoints + 4 > 100}
+                            disabled={SpentPoints + 4 > 300}
                             style={{ fontSize: '1.6vh' }}
                         >
                             {Draftee.FreeThrowGrade}
                         </button>
                     ) : (
                         Draftee.FreeThrow
-                    )}
-                </td>
-                <td className="align-middle">
-                    {!profile.ShowFinishing ? (
-                        <button
-                            type="button"
-                            className="btn btn-small btn-outline-light"
-                            onClick={revealAttr}
-                            name="Finishing"
-                            value={4}
-                            disabled={SpentPoints + 4 > 100}
-                            style={{ fontSize: '1.6vh' }}
-                        >
-                            {Draftee.FinishingGrade}
-                        </button>
-                    ) : (
-                        Draftee.Finishing
                     )}
                 </td>
                 <td className="align-middle">
@@ -133,7 +134,7 @@ export const NBAScoutPlayerRow = ({
                             onClick={revealAttr}
                             name="Ballwork"
                             value={4}
-                            disabled={SpentPoints + 4 > 100}
+                            disabled={SpentPoints + 4 > 300}
                             style={{ fontSize: '1.6vh' }}
                         >
                             {Draftee.BallworkGrade}
@@ -150,7 +151,7 @@ export const NBAScoutPlayerRow = ({
                             onClick={revealAttr}
                             name="Rebounding"
                             value={4}
-                            disabled={SpentPoints + 4 > 100}
+                            disabled={SpentPoints + 4 > 300}
                             style={{ fontSize: '1.6vh' }}
                         >
                             {Draftee.ReboundingGrade}
@@ -167,7 +168,7 @@ export const NBAScoutPlayerRow = ({
                             onClick={revealAttr}
                             name="InteriorDefense"
                             value={4}
-                            disabled={SpentPoints + 4 > 100}
+                            disabled={SpentPoints + 4 > 300}
                             style={{ fontSize: '1.6vh' }}
                         >
                             {Draftee.InteriorDefenseGrade}
@@ -184,7 +185,7 @@ export const NBAScoutPlayerRow = ({
                             onClick={revealAttr}
                             name="PerimeterDefense"
                             value={4}
-                            disabled={SpentPoints + 4 > 100}
+                            disabled={SpentPoints + 4 > 300}
                             style={{ fontSize: '1.6vh' }}
                         >
                             {Draftee.PerimeterDefenseGrade}
@@ -201,7 +202,7 @@ export const NBAScoutPlayerRow = ({
                             onClick={revealAttr}
                             name="Potential"
                             value="10"
-                            disabled={SpentPoints + 10 > 100}
+                            disabled={SpentPoints + 10 > 300}
                             style={{ fontSize: '1.6vh' }}
                         >
                             <i className="bi bi-question-circle" />

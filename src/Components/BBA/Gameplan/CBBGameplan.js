@@ -8,6 +8,7 @@ import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 import { Dropdown } from '../../_Common/Dropdown';
 import { FBAToggle } from '../../_Common/SwitchToggle';
 import {
+    GetAdjStaminaByPace,
     GetBBAMinutesRequired,
     getProportionLimits
 } from '../../../_Utility/utilHelper';
@@ -57,6 +58,16 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         'Box-and-One Zone'
     ];
     const styleList = ['Traditional', 'Small Ball', 'Microball', 'Jumbo'];
+    const pgMinuteRequirement =
+        gameplan && GetBBAMinutesRequired('PG', gameplan.OffensiveStyle, false);
+    const sgMinuteRequirement =
+        gameplan && GetBBAMinutesRequired('SG', gameplan.OffensiveStyle, false);
+    const sfMinuteRequirement =
+        gameplan && GetBBAMinutesRequired('SF', gameplan.OffensiveStyle, false);
+    const pfMinuteRequirement =
+        gameplan && GetBBAMinutesRequired('PF', gameplan.OffensiveStyle, false);
+    const cMinuteRequirement =
+        gameplan && GetBBAMinutesRequired('C', gameplan.OffensiveStyle, false);
     const tableHoverClass = GetTableHoverClass(viewMode);
 
     // Use Effects
@@ -157,13 +168,33 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         if (P1Minutes < 0 || P2Minutes < 0 || P3Minutes < 0) {
             const message = `${FirstName} ${LastName} has allocated negative minutes. Please set the number of minutes to 0 or above.`;
             setValidation(false);
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             return false;
         }
         if (totalMinutes < 0) {
             const message = `${FirstName} ${LastName} has allocated negative minutes. Please set the number of minutes to 0 or above.`;
             setValidation(false);
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             return false;
         }
 
@@ -179,7 +210,17 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         ) {
             const min = player.P1Minutes + player.P2Minutes + player.P3Minutes;
             const message = `${player.FirstName} ${player.LastName} is redshirted and is allocated ${min} minutes. Please set the number of minutes to 0.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             setValidation(false);
             return false;
         }
@@ -195,7 +236,17 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
                 player.MidRangeProportion +
                 player.ThreePointProportion;
             const message = `${player.FirstName} ${player.LastName} is redshirted and is allocated ${t} in Shot Proportion. Please set the shot proportion for Inside, Mid, and 3pt to 0.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             setValidation(false);
             return;
         }
@@ -205,7 +256,17 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
     const checkAllocation = (name, shotType, proportion, limit) => {
         if (proportion > limit) {
             const message = `${name}'s ${shotType} Proportion is greater than 15. Please set the ${shotType} Shot proportion for this player to be between 1-15.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             setValidation(false);
             return false;
         }
@@ -255,38 +316,12 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
 
         // Get MinuteRequirements for each position based on Offensive Style Chosen
         let message = '';
-        const pgMinuteRequirement = GetBBAMinutesRequired(
-            'PG',
-            gameplan.OffensiveStyle,
-            false
-        );
-        const sgMinuteRequirement = GetBBAMinutesRequired(
-            'SG',
-            gameplan.OffensiveStyle,
-            false
-        );
-        const sfMinuteRequirement = GetBBAMinutesRequired(
-            'SF',
-            gameplan.OffensiveStyle,
-            false
-        );
-        const pfMinuteRequirement = GetBBAMinutesRequired(
-            'PF',
-            gameplan.OffensiveStyle,
-            false
-        );
-        const cMinuteRequirement = GetBBAMinutesRequired(
-            'C',
-            gameplan.OffensiveStyle,
-            false
-        );
         const positionMinutes = {};
 
         // Check Players
         for (let i = 0; i < roster.length; i++) {
             const player = roster[i];
             if (!checkPlayerMinutes(player, setValidation)) return;
-
             updateMinutes(
                 player.PositionOne,
                 player.P1Minutes,
@@ -308,29 +343,82 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             let playerTotalMinutes =
                 player.P1Minutes + player.P2Minutes + player.P3Minutes;
 
-            if (playerTotalMinutes > player.Stamina) {
-                message = `${player.FirstName} ${player.LastName}'s minutes allocation cannot exceed its Stamina.`;
-                toast.error(message, { duration: 3000 });
+            const adjStamina = GetAdjStaminaByPace(
+                player.Stamina,
+                gameplan.Pace
+            );
+
+            if (playerTotalMinutes > adjStamina) {
+                message = `${player.FirstName} ${player.LastName}'s minutes allocation cannot exceed its Stamina: ${adjStamina}.`;
+                toast.error(
+                    (t) => (
+                        <span>
+                            {message}
+                            <button onClick={() => toast.dismiss(t.id)}>
+                                Dismiss
+                            </button>
+                        </span>
+                    ),
+                    { duration: 6000 }
+                );
+                valid = false;
+                setValidation(valid);
+                return;
+            }
+            const totalProportion =
+                player.InsideProportion +
+                player.MidRangeProportion +
+                player.ThreePointProportion;
+
+            if (totalProportion > playerTotalMinutes) {
+                message = `${player.FirstName} ${player.LastName}'s shot allocation (${totalProportion}) cannot exceed its allocated minutes (${playerTotalMinutes}).`;
+                toast.error(
+                    (t) => (
+                        <span>
+                            {message}
+                            <button onClick={() => toast.dismiss(t.id)}>
+                                Dismiss
+                            </button>
+                        </span>
+                    ),
+                    { duration: 6000 }
+                );
                 valid = false;
                 setValidation(valid);
                 return;
             }
 
             if (playerTotalMinutes > 4) {
-                const totalProportion =
-                    player.InsideProportion +
-                    player.MidRangeProportion +
-                    player.ThreePointProportion;
                 if (totalProportion < allocationMinimum) {
                     message = `${player.FirstName} ${player.LastName}'s total allocation is less than or equal to 1. Because this player has minutes, please set the total shot proportion for this player to be between 1-30.`;
-                    toast.error(message, { duration: 3000 });
+                    toast.error(
+                        (t) => (
+                            <span>
+                                {message}
+                                <button onClick={() => toast.dismiss(t.id)}>
+                                    Dismiss
+                                </button>
+                            </span>
+                        ),
+                        { duration: 6000 }
+                    );
                     valid = false;
                     setValidation(valid);
                     return;
                 }
                 if (totalProportion > totalAllocationLimit) {
                     message = `${player.FirstName} ${player.LastName}'s total allocation is greater than 30. Because this player has minutes, please set the total shot proportion for this player to be between 1-30.`;
-                    toast.error(message, { duration: 3000 });
+                    toast.error(
+                        (t) => (
+                            <span>
+                                {message}
+                                <button onClick={() => toast.dismiss(t.id)}>
+                                    Dismiss
+                                </button>
+                            </span>
+                        ),
+                        { duration: 6000 }
+                    );
                     valid = false;
                     setValidation(valid);
                     return;
@@ -366,7 +454,17 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         // Proportion Requirements
         if (!IsProportionInLimits(threeTotal, threeMin, threeMax)) {
             message = `Three Point Proportion for Gameplan ${gameplan.Game} set to ${threeTotal}. Please make sure this allocation is between ${threeMin} and ${threeMax}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -375,7 +473,17 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
 
         if (!IsProportionInLimits(midTotal, midMin, midMax)) {
             message = `Mid-Range Proportion for Gameplan ${gameplan.Game} set to ${midTotal}. Please make sure this allocation is between ${midMin} and ${midMax}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -384,7 +492,17 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
 
         if (!IsProportionInLimits(insideTotal, insideMin, insideMax)) {
             message = `Inside Proportion for Gameplan ${gameplan.Game} set to ${insideTotal}. Please make sure this allocation is between ${insideMin} and ${insideMax}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -398,7 +516,17 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             currentProportion < proportionLimit
         ) {
             message = `Total Proportion for Gameplan ${gameplan.Game} set to ${currentProportion}. Please make sure your allocation adds up to 100.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             return;
@@ -410,7 +538,17 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             positionMinutes['PG'] < pgMinuteRequirement
         ) {
             message = `Total Minutes between all Point Guards adds up to ${positionMinutes['PG']}.\nPlease make overall total to ${pgMinuteRequirement}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -422,7 +560,17 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             positionMinutes['SG'] < sgMinuteRequirement
         ) {
             message = `Total Minutes between all Shooting Guards adds up to ${positionMinutes['SG']}.\nPlease make overall total to ${sgMinuteRequirement}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -434,7 +582,17 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             positionMinutes['SF'] < sfMinuteRequirement
         ) {
             message = `Total Minutes between all Small Forwards adds up to ${positionMinutes['SF']}.\nPlease make overall total to ${sfMinuteRequirement}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -446,7 +604,17 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             positionMinutes['PF'] < pfMinuteRequirement
         ) {
             message = `Total Minutes between all Power Forwards adds up to ${positionMinutes['PF']}.\nPlease make overall total to ${pfMinuteRequirement}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -458,7 +626,17 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
             positionMinutes['C'] < cMinuteRequirement
         ) {
             message = `Total Minutes between all Centers adds up to ${positionMinutes['C']}.\nPlease make overall total to ${cMinuteRequirement}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -629,24 +807,37 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
                     <div className="row justify-content-center mt-1 mb-1">
                         {gameplan.OffensiveStyle !== 'Jumbo' && (
                             <div className="col mx-1">
-                                <h6>PG Minutes: {pgMinutes}</h6>
+                                <h6>
+                                    PG Minutes: {pgMinutes}/
+                                    {pgMinuteRequirement}
+                                </h6>
                             </div>
                         )}
                         <div className="col mx-1">
-                            <h6>SG Minutes: {sgMinutes}</h6>
+                            <h6>
+                                SG Minutes: {sgMinutes}/{sgMinuteRequirement}
+                            </h6>
                         </div>
                         <div className="col mx-1">
-                            <h6>SF Minutes: {sfMinutes}</h6>
+                            <h6>
+                                SF Minutes: {sfMinutes}/{sfMinuteRequirement}
+                            </h6>
                         </div>
                         {gameplan.OffensiveStyle !== 'Microball' && (
                             <div className="col mx-1">
-                                <h6>PF Minutes: {pfMinutes}</h6>
+                                <h6>
+                                    PF Minutes: {pfMinutes}/
+                                    {pfMinuteRequirement}
+                                </h6>
                             </div>
                         )}
                         {gameplan.OffensiveStyle !== 'Microball' &&
                             gameplan.OffensiveStyle !== 'Small Ball' && (
                                 <div className="col mx-1">
-                                    <h6>C Minutes: {cMinutes}</h6>
+                                    <h6>
+                                        C Minutes: {cMinutes}/
+                                        {cMinuteRequirement}
+                                    </h6>
                                 </div>
                             )}
                         <div className="col mx-1">
@@ -837,6 +1028,7 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
                                                     key={x.ID}
                                                     idx={idx}
                                                     player={x}
+                                                    pace={gameplan.Pace}
                                                     updatePlayer={updatePlayer}
                                                     updatePosition={
                                                         updatePlayerPosition

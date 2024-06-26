@@ -67,9 +67,7 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
         if (teamID && teamID > 0) {
             setCanModify(
                 () =>
-                    (teamID === currentUser.NFLTeamID &&
-                        (currentUser.NFLRole === 'Owner' ||
-                            currentUser.NFLRole === 'Manager')) ||
+                    teamID === currentUser.NFLTeamID ||
                     currentUser.roleID === 'Admin'
             );
             getRosterData(teamID);
@@ -190,6 +188,82 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                         (a, b) =>
                             (a.Contract.Y1BaseSalary -
                                 b.Contract.Y1BaseSalary) *
+                            (isAscending ? 1 : -1)
+                    )
+                );
+                break;
+            case 'bon2':
+                setViewRoster(() =>
+                    [...roster].sort(
+                        (a, b) =>
+                            (a.Contract.Y2Bonus - b.Contract.Y2Bonus) *
+                            (isAscending ? 1 : -1)
+                    )
+                );
+                break;
+            case 'sal2':
+                setViewRoster(() =>
+                    [...roster].sort(
+                        (a, b) =>
+                            (a.Contract.Y2BaseSalary -
+                                b.Contract.Y2BaseSalary) *
+                            (isAscending ? 1 : -1)
+                    )
+                );
+                break;
+            case 'bon3':
+                setViewRoster(() =>
+                    [...roster].sort(
+                        (a, b) =>
+                            (a.Contract.Y3Bonus - b.Contract.Y3Bonus) *
+                            (isAscending ? 1 : -1)
+                    )
+                );
+                break;
+            case 'sal3':
+                setViewRoster(() =>
+                    [...roster].sort(
+                        (a, b) =>
+                            (a.Contract.Y3BaseSalary -
+                                b.Contract.Y3BaseSalary) *
+                            (isAscending ? 1 : -1)
+                    )
+                );
+                break;
+            case 'bon4':
+                setViewRoster(() =>
+                    [...roster].sort(
+                        (a, b) =>
+                            (a.Contract.Y4Bonus - b.Contract.Y4Bonus) *
+                            (isAscending ? 1 : -1)
+                    )
+                );
+                break;
+            case 'sal4':
+                setViewRoster(() =>
+                    [...roster].sort(
+                        (a, b) =>
+                            (a.Contract.Y4BaseSalary -
+                                b.Contract.Y4BaseSalary) *
+                            (isAscending ? 1 : -1)
+                    )
+                );
+                break;
+            case 'bon5':
+                setViewRoster(() =>
+                    [...roster].sort(
+                        (a, b) =>
+                            (a.Contract.Y5Bonus - b.Contract.Y5Bonus) *
+                            (isAscending ? 1 : -1)
+                    )
+                );
+                break;
+            case 'sal5':
+                setViewRoster(() =>
+                    [...roster].sort(
+                        (a, b) =>
+                            (a.Contract.Y5BaseSalary -
+                                b.Contract.Y5BaseSalary) *
                             (isAscending ? 1 : -1)
                     )
                 );
@@ -494,13 +568,8 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                     </abbr>
                                                 </th>
                                                 <th scope="col">
-                                                    <abbr title="Height">
-                                                        Ht
-                                                    </abbr>
-                                                </th>
-                                                <th scope="col">
-                                                    <abbr title="Weight">
-                                                        Wt
+                                                    <abbr title="Health">
+                                                        Health
                                                     </abbr>
                                                 </th>
                                                 <th
@@ -509,8 +578,8 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                         setSortValues('bon')
                                                     }
                                                 >
-                                                    <abbr title="Bonus">
-                                                        Bonus
+                                                    <abbr title="Y1 Bonus">
+                                                        Y1 B
                                                     </abbr>
                                                 </th>
                                                 <th
@@ -519,8 +588,88 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                         setSortValues('sal')
                                                     }
                                                 >
-                                                    <abbr title="Salary">
-                                                        Salary
+                                                    <abbr title="Y1 Salary">
+                                                        Y1 S
+                                                    </abbr>
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        setSortValues('bon2')
+                                                    }
+                                                >
+                                                    <abbr title="Y2 Bonus">
+                                                        Y2 B
+                                                    </abbr>
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        setSortValues('sal2')
+                                                    }
+                                                >
+                                                    <abbr title="Y2 Salary">
+                                                        Y2 S
+                                                    </abbr>
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        setSortValues('bon3')
+                                                    }
+                                                >
+                                                    <abbr title="Y3 Bonus">
+                                                        Y3 B
+                                                    </abbr>
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        setSortValues('sal3')
+                                                    }
+                                                >
+                                                    <abbr title="Y3 Salary">
+                                                        Y3 S
+                                                    </abbr>
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        setSortValues('bon4')
+                                                    }
+                                                >
+                                                    <abbr title="Y4 Bonus">
+                                                        Y4 B
+                                                    </abbr>
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        setSortValues('sal4')
+                                                    }
+                                                >
+                                                    <abbr title="Y4 Salary">
+                                                        Y4 S
+                                                    </abbr>
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        setSortValues('bon5')
+                                                    }
+                                                >
+                                                    <abbr title="Y5 Bonus">
+                                                        Y5 B
+                                                    </abbr>
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        setSortValues('sal5')
+                                                    }
+                                                >
+                                                    <abbr title="Y5 Salary">
+                                                        Y5 S
                                                     </abbr>
                                                 </th>
                                                 <th

@@ -135,4 +135,8 @@ export default class BBAAdminService {
             return false;
         }
     }
+
+    async RunCron() {
+        return await GetActionCall(`${url}simbba/run/cron`);
+    }
 }

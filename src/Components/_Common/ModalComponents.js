@@ -316,6 +316,11 @@ export const PromisePlayerModal = (props) => {
             setPromiseType(() => res.PromiseType);
             setPromiseWeight(() => res.PromiseWeight);
             setBenchmark(() => res.Benchmark);
+        } else {
+            setPromise(() => null);
+            setPromiseType(() => 'None');
+            setPromiseWeight(() => 0);
+            setBenchmark(() => 0);
         }
     };
 

@@ -20,7 +20,8 @@ const GameRow = ({
     change,
     isNFL,
     retro,
-    SetGame
+    SetGame,
+    viewType
 }) => {
     const modalTarget = `#gameModal`;
     const currentWeek = !isNFL ? ts.CollegeWeek : ts.NFLWeek;
@@ -64,7 +65,17 @@ const GameRow = ({
     if (game.IsNeutral) {
         detailsLabel += ' | Neutral Site';
     }
-    let cardClass = `card mb-3 ${viewMode === 'dark' ? 'text-bg-dark' : ''}`;
+    let homeTeamLabel = homeTeam.Team;
+    let awayTeamLabel = awayTeam.Team;
+    if (game.HomeTeamRank > 0) {
+        homeTeamLabel = `(${game.HomeTeamRank}) ${homeTeam.Team}`;
+    }
+    if (game.AwayTeamRank > 0) {
+        awayTeamLabel = `(${game.AwayTeamRank}) ${awayTeam.Team}`;
+    }
+    let cardClass = `card game-record mb-3 ${
+        viewMode === 'dark' ? 'text-bg-dark' : ''
+    }`;
     const showGame = RevealResults(game, ts);
     const ChangeTimeslot = async (name, value) => {
         return await change(value, game);
@@ -75,9 +86,9 @@ const GameRow = ({
     };
 
     return (
-        <div className={cardClass} style={{ maxWidth: '75vw' }}>
+        <div className={cardClass}>
             <div className="row g-0">
-                <div className="col-md-3 mt-3 align-middle">
+                <div className="col-md-3 mt-4 align-middle">
                     <div className="row mb-1 justify-content-center">
                         <img
                             src={HomeTeamLogo}
@@ -94,7 +105,8 @@ const GameRow = ({
                 <div className="col-md-6">
                     <div className="card-body">
                         <h5 className="card-title">
-                            Week {GameWeek} {homeTeam.Team} vs {awayTeam.Team}
+                            {viewType === 'TEAM' ? `Week ${GameWeek} ` : ''}
+                            {homeTeamLabel} vs {awayTeamLabel}
                         </h5>
                         <div className="row">
                             <div className="col">
@@ -115,6 +127,7 @@ const GameRow = ({
                         </div>
                         <div className="row mb-1">
                             {(showGame ||
+                                isAdmin ||
                                 GameWeek < currentWeek ||
                                 game.SeasonID < currentSeason) && (
                                 <>
@@ -167,7 +180,7 @@ const GameRow = ({
                         </div>
                     </div>
                 </div>
-                <div className="col-md-3 mt-1 align-middle">
+                <div className="col-md-3 mt-4 align-middle">
                     <div className="row mb-1 justify-content-center">
                         <img
                             src={AwayTeamLogo}

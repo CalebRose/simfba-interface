@@ -63,7 +63,7 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
     }, [cfbTeam]);
 
     useEffect(() => {
-        if (team) {
+        if (team && team.ID > 0) {
             getRoster(team.ID);
         }
     }, [team]);
@@ -93,8 +93,8 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
     const getRoster = async (ID) => {
         if (ID !== null || ID > 0) {
             let roster = await rosterService.GetPlayersByTeam(ID);
-            setRoster(roster);
-            setViewRoster(roster);
+            setRoster(() => roster);
+            setViewRoster(() => roster);
 
             if (ID !== userTeam.ID) {
                 setViewingUserTeam((x) => false);
@@ -208,12 +208,7 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
         playerRoster[playerIDX].IsRedshirting = true;
         originalRoster[originalIDX].IsRedshirting = true;
 
-        const dto = {
-            PlayerID: PlayerID,
-            RedshirtStatus: true
-        };
-
-        const response = await rosterService.AssignRedshirt(dto);
+        const response = await rosterService.AssignRedshirt(PlayerID);
         if (!response) {
             toast.error(
                 `${player.Position} ${player.FirstName} ${player.LastName} could not be redshirted. Please reach out to admins for assistance.`
@@ -463,6 +458,11 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
                                             >
                                                 <abbr title="Potential">
                                                     Pot
+                                                </abbr>
+                                            </th>
+                                            <th scope="col">
+                                                <abbr title="Potential">
+                                                    Health
                                                 </abbr>
                                             </th>
                                             <th scope="col">

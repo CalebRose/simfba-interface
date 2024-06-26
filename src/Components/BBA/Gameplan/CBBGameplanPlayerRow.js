@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dropdown } from '../../_Common/Dropdown';
 import {
+    GetAdjStaminaByPace,
     GetCollegeYear,
     getCBBPositionList
 } from '../../../_Utility/utilHelper';
@@ -8,6 +9,7 @@ import {
 const GameplanPlayerRow = ({
     player,
     idx,
+    pace,
     updatePlayer,
     gameplan,
     updatePosition
@@ -23,6 +25,8 @@ const GameplanPlayerRow = ({
     const handlePosition = (name, value) => {
         return updatePosition(idx, name, value);
     };
+
+    const adjStamina = GetAdjStaminaByPace(player.Stamina, pace);
 
     return (
         <tr>
@@ -61,7 +65,9 @@ const GameplanPlayerRow = ({
                 <input
                     name="InsideProportion"
                     type="number"
-                    className="form-control"
+                    className={`form-control ${
+                        player.InsideProportion > 15 ? 'border-danger' : ''
+                    }`}
                     id="gameMinutes"
                     aria-describedby="gameMinutes"
                     value={player.InsideProportion}
@@ -72,7 +78,9 @@ const GameplanPlayerRow = ({
                 <input
                     name="MidRangeProportion"
                     type="number"
-                    className="form-control"
+                    className={`form-control ${
+                        player.MidRangeProportion > 15 ? 'border-danger' : ''
+                    }`}
                     id="gameMinutes"
                     aria-describedby="gameMinutes"
                     value={player.MidRangeProportion}
@@ -83,7 +91,9 @@ const GameplanPlayerRow = ({
                 <input
                     name="ThreePointProportion"
                     type="number"
-                    className="form-control"
+                    className={`form-control ${
+                        player.ThreePointProportion > 15 ? 'border-danger' : ''
+                    }`}
                     id="gameMinutes"
                     aria-describedby="gameMinutes"
                     value={player.ThreePointProportion}
@@ -155,8 +165,14 @@ const GameplanPlayerRow = ({
                     </td>
                 </>
             )}
-            <td className="align-middle">{minutes}</td>
-            <td className="align-middle">{player.Stamina}</td>
+            <td
+                className={`align-middle ${
+                    minutes > adjStamina ? 'text-danger' : ''
+                }`}
+            >
+                {minutes}
+            </td>
+            <td className="align-middle">{adjStamina}</td>
             <td className="align-middle">{player.PlaytimeExpectations}</td>
         </tr>
     );

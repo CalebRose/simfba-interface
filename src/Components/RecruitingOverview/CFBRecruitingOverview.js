@@ -66,7 +66,6 @@ const CFBRecruitingOverview = ({
     const [teamColors, setTeamColors] = useState('');
     const [viewWidth, setViewWidth] = useState(window.innerWidth);
     const [loadMessage] = useState(() => PickFromArray(RecruitingLoadMessages));
-    const [showCollusionButton, setShowCollusionButton] = useState(true);
     const statusOptions = MapOptions([
         'Not Ready',
         'Hearing Offers',
@@ -75,7 +74,6 @@ const CFBRecruitingOverview = ({
         'Ready to Sign',
         'Signed'
     ]);
-    let luckyTeam = Math.floor(Math.random() * (20 - 1) + 1);
     // Setup Modals?
 
     // For mobile
@@ -310,32 +308,6 @@ const CFBRecruitingOverview = ({
         }
     };
 
-    const CollusionButton = async () => {
-        let randomInt = Math.floor(Math.random() * recruits.length - 1);
-        if (randomInt >= recruits.length) {
-            randomInt = recruits.length - 1;
-        }
-        const randomCroot =
-            randomInt > -1 && randomInt < recruits.length
-                ? recruits[randomInt]
-                : recruits[Math.floor(Math.random() * recruits.length - 1)];
-        const message = GetCollusionStatements(
-            currentUser,
-            cfbTeam,
-            randomCroot
-        );
-        const dto = {
-            WeekID: cfb_Timestamp.CollegeWeekID,
-            SeasonID: cfb_Timestamp.CollegeSeasonID,
-            Message: message
-        };
-        toast.error(
-            `Hey man I'm not gonna judge, but you should be careful. You don't want any rumors of your team popping up out of the blue...`
-        );
-        setShowCollusionButton(false);
-        await _easterEggService.CollusionCall(true, dto);
-    };
-
     const Export = async () => {
         await _recruitingService.ExportCroots();
     };
@@ -513,20 +485,6 @@ const CFBRecruitingOverview = ({
                                     onClick={Export}
                                 >
                                     Export
-                                </button>
-                            </div>
-                        )}
-                        {cfbTeam && luckyTeam >= 16 && showCollusionButton && (
-                            <div className="col-md-auto">
-                                <h5 className="text-start align-middle">
-                                    Collude?
-                                </h5>
-                                <button
-                                    type="button"
-                                    className="btn btn-danger"
-                                    onClick={CollusionButton}
-                                >
-                                    You Know You Want To
                                 </button>
                             </div>
                         )}

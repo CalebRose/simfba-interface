@@ -77,14 +77,8 @@ const NFLTradeBlock = ({ currentUser, cfb_Timestamp, viewMode, nflTeam }) => {
         setReceivedTradeProposals(() => [...res.ReceivedTradeProposals]);
         const tp = { ...res.TradePreferences };
         setTradePreferences(() => tp);
-        const modifiable =
-            res.Team.ID === currentUser.NFLTeamID &&
-            (currentUser.NFLRole === 'Owner' ||
-                currentUser.NFLRole === 'Manager');
-        const proposable =
-            res.Team.ID !== currentUser.NFLTeamID &&
-            (currentUser.NFLRole === 'Owner' ||
-                currentUser.NFLRole === 'Manager');
+        const modifiable = res.Team.ID === currentUser.NFLTeamID;
+        const proposable = res.Team.ID !== currentUser.NFLTeamID;
         if (modifiable) {
             setUserTeam(() => res.Team);
         }

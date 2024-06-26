@@ -163,7 +163,11 @@ export const NBAFreeAgencyRow = ({
                     <h6>${player.MinimumValue}M</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{leadingTeams}</h6>
+                    <h6>
+                        {!player.IsNegotiating
+                            ? leadingTeams
+                            : 'Negotiating...'}
+                    </h6>
                 </td>
                 <td className="align-middle">
                     <div className="btn-group">

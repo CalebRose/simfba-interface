@@ -70,4 +70,8 @@ export default class AdminService {
     async MassUpdateAIDepthCharts(off, def) {
         return await GetActionCall(`${url}simfba/mass/${off}/${def}/`);
     }
+
+    async RunCron() {
+        return await GetActionCall(`${url}simfba/run/cron`);
+    }
 }

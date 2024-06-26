@@ -13,7 +13,6 @@ export const GetCall = async (url) => {
     let response = await fetch(url, {
         headers: {
             authorization: 'Bearer ' + localStorage.getItem('token')
-            // 'Accept-Encoding': 'gzip'
         }
     });
     let json;

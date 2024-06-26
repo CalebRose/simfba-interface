@@ -44,6 +44,9 @@ export const NFLFreeAgencyMobileRow = ({
     const hasOffer = checkForOffer(player);
 
     const leadingTeamsMapper = (player) => {
+        if (player.IsNegotiating) {
+            return 'Negotiating...';
+        }
         if (player.Offers === null || player.Offers.length === 0) {
             return 'None';
         }

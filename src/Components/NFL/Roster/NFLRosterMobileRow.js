@@ -244,6 +244,7 @@ const NFLMobileRosterRow = ({
                                 title={practiceSquadTitle}
                                 data-bs-toggle="modal"
                                 data-bs-target={practiceSquadTarget}
+                                disabled={player.Experience > 3}
                             >
                                 {player.IsPracticeSquad ? (
                                     <i class="bi bi-person-fill-up" />
@@ -259,6 +260,7 @@ const NFLMobileRosterRow = ({
                                 }`}
                                 title={practiceSquadTitle}
                                 onClick={bringUpPlayer}
+                                disabled={player.Experience > 3}
                             >
                                 {player.IsPracticeSquad ? (
                                     <i class="bi bi-person-fill-up" />

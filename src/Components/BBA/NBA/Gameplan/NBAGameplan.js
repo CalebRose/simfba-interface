@@ -5,6 +5,7 @@ import BBAPlayerService from '../../../../_Services/simNBA/BBAPlayerService';
 import BBAGameplanService from '../../../../_Services/simNBA/BBAGameplanService';
 import { GetTableHoverClass } from '../../../../Constants/CSSClassHelper';
 import {
+    GetAdjStaminaByPace,
     GetBBAMinutesRequired,
     getProportionLimits
 } from '../../../../_Utility/utilHelper';
@@ -56,6 +57,16 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
     ];
     const styleList = ['Traditional', 'Small Ball', 'Microball', 'Jumbo'];
     const tableHoverClass = GetTableHoverClass(viewMode);
+    const pgMinuteRequirement =
+        gameplan && GetBBAMinutesRequired('PG', gameplan.OffensiveStyle, true);
+    const sgMinuteRequirement =
+        gameplan && GetBBAMinutesRequired('SG', gameplan.OffensiveStyle, true);
+    const sfMinuteRequirement =
+        gameplan && GetBBAMinutesRequired('SF', gameplan.OffensiveStyle, true);
+    const pfMinuteRequirement =
+        gameplan && GetBBAMinutesRequired('PF', gameplan.OffensiveStyle, true);
+    const cMinuteRequirement =
+        gameplan && GetBBAMinutesRequired('C', gameplan.OffensiveStyle, true);
     // Use Effects
     useEffect(() => {
         if (!viewWidth) {
@@ -156,13 +167,33 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
         if (P1Minutes < 0 || P2Minutes < 0 || P3Minutes < 0) {
             const message = `${FirstName} ${LastName} has allocated negative minutes. Please set the number of minutes to 0 or above.`;
             setValidation(false);
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             return false;
         }
         if (totalMinutes < 0) {
             const message = `${FirstName} ${LastName} has allocated negative minutes. Please set the number of minutes to 0 or above.`;
             setValidation(false);
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             return false;
         }
 
@@ -175,7 +206,17 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
             (r.P1Minutes > 0 || r.P2Minutes > 0 || r.P3Minutes > 0)
         ) {
             const message = `${r.FirstName} ${r.LastName} is in the G-League and is allocated ${r.P1Minutes} minutes. Please set the number of minutes to 0.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             setValidation(false);
             return false;
         }
@@ -191,7 +232,17 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
                 r.MidRangeProportion +
                 r.ThreePointProportion;
             const message = `${r.FirstName} ${r.LastName} is in the G-League and is allocated ${t} in Shot Proportion. Please set the shot proportion for Inside, Mid, and 3pt to 0.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             setValidation(false);
             return false;
         }
@@ -237,31 +288,6 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
         );
 
         let message = '';
-        const pgMinuteRequirement = GetBBAMinutesRequired(
-            'PG',
-            gameplan.OffensiveStyle,
-            true
-        );
-        const sgMinuteRequirement = GetBBAMinutesRequired(
-            'SG',
-            gameplan.OffensiveStyle,
-            true
-        );
-        const sfMinuteRequirement = GetBBAMinutesRequired(
-            'SF',
-            gameplan.OffensiveStyle,
-            true
-        );
-        const pfMinuteRequirement = GetBBAMinutesRequired(
-            'PF',
-            gameplan.OffensiveStyle,
-            true
-        );
-        const cMinuteRequirement = GetBBAMinutesRequired(
-            'C',
-            gameplan.OffensiveStyle,
-            true
-        );
 
         const positionMinutes = {};
 
@@ -278,50 +304,131 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
 
             let playerTotalMinutes = r.P1Minutes + r.P2Minutes + r.P3Minutes;
 
-            if (playerTotalMinutes > r.Stamina) {
-                message = `${r.FirstName} ${r.LastName}'s minutes allocation cannot exceed its Stamina.`;
-                toast.error(message, { duration: 3000 });
+            const adjStamina = GetAdjStaminaByPace(r.Stamina, gameplan.Pace);
+
+            if (playerTotalMinutes > adjStamina) {
+                message = `${r.FirstName} ${r.LastName}'s minutes allocation cannot exceed its Stamina: ${adjStamina}.`;
+                toast.error(
+                    (t) => (
+                        <span>
+                            {message}
+                            <button onClick={() => toast.dismiss(t.id)}>
+                                Dismiss
+                            </button>
+                        </span>
+                    ),
+                    { duration: 6000 }
+                );
+                valid = false;
+                setValidation(valid);
+                return;
+            }
+
+            const totalProportion =
+                r.InsideProportion +
+                r.MidRangeProportion +
+                r.ThreePointProportion;
+
+            if (totalProportion > playerTotalMinutes) {
+                message = `${r.FirstName} ${r.LastName}'s shot allocation (${totalProportion}) cannot exceed its allocated minutes (${playerTotalMinutes}).`;
+                toast.error(
+                    (t) => (
+                        <span>
+                            {message}
+                            <button onClick={() => toast.dismiss(t.id)}>
+                                Dismiss
+                            </button>
+                        </span>
+                    ),
+                    { duration: 6000 }
+                );
                 valid = false;
                 setValidation(valid);
                 return;
             }
 
             if (playerTotalMinutes > 4) {
-                const totalProportion =
-                    r.InsideProportion +
-                    r.MidRangeProportion +
-                    r.ThreePointProportion;
                 if (totalProportion < 1) {
                     message = `${r.FirstName} ${r.LastName}'s total allocation is less than or equal to 0. Because this player has minutes, please set the total shot proportion for this player to be between 1-30.`;
-                    toast.error(message, { duration: 3000 });
+                    toast.error(
+                        (t) => (
+                            <span>
+                                {message}
+                                <button onClick={() => toast.dismiss(t.id)}>
+                                    Dismiss
+                                </button>
+                            </span>
+                        ),
+                        { duration: 6000 }
+                    );
                     valid = false;
                     setValidation(valid);
                     return;
                 }
                 if (totalProportion > 30) {
                     message = `${r.FirstName} ${r.LastName}'s total allocation is greater than 30. Because this player has minutes, please set the total shot proportion for this player to be between 1-30.`;
-                    toast.error(message, { duration: 3000 });
+                    toast.error(
+                        (t) => (
+                            <span>
+                                {message}
+                                <button onClick={() => toast.dismiss(t.id)}>
+                                    Dismiss
+                                </button>
+                            </span>
+                        ),
+                        { duration: 6000 }
+                    );
                     valid = false;
                     setValidation(valid);
                     return;
                 }
                 if (r.InsideProportion > 15) {
                     message = `${r.FirstName} ${r.LastName}'s Inside Proportion is greater than 15. Please set the Inside Shot proportion for this player to be between 1-15.`;
-                    toast.error(message, { duration: 3000 });
+                    toast.error(
+                        (t) => (
+                            <span>
+                                {message}
+                                <button onClick={() => toast.dismiss(t.id)}>
+                                    Dismiss
+                                </button>
+                            </span>
+                        ),
+                        { duration: 6000 }
+                    );
                     valid = false;
                     setValidation(valid);
                     return;
                 }
                 if (r.MidRangeProportion > 15) {
                     message = `${r.FirstName} ${r.LastName}'s Mid Range Proportion is greater than 15. Please set the Mid Range Shot proportion for this player to be between 1-15.`;
-                    toast.error(message, { duration: 3000 });
+                    toast.error(
+                        (t) => (
+                            <span>
+                                {message}
+                                <button onClick={() => toast.dismiss(t.id)}>
+                                    Dismiss
+                                </button>
+                            </span>
+                        ),
+                        { duration: 6000 }
+                    );
                     valid = false;
                     setValidation(valid);
                     return;
                 }
                 if (r.ThreePointProportion > 15) {
                     message = `${r.FirstName} ${r.LastName}'s 3pt Proportion is greater than 15. Please set the 3pt Shot proportion for this player to be between 1-15.`;
-                    toast.error(message, { duration: 3000 });
+                    toast.error(
+                        (t) => (
+                            <span>
+                                {message}
+                                <button onClick={() => toast.dismiss(t.id)}>
+                                    Dismiss
+                                </button>
+                            </span>
+                        ),
+                        { duration: 6000 }
+                    );
                     valid = false;
                     setValidation(valid);
                     return;
@@ -337,7 +444,17 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
         // Proportion Requirements
         if (!IsProportionInLimits(threeTotal, threeMin, threeMax)) {
             message = `Three Point Proportion for Gameplan ${gameplan.Game} set to ${threeTotal}. Please make sure this allocation is between ${threeMin} and ${threeMax}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -346,7 +463,17 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
 
         if (!IsProportionInLimits(midTotal, midMin, midMax)) {
             message = `Mid-Range Proportion for Gameplan ${gameplan.Game} set to ${midTotal}. Please make sure this allocation is between ${midMin} and ${midMax}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -355,7 +482,17 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
 
         if (!IsProportionInLimits(insideTotal, insideMin, insideMax)) {
             message = `Inside Proportion for Gameplan ${gameplan.Game} set to ${insideTotal}. Please make sure this allocation is between ${insideMin} and ${insideMax}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -368,7 +505,17 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
             currentProportion < proportionLimit
         ) {
             message = `Total Proportion for Gameplan ${gameplan.Game} set to ${currentProportion}. Please make sure your allocation adds up to 100.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             return;
@@ -380,7 +527,17 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
             positionMinutes['PG'] < pgMinuteRequirement
         ) {
             message = `Total Minutes between all Point Guards adds up to ${positionMinutes['PG']}.\nPlease make overall total to ${pgMinuteRequirement}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -392,7 +549,17 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
             positionMinutes['SG'] < sgMinuteRequirement
         ) {
             message = `Total Minutes between all Shooting Guards adds up to ${positionMinutes['SG']}.\nPlease make overall total to ${sgMinuteRequirement}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -404,7 +571,17 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
             positionMinutes['SF'] < sfMinuteRequirement
         ) {
             message = `Total Minutes between all Small Forwards adds up to ${positionMinutes['SF']}.\nPlease make overall total to ${sfMinuteRequirement}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -416,7 +593,17 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
             positionMinutes['PF'] < pfMinuteRequirement
         ) {
             message = `Total Minutes between all Power Forwards adds up to ${positionMinutes['PF']}.\nPlease make overall total to ${pfMinuteRequirement}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -428,7 +615,17 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
             positionMinutes['C'] < cMinuteRequirement
         ) {
             message = `Total Minutes between all Centers adds up to ${positionMinutes['C']}.\nPlease make overall total to ${cMinuteRequirement}.`;
-            toast.error(message, { duration: 3000 });
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
             valid = false;
             setValidation(valid);
             setAllMinutes(positionMinutes, insideTotal, midTotal, threeTotal);
@@ -600,24 +797,37 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
                     <div className="row justify-content-center mt-1 mb-1">
                         {gameplan.OffensiveStyle !== 'Jumbo' && (
                             <div className="col mx-1">
-                                <h6>PG Minutes: {pgMinutes}</h6>
+                                <h6>
+                                    PG Minutes: {pgMinutes}/
+                                    {pgMinuteRequirement}
+                                </h6>
                             </div>
                         )}
                         <div className="col mx-1">
-                            <h6>SG Minutes: {sgMinutes}</h6>
+                            <h6>
+                                SG Minutes: {sgMinutes}/{sgMinuteRequirement}
+                            </h6>
                         </div>
                         <div className="col mx-1">
-                            <h6>SF Minutes: {sfMinutes}</h6>
+                            <h6>
+                                SF Minutes: {sfMinutes}/{sfMinuteRequirement}
+                            </h6>
                         </div>
                         {gameplan.OffensiveStyle !== 'Microball' && (
                             <div className="col mx-1">
-                                <h6>PF Minutes: {pfMinutes}</h6>
+                                <h6>
+                                    PF Minutes: {pfMinutes}/
+                                    {pfMinuteRequirement}
+                                </h6>
                             </div>
                         )}
                         {gameplan.OffensiveStyle !== 'Microball' &&
                             gameplan.OffensiveStyle !== 'Small Ball' && (
                                 <div className="col mx-1">
-                                    <h6>C Minutes: {cMinutes}</h6>
+                                    <h6>
+                                        C Minutes: {cMinutes}/
+                                        {cMinuteRequirement}
+                                    </h6>
                                 </div>
                             )}
                         <div className="col mx-1">
@@ -808,6 +1018,7 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
                                                     key={x.ID}
                                                     idx={idx}
                                                     player={x}
+                                                    pace={gameplan.Pace}
                                                     updatePlayer={updatePlayer}
                                                     updatePosition={
                                                         updatePlayerPosition

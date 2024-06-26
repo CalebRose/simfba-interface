@@ -1,4 +1,4 @@
-import { ISLLogos, logos, retro_logos } from './logos';
+import { FormationImages, ISLLogos, logos, retro_logos } from './logos';
 
 export const getLogo = (team, isRetro) => {
     const logoObj = isRetro ? retro_logos : logos;
@@ -311,6 +311,8 @@ export const getLogo = (team, isRetro) => {
             return logoObj.Maine;
         case 'MRSH':
             return logoObj.Marshall;
+        case 'MRCY':
+            return logoObj.Mercyhurst;
         case 'UMD':
             return logoObj.Maryland;
         case 'MEMP':
@@ -869,90 +871,452 @@ export const getLogo = (team, isRetro) => {
             return logoObj.WAS_Wizards;
         case 'Washington Commanders':
             return logoObj.WAS_Commies;
+        case 'ABC Fighters':
+            return ISLLogos.ABCFighters;
         case 'Adelaide 36ers':
             return ISLLogos.Adelaide;
+        case 'AEL Limassol BC':
+            return ISLLogos.AELLimassol;
+        case 'Aguada':
+            return ISLLogos.Aguada;
+        case 'Al Ahly':
+            return ISLLogos.AlAhly;
+        case 'Al-Hilal BC':
+            return ISLLogos.AlHilal;
+        case 'Al-Ittihad BC':
+            return ISLLogos.AlIttihad;
+        case 'Al Nassr BC':
+            return ISLLogos.AlNassr;
+        case 'Al-Rasheed BC':
+            return ISLLogos.AlRasheed;
+        case 'Al Riyadi Beirut':
+            return ISLLogos.ALRiyadi;
+        case 'Al Sadd':
+            return ISLLogos.AlSadd;
+        case 'Al-Wahda SC':
+            return ISLLogos.AlWahda;
         case 'ALBA Berlin':
             return ISLLogos.ALBA;
         case 'Alvark Tokyo':
             return ISLLogos.Alvark;
         case 'Anadolu Efes':
             return ISLLogos.Anadolu;
+        case 'APOEL':
+            return ISLLogos.APOEL;
+        case 'Aquila Basket':
+            return ISLLogos.Aquila;
+        case 'AS Douanes':
+            return ISLLogos.ASDouanes;
+        case 'AS Monaco':
+            return ISLLogos.Monaco;
+        case 'AS Police':
+            return ISLLogos.ASPolice;
+        case 'AS Sale':
+            return ISLLogos.ASSale;
+        case 'Asker Aliens':
+            return ISLLogos.Asker;
+        case 'Baerum':
+            return ISLLogos.Baerum;
+        case 'Bahrain SC':
+            return ISLLogos.BahrainSC;
+        case 'Bakken Bears':
+            return ISLLogos.Bakken;
         case 'Barangay Ginebra San Miguel':
             return ISLLogos.Barangay;
         case 'Barcelona':
             return ISLLogos.Barcelona;
         case 'Bayern Munich':
             return ISLLogos.Bayern;
+        case 'BC Andorra':
+            return ISLLogos.Andorra;
+        case 'BC Astana':
+            return ISLLogos.Astana;
+        case 'BC Balcan':
+            return ISLLogos.BCBalcan;
+        case 'BC Budivelnyk':
+            return ISLLogos.BCBudivelnyk;
+        case 'BC Dnipro':
+            return ISLLogos.BCDnipro;
+        case 'BC Espoir Fukash':
+            return ISLLogos.EspoirFukash;
+        case 'BC Lietkabelis':
+            return ISLLogos.BCLietkabelis;
+        case 'BC Lulea':
+            return ISLLogos.BCLulea;
         case 'Beijing Ducks':
             return ISLLogos.BeijingDucks;
+        case 'Beit Sahour':
+            return ISLLogos.BeitSahour;
+        case 'Boca Juniors':
+            return ISLLogos.BocaJuniors;
         case 'Brisbane Bullets':
             return ISLLogos.Brisbane;
+        case 'Buducnost Voli':
+            return ISLLogos.BuducnostVoli;
+        case 'Caballos de Cocle':
+            return ISLLogos.CaballosdeCocle;
         case 'Caledonia Gladiators':
         case 'Caledonia':
             return ISLLogos.Caledonia;
+        case 'Cangrejeros de Santurce':
+            return ISLLogos.CangrejerosSanturce;
+        case 'Capitanes de Ciudad de Mexico':
+            return ISLLogos.CapitanesDeCiudad;
+        case 'Cape Town Tigers':
+            return ISLLogos.CapeTown;
         case 'Cazoo Baskonia':
             return ISLLogos.CazooBaskonia;
+        case 'Cibona':
+            return ISLLogos.Cibona;
+        case 'CB Gran Canaria':
+            return ISLLogos.GranCanaria;
+        case 'CD Valdivia':
+            return ISLLogos.CDValdivia;
+        case 'City Oilers':
+            return ISLLogos.CityOilers;
+        case 'Cobra Sport':
+            return ISLLogos.CobraSport;
         case 'Crvena zvezda':
             return ISLLogos.CrvenaZvezda;
+        case 'CSKA Moscow':
+            return ISLLogos.CSKAMoscow;
+        case 'Daegu KOGAS Pegasus':
+            return ISLLogos.Daegu;
+        case 'Da Nang Dragons':
+            return ISLLogos.DaNang;
+        case 'Dinamo Bucuresti':
+            return ISLLogos.DinamoBucuresti;
+        case 'Dynamo Vladivostok':
+            return ISLLogos.Vladivostok;
+        case 'Falco Szombathely':
+            return ISLLogos.FalcoSzombathely;
+        case 'FAP Yaounde':
+            return ISLLogos.Yaounde;
         case 'Fenerbahce Beko':
             return ISLLogos.Fenerbache;
+        case 'Ferroviario da Beira':
+            return ISLLogos.Beira;
+        case 'Ferroviario de Maputo':
+            return ISLLogos.Maputo;
+        case 'Flamengo Basketball':
+            return ISLLogos.Flamengo;
+        case 'Franca Basquetebol Clube':
+            return ISLLogos.Franca;
+        case 'Fujian Sturgeons':
+            return ISLLogos.Fujian;
+        case 'Fuerza Regia de Monterrey':
+            return ISLLogos.FuerzaMonterrey;
+        case 'GNBC':
+            return ISLLogos.GNBC;
         case 'Goyang Carrot Jumpers':
             return ISLLogos.Goyang;
+        case 'Grindavik':
+            return ISLLogos.Grindavik;
         case 'Guangdong Southern Tigers':
             return ISLLogos.Guandong;
         case 'Guangzhou Loong Lions':
             return ISLLogos.Guangzhou;
+        case 'Hamburg Towers':
+            return ISLLogos.Hamburg;
+        case 'Hapoel Jerusalem BC':
+            return ISLLogos.HapoelJerusalem;
+        case 'Heliopolis SC':
+            return ISLLogos.Heliopolis;
+        case 'Heroes Den Bosch':
+            return ISLLogos.Heroes;
+        case 'Hi-Tech Bangkok City':
+            return ISLLogos.HiTechBangkok;
         case 'Hiroshima Dragonflies':
             return ISLLogos.Hiroshima;
+        case 'Instituto ACC':
+            return ISLLogos.InstitutoACC;
+        case 'IR':
+            return ISLLogos.IR;
         case 'Jilin Northeast Tigers':
             return ISLLogos.Jilin;
+        case 'JL Bourg':
+            return ISLLogos.Bourg;
+        case 'Kazma SC':
+            return ISLLogos.KazmaSC;
+        case 'KK Cedevita Olimpija':
+            return ISLLogos.KKCedevita;
         case 'KK Partizan':
             return ISLLogos.KKPartizan;
+        case 'Kuala Lumpur Dragons':
+            return ISLLogos.KualaLumpur;
+        case 'Kuwait SC':
+            return ISLLogos.KuwaitSC;
+        case 'Kwara Falcons':
+            return ISLLogos.Kwara;
         case 'LDLC ASVEL':
             return ISLLogos.LDLC;
+        case 'Levanga Hokkaido':
+            return ISLLogos.Levanga;
+        case 'Libertadores de Queretaro':
+            return ISLLogos.LibertadoresQueretaro;
+        case 'Lokomotiv Kuban':
+            return ISLLogos.LokomotivKuban;
         case 'London Lions':
         case 'London':
             return ISLLogos.London;
+        case 'Louvre Surabaya':
+            return ISLLogos.Louvre;
         case 'Maccabi Tel Aviv':
             return ISLLogos.Maccabi;
+        case 'Mahram Tehran BC':
+            return ISLLogos.MahramTehran;
+        case 'Manama':
+            return ISLLogos.Manama;
+        case 'Manchester Giants':
+            return ISLLogos.Manchester;
+        case 'MC Alger':
+            return ISLLogos.Alger;
         case 'Melbourne United':
             return ISLLogos.Melbourne;
+        case 'Metropolitans 92':
+            return ISLLogos.Metropolitans92;
+        case 'Minas Storm':
+            return ISLLogos.Minas;
+        case 'Mogi das Cruzes Basquete':
+            return ISLLogos.MogiDasCruzes;
         case 'Nagoya Diamond Dolphins':
             return ISLLogos.Nagoya;
         case 'New Zealand Breakers':
             return ISLLogos.NewZealand;
+        case 'Nha Trang Dolphins':
+            return ISLLogos.NhaTrang;
+        case 'Norrkoping Dolphins':
+            return ISLLogos.Norrkoping;
+        case 'Nymburk':
+            return ISLLogos.Nymburk;
+        case 'Obras Sanitarias':
+            return ISLLogos.ObrasSanitarias;
         case 'Olimpia Milano':
             return ISLLogos.Olimpia;
         case 'Olympiacos':
             return ISLLogos.Olympiacos;
+        case 'Oostende':
+            return ISLLogos.Oostende;
+        case 'Opava':
+            return ISLLogos.Opava;
+        case 'Otago Nuggets':
+            return ISLLogos.Otago;
         case 'Panathinaikos':
             return ISLLogos.Panathinaikos;
+        case 'Peja':
+            return ISLLogos.Peja;
         case 'Perth Wildcats':
             return ISLLogos.Perth;
+        case 'Petro de Luanda':
+            return ISLLogos.Petro;
+        case 'Petrochimi Bandar Imam BC':
+            return ISLLogos.Petrochimi;
         case 'Prometey':
             return ISLLogos.Prometey;
+        case 'Pyrinto':
+            return ISLLogos.Pyrinto;
+        case 'Quimsa':
+            return ISLLogos.Quimsa;
         case 'Real Madrid':
             return ISLLogos.RealMadrid;
+        case 'Real Esteli':
+            return ISLLogos.RealEsteli;
+        case 'REG':
+            return ISLLogos.REG;
+        case 'Rivers Hoopers':
+            return ISLLogos.Rivers;
         case 'Ryukyu Golden Kings':
             return ISLLogos.Ryuku;
+        case 'Sabah BC':
+            return ISLLogos.SabahBC;
+        case 'Sagesse SC':
+            return ISLLogos.SagesseSC;
+        case 'Saigon Heat':
+            return ISLLogos.Saigon;
+        case 'San Lorenzo':
+            return ISLLogos.SanLorenzo;
+        case 'San Miguel Beermen':
+            return ISLLogos.SanMiguel;
+        case 'Sao Paulo FC':
+            return ISLLogos.SaoPaulo;
+        case 'Satria Muda Pertamina':
+            return ISLLogos.SatriaMuda;
         case 'Seoul Samsung Thunders':
             return ISLLogos.Seoul;
+        case 'Shabab Al Ahli BC':
+            return ISLLogos.ShababAlAhli;
         case 'Shandong Hi-Speed Kirin':
             return ISLLogos.Shandong;
         case 'Shanghai Sharks':
             return ISLLogos.Shanghai;
         case 'Shenzhen Leopards':
             return ISLLogos.Shenzen;
+        case 'Singapore Slingers':
+            return ISLLogos.Singapore;
+        case 'SLAC Warriors':
+            return ISLLogos.SLAC;
+        case 'Slask Wroclaw':
+            return ISLLogos.SlaskWroclaw;
+        case 'SL Benfica':
+            return ISLLogos.Benfica;
+        case 'South China AA':
+            return ISLLogos.SouthChina;
+        case 'Sporting Alexandria':
+            return ISLLogos.SportingAlexandria;
+        case 'Stade Malien':
+            return ISLLogos.StadeMalien;
         case 'Taipei Fubon Braves':
             return ISLLogos.Taipei;
+        case 'Taiwan Beer Leopards':
+            return ISLLogos.TaiwanCity;
+        case 'Tasmania JackJumpers':
+            return ISLLogos.Tasmania;
+        case 'Team FOG Naestved':
+            return ISLLogos.FOG;
+        case 'Titanes de Barranquilla':
+            return ISLLogos.Titanes;
+        case 'Torpan Pojat':
+            return ISLLogos.TorpanPojat;
+        case 'Ulsan Hyundai Mobis Phoebus':
+            return ISLLogos.Ulsan;
+        case 'Universidad de Concepcion':
+            return ISLLogos.UniversidadConcepcion;
+        case 'US Monastir':
+            return ISLLogos.Monastir;
         case 'VEF Riga':
             return ISLLogos.VEF;
         case 'Virtus Bologna':
             return ISLLogos.Virtus;
+        case 'Whai':
+            return ISLLogos.Whai;
         case 'Zalgiris':
             return ISLLogos.Zalgiris;
+        case 'Zamalek BC':
+            return ISLLogos.ZamalekBC;
+        case 'Zenit Saint Petersburg':
+            return ISLLogos.ZenitSP;
 
         default:
             return logoObj.Unknown;
+    }
+};
+
+export const getFormation = (formation) => {
+    switch (formation) {
+        case '3-2-6 Big Penny':
+            return FormationImages.Big_Penny;
+        case '3-2-6 Dime':
+            return FormationImages.Dime_326;
+        case '4-4 Base':
+            return FormationImages.Base44;
+        case '4-4 Over':
+            return FormationImages.Over44;
+        case '4-4 Under':
+            return FormationImages.Under44;
+        case '4-3 Light':
+            return FormationImages.Light43;
+        case '4-2-5 Nickel':
+            return FormationImages.Nickel425;
+        case '3-4 Okie':
+            return FormationImages.Okie34;
+        case '3-4 Bronco':
+            return FormationImages.Bronco34;
+        case '3-4 Eagle':
+            return FormationImages.Eagle34;
+        case '3-3-5 Nickel':
+            return FormationImages.Nickel335;
+        case '4-2-5 Base':
+            return FormationImages.Base425;
+        case '4-1-6 Dime':
+            return FormationImages.Dime416;
+        case '4-1-6 Big Dime':
+            return FormationImages.Big_Dime;
+        case '4-3 Heavy':
+            return FormationImages.Heavy43;
+        case '4-4 Jumbo':
+            return FormationImages.Jumbo44;
+        case '3-3-5 Base':
+            return FormationImages.Base335;
+        case '3-3-5 Over':
+            return FormationImages.Over335;
+        case '3-4-4 Heavy':
+            return FormationImages.Heavy344;
+        case '4-3 Base':
+            return FormationImages.Base43;
+        case '4-3 Over':
+            return FormationImages.Over43;
+        case '4-4 Heavy':
+            return FormationImages.Heavy44;
+        case 'I Formation':
+            return FormationImages.IForm;
+        case 'Singleback':
+            return FormationImages.Singleback;
+        case 'Double Tight':
+            return FormationImages.DoubleTight;
+        case 'I Formation Heavy':
+            return FormationImages.IFormHeavy;
+        case 'Split Back Gun':
+            return FormationImages.SplitbackG;
+        case 'Singleback Gun':
+            return FormationImages.SinglebackG;
+        case 'Spread Gun':
+            return FormationImages.SpreadG;
+        case 'Near/Far':
+            return FormationImages.NearFar;
+        case 'Spread':
+            return FormationImages.Spread;
+        case 'Empty Gun':
+            return FormationImages.EmptyGun;
+        case 'Big Spread Gun':
+            return FormationImages.BigSpreadGun;
+        case 'Pony Spread Gun':
+            return FormationImages.PonySpreadG;
+        case 'Pistol':
+            return FormationImages.Pistol;
+        case 'Power Pistol':
+            return FormationImages.PowerP;
+        case 'Heavy Power Pistol':
+            return FormationImages.HeavyPowerP;
+        case 'Big Pistol':
+            return FormationImages.BigPistol;
+        case 'Spread Pistol':
+            return FormationImages.SpreadP;
+        case 'Wing-T':
+            return FormationImages.WingT;
+        case 'T-Split':
+            return FormationImages.WingTSplit;
+        case 'Wing-T Double Tight':
+            return FormationImages.WingTDT;
+        case 'Wing Split Back Gun':
+            return FormationImages.WingSplitbackG;
+        case 'Double Wing':
+            return FormationImages.DoubleWing;
+        case 'Double Wing Strong':
+            return FormationImages.DWStrong;
+        case 'Double Wing Wide':
+            return FormationImages.DWWide;
+        case 'Double Wing Spread':
+            return FormationImages.DWSpread;
+        case 'Double Wing Split':
+            return FormationImages.DWSplit;
+        case 'Wishbone':
+            return FormationImages.Wishbone;
+        case 'Wishbone Strong':
+            return FormationImages.WishboneStrong;
+        case 'Wishbone Wide':
+            return FormationImages.WishboneWide;
+        case 'Flexbone':
+            return FormationImages.Flexbone;
+        case 'Flexbone Strong':
+            return FormationImages.FBStrong;
+        case 'Flexbone Wide':
+            return FormationImages.FBGunWide;
+        case 'Flexbone Gun':
+            return FormationImages.FBGun;
+        case 'Flexbone Gun Wide':
+            return FormationImages.FBGunWide;
+
+        default:
+            return '';
     }
 };

@@ -85,6 +85,7 @@ export const RunInput = ({
     else if (Archetype === 'Vertical Threat') archLabel = 'V. Threat';
     else if (Archetype === 'Scrambler') archLabel = 'Scramb.';
     else if (Archetype === 'Receiving') archLabel = 'Rec.';
+    else if (Archetype === 'Route Running') archLabel = 'RR.';
     else {
         archLabel = Archetype;
     }

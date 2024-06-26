@@ -1,7 +1,8 @@
 import React from 'react';
 import { DropdownItem } from '../_Common/Dropdown';
-import { CommonModal } from '../_Common/ModalComponents';
+import { CommonModal, ExtraLargeModal } from '../_Common/ModalComponents';
 import { schemeDropdownClass } from './GameplanConstants';
+import { getFormation } from '../../Constants/getLogo';
 
 export const OpposingSchemeRow = ({ scheme }) => {
     return (
@@ -138,6 +139,17 @@ export const FormationModal = ({ Header, ID, ModalClass }) => {
                 if you want to provide more customization.
             </div>
         </CommonModal>
+    );
+};
+
+export const ViewFormationModal = ({ Header, ID }) => {
+    const logo = getFormation(Header);
+    return (
+        <ExtraLargeModal header={Header} id={ID}>
+            <div className="p-2 object-fit">
+                <img src={logo} alt={Header} className="" />
+            </div>
+        </ExtraLargeModal>
     );
 };
 

@@ -17,7 +17,148 @@ const CFBOverviewRow = ({
     viewMode,
     retro
 }) => {
-    return <></>;
+    const [flag, setFlag] = useState(false);
+    const name = `${player.FirstName} ${player.LastName}`;
+    const keyCode = `${player.PlayerID}`;
+    const previousLogo =
+        player && player.PreviousTeam.length > 0
+            ? getLogo(player.PreviousTeam, retro)
+            : '';
+    const newTeamLogo =
+        player && player.TeamAbbr.length > 0
+            ? getLogo(player.TeamAbbr, retro)
+            : '';
+    const portalModalTarget = '#portalPlayerModal';
+    useEffect(() => {
+        if (portalMap) {
+            setFlag(portalMap[keyCode]);
+        }
+    }, [portalMap, keyCode]);
+
+    const addToProfile = () => {
+        if (ds) return;
+        setFlag(true);
+        return add(player);
+    };
+
+    const setPortal = () => {
+        return setPortalPlayer(() => player);
+    };
+
+    const leadingTeamsMapper = (p) => {
+        // Show list of leading teams
+        if (p.LeadingTeams == null || p.LeadingTeams.length === 0)
+            return 'None';
+
+        const competingTeams = p.LeadingTeams.filter(
+            (x, idx) => idx <= 2 && x.Odds > 0
+        );
+
+        if (competingTeams.length === 0) return 'None';
+
+        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+
+        return competingAbbrs.map((x) => {
+            const logo = getLogo(x, retro);
+            return (
+                <>
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={logo}
+                        alt="competing-team"
+                    />
+                </>
+            );
+        });
+    };
+    // Row Variables
+    const year = GetCollegeYear(player);
+    const leadingTeams = leadingTeamsMapper(player);
+    return (
+        <>
+            <tr>
+                <th scope="row">
+                    <h4>{rank}</h4>
+                </th>
+                <td className="align-middle">
+                    <h6>{name}</h6>
+                    <button
+                        type="button"
+                        className="btn btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target={portalModalTarget}
+                        onClick={setPortal}
+                    >
+                        <i
+                            className={`bi bi-info-circle ${
+                                viewMode === 'dark' ? 'text-light' : ''
+                            }`}
+                        />
+                    </button>
+                </td>
+                <td className="align-middle">
+                    <h6>{player.Position}</h6>
+                </td>
+                <td className="align-middle">
+                    <h6>{player.Archetype}</h6>
+                </td>
+                <td className="align-middle">
+                    {player.PreviousTeam.length > 0 && (
+                        <img
+                            className="image-recruit-logo"
+                            src={previousLogo}
+                            alt="WinningTeam"
+                        />
+                    )}
+                </td>
+                <td className="align-middle">
+                    <h6>{player.State}</h6>
+                </td>
+                <td className="align-middle">
+                    <h6>{year}</h6>
+                </td>
+                <td className="align-middle">
+                    <h6>{player.Stars}</h6>
+                </td>
+
+                <td className="align-middle">
+                    <h6>{player.OverallGrade}</h6>
+                </td>
+                <td className="align-middle">
+                    <h6>{player.PotentialGrade}</h6>
+                </td>
+                <td className="align-middle">
+                    {!player.IsSigned ? (
+                        <h6>{leadingTeams}</h6>
+                    ) : (
+                        <img
+                            className="image-recruit-logo"
+                            src={logo}
+                            alt="WinningTeam"
+                        />
+                    )}
+                </td>
+                <td className="align-middle">
+                    {player.IsSigned || timestamp.CollegeWeek === 16 ? (
+                        <h2>
+                            <i class="bi bi-file-lock-fill"></i>
+                        </h2>
+                    ) : flag ? (
+                        <h2>
+                            <i className="bi bi-check-circle-fill rounded-circle link-secondary"></i>
+                        </h2>
+                    ) : (
+                        <h2>
+                            <i
+                                className="bi bi-plus-circle-fill rounded-circle link-success"
+                                onClick={addToProfile}
+                            ></i>
+                        </h2>
+                    )}
+                </td>
+            </tr>
+        </>
+    );
 };
 
 const CBBOverviewRow = ({
@@ -235,7 +376,20 @@ export const TPOverviewRow = ({
     );
 };
 
-const CFBProfileRow = ({}) => {};
+const CFBProfileRow = ({
+    profile,
+    idx,
+    timestamp,
+    createPromise,
+    removePromise,
+    allocate,
+    viewMode,
+    setProfile,
+    cancel,
+    retro
+}) => {
+    return <></>;
+};
 
 const CBBProfileRow = ({
     profile,
@@ -302,6 +456,7 @@ const CBBProfileRow = ({
     const removePlayerFromBoard = () => {
         return props.remove(idx, data);
     };
+
     let leadingTeams = leadingTeamsMapper(CollegePlayer);
 
     return (
@@ -399,7 +554,7 @@ const CBBProfileRow = ({
                             className="btn btn-sm btn-info"
                             data-bs-toggle="modal"
                             data-bs-target={profileModalTarget}
-                            onClick={() => setProfile(profile)}
+                            onClick={() => setProfile(() => profile)}
                         >
                             <i
                                 className={`bi bi-info-circle ${
