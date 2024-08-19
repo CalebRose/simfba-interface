@@ -6,7 +6,6 @@ import {
 } from '../../_Utility/utilHelper';
 
 const CFBOverviewRow = ({
-    isCFB,
     player,
     key,
     idx,
@@ -15,6 +14,8 @@ const CFBOverviewRow = ({
     timestamp,
     add,
     viewMode,
+    ds,
+    setPortalPlayer,
     retro
 }) => {
     const [flag, setFlag] = useState(false);
@@ -360,6 +361,7 @@ export const TPOverviewRow = ({
             viewMode={viewMode}
             setPortalPlayer={setPortalPlayer}
             retro={retro}
+            ds={ds}
         />
     ) : (
         <CBBOverviewRow
@@ -388,7 +390,152 @@ const CFBProfileRow = ({
     cancel,
     retro
 }) => {
-    return <></>;
+    const { CollegePlayer } = profile;
+    const previousLogo =
+        CollegePlayer && CollegePlayer.PreviousTeam.length > 0
+            ? getLogo(CollegePlayer.PreviousTeam, retro)
+            : '';
+    const newTeamLogo =
+        CollegePlayer && CollegePlayer.TeamAbbr.length > 0
+            ? getLogo(CollegePlayer.TeamAbbr, retro)
+            : '';
+    const year = GetCollegeYear(CollegePlayer);
+    const profileModalTarget = '#promiseModal';
+
+    const promiseMultiplier = useMemo(() => {
+        if (profile && profile.Promise) {
+            return GetPromiseMultiplier(profile.Promise);
+        }
+        return 1;
+    }, [profile]);
+
+    const leadingTeamsMapper = (data) => {
+        if (data.LeadingTeams == null || data.LeadingTeams.length === 0)
+            return 'None';
+
+        const competingTeams = data.LeadingTeams.filter(
+            (x, idx) => idx <= 2 && x.Odds > 0
+        );
+
+        if (competingTeams === null || competingTeams.length === 0) {
+            return 'None';
+        }
+
+        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+        return competingAbbrs.map((x) => {
+            const logo = getLogo(x, retro);
+            return (
+                <>
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={logo}
+                        alt="competing-team"
+                    />
+                </>
+            );
+        });
+    };
+
+    const handleChange = (event) => {
+        return allocate(idx, event);
+    };
+
+    const removePlayerFromBoard = () => {
+        return props.remove(idx, data);
+    };
+
+    let leadingTeams = leadingTeamsMapper(CollegePlayer);
+    return (
+        <>
+            <tr>
+                <th scope="row" className="align-middle">
+                    <h6>{CollegePlayer.Position}</h6>
+                </th>
+                <td className="align-middle">
+                    <h6
+                        className={
+                            CollegePlayer.IsCustomCroot ? 'text-primary' : ''
+                        }
+                    >
+                        {CollegePlayer.FirstName} {CollegePlayer.LastName}
+                    </h6>
+                </td>
+                <td className="align-middle">
+                    {CollegePlayer.PreviousTeam.length > 0 && (
+                        <img
+                            className="image-recruit-logo"
+                            src={previousLogo}
+                            alt="WinningTeam"
+                        />
+                    )}
+                </td>
+                <td className="align-middle">
+                    <h6>{year}</h6>
+                </td>
+                <td className="align-middle">
+                    <h6>{CollegePlayer.Stars}</h6>
+                </td>
+                <td className="align-middle">
+                    <h6>{CollegePlayer.OverallGrade}</h6>
+                </td>
+                <td className="align-middle">
+                    <h6>{CollegePlayer.PotentialGrade}</h6>
+                </td>
+                <td className="align-middle">
+                    {profile.LockProfile ? (
+                        <img
+                            className="image-recruit-logo"
+                            src={newTeamLogo}
+                            alt="WinningTeam"
+                        />
+                    ) : (
+                        <h6>{leadingTeams}</h6>
+                    )}
+                </td>
+                <td className="align-middle">
+                    <input
+                        name="CurrentPoints"
+                        type="number"
+                        class="form-control"
+                        id="currentPoints"
+                        aria-describedby="currentPoints"
+                        disabled={profile.LockProfile}
+                        value={profile.CurrentWeeksPoints}
+                        onChange={handleChange}
+                        min="0"
+                    />
+                </td>
+                <td className="align-middle">{promiseMultiplier}</td>
+                <td className="align-middle">
+                    <h6>{profile.TotalPoints}</h6>
+                </td>
+                <td className="align-middle">
+                    <div className="btn-group" role="group">
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-info"
+                            data-bs-toggle="modal"
+                            data-bs-target={profileModalTarget}
+                            onClick={() => setProfile(() => profile)}
+                        >
+                            <i
+                                className={`bi bi-info-circle ${
+                                    viewMode === 'dark' ? 'text-light' : ''
+                                }`}
+                            />
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-danger btn-sm"
+                            onClick={() => cancel(profile)}
+                        >
+                            <i className="bi bi-x-circle-fill rounded-circle" />
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </>
+    );
 };
 
 const CBBProfileRow = ({

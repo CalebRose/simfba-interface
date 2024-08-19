@@ -67,7 +67,7 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
     };
 
     const getTeams = async () => {
-        let response = await _teamService.GetNBATeams();
+        let response = await _teamService.GetAllProfessionalTeams();
         response = response.filter((x) => x.ID !== currentUser.NBATeamID);
         setTeams(() => response);
         setFilteredTeams(() => response);

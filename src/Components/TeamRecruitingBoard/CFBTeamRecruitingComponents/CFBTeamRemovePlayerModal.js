@@ -17,6 +17,7 @@ const ConfirmRemovePlayerFromBoardModal = (props) => {
             ModalClass={modalClass}
             Header={header}
             ConfirmChanges={confirmChange}
+            IsValid
         >
             <div className="row g-2 gy-2 mb-2">
                 You will always be able to re-add this recruit onto your board

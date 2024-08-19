@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import toast from 'react-hot-toast';
@@ -15,31 +15,33 @@ import { TeamDropdown } from '../../_Common/TeamDropdown';
 import NFLMobileRosterRow from './NFLRosterMobileRow';
 import { NFLRosterPlayerRow } from './NFLRosterPlayerRow';
 import { NFLSidebar } from './NFLSidebar';
+import { TagPlayerModal } from './TagPlayerModal';
 
 const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
     let _tradeService = new FBATradeService();
     let _teamService = new FBATeamService();
     let _rosterService = new FBAPlayerService();
 
-    const [userTeam, setUserTeam] = React.useState(null);
-    const [viewingUserTeam, setViewingUserTeam] = React.useState(true);
-    const [teams, setTeams] = React.useState(null);
-    const [team, setTeam] = React.useState(null);
-    const [teamID, setTeamID] = React.useState(null);
-    const [roster, setRoster] = React.useState('');
-    const [activeCount, setActiveCount] = React.useState(0);
-    const [practiceSquadCount, setPracticeSquadCount] = React.useState(0);
-    const [viewRoster, setViewRoster] = React.useState('');
-    const [sort, setSort] = React.useState('ovr');
-    const [isAsc, setIsAsc] = React.useState(false);
-    const [canModify, setCanModify] = React.useState(false);
-    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const [userTeam, setUserTeam] = useState(null);
+    const [viewingUserTeam, setViewingUserTeam] = useState(true);
+    const [teams, setTeams] = useState(null);
+    const [team, setTeam] = useState(null);
+    const [teamID, setTeamID] = useState(null);
+    const [roster, setRoster] = useState('');
+    const [activeCount, setActiveCount] = useState(0);
+    const [practiceSquadCount, setPracticeSquadCount] = useState(0);
+    const [viewRoster, setViewRoster] = useState('');
+    const [sort, setSort] = useState('ovr');
+    const [isAsc, setIsAsc] = useState(false);
+    const [tagPlayer, setTagPlayer] = useState(null);
+    const [canModify, setCanModify] = useState(false);
+    const [viewWidth, setViewWidth] = useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:760px)` });
     const tableHoverClass = GetTableHoverClass(viewMode);
     const tableSmallClass = GetTableSmallClass(viewMode);
 
     // For mobile
-    React.useEffect(() => {
+    useEffect(() => {
         if (!viewWidth) {
             setViewWidth(window.innerWidth);
         }
@@ -89,6 +91,7 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
     // API Calls
     const getRosterData = async (id) => {
         let res = await _teamService.GetNFLRosterData(id);
+        console.log({ res });
         const isUserTeam = id === currentUser.NFLTeamID;
         if (isUserTeam && !userTeam) {
             setUserTeam(() => res.Team);
@@ -322,6 +325,7 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
         setViewRoster(r);
         setTeam(() => t);
     };
+
     const ExtendPlayer = async (player, offer) => {
         let res = await _rosterService.CreateExtensionOffer(offer);
         const offerData = await res.json();
@@ -453,6 +457,32 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
         setViewRoster(() => currentViewRoster);
     };
 
+    const TagPlayerOption = async (player, tagType) => {
+        const { ID, Position } = player;
+        let tagEnum = 4;
+        if (tagType === 'Franchise') {
+            tagEnum = 1;
+        } else if (tagType === 'Playtime') {
+            tagEnum = 3;
+        }
+        const dto = { PlayerID: ID, TagType: tagEnum, Position: Position };
+        const r = [...roster];
+        const playerIDX = r.findIndex((x) => x.ID === ID);
+        if (playerIDX > -1) {
+            const res = await _rosterService.TagPlayer(dto);
+            r[playerIDX].TagType = tagEnum;
+            setRoster(() => r);
+
+            if (tagEnum === 1 || tagEnum === 2);
+            const t = { ...team };
+            const u = { ...userTeam };
+            t.UsedTagThisSeason = true;
+            u.UsedTagThisSeason = true;
+            setTeam(() => t);
+            setUserTeam(() => u);
+        }
+    };
+
     return (
         <>
             <div className="container-fluid">
@@ -503,6 +533,12 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                 </h3>
                             </div>
                         </div>
+                        <TagPlayerModal
+                            player={tagPlayer}
+                            tag={TagPlayerOption}
+                            viewMode={viewMode}
+                            team={team}
+                        />
                         <div className="row">
                             {!isMobile ? (
                                 <div className="table-wrapper table-height">
@@ -733,6 +769,9 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                                 retro={
                                                                     currentUser.IsRetro
                                                                 }
+                                                                tagPlayer={
+                                                                    setTagPlayer
+                                                                }
                                                             />
                                                         </>
                                                     )
@@ -773,6 +812,7 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                                     cut={CutPlayer}
                                                     ir={InjuryReservePlayer}
                                                     retro={currentUser.IsRetro}
+                                                    tagPlayer={setTagPlayer}
                                                 />
                                             </>
                                         ))}

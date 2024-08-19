@@ -45,14 +45,14 @@ const PlayerModal = (props) => {
                     </div>
                 </div>
             </div>
-            <div className="row mt-1">
+            <div className="row mt-1 mb-1">
                 <div className="col-md-auto">
-                    <h4 className="">
+                    <h6 className="">
                         {player.Height} inches, {player.Weight} lbs
-                    </h4>
+                    </h6>
                 </div>
                 <div className="col-md-auto">
-                    <h4 className="">Overall: {ovr}</h4>
+                    <h6 className="">Overall: {ovr}</h6>
                 </div>
             </div>
             <div className="AttributeTable row mt-1">

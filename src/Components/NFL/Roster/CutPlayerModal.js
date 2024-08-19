@@ -18,6 +18,7 @@ export const CutPlayerModal = ({ player, idx, cut, viewMode }) => {
             ModalClass="modal-content"
             Header={modalHeader}
             ConfirmChanges={confirmChange}
+            IsValid
         >
             <div className="row g-2 gy-2 mb-2">
                 WARNING: Once you've cut {name}, they will be placed on the

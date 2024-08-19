@@ -51,7 +51,7 @@ const CrootModal = (props) => {
                     </h6>
                 </div>
                 <div className={`col-${hasCommitted ? '3' : '4'}`}>
-                    {HasScholarship ? 'Yes' : 'No'}
+                    <p>{HasScholarship ? 'Yes' : 'No'}</p>
                 </div>
                 <div className={`col-${hasCommitted ? '3' : '4'}`}>
                     <h6>
@@ -78,85 +78,94 @@ const CrootModal = (props) => {
         <CommonModal ID={modalId} ModalClass={modalClass} Header={ModalHeader}>
             <div className="row g-2 gy-2 mb-2">
                 <div className="col">
-                    <h5>Position</h5>
-                    {crt.Position}
+                    <h6>Position</h6>
+                    <p className="text-small">{crt.Position}</p>
                 </div>
                 <div className="col">
-                    <h5>Archetype</h5>
-                    {crt.Archetype}
+                    <h6>Archetype</h6>
+                    <p className="text-small">{crt.Archetype}</p>
                 </div>
                 <div className="col">
-                    <h5>Stars</h5>
-                    {crt.Stars}
+                    <h6>Stars</h6>
+                    <p className="text-small">{crt.Stars}</p>
                 </div>
                 <div className="col">
-                    <h5>Status: </h5>
-                    {crt.TeamID === 0 ? 'Unsigned' : 'Signed'}
+                    <h6>Status: </h6>
+                    <p className="text-small">
+                        {crt.TeamID === 0 ? 'Unsigned' : 'Signed'}
+                    </p>
                 </div>
             </div>
             <div className="row g-2 gy-2 mb-3">
                 <div className="col">
-                    <h5>Overall:</h5> {crt.OverallGrade}
+                    <h6>Overall:</h6>
+                    <p className="text-small">{crt.OverallGrade}</p>
                 </div>
                 <div className="col">
-                    <h5>Potential:</h5> {crt.PotentialGrade}
+                    <h6>Potential:</h6>{' '}
+                    <p className="text-small">{crt.PotentialGrade}</p>
                 </div>
                 <div className="col">
-                    <h5>Height:</h5> {heightObj.feet}' {heightObj.inches}"
+                    <h6>Height:</h6>{' '}
+                    <p className="text-small">
+                        {heightObj.feet}' {heightObj.inches}"
+                    </p>
                 </div>
                 <div className="col">
-                    <h5>Weight:</h5> {crt.Weight}
+                    <h6>Weight:</h6>
+                    <p className="text-small">{crt.Weight}</p>
                 </div>
             </div>
             <div className="row g-2 mb-3">
                 {crt.IsCustomCroot && (
                     <div className="col">
-                        <h5>Custom Croot By {crt.CustomCrootFor}</h5>
+                        <h6>Custom Croot By {crt.CustomCrootFor}</h6>
                     </div>
                 )}
                 <div className="col">
-                    <h5>High School:</h5> {crt.HighSchool}
+                    <h6>High School:</h6>
+                    <p className="text-small">{crt.HighSchool}</p>
                 </div>
                 <div className="col">
-                    <h5>City</h5>
-                    {crt.City}
+                    <h6>City</h6>
+                    <p className="text-small">{crt.City}</p>
                 </div>
                 <div className="col">
-                    <h5>State</h5>
-                    {crt.State}
+                    <h6>State</h6>
+                    <p className="text-small">{crt.State}</p>
                 </div>
             </div>
             <div className="row g-2 mb-3">
                 <div className="col">
-                    <h5>Affinity One</h5>
-                    {crt.AffinityOne}
+                    <h6>Affinity One</h6>
+                    <p className="text-small">{crt.AffinityOne}</p>
                 </div>
                 <div className="col">
-                    <h5>Affinity Two</h5>
-                    {crt.AffinityTwo}
+                    <h6>Affinity Two</h6>
+                    <p className="text-small">{crt.AffinityTwo}</p>
                 </div>
                 <div className="col">
-                    <h5>Recruiting Tendencies</h5>
-                    {tendency}
+                    <h6>Recruiting Tendencies</h6>
+                    <p className="text-small">{tendency}</p>
                 </div>
             </div>
             <div className="row g-1 mb-3">
                 <div className="col">
-                    <h5>Team</h5>
+                    <h6>Team</h6>
                 </div>
                 <div className="col">
-                    <h5>Scholarship</h5>
+                    <h6>Scholarship</h6>
                 </div>
                 <div className="col">
                     {crt && crt.College.length > 0 ? (
-                        <h5>Results</h5>
+                        <h6>Results</h6>
                     ) : (
-                        <h5>Prediction</h5>
+                        <h6>Prediction</h6>
                     )}
                 </div>
                 {crt && crt.College.length > 0 && (
                     <div className="col">
-                        <h5>Odds</h5>
+                        <h6>Odds</h6>
                     </div>
                 )}
             </div>
@@ -168,26 +177,22 @@ const CrootModal = (props) => {
                 })}
             <div className="row g-2 mb-2 mt-1">
                 <div className="col">
-                    <h5>Recruiting Preferences</h5>
-                    <p>{crt.RecruitingBias}</p>
+                    <h6>Recruiting Preferences</h6>
+                    <p className="text-small">{crt.RecruitingBias}</p>
+                </div>
+                <div className="col">
+                    <h6>Work Ethic</h6>
+                    <p className="text-small">{crt.WorkEthic}</p>
                 </div>
             </div>
             <div className="row g-2 mb-2">
                 <div className="col">
-                    <h5>Work Ethic</h5>
-                    <p>{crt.WorkEthic}</p>
+                    <h6>Academic Bias</h6>
+                    <p className="text-small">{crt.AcademicBias}</p>
                 </div>
-            </div>
-            <div className="row g-2 mb-2">
                 <div className="col">
-                    <h5>Academic Bias</h5>
-                    <p>{crt.AcademicBias}</p>
-                </div>
-            </div>
-            <div className="row g-2 mb-2">
-                <div className="col">
-                    <h5>Personality</h5>
-                    <p>{crt.Personality}</p>
+                    <h6>Personality</h6>
+                    <p className="text-small">{crt.Personality}</p>
                 </div>
             </div>
         </CommonModal>

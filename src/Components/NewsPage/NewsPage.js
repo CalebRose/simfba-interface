@@ -57,6 +57,14 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
         } else if (selectedLeague == 'NBA') {
             news = [...nbaNews];
         }
+        // Prevent Overflow
+        if (
+            selectedSeason.length === 0 &&
+            selectedNewsTypes.length === 0 &&
+            selectedWeeks.length === 0
+        ) {
+            news = news.slice(0, 100);
+        }
         const filterLogs = FilterLogs(news);
         setCurrentNews(() => filterLogs);
     }, [selectedWeeks, selectedNewsTypes, selectedLeague, selectedSeason]);
@@ -214,7 +222,7 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
                                 onChange={ChangeNewsTypes}
                             />
                         </div>
-                        <div className="row">
+                        <div className="row mb-2">
                             <h6>Season</h6>
                             <Select
                                 options={seasonOptions}

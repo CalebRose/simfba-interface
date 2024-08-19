@@ -164,7 +164,7 @@ export const CollegePollModal = ({
         <OfficialPollModal id={modalId} header={header}>
             {!isLoading && (
                 <>
-                    <div className="row mb-2">
+                    <div className="row mb-3">
                         <div className="col-md-auto col-auto">
                             <h5 className="text-start align-middle">Season</h5>
                             <Select
@@ -186,7 +186,7 @@ export const CollegePollModal = ({
                             />
                         </div>
                     </div>
-                    <div className="row mb-3">
+                    <div className="row mb-2">
                         <div className="col-md-auto ms-start d-flex flex-row">
                             <h5 className="me-2">
                                 Current Season: {season.label}

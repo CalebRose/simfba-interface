@@ -149,119 +149,196 @@ export const SimFBAGameModal = ({ game, isNFL, isMobile }) => {
                             <>
                                 {view === 'Box Score' && (
                                     <>
-                                        <div className="p-1 mb-2 border rounded">
-                                            <div className="row">
-                                                <h6>Score</h6>
-                                            </div>
-                                            <div className="row justify-content-between">
-                                                <div className="col-1">
-                                                    <h6>Team</h6>
+                                        <div className="row justify-content-center mb-3 gap-2">
+                                            <div className="col-12 col-sm-7 px-1 py-2 border rounded">
+                                                <div className="row">
+                                                    <h6>Score</h6>
                                                 </div>
-                                                <div className="col-2">
-                                                    <h6>1Q</h6>
+                                                <div className="row justify-content-between">
+                                                    <div className="col-2 col-sm-1">
+                                                        <h6>Team</h6>
+                                                    </div>
+                                                    <div className="col-1 col-sm-2">
+                                                        <h6>1Q</h6>
+                                                    </div>
+                                                    <div className="col-1 col-sm-2">
+                                                        <h6>2Q</h6>
+                                                    </div>
+                                                    <div className="col-1 col-sm-2">
+                                                        <h6>3Q</h6>
+                                                    </div>
+                                                    <div className="col-1 col-sm-2">
+                                                        <h6>4Q</h6>
+                                                    </div>
+                                                    {score &&
+                                                        (score.OT1Home > 0 ||
+                                                            score.OT2Home > 0 ||
+                                                            score.OT3Home > 0 ||
+                                                            score.OT4Home > 0 ||
+                                                            score.OT1Away > 0 ||
+                                                            score.OT2Away > 0 ||
+                                                            score.OT3Away > 0 ||
+                                                            score.OT4Away >
+                                                                0) && (
+                                                            <div className="col-1 col-sm-2">
+                                                                OT
+                                                            </div>
+                                                        )}
+                                                    <div className="col-2 col-sm-1">
+                                                        Final
+                                                    </div>
                                                 </div>
-                                                <div className="col-2">
-                                                    <h6>2Q</h6>
-                                                </div>
-                                                <div className="col-2">
-                                                    <h6>3Q</h6>
-                                                </div>
-                                                <div className="col-2">
-                                                    <h6>4Q</h6>
-                                                </div>
-                                                {score &&
-                                                    (score.OT1Home > 0 ||
-                                                        score.OT2Home > 0 ||
-                                                        score.OT3Home > 0 ||
-                                                        score.OT4Home > 0 ||
-                                                        score.OT1Away > 0 ||
-                                                        score.OT2Away > 0 ||
-                                                        score.OT3Away > 0 ||
-                                                        score.OT4Away > 0) && (
-                                                        <div className="col-2">
-                                                            OT
-                                                        </div>
-                                                    )}
-                                                <div className="col-1">
-                                                    Final
-                                                </div>
-                                            </div>
-                                            <div className="row justify-content-between">
-                                                <div className="col-1">
-                                                    {game.HomeTeam}
-                                                </div>
-                                                <div className="col-2">
-                                                    {score.Q1Home || 0}
-                                                </div>
-                                                <div className="col-2">
-                                                    {score.Q2Home || 0}
-                                                </div>
-                                                <div className="col-2">
-                                                    {score.Q3Home || 0}
-                                                </div>
-                                                <div className="col-2">
-                                                    {score.Q4Home || 0}
-                                                </div>
-                                                {score &&
-                                                    (score.OT1Home > 0 ||
-                                                        score.OT2Home > 0 ||
-                                                        score.OT3Home > 0 ||
-                                                        score.OT4Home > 0 ||
-                                                        score.OT1Away > 0 ||
-                                                        score.OT2Away > 0 ||
-                                                        score.OT3Away > 0 ||
-                                                        score.OT4Away > 0) && (
-                                                        <div className="col-2">
-                                                            {score.OT1Home +
-                                                                score.OT2Home +
-                                                                score.OT3Home +
-                                                                score.OT4Home ||
-                                                                0}
-                                                        </div>
-                                                    )}
+                                                <div className="row justify-content-between">
+                                                    <div className="col-2 col-sm-1">
+                                                        {game.HomeTeam}
+                                                    </div>
+                                                    <div className="col-1 col-sm-2">
+                                                        <p className="text-small">
+                                                            {score.Q1Home || 0}
+                                                        </p>
+                                                    </div>
+                                                    <div className="col-1 col-sm-2">
+                                                        <p className="text-small">
+                                                            {score.Q2Home || 0}
+                                                        </p>
+                                                    </div>
+                                                    <div className="col-1 col-sm-2">
+                                                        <p className="text-small">
+                                                            {score.Q3Home || 0}
+                                                        </p>
+                                                    </div>
+                                                    <div className="col-1 col-sm-2">
+                                                        <p className="text-small">
+                                                            {score.Q4Home || 0}
+                                                        </p>
+                                                    </div>
+                                                    {score &&
+                                                        (score.OT1Home > 0 ||
+                                                            score.OT2Home > 0 ||
+                                                            score.OT3Home > 0 ||
+                                                            score.OT4Home > 0 ||
+                                                            score.OT1Away > 0 ||
+                                                            score.OT2Away > 0 ||
+                                                            score.OT3Away > 0 ||
+                                                            score.OT4Away >
+                                                                0) && (
+                                                            <div className="col-1 col-sm-2">
+                                                                <p className="text-small">
+                                                                    {score.OT1Home +
+                                                                        score.OT2Home +
+                                                                        score.OT3Home +
+                                                                        score.OT4Home ||
+                                                                        0}
+                                                                </p>
+                                                            </div>
+                                                        )}
 
-                                                <div className="col-1">
-                                                    {game.HomeTeamScore || 0}
+                                                    <div className="col-2 col-sm-1">
+                                                        <p className="text-small">
+                                                            {game.HomeTeamScore ||
+                                                                0}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="row justify-content-between">
+                                                    <div className="col-2 col-sm-1">
+                                                        {game.AwayTeam}
+                                                    </div>
+                                                    <div className="col-1 col-sm-2">
+                                                        <p className="text-small">
+                                                            {score.Q1Away || 0}
+                                                        </p>
+                                                    </div>
+                                                    <div className="col-1 col-sm-2">
+                                                        <p className="text-small">
+                                                            {score.Q2Away || 0}
+                                                        </p>
+                                                    </div>
+                                                    <div className="col-1 col-sm-2">
+                                                        <p className="text-small">
+                                                            {score.Q3Away || 0}
+                                                        </p>
+                                                    </div>
+                                                    <div className="col-1 col-sm-2">
+                                                        <p className="text-small">
+                                                            {score.Q4Away || 0}
+                                                        </p>
+                                                    </div>
+                                                    {score &&
+                                                        (score.OT1Home > 0 ||
+                                                            score.OT2Home > 0 ||
+                                                            score.OT3Home > 0 ||
+                                                            score.OT4Home > 0 ||
+                                                            score.OT1Away > 0 ||
+                                                            score.OT2Away > 0 ||
+                                                            score.OT3Away > 0 ||
+                                                            score.OT4Away >
+                                                                0) && (
+                                                            <div className="col-1 col-sm-2">
+                                                                <p className="text-small">
+                                                                    {score.OT1Away +
+                                                                        score.OT2Away +
+                                                                        score.OT3Away +
+                                                                        score.OT4Away ||
+                                                                        0}
+                                                                </p>
+                                                            </div>
+                                                        )}
+                                                    <div className="col-2 col-sm-1">
+                                                        <p className="text-small">
+                                                            {game.AwayTeamScore ||
+                                                                0}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className="row mb-3 justify-content-between">
-                                                <div className="col-1">
-                                                    {game.AwayTeam}
+                                            <div className="col-12 col-sm-4 px-1 py-2 border rounded">
+                                                <div className="row">
+                                                    <h6>Schemes</h6>
                                                 </div>
-                                                <div className="col-2">
-                                                    {score.Q1Away || 0}
+                                                <div className="row justify-content-center">
+                                                    <div className="col-6">
+                                                        Offense
+                                                    </div>
+                                                    <div className="col-6">
+                                                        Defense
+                                                    </div>
                                                 </div>
-                                                <div className="col-2">
-                                                    {score.Q2Away || 0}
+                                                <div className="row justify-content-center">
+                                                    <div className="col-6">
+                                                        <p className="text-small">
+                                                            {
+                                                                score.HomeOffensiveScheme
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                    <div className="col-6">
+                                                        <p className="text-small">
+                                                            {
+                                                                score.HomeDefensiveScheme
+                                                            }
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                                <div className="col-2">
-                                                    {score.Q3Away || 0}
-                                                </div>
-                                                <div className="col-2">
-                                                    {score.Q4Away || 0}
-                                                </div>
-                                                {score &&
-                                                    (score.OT1Home > 0 ||
-                                                        score.OT2Home > 0 ||
-                                                        score.OT3Home > 0 ||
-                                                        score.OT4Home > 0 ||
-                                                        score.OT1Away > 0 ||
-                                                        score.OT2Away > 0 ||
-                                                        score.OT3Away > 0 ||
-                                                        score.OT4Away > 0) && (
-                                                        <div className="col-2">
-                                                            {score.OT1Away +
-                                                                score.OT2Away +
-                                                                score.OT3Away +
-                                                                score.OT4Away ||
-                                                                0}
-                                                        </div>
-                                                    )}
-                                                <div className="col-1">
-                                                    {game.AwayTeamScore || 0}
+                                                <div className="row justify-content-center">
+                                                    <div className="col-6">
+                                                        <p className="text-small">
+                                                            {
+                                                                score.AwayOffensiveScheme
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                    <div className="col-6">
+                                                        <p className="text-small">
+                                                            {
+                                                                score.AwayDefensiveScheme
+                                                            }
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+
                                         {!isMobile && (
                                             <div className="p-1 pb-2 mb-2 border rounded">
                                                 <div className="row mb-1">

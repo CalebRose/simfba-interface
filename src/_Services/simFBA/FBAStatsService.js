@@ -1,3 +1,4 @@
+import { saveAs } from 'file-saver';
 import url from '../../Constants/url';
 
 export default class FBAStatsService {
@@ -18,6 +19,37 @@ export default class FBAStatsService {
         }
 
         return json;
+    }
+
+    async ExportStatsForStatsPage(
+        league,
+        seasonID,
+        season,
+        weekID,
+        week,
+        viewType
+    ) {
+        let fullURL = `${url}statistics/export/${league}/${seasonID}/${weekID}/${viewType}`;
+        let res = await fetch(fullURL, {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'text/csv'
+            },
+            responseType: 'blob'
+        })
+            .then((res) => res.blob())
+            .then((blob) =>
+                saveAs(
+                    blob,
+                    `toucans_${season}_${
+                        viewType !== 'SEASON' ? `${week}_` : ''
+                    }${viewType}_stats.csv`
+                )
+            );
+        if (res.ok) {
+        } else {
+            alert('HTTP-Error:', res.status);
+        }
     }
 
     async GetCollegeSeasonStatsByPlayerID(playerID, seasonID) {

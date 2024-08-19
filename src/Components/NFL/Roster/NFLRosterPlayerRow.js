@@ -26,6 +26,7 @@ export const NFLRosterPlayerRow = ({
     cancelExtension,
     retro,
     ir,
+    tagPlayer,
     cut
 }) => {
     let modalTarget = `#playerModal${idx}`;
@@ -198,6 +199,29 @@ export const NFLRosterPlayerRow = ({
                             <i className="bi bi-currency-dollar" />
                         </button>
                         <button
+                            className={`btn ${
+                                player.IsTagged ? 'btn-success' : ''
+                            }`}
+                            title="Tag Player"
+                            data-bs-toggle="modal"
+                            data-bs-target="#tagPlayer"
+                            disabled={
+                                !(
+                                    ts.NFLWeek >= 15 &&
+                                    userView &&
+                                    canModify &&
+                                    !player.IsPracticeSquad
+                                ) ||
+                                player.IsTagged ||
+                                Contract.ContractLength > 1 ||
+                                player.IsPracticeSquad ||
+                                acceptedExtensionBool
+                            }
+                            onClick={() => tagPlayer(() => player)}
+                        >
+                            <i class="bi bi-tag-fill" />
+                        </button>
+                        <button
                             type="button"
                             className={`btn ${
                                 player.InjuryReserve && 'btn-danger'
@@ -205,7 +229,9 @@ export const NFLRosterPlayerRow = ({
                             title="Place player on IR"
                             onClick={injuryReservePlayer}
                             disabled={
-                                !player.IsInjured || !userView || !canModify
+                                (!player.IsInjured && !player.InjuryReserve) ||
+                                !userView ||
+                                !canModify
                             }
                         >
                             <i class="bi bi-bandaid" />

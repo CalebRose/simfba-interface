@@ -131,6 +131,9 @@ const CBBTeamDashboardPlayerRow = (props) => {
                     <h6>{recruit.Stars}</h6>
                 </td>
                 <td className="align-middle">
+                    <h6>{recruit.Finishing}</h6>
+                </td>
+                <td className="align-middle">
                     <h6>{recruit.Shooting2}</h6>
                 </td>
                 <td className="align-middle">
@@ -138,9 +141,6 @@ const CBBTeamDashboardPlayerRow = (props) => {
                 </td>
                 <td className="align-middle">
                     <h6>{recruit.FreeThrow}</h6>
-                </td>
-                <td className="align-middle">
-                    <h6>{recruit.Finishing}</h6>
                 </td>
                 <td className="align-middle">
                     <h6>{recruit.Ballwork}</h6>

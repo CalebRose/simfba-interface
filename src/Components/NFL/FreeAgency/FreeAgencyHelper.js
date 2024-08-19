@@ -170,6 +170,13 @@ export const ValidateRule6 = (s1, s2, s3, s4, s5, len) => {
     return valid;
 };
 
+export const ValidateNBARule1 = (totalYears, playerYear) => {
+    if (playerYear < 4) {
+        return totalYears > 0 && totalYears < 4;
+    }
+    return totalYears > 0 && totalYears < 6;
+};
+
 export const ValidateNBARule2 = (len, y1, y2, y3, y4, y5) => {
     if (len === 5) return true;
     if (len === 4 && y5 === 0) return true;
@@ -198,31 +205,34 @@ export const ValidateNBARule4 = (len, y1, y2, y3, y4, y5, min) => {
     return false;
 };
 
-export const ValidateNBARule5 = (len, y1, y2, y3, y4, y5) => {
+export const ValidateNBARule5 = (len, y1, y2, y3, y4, y5, ovr) => {
     if (len === 1) return true;
     let check2 = true;
     let check3 = true;
     let check4 = true;
     let check5 = true;
     if (len > 4) {
-        check5 = checkYearlyRange(y4, y5);
+        check5 = checkYearlyRange(y4, y5, ovr);
     }
     if (len > 3) {
-        check4 = checkYearlyRange(y3, y4);
+        check4 = checkYearlyRange(y3, y4, ovr);
     }
     if (len > 2) {
-        check3 = checkYearlyRange(y2, y3);
+        check3 = checkYearlyRange(y2, y3, ovr);
     }
     if (len > 1) {
-        check2 = checkYearlyRange(y1, y2);
+        check2 = checkYearlyRange(y1, y2, ovr);
     }
     return check2 && check3 && check4 && check5;
 };
 
-const checkYearlyRange = (val1, val2) => {
-    const min = 0.92 * val1;
-    const max = 1.08 * val1;
-    return val2 >= min && val2 <= max;
+const checkYearlyRange = (val1, val2, ovr) => {
+    if (ovr > 89) {
+        const min = 0.92 * val1;
+        const max = 1.08 * val1;
+        return val2 >= min && val2 <= max;
+    }
+    return val2 >= val1 + 1;
 };
 
 export const CheckForOffer = (player, teamID) => {

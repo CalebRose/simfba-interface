@@ -24,7 +24,8 @@ import {
     GetViewablePlayersList,
     useDraftMap,
     GetPicksByCurrentRound,
-    GetCurrentDraftPickIdx
+    GetCurrentDraftPickIdx,
+    GetNBACurrentDraftPickIdx
 } from '../../../../_Hooks/DraftHooks';
 import {
     GetPauseTimer,
@@ -114,7 +115,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     );
 
     const draftMap = useDraftMap(allDraftPicks);
-    const currentDraftPickIdx = GetCurrentDraftPickIdx(
+    const currentDraftPickIdx = GetNBACurrentDraftPickIdx(
         allDraftPicks,
         currentPick,
         currentRound
@@ -125,7 +126,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         currentPick,
         currentRound
     );
-    const nextDraftPickIdx = GetCurrentDraftPickIdx(
+    const nextDraftPickIdx = GetNBACurrentDraftPickIdx(
         allDraftPicks,
         nextPick,
         currentRound
@@ -324,10 +325,10 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         // Update Player Info
         const draftablePlayers = [...allDraftablePlayers];
         const teamInfoFromDP = {
-            DraftPickID: draftPicks[currentDraftPickIdx].ID,
-            DraftPick: `${draftPicks[currentDraftPickIdx].DraftNumber}`,
-            DraftedTeamID: draftPicks[currentDraftPickIdx].TeamID,
-            DraftedTeamAbbr: draftPicks[currentDraftPickIdx].Team
+            DraftPickID: draftPicks[currentRound][currentDraftPickIdx].ID,
+            DraftPick: `${draftPicks[currentRound][currentDraftPickIdx].DraftNumber}`,
+            DraftedTeamID: draftPicks[currentRound][currentDraftPickIdx].TeamID,
+            DraftedTeamAbbr: draftPicks[currentRound][currentDraftPickIdx].Team
         };
         const draftedPlayerIDX = draftablePlayers.findIndex(
             (x) => x.ID === player.ID
@@ -499,6 +500,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                     Team Drafting:{' '}
                                     <img
                                         src={currentPickTeamLogo}
+                                        className="object-fit"
                                         height="50px"
                                         width="50px"
                                         alt="Current Team Logo"
@@ -511,6 +513,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                 Next Team:{' '}
                                 <img
                                     src={nextPickTeamLogo}
+                                    className="object-fit"
                                     height="50px"
                                     width="50px"
                                     alt="Next Team Logo"

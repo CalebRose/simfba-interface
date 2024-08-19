@@ -74,4 +74,14 @@ export default class AdminService {
     async RunCron() {
         return await GetActionCall(`${url}simfba/run/cron`);
     }
+
+    async GetInbox(league, collegeId, profID) {
+        return await GetCall(
+            `${url}${league}/inbox/get/${collegeId}/${profID}`
+        );
+    }
+
+    async ToggleNotification(ID) {
+        return await GetCall(`${url}notification/toggle/${ID}`);
+    }
 }

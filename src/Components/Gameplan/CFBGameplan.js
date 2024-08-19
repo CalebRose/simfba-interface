@@ -96,9 +96,10 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
             ? FormationMap[gameplan.DefensiveScheme].Formations
             : [];
 
-    const opposingFormation = opponentScheme
-        ? FormationMap[opponentScheme].Formations
-        : [];
+    const opposingFormation =
+        opponentScheme && opponentScheme !== 'None' && opponentScheme
+            ? FormationMap[opponentScheme].Formations
+            : [];
     // UseEffects
     useEffect(() => {
         if (!viewWidth) {

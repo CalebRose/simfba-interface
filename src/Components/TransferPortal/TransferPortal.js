@@ -480,6 +480,7 @@ const TransferPortal = ({
                                         player={viewPlayer}
                                         isCFB={isCFB}
                                         retro={currentUser.IsRetro}
+                                        viewMode={viewMode}
                                     />
                                 </>
                                 {activeView === 'Overview' && (

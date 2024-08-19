@@ -6,11 +6,10 @@ import routes from '../../Constants/routes';
 import NavBarStart from './NavBarStart';
 import { connect } from 'react-redux';
 
-const NavBar = ({ currentUser, viewMode }) => {
+const NavBar = ({ currentUser, viewMode, inbox }) => {
     /*
     Will Need to setup some kind of Modal
   */
-    const user = currentUser;
     const GetViewModeClasses = (theme) => {
         if (theme === 'light') return 'bg-light';
         return 'navbar-dark bg-dark';
@@ -42,10 +41,12 @@ const NavBar = ({ currentUser, viewMode }) => {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                        {user ? <NavBarStart user={user} /> : null}
+                        {currentUser ? (
+                            <NavBarStart user={currentUser} />
+                        ) : null}
                     </ul>
-                    {user ? (
-                        <AuthorizedUser user={user} />
+                    {currentUser ? (
+                        <AuthorizedUser user={currentUser} inbox={inbox} />
                     ) : (
                         <UnauthorizedUser />
                     )}
@@ -58,10 +59,12 @@ const NavBar = ({ currentUser, viewMode }) => {
 
 const mapStateToProps = ({
     user: { currentUser },
-    viewMode: { viewMode }
+    viewMode: { viewMode },
+    inbox: inbox
 }) => ({
     currentUser,
-    viewMode
+    viewMode,
+    inbox
 });
 
 export default connect(mapStateToProps)(NavBar);

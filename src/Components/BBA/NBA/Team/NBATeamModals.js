@@ -134,7 +134,8 @@ export const TwoWayModal = ({ player, idx, setToTwoWay, viewMode }) => {
 export const PlayerModal = ({ team, player, idx, viewMode, retro }) => {
     const modalId = `playerModal${idx}`;
     const modalClass = GetModalClass(viewMode);
-    const nbaLogo = getLogo(team.Team + ' ' + team.Nickname, retro);
+    const teamKey = `${team.Team} ${team.Nickname}`;
+    const nbaLogo = getLogo(teamKey.trim(), retro);
     const collegeLogo = getLogo(player.College, retro);
     const { Contract, IsGLeague, IsOnTradeBlock, IsTwoWay, DraftedRound } =
         player;
@@ -177,54 +178,72 @@ export const PlayerModal = ({ team, player, idx, viewMode, retro }) => {
                                 <img src={nbaLogo} className="image-nfl-team" />
                             </div>
                             <div className="col">
-                                <h5>Experience</h5>
-                                {player.Year}
+                                <h6>Experience</h6>
+                                <p className="text-small">{player.Year}</p>
                             </div>
                             <div className="col">
-                                <h5>Age</h5>
-                                {player.Age}
+                                <h6>Age</h6>
+                                <p className="text-small">{player.Age}</p>
                             </div>
                             <div className="col">
-                                <h5>Status</h5>
-                                {status}
-                            </div>
-                        </div>
-                        <div className="row g-2 gy-2 mb-3">
-                            <div className="col">
-                                <h5>Overall:</h5> {player.Overall}
-                            </div>
-                            <div className="col">
-                                <h5>Potential:</h5> {player.PotentialGrade}
-                            </div>
-                            <div className="col">
-                                <h5>Height:</h5> {player.Height}
-                            </div>
-                            <div className="col">
-                                <h5>Accolades</h5> {awardStatus}
+                                <h6>Status</h6>
+                                <p className="text-small">{status}</p>
                             </div>
                         </div>
                         <div className="row g-2 gy-2 mb-3">
                             <div className="col">
-                                <h5>College</h5>{' '}
+                                <h6>Overall:</h6>{' '}
+                                <p className="text-small">{player.Overall}</p>
+                            </div>
+                            <div className="col">
+                                <h6>Potential:</h6>{' '}
+                                <p className="text-small">
+                                    {player.PotentialGrade}
+                                </p>
+                            </div>
+                            <div className="col">
+                                <h6>Height:</h6>{' '}
+                                <p className="text-small">{player.Height}</p>
+                            </div>
+                            <div className="col">
+                                <h6>Accolades</h6>{' '}
+                                <p className="text-small">{awardStatus}</p>
+                            </div>
+                        </div>
+                        <div className="row g-2 gy-2 mb-3">
+                            <div className="col">
+                                <h6>Origin</h6>
+                                <p className="text-small">
+                                    {player.Country != 'USA'
+                                        ? player.Country
+                                        : player.State}
+                                </p>
+                            </div>
+                            <div className="col">
+                                <h6>
+                                    {player.IsIntGenerated
+                                        ? 'Home Team'
+                                        : 'Alma Mater'}
+                                </h6>
                                 <img
                                     src={collegeLogo}
                                     className="image-college-team"
                                 />
-                                <p>{player.College}</p>
+                                <p className="text-small">{player.College}</p>
                             </div>
                             <div className="col">
-                                <h5>Drafted Team</h5>
-                                <p>
+                                <h6>Drafted Team</h6>
+                                <p className="text-small">
                                     {player.DraftedTeamAbbr.length > 0
                                         ? player.DraftedTeamAbbr
                                         : 'N/A'}
                                 </p>
-                                <p>{draftLabel}</p>
+                                <p className="text-small">{draftLabel}</p>
                             </div>
                             {player.PreviousTeamID > 0 && (
                                 <div className="col">
-                                    <h5>Previous Team</h5>
-                                    <p>
+                                    <h6>Previous Team</h6>
+                                    <p className="text-small">
                                         {player.PreviousTeam.length > 0
                                             ? player.PreviousTeam
                                             : 'N/A'}
@@ -232,41 +251,50 @@ export const PlayerModal = ({ team, player, idx, viewMode, retro }) => {
                                 </div>
                             )}
                             <div className="col">
-                                <h5>Minimum Value</h5> ${player.MinimumValue}
+                                <h6>Minimum Value</h6>{' '}
+                                <p className="text-small">
+                                    ${player.MinimumValue}
+                                </p>
                             </div>
                         </div>
                         <div className="row g-2 gy-2 mb-2">
                             <div className="col-3">
                                 <h6>Finishing</h6>
-                                <p>{player.Finishing}</p>
+                                <p className="text-small">{player.Finishing}</p>
                             </div>
                             <div className="col-3">
                                 <h6>2pt Shooting</h6>
-                                <p>{player.Shooting2}</p>
+                                <p className="text-small">{player.Shooting2}</p>
                             </div>
                             <div className="col-3">
                                 <h6>3pt Shooting</h6>
-                                <p>{player.Shooting3}</p>
+                                <p className="text-small">{player.Shooting3}</p>
                             </div>
                             <div className="col-3">
                                 <h6>Free Throw</h6>
-                                <p>{player.FreeThrow}</p>
+                                <p className="text-small">{player.FreeThrow}</p>
                             </div>
                             <div className="col-3">
                                 <h6>Ballwork</h6>
-                                <p>{player.Ballwork}</p>
+                                <p className="text-small">{player.Ballwork}</p>
                             </div>
                             <div className="col-3">
                                 <h6>Rebounding</h6>
-                                <p>{player.Rebounding}</p>
+                                <p className="text-small">
+                                    {player.Rebounding}
+                                </p>
                             </div>
                             <div className="col-3">
                                 <h6>Int. Defense</h6>
-                                <p>{player.InteriorDefense}</p>
+                                <p className="text-small">
+                                    {player.InteriorDefense}
+                                </p>
                             </div>
                             <div className="col-3">
                                 <h6>Per. Defense</h6>
-                                <p>{player.PerimeterDefense}</p>
+                                <p className="text-small">
+                                    {player.PerimeterDefense}
+                                </p>
                             </div>
                         </div>
                     </div>

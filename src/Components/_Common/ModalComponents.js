@@ -14,6 +14,16 @@ import { MapOptions } from '../../_Utility/filterHelper';
 import Select from 'react-select';
 import { MinMaxRange } from './InputRange';
 import { PortalService } from '../../_Services/simFBA/FBAPortalService';
+import { GPTab } from '../Gameplan/GameplanCommons';
+import { Notification } from './NewsLog';
+import { useDispatch } from 'react-redux';
+import {
+    setCBBNotifications,
+    setCFBNotifications,
+    setNBANotifications,
+    setNFLNotifications
+} from '../../Redux/inbox/inbox.actions';
+import AdminService from '../../_Services/simFBA/AdminService';
 
 export const InfoModal = (props) => (
     <div
@@ -209,6 +219,7 @@ export const ConfirmModal = (props) => {
                             type="button"
                             className="btn btn-primary"
                             data-bs-dismiss="modal"
+                            disabled={!props.IsValid}
                             onClick={() => confirm()}
                         >
                             Confirm
@@ -510,5 +521,90 @@ export const PromisePlayerModal = (props) => {
                 </>
             )}
         </ExtraLargeModal>
+    );
+};
+
+export const InboxModal = ({ inbox }) => {
+    const _adminService = new AdminService();
+    const [league, setLeague] = useState('CFB');
+    const dispatch = useDispatch();
+    const header = 'Inbox';
+    const id = 'inboxModal';
+    const {
+        cfbNotifications,
+        nflNotifications,
+        cbbNotifications,
+        nbaNotifications
+    } = inbox;
+
+    const toggleNotification = async (noti) => {
+        await _adminService.ToggleNotification(noti.ID);
+        if (league === 'CFB') {
+            handleNotifications(cfbNotifications, noti, setCFBNotifications);
+        } else if (league === 'NFL') {
+            handleNotifications(nflNotifications, noti, setNFLNotifications);
+        } else if (league === 'CBB') {
+            handleNotifications(cbbNotifications, noti, setCBBNotifications);
+        } else if (league === 'NBA') {
+            handleNotifications(nbaNotifications, noti, setNBANotifications);
+        }
+    };
+
+    const handleNotifications = (list, noti, setNotification) => {
+        const listNoti = [...list];
+        const notiIDX = listNoti.findIndex((x) => x.ID === noti.ID);
+        if (notiIDX > -1) {
+            listNoti[notiIDX].IsRead = !listNoti[notiIDX].IsRead;
+            dispatch(setNotification(listNoti));
+        }
+    };
+
+    const removeNotification = async (noti) => {};
+
+    return (
+        <CommonModal Header={header} ID={id} ModalClass="modal-content">
+            <div className="row mb-2">
+                <ul className="nav nav-tabs">
+                    <GPTab
+                        activeView={league}
+                        gameplanType="CFB"
+                        setActiveView={setLeague}
+                    />
+                    <GPTab
+                        activeView={league}
+                        gameplanType="NFL"
+                        setActiveView={setLeague}
+                    />
+                    <GPTab
+                        activeView={league}
+                        gameplanType="CBB"
+                        setActiveView={setLeague}
+                    />
+                    <GPTab
+                        activeView={league}
+                        gameplanType="NBA"
+                        setActiveView={setLeague}
+                    />
+                </ul>
+            </div>
+            <div className="row mb-2 overflow-y-scroll">
+                {league === 'CFB' &&
+                    cfbNotifications.map((x) => (
+                        <Notification noti={x} toggle={toggleNotification} />
+                    ))}
+                {league === 'NFL' &&
+                    nflNotifications.map((x) => (
+                        <Notification noti={x} toggle={toggleNotification} />
+                    ))}
+                {league === 'CBB' &&
+                    cbbNotifications.map((x) => (
+                        <Notification noti={x} toggle={toggleNotification} />
+                    ))}
+                {league === 'NBA' &&
+                    nbaNotifications.map((x) => (
+                        <Notification noti={x} toggle={toggleNotification} />
+                    ))}
+            </div>
+        </CommonModal>
     );
 };

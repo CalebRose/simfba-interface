@@ -56,7 +56,7 @@ export const useDraftMap = (allDraftPicks) => {
     const draftMap = useMemo(() => {
         const draftMapObj = {};
         if (allDraftPicks) {
-            for (let i = 1; i < 2; i++) {
+            for (let i = 1; i <= 2; i++) {
                 const roundOfPicks = allDraftPicks[i];
                 for (let j = 0; j < roundOfPicks.length; j++) {
                     const pick = roundOfPicks[j];
@@ -85,6 +85,30 @@ export const GetCurrentDraftPickIdx = (
             );
             if (idx > -1) return idx;
             if (currentRound + 1 < 8) {
+                const nextRoundOfPicks = allDraftPicks[currentRound + 1];
+                return nextRoundOfPicks.findIndex(
+                    (x) => x.DraftNumber === currentPick
+                );
+            }
+        }
+        return -1;
+    }, [allDraftPicks, currentPick, currentRound]);
+    return currentDraftPickIdx;
+};
+
+export const GetNBACurrentDraftPickIdx = (
+    allDraftPicks,
+    currentPick,
+    currentRound
+) => {
+    const currentDraftPickIdx = useMemo(() => {
+        if (allDraftPicks) {
+            const roundOfPicks = allDraftPicks[currentRound];
+            const idx = roundOfPicks.findIndex(
+                (x) => x.DraftNumber === currentPick
+            );
+            if (idx > -1) return idx;
+            if (currentRound + 1 < 3) {
                 const nextRoundOfPicks = allDraftPicks[currentRound + 1];
                 return nextRoundOfPicks.findIndex(
                     (x) => x.DraftNumber === currentPick

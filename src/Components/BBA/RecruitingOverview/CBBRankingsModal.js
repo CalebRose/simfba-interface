@@ -35,18 +35,27 @@ const CBBRankingsModal = (props) => {
                                 <h5>Team</h5>
                             </div>
                             <div className="col-1 ms-auto">
-                                <h6>Signees</h6>
+                                <h5>Signees</h5>
+                            </div>
+                            <div className="col-sm-1 ms-auto">
+                                <h5>Five Stars</h5>
+                            </div>
+                            <div className="col-sm-1 ms-auto">
+                                <h5>Four Stars</h5>
+                            </div>
+                            <div className="col-sm-1 ms-auto">
+                                <h5>Three Stars</h5>
                             </div>
                             <div className="col-2 ms-auto">
-                                <h6>Composite Score</h6>
+                                <h5>Composite Score</h5>
                             </div>
-                            <div className="col-2 ms-auto">
+                            <div className="col-1 ms-auto">
                                 <h6>ESPN Score</h6>
                             </div>
-                            <div className="col-2 ms-auto">
+                            <div className="col-1 ms-auto">
                                 <h6>Rivals Score</h6>
                             </div>
-                            <div className="col-2 ms-auto">
+                            <div className="col-1 ms-auto">
                                 <h6>247 Score</h6>
                             </div>
                         </div>
@@ -68,6 +77,15 @@ const CBBRankingsModal = (props) => {
                                             </div>
                                             <div className="col-1 ms-auto">
                                                 {x.TotalCommitments}
+                                            </div>
+                                            <div className="col-1 ms-auto">
+                                                {x.FiveStars}
+                                            </div>
+                                            <div className="col-1 ms-auto">
+                                                {x.FourStars}
+                                            </div>
+                                            <div className="col-1 ms-auto">
+                                                {x.ThreeStars}
                                             </div>
                                             <div className="col-2 ms-auto">
                                                 {RoundToTwoDecimals(

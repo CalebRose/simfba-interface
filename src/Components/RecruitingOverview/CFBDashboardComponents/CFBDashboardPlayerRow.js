@@ -143,7 +143,6 @@ const CFBDashboardPlayerRow = (props) => {
                             src={logo}
                             alt="WinningTeam"
                         />
-                        // <h6 className="text-success">{croot.College}</h6>
                     )}
                 </td>
                 <td className="align-middle">

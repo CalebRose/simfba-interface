@@ -18,6 +18,7 @@ const ConfirmRevokeModal = (props) => {
             ModalClass={modalClass}
             Header={header}
             ConfirmChanges={() => confirmChange()}
+            IsValid
         >
             <div className="row g-2 gy-2 mb-2">
                 Once a scholarship has been revoked, you cannot re-offer a

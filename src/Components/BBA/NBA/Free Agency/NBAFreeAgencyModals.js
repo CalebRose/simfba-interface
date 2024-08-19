@@ -9,6 +9,7 @@ import {
     GetMaxPercentage,
     GetNBACapSpace,
     GetTotalValue,
+    ValidateNBARule1,
     ValidateNBARule2,
     ValidateNBARule3,
     ValidateNBARule4,
@@ -429,7 +430,7 @@ export const NBAFreeAgentOfferModal = ({
             TotalYears: totalYears
         };
 
-        const isRule1Valid = totalYears > 0 && totalYears < 6;
+        const isRule1Valid = ValidateNBARule1(totalYears, player.Year);
         const isRule2Valid = ValidateNBARule2(
             totalYears,
             y1Total,
@@ -463,7 +464,8 @@ export const NBAFreeAgentOfferModal = ({
             y2Total,
             y3Total,
             y4Total,
-            y5Total
+            y5Total,
+            player.Overall
         );
 
         const canMakeOffer =
@@ -629,45 +631,50 @@ export const NBAFreeAgentOfferModal = ({
                                 <div className="row">
                                     <div className="col">
                                         <p
-                                            className={
+                                            className={`${
                                                 !rule1Valid ? 'text-danger' : ''
-                                            }
+                                            } text-small`}
                                         >
                                             1: Contracts can only be between 1-5
-                                            years
+                                            years. (3 years if the player has
+                                            been in the league for less than 4
+                                            years)
                                         </p>
                                         <p
-                                            className={
+                                            className={`${
                                                 !rule3Valid ? 'text-danger' : ''
-                                            }
+                                            } text-small`}
                                         >
                                             3: The final year of a contract may
                                             be an option.
                                         </p>
                                         <p
-                                            className={
+                                            className={`${
                                                 !rule5Valid ? 'text-danger' : ''
-                                            }
+                                            } text-small`}
                                         >
                                             5: Yearly amounts do not need to be
                                             equal, but bids must be within 8% of
-                                            the preceding year.
+                                            the preceding year. (If a player's
+                                            overall is less than 90, the yearly
+                                            amounts must increase by 1M for
+                                            every year of the contract instead.)
                                         </p>
                                     </div>
                                     <div className="col">
                                         <p
-                                            className={
+                                            className={`${
                                                 !rule2Valid ? 'text-danger' : ''
-                                            }
+                                            } text-small`}
                                         >
                                             2: Bids cannot offer yearly amounts
                                             outside the designated contract
                                             length.
                                         </p>
                                         <p
-                                            className={
+                                            className={`${
                                                 !rule4Valid ? 'text-danger' : ''
-                                            }
+                                            } text-small`}
                                         >
                                             4: An input for salary that isn't
                                             zero must be greater than the

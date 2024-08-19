@@ -21,6 +21,7 @@ const NFLMobileRosterRow = ({
     tradeblock,
     extend,
     retro,
+    tagPlayer,
     ir,
     cut
 }) => {
@@ -153,7 +154,11 @@ const NFLMobileRosterRow = ({
                             }`}
                             title="Place player on IR"
                             onClick={injuryReservePlayer}
-                            disabled={!player.IsInjured}
+                            disabled={
+                                (!player.IsInjured && !player.InjuryReserve) ||
+                                !userView ||
+                                !canModify
+                            }
                         >
                             <i class="bi bi-bandaid" />
                         </button>
@@ -197,6 +202,36 @@ const NFLMobileRosterRow = ({
                                 }
                             >
                                 <i class="bi bi-currency-dollar" />
+                            </button>
+                        ) : (
+                            'Unavailable'
+                        )}
+                    </li>
+                    <li className="list-group-item">
+                        Tag {player.LastName} |
+                        {canExtendPlayer ? (
+                            <button
+                                className={`btn ${
+                                    player.IsTagged ? 'btn-success' : ''
+                                }`}
+                                title="Tag Player"
+                                data-bs-toggle="modal"
+                                data-bs-target="tagPlayer"
+                                disabled={
+                                    !(
+                                        ts.NFLWeek >= 15 &&
+                                        userView &&
+                                        canModify &&
+                                        !player.IsPracticeSquad
+                                    ) ||
+                                    player.IsTagged ||
+                                    Contract.ContractLength > 1 ||
+                                    player.IsPracticeSquad ||
+                                    acceptedExtensionBool
+                                }
+                                onClick={() => tagPlayer(() => player)}
+                            >
+                                <i class="bi bi-tag-fill" />
                             </button>
                         ) : (
                             'Unavailable'

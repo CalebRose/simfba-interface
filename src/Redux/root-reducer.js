@@ -8,6 +8,7 @@ import nbaTeamReducer from './nbaTeam/nbaTeam.reducer';
 import timestampReducer from './timestamp/timestamp.reducer';
 import userReducer from './user/user.reducer';
 import viewReducer from './viewMode/viewMode.reducer';
+import inboxReducer from './inbox/inbox.reducer';
 
 const persistConfig = {
     key: 'root',
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
     cbbTeam: cbbTeamReducer,
     nflTeam: nflTeamReducer,
     nbaTeam: nbaTeamReducer,
-    viewMode: viewReducer
+    viewMode: viewReducer,
+    inbox: inboxReducer
 });
 
 export default persistReducer(persistConfig, rootReducer);

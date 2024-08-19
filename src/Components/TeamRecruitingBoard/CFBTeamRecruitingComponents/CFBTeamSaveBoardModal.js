@@ -17,6 +17,7 @@ const ConfirmSaveRecruitingBoardModal = (props) => {
             ModalClass={modalClass}
             Header={header}
             ConfirmChanges={SaveChanges}
+            IsValid
         >
             <div className="row g-2 gy-2 mb-2">
                 All Point Submissions will be saved. Would you like to confirm

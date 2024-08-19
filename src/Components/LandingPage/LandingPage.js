@@ -11,11 +11,19 @@ import { setCBBTeam } from '../../Redux/cbbTeam/cbbTeam.actions';
 import { setNBATeam } from '../../Redux/nbaTeam/nbaTeam.actions';
 import BBATeamService from '../../_Services/simNBA/BBATeamService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
+import AdminService from '../../_Services/simFBA/AdminService';
 import { getLogo } from '../../Constants/getLogo';
+import {
+    setCBBNotifications,
+    setCFBNotifications,
+    setNBANotifications,
+    setNFLNotifications
+} from '../../Redux/inbox/inbox.actions';
 
 const LandingPage = ({ currentUser }) => {
     let _teamService = new BBATeamService();
     let teamService = new FBATeamService();
+    const _adminService = new AdminService();
     const [sport, setSport] = useState('');
     const [viewWidth, setViewWidth] = useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:845px)` });
@@ -37,44 +45,52 @@ const LandingPage = ({ currentUser }) => {
     };
 
     useEffect(() => {
-        if (currentUser) {
-            if (currentUser.teamId && currentUser.teamId > 0) {
-                const logo = getLogo(currentUser.teamAbbr, currentUser.IsRetro);
-                setCFBLogo(() => logo);
-                setSport('CFB');
-            } else if (currentUser.NFLTeamID) {
-                setSport('NFL');
-            } else if (currentUser.cbb_id) {
-                setSport('CBB');
-            } else if (currentUser.nba_id) {
-                setSport('NBA');
-            } else {
-                setSport('');
-            }
+        if (currentUser && currentUser.teamId && currentUser.teamId > 0) {
+            const logo = getLogo(currentUser.teamAbbr, currentUser.IsRetro);
+            setCFBLogo(() => logo);
+            setSport('CFB');
+        } else if (currentUser && currentUser.NFLTeamID) {
+            setSport('NFL');
+        } else if (currentUser && currentUser.cbb_id) {
+            setSport('CBB');
+        } else if (currentUser && currentUser.nba_id) {
+            setSport('NBA');
+        } else {
+            setSport('');
+        }
 
-            if (
-                currentUser.NFLTeam !== undefined &&
-                currentUser.NFLTeam.length > 0 &&
-                currentUser.NFLTeamID > 0
-            ) {
-                GetNFLTeam();
-            }
+        if (
+            currentUser &&
+            currentUser.NFLTeam !== undefined &&
+            currentUser.NFLTeam.length > 0 &&
+            currentUser.NFLTeamID > 0
+        ) {
+            GetNFLTeam();
+        }
 
-            if (
-                (currentUser.cbb_team !== undefined &&
-                    currentUser.cbb_team.length > 0) ||
-                currentUser.cbb_id > 0
-            ) {
-                GetCBBTeam();
-            }
+        if (
+            currentUser &&
+            (currentUser.NFLTeamID > 0 || currentUser.teamId > 0)
+        ) {
+            getFBAInbox();
+        }
 
-            if (
-                currentUser.NBATeam !== undefined &&
-                currentUser.NBATeam.length > 0 &&
-                currentUser.NBATeamID > 0
-            ) {
-                GetNBATeam();
-            }
+        if (
+            currentUser &&
+            ((currentUser.cbb_team !== undefined &&
+                currentUser.cbb_team.length > 0) ||
+                currentUser.cbb_id > 0)
+        ) {
+            GetCBBTeam();
+        }
+
+        if (
+            currentUser &&
+            currentUser.NBATeam !== undefined &&
+            currentUser.NBATeam.length > 0 &&
+            currentUser.NBATeamID > 0
+        ) {
+            GetNBATeam();
         }
     }, [currentUser]);
 
@@ -101,6 +117,23 @@ const LandingPage = ({ currentUser }) => {
         const logo = getLogo(currentUser.NBATeam, currentUser.IsRetro);
         setNBALogo(() => logo);
         dispatch(setNBATeam(response));
+    };
+
+    const getFBAInbox = async () => {
+        const collegeID = currentUser.teamId || 0;
+        const profID = currentUser.NFLTeamID || 0;
+        const res = await _adminService.GetInbox('fba', collegeID, profID);
+
+        dispatch(setCFBNotifications(res.CFBNotifications));
+        dispatch(setNFLNotifications(res.NFLNotifications));
+    };
+
+    const getBBAInbox = async () => {
+        const collegeID = currentUser.cbb_id || 0;
+        const profID = currentUser.NBATeamID || 0;
+        const res = await _adminService.GetInbox('bba', collegeID, profID);
+        dispatch(setCBBNotifications(res.CBBNotifications));
+        dispatch(setNBANotifications(res.NBANotifications));
     };
 
     return (
