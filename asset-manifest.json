@@ -1,23 +1,13 @@
 {
   "files": {
-    "main.css": "/simfba-interface/static/css/main.fe996b38.chunk.css",
-    "main.js": "/simfba-interface/static/js/main.de5b40db.chunk.js",
-    "main.js.map": "/simfba-interface/static/js/main.de5b40db.chunk.js.map",
-    "runtime-main.js": "/simfba-interface/static/js/runtime-main.c568ab16.js",
-    "runtime-main.js.map": "/simfba-interface/static/js/runtime-main.c568ab16.js.map",
-    "static/js/2.fde2b200.chunk.js": "/simfba-interface/static/js/2.fde2b200.chunk.js",
-    "static/js/2.fde2b200.chunk.js.map": "/simfba-interface/static/js/2.fde2b200.chunk.js.map",
+    "main.css": "/simfba-interface/static/css/main.0101e9fb.css",
+    "main.js": "/simfba-interface/static/js/main.53618e15.js",
     "index.html": "/simfba-interface/index.html",
-    "precache-manifest.046e273adc6faa4815f54b097ae6ae5a.js": "/simfba-interface/precache-manifest.046e273adc6faa4815f54b097ae6ae5a.js",
-    "service-worker.js": "/simfba-interface/service-worker.js",
-    "static/css/main.fe996b38.chunk.css.map": "/simfba-interface/static/css/main.fe996b38.chunk.css.map",
-    "static/js/2.fde2b200.chunk.js.LICENSE": "/simfba-interface/static/js/2.fde2b200.chunk.js.LICENSE",
-    "static/media/style.css": "/simfba-interface/static/media/stadium.8e1480bb.jpg"
+    "main.0101e9fb.css.map": "/simfba-interface/static/css/main.0101e9fb.css.map",
+    "main.53618e15.js.map": "/simfba-interface/static/js/main.53618e15.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.c568ab16.js",
-    "static/js/2.fde2b200.chunk.js",
-    "static/css/main.fe996b38.chunk.css",
-    "static/js/main.de5b40db.chunk.js"
+    "static/css/main.0101e9fb.css",
+    "static/js/main.53618e15.js"
   ]
 }
