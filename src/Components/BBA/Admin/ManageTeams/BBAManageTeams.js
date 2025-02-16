@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import firebase from 'firebase';
 import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
 import BBARequestService from '../../../../_Services/simNBA/BBARequestService';
 import TeamRow from '../../../Admin/ManageTeams/TeamRow';
 import BBAManageTeamRow from './BBAManageTeamRow';
+import { updateUserByUsername } from '../../../../Firebase/firestoreHelper';
 
 const BBAManageTeams = ({ currentUser }) => {
     // State
@@ -51,16 +51,8 @@ const BBAManageTeams = ({ currentUser }) => {
             throw ('HTTP-Error: Revoke incomplete', res.status);
         }
         // Firebase Call
-        const firestore = firebase.firestore();
 
-        let userRef = await firestore
-            .collection('users')
-            .where('username', '==', payload.username)
-            .get();
-
-        userRef.forEach(async (doc) => {
-            await doc.ref.update(firebasePayload);
-        });
+        updateUserByUsername(payload.username, firebasePayload);
         console.log('Firebase Updated');
 
         // Filter Requests

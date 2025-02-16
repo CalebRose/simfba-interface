@@ -1,23 +1,13 @@
 {
   "files": {
-    "main.css": "/simfba-interface/static/css/main.828454a1.chunk.css",
-    "main.js": "/simfba-interface/static/js/main.3dbcaffe.chunk.js",
-    "main.js.map": "/simfba-interface/static/js/main.3dbcaffe.chunk.js.map",
-    "runtime-main.js": "/simfba-interface/static/js/runtime-main.d1b8a2d2.js",
-    "runtime-main.js.map": "/simfba-interface/static/js/runtime-main.d1b8a2d2.js.map",
-    "static/js/2.c9e56e7e.chunk.js": "/simfba-interface/static/js/2.c9e56e7e.chunk.js",
-    "static/js/2.c9e56e7e.chunk.js.map": "/simfba-interface/static/js/2.c9e56e7e.chunk.js.map",
+    "main.css": "/simfba-interface/static/css/main.0101e9fb.css",
+    "main.js": "/simfba-interface/static/js/main.53618e15.js",
     "index.html": "/simfba-interface/index.html",
-    "precache-manifest.e444eb01e03be08510d487d7e6d3133e.js": "/simfba-interface/precache-manifest.e444eb01e03be08510d487d7e6d3133e.js",
-    "service-worker.js": "/simfba-interface/service-worker.js",
-    "static/css/main.828454a1.chunk.css.map": "/simfba-interface/static/css/main.828454a1.chunk.css.map",
-    "static/js/2.c9e56e7e.chunk.js.LICENSE.txt": "/simfba-interface/static/js/2.c9e56e7e.chunk.js.LICENSE.txt",
-    "static/media/style.css": "/simfba-interface/static/media/stadium.8e1480bb.jpg"
+    "main.0101e9fb.css.map": "/simfba-interface/static/css/main.0101e9fb.css.map",
+    "main.53618e15.js.map": "/simfba-interface/static/js/main.53618e15.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.d1b8a2d2.js",
-    "static/js/2.c9e56e7e.chunk.js",
-    "static/css/main.828454a1.chunk.css",
-    "static/js/main.3dbcaffe.chunk.js"
+    "static/css/main.0101e9fb.css",
+    "static/js/main.53618e15.js"
   ]
 }

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import RequestRow from './RequestRow';
-import firebase from 'firebase';
 import FBARequestService from '../../../_Services/simFBA/FBARequestService';
+import { updateUserByUsername } from '../../../Firebase/firestoreHelper';
 
 const ApproveRequests = ({ currentUser }) => {
     // State
@@ -51,15 +51,7 @@ const ApproveRequests = ({ currentUser }) => {
             // }
 
             // Firebase Call
-            const firestore = firebase.firestore();
-            let userRef = await firestore
-                .collection('users')
-                .where('username', '==', payload.username)
-                .get();
-
-            userRef.forEach(async (doc) => {
-                await doc.ref.update(payload);
-            });
+            updateUserByUsername(payload.username, payload);
             console.log('Firebase Updated');
             // Filter Requests
             const filterRequests = requests.filter(

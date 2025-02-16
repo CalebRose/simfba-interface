@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Select from 'react-select';
 import { useMediaQuery } from 'react-responsive';
-import firebase from 'firebase';
+import { Timestamp } from 'firebase/firestore';
 import { connect } from 'react-redux';
 import FBADraftService from '../../../_Services/simFBA/FBADraftService';
 import {
@@ -359,7 +359,7 @@ const NFLDraftPage = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
         };
         updateData(newData);
         setTimeout(() => {
-            const endTime = firebase.firestore.Timestamp.fromDate(
+            const endTime = Timestamp.fromDate(
                 new Date(Date.now() + seconds * 1000)
             );
             let seconds = 0;
@@ -375,9 +375,7 @@ const NFLDraftPage = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                 endTime,
                 isPaused: finalPick,
                 seconds,
-                startAt: firebase.firestore.Timestamp.fromDate(
-                    new Date(Date.now())
-                )
+                startAt: Timestamp.fromDate(new Date(Date.now()))
             };
             updateData(resetTimerData);
         }, 10000);

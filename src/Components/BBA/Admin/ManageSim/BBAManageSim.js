@@ -12,7 +12,7 @@ import {
     ProfessionalCapsheetRow,
     ProfessionalTeamRow
 } from '../../../_Common/ProfessionalTeamRow';
-import firebase from 'firebase';
+import { updateUserByUsername } from '../../../../Firebase/firestoreHelper';
 
 const BBAManageSim = ({ cbb_Timestamp }) => {
     let _adminService = new BBAAdminService();
@@ -78,23 +78,15 @@ const BBAManageSim = ({ cbb_Timestamp }) => {
         const res = await _requestService.RevokeNBARequest(dto);
         const nt = [...nbaTeams];
         // Firebase Call
-        const firestore = firebase.firestore();
+        let emptyObj = {
+            username: value,
+            NBARole: '',
+            NBATeam: '',
+            NBATeamAbbreviation: '',
+            NBATeamID: 0
+        };
+        updateUserByUsername(value, emptyObj);
 
-        let userRef = await firestore
-            .collection('users')
-            .where('username', '==', value)
-            .get();
-
-        userRef.forEach(async (doc) => {
-            let emptyObj = {
-                username: payload.username,
-                NBARole: '',
-                NBATeam: '',
-                NBATeamAbbreviation: '',
-                NBATeamID: 0
-            };
-            await doc.ref.update(emptyObj);
-        });
         const ntIdx = nt.findIndex((x) => x.ID === Number(name));
         if (ntIdx > -1) {
             const nbaTeam = nt[ntIdx];

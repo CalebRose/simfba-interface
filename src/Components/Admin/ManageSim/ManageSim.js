@@ -18,7 +18,7 @@ import {
     ProfessionalTeamRow
 } from '../../_Common/ProfessionalTeamRow';
 import FBARequestService from '../../../_Services/simFBA/FBARequestService';
-import firebase from 'firebase';
+import { updateUserByUsername } from '../../../Firebase/firestoreHelper';
 
 const ManageSim = ({ currentUser, cfb_Timestamp }) => {
     const dispatch = useDispatch();
@@ -107,24 +107,14 @@ const ManageSim = ({ currentUser, cfb_Timestamp }) => {
         );
 
         // Firebase Call
-        const firestore = firebase.firestore();
-
-        let userRef = await firestore
-            .collection('users')
-            .where('username', '==', value)
-            .get();
-
-        userRef.forEach(async (doc) => {
-            let emptyObj = {
-                username: payload.username,
-                NFLRole: '',
-                NFLTeam: '',
-                NFLTeamAbbreviation: '',
-                NFLTeamID: 0
-            };
-            await doc.ref.update(emptyObj);
-        });
-
+        const emptyObj = {
+            username: value,
+            NFLRole: '',
+            NFLTeam: '',
+            NFLTeamAbbreviation: '',
+            NFLTeamID: 0
+        };
+        updateUserByUsername(value, emptyObj);
         const nt = [...nflTeams];
         const ntIdx = nt.findIndex((x) => x.ID === name);
         if (ntIdx > -1) {

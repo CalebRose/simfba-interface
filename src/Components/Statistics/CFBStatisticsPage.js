@@ -28,7 +28,6 @@ import OLineHeaders from './CFBStatsComponents/OLineStats';
 import {
     GameTypeList,
     NFLConferenceList,
-    NFLDivisionList,
     SeasonsList
 } from '../../Constants/CommonConstants';
 import { StatsPageButton } from '../_Common/Buttons';
@@ -44,11 +43,9 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
     const [selectedConferences, setSelectedConferences] = useState('');
     const [selectedTeams, setSelectedTeams] = useState('');
     const [statType, setStatType] = useState('Passing'); // PASSING, RUSHING, RECEIVING, TACKLES, YARDS ALLOWED, INTs, SACKS
-    const [conferenceList, setConferenceList] = useState('');
     const [teams, setTeams] = useState([]);
     const [teamOptions, setTeamOptions] = useState([]);
     const [conferenceOptions, setConferenceOptions] = useState([]);
-    const [divisionOptions, setDivisionOptions] = useState(NFLDivisionList);
     const [gameTypeOptions] = useState(GameTypeList);
     const [selectedGameType, setSelectedGameType] = useState(null);
     const [weekOptions, setWeekOptions] = useState(() => {
@@ -263,8 +260,6 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
             isCFB ? conferenceOptions : NFLConferenceList
         );
 
-        setDivisionOptions(() => (!isCFB ? NFLDivisionList : []));
-
         if (playerList && playerList.length > 0) {
             setPlayers(() => [...playerList]);
         }
@@ -322,7 +317,6 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
         setConferenceOptions(() => []);
         setSelectedConferences(() => []);
         setSelectedTeams(() => []);
-        setDivisionOptions(() => []);
         setSelectedSeason(() => null);
         event.preventDefault();
         const choice = event.target.value;
@@ -400,11 +394,6 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
     const ChangeConferenceSelections = (options) => {
         const opts = [...options.map((x) => x.value)];
         setSelectedConferences(() => opts);
-    };
-
-    const ChangeDivisionSelections = (options) => {
-        const opts = [...options.map((x) => x.value)];
-        setSelectedDivisions(() => opts);
     };
 
     const ChangeSeason = (options) => {
@@ -798,20 +787,6 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                 onChange={ChangeConferenceSelections}
                             />
                         </div>
-                        {leagueView === 'nfl' && (
-                            <div className="col-md-auto">
-                                <h6 className="text-start align-middle">
-                                    Divisions
-                                </h6>
-                                <Select
-                                    options={divisionOptions}
-                                    isMulti={true}
-                                    className="basic-multi-select btn-dropdown-width-team z-index-6"
-                                    classNamePrefix="select"
-                                    onChange={ChangeDivisionSelections}
-                                />
-                            </div>
-                        )}
                         <div className="col-auto">
                             <h6 className="text-start align-middle">Search</h6>
                             <StatsPageButton

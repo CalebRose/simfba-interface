@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import BBAStandingsService from '../../../_Services/simNBA/BBAStandingsService';
 import { Spinner } from '../../_Common/Spinner';
-import StandingsCard from './StandingsModalCard';
+import _ from 'lodash';
 import { NBAStandingsCard } from '../../_Common/NBAStandingsCard';
 import {
     SeasonsList,

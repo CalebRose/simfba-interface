@@ -148,7 +148,7 @@ const CFBOverviewRow = ({
                     ) : (
                         <img
                             className="image-recruit-logo"
-                            src={logo}
+                            src={newTeamLogo}
                             alt="WinningTeam"
                         />
                     )}
@@ -332,7 +332,7 @@ const CBBOverviewRow = ({
                     ) : (
                         <img
                             className="image-recruit-logo"
-                            src={logo}
+                            src={newTeamLogo}
                             alt="WinningTeam"
                         />
                     )}

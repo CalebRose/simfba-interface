@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import NFLRequestRow from './RequestRow';
-import firebase from 'firebase';
 import FBARequestService from '../../../_Services/simFBA/FBARequestService';
+import { updateUserByUsername } from '../../../Firebase/firestoreHelper';
 
 const ApproveNFLRequests = ({ currentUser }) => {
     // State
@@ -52,12 +52,6 @@ const ApproveNFLRequests = ({ currentUser }) => {
             }
 
             // Firebase Call
-            const firestore = firebase.firestore();
-            let userRef = await firestore
-                .collection('users')
-                .where('username', '==', payload.Username)
-                .get();
-
             const fbPayload = {
                 NFLTeamID: payload.NFLTeamID,
                 NFLTeam: payload.NFLTeam,
@@ -65,9 +59,7 @@ const ApproveNFLRequests = ({ currentUser }) => {
                 NFLRole: role
             };
 
-            userRef.forEach(async (doc) => {
-                await doc.ref.update(fbPayload);
-            });
+            updateUserByUsername(payload.username, fbPayload);
             console.log('Firebase Updated');
             // Filter Requests
             const filterRequests = requests.filter((x) => x.ID !== payload.ID);

@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import { Timestamp } from 'firebase/firestore';
 
 export const calculateEndTimeNFL = (currentPick, timeLeft, isPaused) => {
     let seconds = 0;
@@ -38,10 +38,10 @@ export const GetStartTimerNFL = (
     const endTime = calculateEndTimeNFL(currentPick, timeLeft, isPaused);
     const newData = {
         ...data,
-        endTime: firebase.firestore.Timestamp.fromDate(endTime),
+        endTime: Timestamp.fromDate(endTime),
         isPaused: false,
         seconds: (endTime.getTime() - Date.now()) / 1000,
-        startAt: firebase.firestore.Timestamp.fromDate(new Date())
+        startAt: Timestamp.fromDate(new Date())
     };
 
     updateData(newData);
@@ -57,10 +57,10 @@ export const GetStartTimer = (
     const endTime = calculateEndTime(currentPick, timeLeft, isPaused);
     const newData = {
         ...data,
-        endTime: firebase.firestore.Timestamp.fromDate(endTime),
+        endTime: Timestamp.fromDate(endTime),
         isPaused: false,
         seconds: (endTime.getTime() - Date.now()) / 1000,
-        startAt: firebase.firestore.Timestamp.fromDate(new Date())
+        startAt: Timestamp.fromDate(new Date())
     };
 
     updateData(newData);
@@ -81,15 +81,13 @@ export const GetResetTimer = (data, updateData) => {
     } else {
         seconds = 120;
     }
-    const endTime = firebase.firestore.Timestamp.fromDate(
-        new Date(Date.now() + seconds * 1000)
-    ); // Current time + 4 minutes
+    const endTime = Timestamp.fromDate(new Date(Date.now() + seconds * 1000)); // Current time + 4 minutes
     const newData = {
         ...data,
         endTime,
         isPaused: true,
         seconds,
-        startAt: firebase.firestore.Timestamp.fromDate(new Date(Date.now()))
+        startAt: Timestamp.fromDate(new Date(Date.now()))
     }; // Current time + 4 minutes  };
     updateData(newData);
 };

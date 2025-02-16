@@ -51,53 +51,23 @@ const CBBTransferPortalHeader = ({ viewMode }) => {
             }}
         >
             <tr>
-                <th scope="col" onClick={() => ChangeSort('Rank')}>
-                    Rank
-                </th>
-                <th scope="col" onClick={() => ChangeSort('Name')}>
-                    Name
-                </th>
+                <th scope="col">Rank</th>
+                <th scope="col">Name</th>
                 <th scope="col">Pos</th>
                 <th scope="col">Height</th>
-                <th scope="col" onClick={() => ChangeSort('PreviousTeamID')}>
-                    Prev. Team
-                </th>
-                <th scope="col" onClick={() => ChangeSort('Year')}>
-                    Year
-                </th>
-                <th scope="col" onClick={() => ChangeSort('Stars')}>
-                    Stars
-                </th>
-                <th scope="col" onClick={() => ChangeSort('OverallGrade')}>
-                    Ovr.
-                </th>
-                <th scope="col" onClick={() => ChangeSort('Shooting2')}>
-                    2pt.
-                </th>
-                <th scope="col" onClick={() => ChangeSort('Shooting3')}>
-                    3pt.
-                </th>
-                <th scope="col" onClick={() => ChangeSort('FreeThrow')}>
-                    FT
-                </th>
-                <th scope="col" onClick={() => ChangeSort('Finishing')}>
-                    Finishing
-                </th>
-                <th scope="col" onClick={() => ChangeSort('Ballwork')}>
-                    Ballwork
-                </th>
-                <th scope="col" onClick={() => ChangeSort('Rebounding')}>
-                    Rebounding
-                </th>
-                <th scope="col" onClick={() => ChangeSort('InteriorDefense')}>
-                    Int. Defense
-                </th>
-                <th scope="col" onClick={() => ChangeSort('PerimeterDefense')}>
-                    Per. Defense
-                </th>
-                <th scope="col" onClick={() => ChangeSort('PotentialGrade')}>
-                    Potential
-                </th>
+                <th scope="col">Prev. Team</th>
+                <th scope="col">Year</th>
+                <th scope="col">Stars</th>
+                <th scope="col">Ovr.</th>
+                <th scope="col">2pt.</th>
+                <th scope="col">3pt.</th>
+                <th scope="col">FT</th>
+                <th scope="col">Finishing</th>
+                <th scope="col">Ballwork</th>
+                <th scope="col">Rebounding</th>
+                <th scope="col">Int. Defense</th>
+                <th scope="col">Per. Defense</th>
+                <th scope="col">Potential</th>
                 <th scope="col">Leading Teams</th>
                 <th scope="col">Add</th>
             </tr>

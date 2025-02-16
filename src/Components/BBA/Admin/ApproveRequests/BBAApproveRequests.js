@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import firebase from 'firebase';
 import BBARequestService from '../../../../_Services/simNBA/BBARequestService';
 import BBARequestRow from './BBARequestRow';
+import { updateUserByUsername } from '../../../../Firebase/firestoreHelper';
 
 const BBAApproveRequests = ({ currentUser }) => {
     // State
@@ -55,16 +55,7 @@ const BBAApproveRequests = ({ currentUser }) => {
             };
 
             // Firebase Call
-            const firestore = firebase.firestore();
-            let userRef = await firestore
-                .collection('users')
-                .where('username', '==', payload.Username)
-                .get();
-
-            userRef.forEach(async (doc) => {
-                await doc.ref.update(firebasePayload);
-            });
-
+            updateUserByUsername(payload.Username, firebasePayload);
             console.log('Firebase Updated');
 
             // Filter Requests

@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { useMediaQuery } from 'react-responsive';
+import { Timestamp } from 'firebase/firestore';
 import { BBATeamDropdown } from '../../../_Common/Dropdown';
-import firebase from 'firebase';
 import { useFirestore } from '../../../../Firebase/firebase';
 import BBADraftService from '../../../../_Services/simNBA/BBADraftService';
 import { connect } from 'react-redux';
@@ -17,14 +17,10 @@ import { BBPositionList } from '../../../../Constants/BBAConstants';
 import {
     GetCurrentDraftPick,
     GetPickTeamLogo,
-    GetNextDraftPickIdx,
-    GetNextDraftPickObj,
-    GetNextPickTeamLogo,
     GetRecentlyDraftedPlayer,
     GetViewablePlayersList,
     useDraftMap,
     GetPicksByCurrentRound,
-    GetCurrentDraftPickIdx,
     GetNBACurrentDraftPickIdx
 } from '../../../../_Hooks/DraftHooks';
 import {
@@ -39,7 +35,7 @@ import {
 } from '../../../../Constants/CommonConstants';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
+const NBADraftPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
     // Services
     const _draftService = new BBADraftService();
     // Admin Values
@@ -57,7 +53,6 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     const [userWarRoom, setUserWarRoom] = useState(null);
     const [scoutMap, setScoutMap] = useState({});
     const [nbaTeams, setNBATeams] = useState([]);
-    const [draftPickList, setDraftPickList] = useState([]);
     const positions = MapObjOptions(BBPositionList);
     const archetypes = MapObjOptions(NBAArchetypesList);
     const [selectedPositions, setPositions] = useState('');
@@ -361,7 +356,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         };
         updateData(newData);
         setTimeout(() => {
-            const endTime = firebase.firestore.Timestamp.fromDate(
+            const endTime = Timestamp.fromDate(
                 new Date(Date.now() + seconds * 1000)
             );
             let seconds = 0;
@@ -375,9 +370,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                 endTime,
                 isPaused: finalPick,
                 seconds,
-                startAt: firebase.firestore.Timestamp.fromDate(
-                    new Date(Date.now())
-                )
+                startAt: Timestamp.fromDate(new Date(Date.now()))
             };
             updateData(resetTimerData);
         }, 10000);
@@ -940,24 +933,10 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                             }}
                                         >
                                             <tr>
-                                                <th
-                                                    scope="col"
-                                                    onClick={() =>
-                                                        ChangeSort('Name')
-                                                    }
-                                                >
-                                                    Name
-                                                </th>
+                                                <th scope="col">Name</th>
                                                 <th scope="col">Age</th>
                                                 <th scope="col">Height</th>
-                                                <th
-                                                    scope="col"
-                                                    onClick={() =>
-                                                        ChangeSort('College')
-                                                    }
-                                                >
-                                                    College
-                                                </th>
+                                                <th scope="col">College</th>
                                                 <th scope="col">Overall</th>
                                                 <th scope="col">Finishing</th>
                                                 <th scope="col">2pt.</th>

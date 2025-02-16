@@ -1,5 +1,6 @@
+import { saveAs } from 'file-saver';
 import url from '../../Constants/SimBBA_url';
-import { GetActionCall, GetCall, PostCall } from '../simFBA/FetchHelper.js';
+import { GetCall } from '../simFBA/FetchHelper.js';
 
 export default class BBAStatsService {
     async GetStatsPageData(league, seasonID, weekID, matchType, viewType) {

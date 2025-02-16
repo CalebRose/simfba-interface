@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import TeamRow from './TeamRow';
-import firebase from 'firebase';
 import FBATeamService from '../../../_Services/simFBA/FBATeamService';
 import FBARequestService from '../../../_Services/simFBA/FBARequestService';
 import constants from '../../../Constants/acronyms';
+import { updateUserByUsername } from '../../../Firebase/firestoreHelper';
 
 const ManageTeams = ({ currentUser }) => {
     // State
@@ -37,23 +37,15 @@ const ManageTeams = ({ currentUser }) => {
             throw ('HTTP-Error: Revoke incomplete', res.status);
         }
         // Firebase Call
-        const firestore = firebase.firestore();
+        const emptyObj = {
+            username: payload.username,
+            team: '',
+            mascot: '',
+            teamAbbr: '',
+            teamId: null
+        };
+        updateUserByUsername(payload.username, emptyObj);
 
-        let userRef = await firestore
-            .collection('users')
-            .where('username', '==', payload.username)
-            .get();
-
-        userRef.forEach(async (doc) => {
-            let emptyObj = {
-                username: payload.username,
-                team: '',
-                mascot: '',
-                teamAbbr: '',
-                teamId: null
-            };
-            await doc.ref.update(emptyObj);
-        });
         console.log('Firebase Updated');
 
         // Filter Requests

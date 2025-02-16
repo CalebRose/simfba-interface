@@ -1,7 +1,12 @@
 import React from 'react';
 import FormInput from '../FormInput/FormInput';
 import './SignUpPage.style.css';
-import { auth, createUserProfileDocument } from '../../../Firebase/firebase';
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    sendEmailVerification
+} from 'firebase/auth';
+import { createUserProfileDocument } from '../../../Firebase/firebase'; // Updated import
 import { Link } from 'react-router-dom';
 import routes from './../../../Constants/routes';
 
@@ -37,10 +42,12 @@ class SignUp extends React.Component {
             return;
         }
         try {
-            const { user } = await auth.createUserWithEmailAndPassword(
+            const auth = getAuth();
+            const userCredential = await auth.createUserWithEmailAndPassword(
                 email,
                 password
             );
+            const user = userCredential.user;
 
             await createUserProfileDocument(user, {
                 username,
@@ -50,21 +57,10 @@ class SignUp extends React.Component {
                 roleID: null
             });
 
-            auth.currentUser
-                .sendEmailVerification()
-                .then(function () {})
-                .catch(function (error) {});
+            await sendEmailVerification(user);
 
-            auth.currentUser
-                .getIdToken(/* forceRefresh */ true)
-                .then(function (idToken) {
-                    // Send token to your backend via HTTPS
-                    // ...
-                    localStorage.setItem('token', idToken);
-                })
-                .catch(function (error) {
-                    // Handle error
-                });
+            const idToken = await user.getIdToken(true);
+            localStorage.setItem('token', idToken);
 
             this.setState({
                 username: '',

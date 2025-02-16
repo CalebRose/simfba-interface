@@ -1,3 +1,4 @@
+import { saveAs } from 'file-saver';
 import BBAURL from '../../Constants/SimBBA_url';
 
 export default class BBARecruitingService {

@@ -90,7 +90,7 @@ const CBBDashboardMobileRow = (props) => {
                                         src={logo}
                                         alt="WinningTeam"
                                     />
-                                    <h6>{recruit.College}</h6>
+                                    <h6>{croot.College}</h6>
                                 </>
                             )}
                         </div>

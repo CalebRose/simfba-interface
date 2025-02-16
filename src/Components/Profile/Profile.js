@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import firebase from 'firebase';
 import routes from '../../Constants/routes';
 import { Link } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
@@ -12,6 +11,7 @@ import {
     SimNBA,
     SimNFL
 } from '../../Constants/CommonConstants';
+import { updateUserByUsername } from '../../Firebase/firestoreHelper';
 
 var TeamTab = ({ user }) => {
     return (
@@ -34,10 +34,6 @@ const Profile = ({ currentUser, cfbTeam, viewMode }) => {
     let teamAbbr =
         !!currentUser && !!currentUser.teamAbbr ? currentUser.teamAbbr : '';
     const [teamColors, setTeamColors] = React.useState('');
-    const [cfbRecord, setCFBRecord] = useState(null);
-    const [cbbRecord, setCBBRecord] = useState(null);
-    const [nflRecord, setNFLRecord] = useState(null);
-    const [nbaRecord, setNBARecord] = useState(null);
     const [cfbLogo, setCFBLogo] = useState('');
     const [cbbLogo, setCBBLogo] = useState('');
     const [nflLogo, setNFLLogo] = useState('');
@@ -107,15 +103,8 @@ const Profile = ({ currentUser, cfbTeam, viewMode }) => {
     const ToggleRetroMode = async () => {
         if (currentUser && !currentUser.IsSubscribed) return;
         const toggle = currentUser.IsRetro;
-        const firestore = firebase.firestore();
-        let userRef = await firestore
-            .collection('users')
-            .where('username', '==', currentUser.username)
-            .get();
         const payload = { IsRetro: !toggle };
-        userRef.forEach(async (doc) => {
-            await doc.ref.update(payload);
-        });
+        updateUserByUsername(currentUser.username, payload);
         console.log('Firebase Updated');
     };
 

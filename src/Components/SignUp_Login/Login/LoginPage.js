@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import FormInput from '../FormInput/FormInput';
 import './LoginPage.style.css';
-// import { auth, signInWithGoogle } from "./../../../Firebase/firebase";
-import { auth } from './../../../Firebase/firebase';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { Link } from 'react-router-dom';
 import routes from '../../../Constants/routes';
 
@@ -23,7 +22,8 @@ class LoginPage extends Component {
                 isLoading: true,
                 message: 'Attempting Sign In...'
             });
-            await auth.signInWithEmailAndPassword(email, password);
+            const auth = getAuth();
+            await signInWithEmailAndPassword(email, password);
             this.setState({
                 email: '',
                 password: '',
@@ -31,18 +31,11 @@ class LoginPage extends Component {
                 message: 'Sign In successful. Please return to Landing Page.'
             });
             console.log('successful login.');
-            auth.currentUser
-                .getIdToken(/* forceRefresh */ true)
-                .then(function (idToken) {
-                    // Send token to your backend via HTTPS
-                    // ...
-                    localStorage.setItem('token', idToken);
-                })
-                .catch(function (error) {
-                    console.log('test 1');
-                    console.log(error);
-                    // Handle error
-                });
+            const user = auth.currentUser;
+            if (user) {
+                const idToken = await user.getIdToken(/* forceRefresh */ true);
+                localStorage.setItem('token', idToken);
+            }
             this.setState({ message: '' });
             this.props.history.push('/user'); // on successful login, change user's location to their home page: /user
         } catch (error) {

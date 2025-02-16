@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { setCurrentUser } from '../../Redux/user/user.actions';
 import { InboxModal } from '../_Common/ModalComponents';
 
-const authorizedUser = ({ user, setCurrentUser, inbox }) => {
+const AuthorizedUser = ({ user, setCurrentUser, inbox }) => {
     const [unreadNoti, setUnreadNoti] = useState(false);
     var FBAdmin = () => {
         return (
@@ -230,4 +230,4 @@ const mapDispatchToProps = (dispatch) => ({
     setCurrentUser: (user) => dispatch(setCurrentUser(user))
 });
 
-export default connect(null, mapDispatchToProps)(authorizedUser);
+export default connect(null, mapDispatchToProps)(AuthorizedUser);

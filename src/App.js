@@ -8,8 +8,13 @@ import { setCBBTimestamp } from './Redux/timestamp/timestamp.actions';
 import { setCFBTimestamp } from './Redux/timestamp/timestamp.actions';
 
 // Firebase
-import { auth, createUserProfileDocument } from './Firebase/firebase';
-
+import { getAuth, onAuthStateChanged, getIdToken } from 'firebase/auth';
+import { doc, getDoc, onSnapshot } from 'firebase/firestore';
+import {
+    auth,
+    firestore,
+    createUserProfileDocument
+} from './Firebase/firebase';
 // CSS
 import './style.css';
 
@@ -79,39 +84,42 @@ class App extends Component {
     // Components
     componentDidMount() {
         const { setCurrentUser, setCBBTimestamp, setCFBTimestamp } = this.props;
+        const authInstance = getAuth(); // Use the correct Firebase Auth instance
 
-        this.unSubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
-            if (userAuth !== null) {
-                const userRef = await createUserProfileDocument(userAuth);
-                userRef.onSnapshot((snapShot) => {
-                    setCurrentUser({
-                        id: snapShot.id,
-                        ...snapShot.data()
+        this.unSubscribeFromAuth = onAuthStateChanged(
+            authInstance,
+            async (userAuth) => {
+                if (userAuth) {
+                    const userRef = doc(firestore, `users/${userAuth.uid}`);
+                    const snapShot = await getDoc(userRef);
+
+                    if (snapShot.exists()) {
+                        setCurrentUser({
+                            id: snapShot.id,
+                            ...snapShot.data()
+                        });
+                    }
+
+                    // Subscribe to real-time updates
+                    onSnapshot(userRef, (snapshot) => {
+                        if (snapshot.exists()) {
+                            setCurrentUser({
+                                id: snapshot.id,
+                                ...snapshot.data()
+                            });
+                        }
                     });
-                });
 
-                const cfb_Timestamp =
-                    await this._adminService.GetCurrentTimestamp();
-
-                setCFBTimestamp({ ...cfb_Timestamp });
-
-                const cbb_Timestamp =
-                    await this._bbaAdminService.GetCurrentTimestamp();
-
-                setCBBTimestamp({ ...cbb_Timestamp });
-
-                userAuth
-                    .getIdToken(true)
-                    .then(function (idToken) {
-                        // Send token to your backend via HTTPS
-                        // ...
+                    // Fetch ID Token
+                    try {
+                        const idToken = await getIdToken(userAuth);
                         localStorage.setItem('token', idToken);
-                    })
-                    .catch(function (error) {
-                        // Handle error
-                    });
+                    } catch (error) {
+                        console.error('Error getting ID Token:', error);
+                    }
+                }
             }
-        });
+        );
     }
 
     componentWillUnmount() {
