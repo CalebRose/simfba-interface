@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
@@ -6,14 +7,14 @@ import {
     AffinitiesList,
     CloseToHome,
     LetterGradesList,
-    PositionList,
+    FBPositionList,
+    RecruitingLoadMessages,
     SimpleLetterGrades,
     StarsList,
     StatesList
 } from '../../Constants/CommonConstants';
 import FBARecruitingService from '../../_Services/simFBA/FBARecruitingService';
 import CFBDashboardPlayerRow from './CFBDashboardComponents/CFBDashboardPlayerRow';
-import CrootModal from './CFBDashboardComponents/CFBDashboardCrootModal';
 import { MapObjOptions, MapOptions } from '../../_Utility/filterHelper';
 import {
     ValidateAffinity,
@@ -26,6 +27,7 @@ import CFBDashboardRankingsModal from './CFBDashboardComponents/CFBDashboardRank
 import { GetCollusionStatements } from '../../Constants/CollusionStatements';
 import CFBDashboardMobilePlayerRow from './CFBDashboardComponents/CFBDashboardMobilePlayerRow';
 import RecruitingClassModal from '../_Common/RecruitingClassModal';
+import { PickFromArray } from '../../_Utility/utilHelper';
 
 const CFBRecruitingOverview = ({
     currentUser,
@@ -38,32 +40,32 @@ const CFBRecruitingOverview = ({
     let _easterEggService = new EasterEggService();
 
     // Hooks
-    const positions = MapObjOptions(PositionList);
-    const [selectedPositions, setSelectedPositions] = React.useState('');
+    const positions = MapObjOptions(FBPositionList);
+    const [selectedPositions, setSelectedPositions] = useState('');
     const states = MapOptions(StatesList);
-    const [selectedStates, setSelectedStates] = React.useState('');
+    const [selectedStates, setSelectedStates] = useState('');
     const affinities = MapOptions(AffinitiesList);
     const letterGrades = MapOptions(LetterGradesList);
     const stars = MapOptions(StarsList);
     const overallLetterGrades = MapOptions(SimpleLetterGrades);
     const [selectedPotentialLetterGrades, setSelectedPotentialLetterGrades] =
-        React.useState('');
+        useState('');
     const [selectedOverallLetterGrades, setSelectedOverallLetterGrades] =
-        React.useState('');
-    const [selectedAffinities, setSelectedAffinities] = React.useState('');
-    const [selectedStars, setSelectedStars] = React.useState('');
-    const [selectedStatuses, setStatuses] = React.useState('');
-    const [recruits, setRecruits] = React.useState([]);
-    const [filteredRecruits, setFilteredRecruits] = React.useState([]);
-    const [viewableRecruits, setViewableRecruits] = React.useState([]);
-    const [count, SetCount] = React.useState(100);
-    const [recruitingProfile, setRecruitingProfile] = React.useState(null);
-    const [teamProfiles, setTeamProfiles] = React.useState([]);
-    const [recruitingNeeds, setRecruitingNeeds] = React.useState(null);
-    const [crootMap, setCrootMap] = React.useState({});
-    const [teamColors, setTeamColors] = React.useState('');
-    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
-    const [showCollusionButton, setShowCollusionButton] = React.useState(true);
+        useState('');
+    const [selectedAffinities, setSelectedAffinities] = useState('');
+    const [selectedStars, setSelectedStars] = useState('');
+    const [selectedStatuses, setStatuses] = useState('');
+    const [recruits, setRecruits] = useState([]);
+    const [filteredRecruits, setFilteredRecruits] = useState([]);
+    const [viewableRecruits, setViewableRecruits] = useState([]);
+    const [count, SetCount] = useState(100);
+    const [recruitingProfile, setRecruitingProfile] = useState(null);
+    const [teamProfiles, setTeamProfiles] = useState([]);
+    const [recruitingNeeds, setRecruitingNeeds] = useState(null);
+    const [crootMap, setCrootMap] = useState({});
+    const [teamColors, setTeamColors] = useState('');
+    const [viewWidth, setViewWidth] = useState(window.innerWidth);
+    const [loadMessage] = useState(() => PickFromArray(RecruitingLoadMessages));
     const statusOptions = MapOptions([
         'Not Ready',
         'Hearing Offers',
@@ -72,11 +74,10 @@ const CFBRecruitingOverview = ({
         'Ready to Sign',
         'Signed'
     ]);
-    let luckyTeam = Math.floor(Math.random() * (20 - 1) + 1);
     // Setup Modals?
 
     // For mobile
-    React.useEffect(() => {
+    useEffect(() => {
         if (!viewWidth) {
             setViewWidth(window.innerWidth);
         }
@@ -133,6 +134,7 @@ const CFBRecruitingOverview = ({
     //
     const GetCroots = async () => {
         let croots = await _recruitingService.GetRecruits();
+
         setRecruits([...croots]);
         const fc = FilterCroots(croots);
         setFilteredRecruits((x) => [...fc]);
@@ -276,7 +278,8 @@ const CFBRecruitingOverview = ({
                 AffinityOneEligible: affinityOneValid,
                 AffinityTwoEligible: affinityTwoValid,
                 PlayerRecruit: recruit,
-                RES: recruitingProfile.RecruitingEfficiencyScore
+                RES: recruitingProfile.RecruitingEfficiencyScore,
+                Recruiter: currentUser.username
             };
 
             let newProfile =
@@ -295,34 +298,14 @@ const CFBRecruitingOverview = ({
                 setRecruitingProfile(crootProfile);
                 setFilteredRecruits(filteredRecruits);
             }
+            toast.success(
+                `${recruit.Position} ${recruit.FirstName} ${recruit.LastName} has been added to your recruiting board.`
+            );
         } else {
-            alert(
+            toast.error(
                 'Nice try, but you have already reached your limit on committed recruits.'
             );
         }
-    };
-
-    const CollusionButton = async () => {
-        let randomInt = Math.floor(Math.random() * recruits.length - 1);
-        if (randomInt >= recruits.length) {
-            randomInt = recruits.length - 1;
-        }
-        const randomCroot =
-            randomInt > -1 && randomInt < recruits.length
-                ? recruits[randomInt]
-                : recruits[Math.floor(Math.random() * recruits.length - 1)];
-        const message = GetCollusionStatements(
-            currentUser,
-            cfbTeam,
-            randomCroot
-        );
-        const dto = {
-            WeekID: cfb_Timestamp.CollegeWeekID,
-            SeasonID: cfb_Timestamp.CollegeSeasonID,
-            Message: message
-        };
-        setShowCollusionButton(false);
-        await _easterEggService.CollusionCall(dto);
     };
 
     const Export = async () => {
@@ -351,17 +334,15 @@ const CFBRecruitingOverview = ({
             <div className="row">
                 <div className="col-md-2 dashboard-sidebar">
                     {recruitingProfile !== undefined &&
-                    recruitingNeeds !== null &&
-                    cfbTeam ? (
-                        <CFBDashboardSidebar
-                            cfbTeam={cfbTeam}
-                            teamNeeds={recruitingNeeds}
-                            recruitingProfile={recruitingProfile}
-                            theme={viewMode}
-                        />
-                    ) : (
-                        ''
-                    )}
+                        recruitingNeeds !== null &&
+                        cfbTeam && (
+                            <CFBDashboardSidebar
+                                cfbTeam={cfbTeam}
+                                teamNeeds={recruitingNeeds}
+                                recruitingProfile={recruitingProfile}
+                                theme={viewMode}
+                            />
+                        )}
                 </div>
                 <div className="col-md-10 px-md-4">
                     <div className="row mt-3 justify-content-between">
@@ -476,7 +457,7 @@ const CFBRecruitingOverview = ({
                                 onChange={ChangeRecruitingStatus}
                             />
                         </div>
-                        {cfb_Timestamp && cfb_Timestamp.CollegeWeek >= 4 ? (
+                        {cfb_Timestamp && cfb_Timestamp.CollegeWeek >= 4 && (
                             <div className="col-md-auto">
                                 <h5 className="text-start align-middle">
                                     Team Rankings
@@ -491,11 +472,9 @@ const CFBRecruitingOverview = ({
                                     Recruiting Rankings
                                 </button>
                             </div>
-                        ) : (
-                            ''
                         )}
 
-                        {!cfb_Timestamp.IsRecruitingLocked ? (
+                        {!cfb_Timestamp.IsRecruitingLocked && (
                             <div className="col-md-auto">
                                 <h5 className="text-start align-middle">
                                     Export Croots
@@ -508,36 +487,22 @@ const CFBRecruitingOverview = ({
                                     Export
                                 </button>
                             </div>
-                        ) : (
-                            ''
-                        )}
-                        {cfbTeam && luckyTeam >= 16 && showCollusionButton ? (
-                            <div className="col-md-auto">
-                                <h5 className="text-start align-middle">
-                                    Collude?
-                                </h5>
-                                <button
-                                    type="button"
-                                    className="btn btn-danger"
-                                    onClick={CollusionButton}
-                                >
-                                    You Know You Want To
-                                </button>
-                            </div>
-                        ) : (
-                            ''
                         )}
                     </div>
                     <CFBDashboardRankingsModal
                         teamProfiles={teamProfiles}
                         viewMode={viewMode}
+                        retro={currentUser.IsRetro}
                     />
-                    <RecruitingClassModal
-                        teams={teamProfiles}
-                        userTeam={cfbTeam}
-                        isCFB
-                        viewMode={viewMode}
-                    />
+                    {cfb_Timestamp && cfb_Timestamp.CollegeWeek >= 4 && (
+                        <RecruitingClassModal
+                            teams={teamProfiles}
+                            userTeam={cfbTeam}
+                            isCFB
+                            viewMode={viewMode}
+                            retro={currentUser.IsRetro}
+                        />
+                    )}
                     <div
                         className={`row mt-3 mb-5 dashboard-table-height${
                             viewMode === 'dark' ? '-dark' : ''
@@ -548,8 +513,8 @@ const CFBRecruitingOverview = ({
                                 dataLength={viewableRecruits.length}
                                 next={loadMoreRecords}
                                 hasMore={true}
-                                height={570}
                                 scrollThreshold={0.8}
+                                height={570}
                                 loader={
                                     <div className="row justify-content-center">
                                         Loading More Croots...
@@ -565,19 +530,22 @@ const CFBRecruitingOverview = ({
                             >
                                 {isMobile ? (
                                     <>
-                                        {viewableRecruits.length > 0
-                                            ? viewableRecruits.map((x, idx) => (
-                                                  <CFBDashboardMobilePlayerRow
-                                                      key={x.ID}
-                                                      croot={x}
-                                                      idx={idx}
-                                                      add={AddRecruitToBoard}
-                                                      map={crootMap}
-                                                      timestamp={cfb_Timestamp}
-                                                      theme={viewMode}
-                                                  />
-                                              ))
-                                            : ''}
+                                        {viewableRecruits.length > 0 &&
+                                            viewableRecruits.map((x, idx) => (
+                                                <CFBDashboardMobilePlayerRow
+                                                    key={x.ID}
+                                                    croot={x}
+                                                    idx={idx}
+                                                    add={AddRecruitToBoard}
+                                                    map={crootMap}
+                                                    timestamp={cfb_Timestamp}
+                                                    theme={viewMode}
+                                                    retro={currentUser.IsRetro}
+                                                    teamProfile={
+                                                        recruitingProfile
+                                                    }
+                                                />
+                                            ))}
                                     </>
                                 ) : (
                                     <table
@@ -636,29 +604,32 @@ const CFBRecruitingOverview = ({
                                         </thead>
 
                                         <tbody className="overflow-auto">
-                                            {viewableRecruits.length > 0
-                                                ? viewableRecruits.map(
-                                                      (x, idx) => (
-                                                          <>
-                                                              <CFBDashboardPlayerRow
-                                                                  key={x.ID}
-                                                                  croot={x}
-                                                                  idx={idx}
-                                                                  add={
-                                                                      AddRecruitToBoard
-                                                                  }
-                                                                  map={crootMap}
-                                                                  timestamp={
-                                                                      cfb_Timestamp
-                                                                  }
-                                                                  theme={
-                                                                      viewMode
-                                                                  }
-                                                              />
-                                                          </>
-                                                      )
-                                                  )
-                                                : ''}
+                                            {viewableRecruits.length > 0 &&
+                                                viewableRecruits.map(
+                                                    (x, idx) => (
+                                                        <>
+                                                            <CFBDashboardPlayerRow
+                                                                key={x.ID}
+                                                                croot={x}
+                                                                idx={idx}
+                                                                add={
+                                                                    AddRecruitToBoard
+                                                                }
+                                                                map={crootMap}
+                                                                timestamp={
+                                                                    cfb_Timestamp
+                                                                }
+                                                                theme={viewMode}
+                                                                retro={
+                                                                    currentUser.IsRetro
+                                                                }
+                                                                teamProfile={
+                                                                    recruitingProfile
+                                                                }
+                                                            />
+                                                        </>
+                                                    )
+                                                )}
                                         </tbody>
                                     </table>
                                 )}
@@ -666,12 +637,7 @@ const CFBRecruitingOverview = ({
                         ) : (
                             <>
                                 <div className="row justify-content-center mt-3 mb-2">
-                                    My dude, recruiting is currently in-sync.
-                                    Please wait until it's finished. Until then,
-                                    make some tea and enjoy the next few
-                                    minutes. Please check Discord for news on
-                                    the completion of this week's recruiting
-                                    sync.
+                                    {loadMessage}
                                 </div>
 
                                 <div className="row justify-content-center pt-2 mt-4 mb-2">

@@ -1,15 +1,21 @@
 import React from 'react';
 import { getLogo } from '../../Constants/getLogo';
-import { RevealResults } from '../../_Utility/utilHelper';
+import { RevealCBBResults, RevealResults } from '../../_Utility/utilHelper';
+import { SimCBB, SimNBA } from '../../Constants/CommonConstants';
 
-export const BBAMatchCard = ({ game, team, timestamp, isNBA }) => {
+export const BBAMatchCard = ({ game, team, timestamp, isNBA, retro }) => {
     const currentWeek = !isNBA ? timestamp.CollegeWeek : timestamp.NBAWeek;
+    const league = isNBA ? SimNBA : SimCBB;
     const teamAbbr =
         !isNBA && team ? team.Abbr : `${team.Team} ${team.Nickname}`;
     const opposingTeam =
         game.HomeTeam === teamAbbr ? game.AwayTeam : game.HomeTeam;
+    const opposingTeamID =
+        game.HomeTeam === teamAbbr ? game.AwayTeamID : game.HomeTeamID;
     const opposingCoach =
         game.HomeTeam === teamAbbr ? game.AwayTeamCoach : game.HomeTeamCoach;
+    const opposingRank =
+        game.HomeTeam === teamAbbr ? game.AwayRank : game.HomeRank;
     const wonTheMatch =
         game.GameComplete &&
         ((game.HomeTeam === teamAbbr && game.HomeTeamWin) ||
@@ -20,7 +26,7 @@ export const BBAMatchCard = ({ game, team, timestamp, isNBA }) => {
             (game.AwayTeam === teamAbbr && game.HomeTeamWin));
     const awayGame =
         game.HomeTeam === teamAbbr || game.IsNeutral ? false : true;
-    const opposingTeamLogo = getLogo(opposingTeam);
+    const opposingTeamLogo = getLogo(league, opposingTeamID, retro);
     const gameWeek = game.Week;
     const ConferenceGame = game.IsConference;
     const ConferenceLabel = team && team.Conference;
@@ -34,7 +40,7 @@ export const BBAMatchCard = ({ game, team, timestamp, isNBA }) => {
         detailsLabel = `${ConferenceLabel} Conference Game`;
     }
 
-    const showGame = RevealResults(game, timestamp);
+    const showGame = RevealCBBResults(game, timestamp);
 
     let cardClass = '';
     if (wonTheMatch && (showGame || game.Week < currentWeek)) {
@@ -47,7 +53,7 @@ export const BBAMatchCard = ({ game, team, timestamp, isNBA }) => {
 
     const cardTitle = `Week ${gameWeek}${game.MatchOfWeek} ${
         awayGame ? 'at ' : 'vs '
-    } ${opposingTeam}`;
+    } ${opposingRank > 0 ? `(${opposingRank})` : ''}${opposingTeam}`;
 
     return (
         <div className={cardClass} style={{ maxWidth: '540px' }}>

@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import toast from 'react-hot-toast';
 import Select from 'react-select';
 import BBAMatchService from '../../../_Services/simNBA/BBAMatchService';
 import BBATeamService from '../../../_Services/simNBA/BBATeamService';
 import CBBGameModal from './CBBGameModal';
 import CBBGameRow from './CBBGameRow';
 import CBBStandingsModal from './CBBStandingsModal';
-import { SeasonsList } from '../../../Constants/CommonConstants';
+import { SeasonsList, SimCBB } from '../../../Constants/CommonConstants';
+import { SubmitCollegePollForm } from '../../_Common/SubmitCollegePollModal';
+import { CollegePollModal } from '../../_Common/CollegePollModal';
 
-const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
+const CBBSchedulePage = ({ currentUser, cbbTeam, nbaTeam, cbb_Timestamp }) => {
     // Services
     let _matchService = new BBAMatchService();
     let _teamService = new BBATeamService();
@@ -25,7 +28,7 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [selectedWeek, setSelectedWeek] = useState(null);
     const [selectedSeason, setSelectedSeason] = useState(null);
-    const [leagueView, setLeagueView] = useState(''); // CBB, NBA, ISL
+    const [leagueView, setLeagueView] = useState('CBB'); // CBB, NBA, ISL
     const [viewType, setViewType] = useState('WEEK');
     const [viewGame, setViewGame] = useState(null);
     const [cbbTeams, setCBBTeams] = useState([]);
@@ -35,6 +38,7 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     const [showBGames, setShowBGames] = useState(true);
     const [showCGames, setShowCGames] = useState(true);
     const [showDGames, setShowDGames] = useState(true);
+    const [exportType, setExportType] = useState('A');
 
     // UseEffects
     useEffect(() => {
@@ -75,22 +79,15 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             gamesView = [...gamesView.filter((x) => x.Week === selectedWeek)];
         }
 
-        if (!showAGames) {
-            gamesView = gamesView.filter((x) => x.MatchOfWeek !== 'A');
-        }
+        let lettersArray = [];
+        if (showAGames) lettersArray.push('A');
+        if (showBGames) lettersArray.push('B');
+        if (showCGames) lettersArray.push('C');
+        if (showDGames) lettersArray.push('D');
 
-        if (!showBGames) {
-            gamesView = gamesView.filter((x) => x.MatchOfWeek !== 'B');
-        }
-
-        if (!showCGames) {
-            gamesView = gamesView.filter((x) => x.MatchOfWeek !== 'C');
-        }
-
-        if (!showDGames) {
-            gamesView = gamesView.filter((x) => x.MatchOfWeek !== 'D');
-        }
-
+        gamesView = [
+            ...gamesView.filter((x) => lettersArray.includes(x.MatchOfWeek))
+        ];
         setViewMatches(() => gamesView);
     }, [
         selectedTeam,
@@ -98,7 +95,10 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
         viewType,
         allCBBMatches,
         showAGames,
-        showBGames
+        showBGames,
+        showCGames,
+        showDGames,
+        leagueView
     ]);
 
     // API Functions
@@ -129,13 +129,13 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             const response = await _teamService.GetNBATeams();
             teamOptionForm = [
                 ...response.map((x) => {
-                    return { label: x.Team, value: x.Abbr };
+                    return { label: x.Team, value: `${x.Team} ${x.Nickname}` };
                 })
             ];
         } else {
             teamOptionForm = [
                 ...nbaTeams.map((x) => {
-                    return { label: x.Team, value: x.Abbr };
+                    return { label: x.Team, value: `${x.Team} ${x.Nickname}` };
                 })
             ];
         }
@@ -148,17 +148,50 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             const response = await _teamService.GetAllISLTeams();
             teamOptionForm = [
                 ...response.map((x) => {
-                    return { label: x.Team, value: x.Abbr };
+                    let val = `${x.Team.trim()} ${x.Nickname.trim()}`;
+                    return {
+                        label: x.Team,
+                        value: val.trim()
+                    };
                 })
             ];
         } else {
             teamOptionForm = [
                 ...islTeams.map((x) => {
-                    return { label: x.Team, value: x.Abbr };
+                    let val = `${x.Team.trim()} ${x.Nickname.trim()}`;
+                    return {
+                        label: x.Team,
+                        value: val.trim()
+                    };
                 })
             ];
         }
         setTeamOptions(() => teamOptionForm);
+    };
+
+    const ExportResults = async () => {
+        const seasonID = Number(selectedSeason.value);
+        let week = selectedWeek ? Number(selectedWeek) : 1;
+        let nbaWeekID = 0;
+        let startingWeekID = 0;
+        if (seasonID === 1 || seasonID === 2) {
+            // Nothing
+        } else if (seasonID === 3) {
+            nbaWeekID = week;
+            startingWeekID = 20;
+        } else if (seasonID === 4) {
+            nbaWeekID = week + 30;
+            startingWeekID = 62;
+        }
+        week += startingWeekID;
+
+        await _matchService.ExportResults(
+            seasonID,
+            week,
+            nbaWeekID,
+            exportType,
+            selectedWeek
+        );
     };
 
     const GetAllWeeks = () => {
@@ -179,11 +212,13 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     };
 
     const ResetTeamViewOptions = () => {
-        setSelectedTeam(() => cbbTeam.Abbr);
+        let abbr = cbbTeam.Abbr;
+        if (leagueView === 'NBA') abbr = `${nbaTeam.Team} ${nbaTeam.Nickname}`;
+        setSelectedTeam(() => abbr);
     };
 
     const ResetWeekViewOptions = () => {
-        setSelectedWeek(() => cbb_Timestamp.CollegeWeek);
+        setSelectedWeek(() => cbb_Timestamp.NBAWeek);
     };
 
     // Click Functions
@@ -197,10 +232,6 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
         setSelectedTeam(() => '');
         ResetWeekViewOptions();
         setLeagueView(() => value);
-        if (value === 'CBB') {
-            setShowCGames(() => false);
-            setShowDGames(() => false);
-        }
     };
 
     const SelectWeekView = () => {
@@ -357,7 +388,6 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                         onClick={() =>
                                             setShowCGames(() => !showCGames)
                                         }
-                                        disabled={leagueView === 'CBB'}
                                     >
                                         C
                                     </button>
@@ -371,7 +401,6 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                         onClick={() =>
                                             setShowDGames(() => !showDGames)
                                         }
-                                        disabled={leagueView === 'CBB'}
                                     >
                                         D
                                     </button>
@@ -411,33 +440,148 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                 onChange={ChangeSeason}
                             />
                         </div>
-
+                        <h5>Export Day of Week</h5>
                         <div className="row mt-2 justify-content-center">
+                            <div className="col-md-auto">
+                                <div
+                                    className="btn-group btn-group-lg"
+                                    role="group"
+                                    aria-label="ViewOptions"
+                                >
+                                    <button
+                                        type="button"
+                                        className={`btn btn-sm ${
+                                            exportType === 'A'
+                                                ? 'btn-primary'
+                                                : 'btn-danger'
+                                        }`}
+                                        onClick={() => setExportType(() => 'A')}
+                                    >
+                                        A
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`btn btn-sm ${
+                                            exportType === 'B'
+                                                ? 'btn-primary'
+                                                : 'btn-danger'
+                                        }`}
+                                        onClick={() => setExportType(() => 'B')}
+                                    >
+                                        B
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`btn btn-sm ${
+                                            exportType === 'C'
+                                                ? 'btn-primary'
+                                                : 'btn-danger'
+                                        }`}
+                                        onClick={() => setExportType(() => 'C')}
+                                    >
+                                        C
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`btn btn-sm ${
+                                            exportType === 'D'
+                                                ? 'btn-primary'
+                                                : 'btn-danger'
+                                        }`}
+                                        onClick={() => setExportType(() => 'D')}
+                                    >
+                                        D
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row mt-2 mb-2 justify-content-center px-2">
+                            <h6 className="">Export</h6>
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                disabled={!selectedWeek || !selectedSeason}
+                                onClick={ExportResults}
+                            >
+                                Export {selectedWeek}
+                                {exportType} Results
+                            </button>
+                        </div>
+                        <div className="row mt-2 mb-2 justify-content-center px-2">
                             <button
                                 type="button"
                                 className="btn btn-primary"
                                 data-bs-toggle="modal"
                                 data-bs-target="#standingsModal"
                             >
+                                {leagueView !== 'CBB' ? 'NBA ' : 'College '}
                                 Standings
                             </button>
                         </div>
+                        <div className="row mt-2 mb-2 justify-content-center px-2">
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#collegePollModal"
+                            >
+                                College Poll
+                            </button>
+                        </div>
+                        {cbb_Timestamp.GamesARan && (
+                            <div className="row mt-2 mb-2 justify-content-center px-2">
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#submitPollModal"
+                                >
+                                    Submit College Poll
+                                </button>
+                            </div>
+                        )}
                     </div>
-                    <CBBGameModal game={viewGame} />
-                    <CBBStandingsModal ts={cbb_Timestamp} />
+                    <CBBGameModal
+                        game={viewGame}
+                        isNBA={leagueView !== 'CBB'}
+                        retro={currentUser.IsRetro}
+                    />
+                    <CBBStandingsModal
+                        ts={cbb_Timestamp}
+                        isNBA={leagueView !== 'CBB'}
+                        retro={currentUser.IsRetro}
+                    />
+
+                    <SubmitCollegePollForm
+                        currentUser={currentUser}
+                        timestamp={cbb_Timestamp}
+                        isCFB={false}
+                    />
+                    <CollegePollModal
+                        currentUser={currentUser}
+                        timestamp={cbb_Timestamp}
+                        seasonOptions={seasons}
+                        league={SimCBB}
+                    />
+
                     <div className="col-md-10 px-md-4">
-                        <div className="row mt-3 mb-5 justify-content-between">
+                        <div className="row d-flex mt-3 mb-5 justify-content-between">
                             {viewMatches &&
                                 viewMatches.length > 0 &&
                                 viewMatches.map((x, idx) => (
                                     <>
-                                        <CBBGameRow
-                                            idx={idx}
-                                            key={x.ID}
-                                            game={x}
-                                            ts={cbb_Timestamp}
-                                            SetGame={SetGame}
-                                        />
+                                        <div className="col-12 col-md-6 col-lg-4 col-xl-4">
+                                            <CBBGameRow
+                                                idx={idx}
+                                                key={x.ID}
+                                                game={x}
+                                                leagueView={leagueView}
+                                                ts={cbb_Timestamp}
+                                                SetGame={SetGame}
+                                                viewType={viewType}
+                                                retro={currentUser.IsRetro}
+                                            />
+                                        </div>
                                     </>
                                 ))}
                         </div>
@@ -451,10 +595,12 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
 const mapStateToProps = ({
     user: { currentUser },
     cbbTeam: { cbbTeam },
+    nbaTeam: { nbaTeam },
     timestamp: { cbb_Timestamp }
 }) => ({
     currentUser,
     cbbTeam,
+    nbaTeam,
     cbb_Timestamp
 });
 

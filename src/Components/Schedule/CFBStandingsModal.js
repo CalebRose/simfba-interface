@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
-import { SeasonsList } from '../../Constants/CommonConstants';
+import { SeasonsList, SimCFB } from '../../Constants/CommonConstants';
 import { GetModalClass } from '../../Constants/CSSClassHelper';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import StandingsCard from '../BBA/Schedule/StandingsModalCard';
@@ -9,7 +9,7 @@ import { Spinner } from '../_Common/Spinner';
 const CFBStandingsModal = (props) => {
     let _standingsService = new FBATeamService();
     const modalId = `standingsModal`;
-    const { ts, viewMode } = props;
+    const { ts, viewMode, retro } = props;
     const [conferences, setConferences] = useState([]);
     const [seasons, setSeasons] = useState(SeasonsList);
     const [allStandings, setAllStandings] = useState([]);
@@ -154,7 +154,11 @@ const CFBStandingsModal = (props) => {
                                 </div>
                                 <div className="row g-2 gy-2 mb-1">
                                     {viewableStandings.map((x) => (
-                                        <StandingsCard standings={x} />
+                                        <StandingsCard
+                                            standings={x}
+                                            retro={retro}
+                                            league={SimCFB}
+                                        />
                                     ))}
                                 </div>
                             </>

@@ -2,10 +2,13 @@ import React, { useEffect } from 'react';
 import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
 import { GetOverall } from '../../../_Utility/RosterHelper';
+import { MobileAttribute } from '../../_Common/MobileAttributeTab';
+import { isBadFit, isGoodFit } from '../../../_Utility/CFBRecruitingHelper';
+import { SimCFB } from '../../../Constants/CommonConstants';
 
 const CFBDashboardMobilePlayerRow = (props) => {
     const [flag, setFlag] = React.useState(false);
-    const { croot, idx, map, timestamp, theme } = props;
+    const { croot, idx, map, timestamp, theme, retro, teamProfile } = props;
     const rank = idx + 1;
     const name = croot.FirstName + ' ' + croot.LastName;
     const affinities = croot.AffinityTwo.length
@@ -15,7 +18,7 @@ const CFBDashboardMobilePlayerRow = (props) => {
     const modalTarget = '#crootModal' + idx;
     const mapKey = croot.FirstName + croot.LastName + croot.HighSchool;
     const logo =
-        croot && croot.College.length > 0 ? getLogo(croot.College) : '';
+        croot && croot.TeamID > 0 ? getLogo(SimCFB, croot.TeamID, retro) : '';
     const mobileCardClass = GetMobileCardClass(theme);
     useEffect(() => {
         if (map) {
@@ -32,10 +35,10 @@ const CFBDashboardMobilePlayerRow = (props) => {
             (x, idx) => idx <= 2 && x.Odds > 0
         );
 
-        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+        const competingIDs = competingTeams.map((x) => x.TeamID);
 
-        return competingAbbrs.map((x) => {
-            const logo = getLogo(x);
+        return competingIDs.map((x) => {
+            const logo = getLogo(SimCFB, x, retro);
             return (
                 <>
                     <img
@@ -55,73 +58,111 @@ const CFBDashboardMobilePlayerRow = (props) => {
         return props.add(croot);
     };
 
-    const customClass = croot.IsCustomCroot
-        ? 'text-primary card-title'
-        : 'card-title';
+    const goodFit = isGoodFit(
+        teamProfile.OffensiveScheme,
+        teamProfile.DefensiveScheme,
+        croot.Position,
+        croot.Archetype
+    );
 
-    /* 
-        <button
-            type="button"
-            className="btn btn-sm"
-            data-bs-toggle="modal"
-            data-bs-target={modalTarget}
-        >
-            <i className="bi bi-info-circle" />
-        </button>
-    */
+    const badFit = isBadFit(
+        teamProfile.OffensiveScheme,
+        teamProfile.DefensiveScheme,
+        croot.Position,
+        croot.Archetype
+    );
 
+    let customClass = 'card-title';
+    if (croot.IsCustomCroot) {
+        customClass += ' text-primary';
+    } else if (goodFit && !badFit) {
+        customClass += ' text-success';
+    } else if (!goodFit && badFit) {
+        customClass += ' text-danger';
+    }
     return (
         <>
             <div className={`${mobileCardClass} mb-2`}>
-                <div className="card-body">
-                    <h5 className={customClass}>{name}</h5>
-                    <h6 className="card-subtitle mb-2 text-muted">
-                        Rank: {rank}{' '}
-                    </h6>
-                    <p className="card-text">
-                        {croot.Stars} star {croot.Archetype} {croot.Position}{' '}
-                        from {croot.HighSchool} in {croot.City}, {croot.State}
-                    </p>
-                </div>
-                <ul className="list-group list-group-flush">
-                    <li className="list-group-item">
-                        Overall: {CrootOverall}, Potential:{' '}
-                        {croot.PotentialGrade}
-                    </li>
-                    <li className="list-group-item">
-                        <h6>{affinities}</h6>
-                    </li>
-                    <li className="list-group-item">
-                        {!croot.IsSigned ? (
-                            <>
-                                {leadingTeams} | {croot.RecruitingStatus}
-                            </>
-                        ) : (
-                            <img
-                                className="image-recruit-logo"
-                                src={logo}
-                                alt="WinningTeam"
+                <div className="card-body text-start">
+                    <div className="row mb-2">
+                        <div className="col-7">
+                            <h5 className={customClass}>{name}</h5>
+                            <h6 className="card-subtitle mb-2 text-muted">
+                                Rank: {rank}{' '}
+                            </h6>
+                            <p className="card-text">
+                                {croot.Stars} star {croot.Archetype}{' '}
+                                {croot.Position} from {croot.HighSchool} in{' '}
+                                {croot.City}, {croot.State}
+                            </p>
+                        </div>
+                        <div className="col-5">
+                            {croot.RecruitingStatus.length > 0 &&
+                                croot.RecruitingStatus !== 'Signed' && (
+                                    <p className="card-text text-muted">
+                                        Recruiting Status:{' '}
+                                        {croot.RecruitingStatus}
+                                    </p>
+                                )}
+                            {!croot.IsSigned ? (
+                                <>{leadingTeams}</>
+                            ) : (
+                                <>
+                                    <img
+                                        className="image-recruit-logo"
+                                        src={logo}
+                                        alt="WinningTeam"
+                                    />
+                                    <h6>{croot.College}</h6>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                    <div className="row d-flex mb-2 justify-content-evenly">
+                        <MobileAttribute label="Overall" value={CrootOverall} />
+                        <MobileAttribute
+                            label="Potential"
+                            value={croot.PotentialGrade}
+                        />
+                    </div>
+                    <div className="row d-flex mb-3 justify-content-evenly">
+                        {croot.AffinityOne.length > 0 && (
+                            <MobileAttribute
+                                label="Affinity One"
+                                value={croot.AffinityOne}
                             />
                         )}
-                    </li>
-                </ul>
-                <div className="card-body">
-                    {croot.IsSigned || timestamp.CollegeWeek === 21 ? (
-                        <h2>
-                            <i class="bi bi-file-lock-fill"></i>
-                        </h2>
-                    ) : flag ? (
-                        <h2>
-                            <i className="bi bi-check-circle-fill rounded-circle link-secondary"></i>
-                        </h2>
-                    ) : (
-                        <h2>
-                            <i
-                                className="bi bi-plus-circle-fill rounded-circle link-success"
-                                onClick={AddPlayerToBoard}
-                            ></i>
-                        </h2>
-                    )}
+                        {croot.AffinityTwo.length > 0 && (
+                            <MobileAttribute
+                                label="Affinity Two"
+                                value={croot.AffinityTwo}
+                            />
+                        )}
+                    </div>
+                    <div className="row justify-content-center">
+                        {croot.IsSigned || timestamp.CollegeWeek === 21 ? (
+                            <h2 className="mb-1 text-center">
+                                <i class="bi bi-file-lock-fill"></i>
+                            </h2>
+                        ) : flag ? (
+                            <>
+                                <h2 className="mb-1 text-center">
+                                    <i className="bi bi-check-circle-fill rounded-circle link-secondary"></i>
+                                </h2>
+                                <h6 className="text-center">On Board</h6>
+                            </>
+                        ) : (
+                            <>
+                                <h2 className="mb-1 text-center">
+                                    <i
+                                        className="bi bi-plus-circle-fill rounded-circle link-success"
+                                        onClick={AddPlayerToBoard}
+                                    ></i>
+                                </h2>
+                                <h6 className="text-center">Add to Board</h6>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
         </>

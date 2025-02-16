@@ -5,7 +5,7 @@ import { useMediaQuery } from 'react-responsive';
 import Select from 'react-select';
 import {
     LetterGradesList,
-    PositionList
+    BBPositionList
 } from '../../../../Constants/BBAConstants';
 import { NBAArchetypesList } from '../../../../Constants/CommonConstants';
 import { GetTableHoverClass } from '../../../../Constants/CSSClassHelper';
@@ -18,7 +18,7 @@ import { Spinner } from '../../../_Common/Spinner';
 
 const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     const _playerService = new BBAPlayerService();
-    const positions = MapObjOptions(PositionList);
+    const positions = MapObjOptions(BBPositionList);
     const letterGrades = MapOptions(LetterGradesList);
     const archetypes = MapObjOptions(NBAArchetypesList);
     const statusOptions = MapOptions(['Open', 'Negotiating']);
@@ -219,6 +219,7 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
         } else {
             res = await _playerService.CreateWaiverOffer(offer);
         }
+        const offerData = await res.json();
         let players = [];
         if (viewingFA) {
             players = [...allFreeAgents];
@@ -243,10 +244,10 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                 const existingOffersIdx = ExistingOffers.findIndex(
                     (x) => x.ID === offer.ID
                 );
-                ExistingOffers[existingOffersIdx] = offer;
-                players[playerIDX].Offers[offerIDX] = offer;
+                ExistingOffers[existingOffersIdx] = offerData;
+                players[playerIDX].Offers[offerIDX] = offerData;
             } else {
-                const offerObj = { ...offer, ID: res.ID };
+                const offerObj = { ...offerData };
                 if (viewingFA) {
                     const offers = players[playerIDX].Offers;
                     offers.push(offerObj);
@@ -279,7 +280,6 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     };
 
     const CancelOffer = async (player, offer) => {
-        console.log({ freeAgencyView });
         const viewingFA = freeAgencyView === 'FA';
         const viewingWW = freeAgencyView === 'WW';
         const viewingGL = freeAgencyView === 'GL';
@@ -473,6 +473,26 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                 </button>
                             </div>
                         )}
+
+                        {freeAgencyView !== 'INT' && (
+                            <div className="col-md-auto">
+                                <h5 className="text-start align-middle">
+                                    International
+                                </h5>
+                                <button
+                                    type="button"
+                                    className={`btn ${
+                                        freeAgencyView
+                                            ? 'btn-outline-info'
+                                            : 'btn-outline-success'
+                                    }`}
+                                    onClick={ToggleFreeAgencyView}
+                                    value="INT"
+                                >
+                                    View
+                                </button>
+                            </div>
+                        )}
                     </div>
                     <div className="row"></div>
                     {/* Modals Here */}
@@ -489,7 +509,9 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                     viewablePlayers.length <
                                         allFreeAgents.length ||
                                     viewablePlayers.length <
-                                        allWaivedPlayers.length
+                                        allWaivedPlayers.length ||
+                                    viewablePlayers.length <
+                                        allInternationalPlayers.length
                                 }
                                 height={570}
                                 scrollThreshold={0.8}
@@ -592,6 +614,9 @@ const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                                                             }
                                                             freeAgencyView={
                                                                 freeAgencyView
+                                                            }
+                                                            retro={
+                                                                currentUser.IsRetro
                                                             }
                                                         />
                                                     )

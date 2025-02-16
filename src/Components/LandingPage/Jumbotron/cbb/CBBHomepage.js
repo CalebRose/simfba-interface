@@ -12,6 +12,7 @@ import BBAMatchService from '../../../../_Services/simNBA/BBAMatchService';
 import { BBAMatchCard } from '../../../_Common/BBAMatchCard';
 import BBANewsService from '../../../../_Services/simNBA/BBANewsService';
 import { NewsLogSmall } from '../../../_Common/NewsLog';
+import { SimCBB } from '../../../../Constants/CommonConstants';
 
 const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     let _teamService = new BBATeamService();
@@ -37,7 +38,9 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     useEffect(() => {
         if (currentUser) {
             setTeamName(() => currentUser.cbb_team);
-            setLogo(() => getLogo(currentUser.cbb_abbr));
+            setLogo(() =>
+                getLogo(SimCBB, currentUser.cbb_id, currentUser.IsRetro)
+            );
         }
         if (!cbbTeam) {
             GetTeam();
@@ -60,42 +63,35 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
             matches &&
             matches.length > 0
         ) {
-            const currentWeek = cbb_Timestamp.CollegeWeek;
-            let latestMatch = '';
-            if (!cbb_Timestamp.GamesARan) {
-                latestMatch = 'A';
-            } else if (!cbb_Timestamp.GamesBRan) {
-                latestMatch = 'B';
+            let currentMatchIdx = -1;
+            for (let i = 0; i < matches.length; i++) {
+                const match = matches[i];
+                if (
+                    match.Week === cbb_Timestamp.CollegeWeek &&
+                    ((match.MatchOfWeek === 'A' && !cbb_Timestamp.GamesARan) ||
+                        match.MatchOfWeek === 'B' ||
+                        match.MatchOfWeek === 'C' ||
+                        match.MatchOfWeek === 'D')
+                ) {
+                    currentMatchIdx = i;
+                    break;
+                }
             }
-            let prevWeek = currentWeek - 1;
-            let nextWeek = currentWeek + 2;
-            let prevIdx = 0;
-            let nextIdx = 0;
-            if (prevWeek < 0) {
-                nextWeek = nextWeek - prevWeek;
-                prevWeek = 0;
+            let prevIdx = currentMatchIdx - 2;
+            let nextIdx = currentMatchIdx + 2;
+            if (prevIdx < 0) {
+                prevIdx = 0;
             }
-            prevIdx = matches.findIndex(
-                (x) => x.Week === prevWeek && x.MatchOfWeek === latestMatch
-            );
-            nextIdx = matches.findIndex(
-                (x) => x.Week === nextWeek && x.MatchOfWeek === latestMatch
-            );
-            while (prevIdx === -1) {
-                prevWeek += 1;
-                prevIdx = matches.findIndex(
-                    (x) => x.Week === prevWeek && x.MatchOfWeek === latestMatch
-                );
-            }
-            while (nextIdx === -1) {
-                nextWeek -= 1;
-                nextIdx = matches.findIndex(
-                    (x) => x.Week === nextWeek && x.MatchOfWeek === latestMatch
-                );
+            if (nextIdx >= matches.length) {
+                nextIdx = matches.length - 1;
             }
 
-            let gameRange = matches.slice(prevIdx, nextIdx + 1);
-            setViewableMatches(() => gameRange);
+            if (currentMatchIdx === -1) {
+                setViewableMatches(() => []);
+            } else {
+                let gameRange = matches.slice(prevIdx, nextIdx + 1);
+                setViewableMatches(() => gameRange.slice(0, 5));
+            }
         }
     }, [cbb_Timestamp, matches]);
 
@@ -173,13 +169,26 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                             >
                                 Gameplan
                             </Link>
-                            <Link
-                                to={routes.CBB_RECRUITING}
-                                role="button"
-                                className="btn btn-primary btn-md me-2 shadow"
-                            >
-                                Recruit
-                            </Link>
+                            {cbb_Timestamp &&
+                                !cbb_Timestamp.CollegeSeasonOver && (
+                                    <Link
+                                        to={routes.CBB_RECRUITING}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                    >
+                                        Recruit
+                                    </Link>
+                                )}
+                            {cbb_Timestamp &&
+                                cbb_Timestamp.CollegeSeasonOver && (
+                                    <Link
+                                        to={routes.CBB_TRANSFER}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                    >
+                                        Transfer Portal
+                                    </Link>
+                                )}
                             <Link
                                 to={routes.CBB_SCHEDULE}
                                 role="button"
@@ -203,7 +212,8 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                     <BBAMatchCard
                                         game={x}
                                         team={cbbTeam}
-                                        isNFL={false}
+                                        isNBA={false}
+                                        retro={currentUser.IsRetro}
                                         timestamp={cbb_Timestamp}
                                     />
                                 </div>
@@ -230,7 +240,11 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                             : 'desktop-display'
                                     }
                                 >
-                                    <StandingsCard standings={standings} />
+                                    <StandingsCard
+                                        standings={standings}
+                                        retro={currentUser.IsRetro}
+                                        league={SimCBB}
+                                    />
                                     <div className="cbb-news-feed">
                                         {newsFeed.length > 0 &&
                                             newsFeed.map((x) => (

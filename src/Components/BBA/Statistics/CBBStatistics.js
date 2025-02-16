@@ -23,6 +23,7 @@ import CBBPlayerStatRow from './CBBPlayerStatRow';
 import CBBTeamStatRow from './CBBTeamStatRow';
 import { StatsPageButton } from '../../_Common/Buttons';
 import { SeasonsList } from '../../../Constants/CommonConstants';
+import { Spinner } from '../../_Common/Spinner';
 
 const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
     // Services
@@ -47,7 +48,9 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
     const [selectedWeek, setSelectedWeek] = useState(null);
     const [selectedConferences, setSelectedConferences] = useState('');
     const [selectedDivisions, setSelectedDivisions] = useState('');
-    const [selectedLeague, setSelectedLeague] = useState('');
+    const [selectedLeague, setSelectedLeague] = useState(null);
+    const [selectedMatchType, setSelectedMatchType] = useState('A');
+    const [isLoading, setIsLoading] = useState(false);
     const [selectedTeams, setSelectedTeams] = useState('');
     const [statType, setStatType] = useState('PerGame'); // Offense, Defense, Differential
     const [teamOptions, setTeamOptions] = useState([]);
@@ -79,11 +82,10 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
     }, [currentUser]);
 
     useEffect(() => {
-        console.log({ teams });
         if (players.length > 0 || teams.length > 0) {
             const dataSet =
                 currentView === 'PLAYER' ? [...players] : [...teams];
-            const fc = FilterStatsData(dataSet);
+            const fc = FilterStatsData(dataSet, viewType);
             if (fc.length > 0) {
                 const filteredDataSort = ConductSort(
                     [...fc],
@@ -91,7 +93,7 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                     isAsc,
                     viewType
                 );
-                console.log({ fc, filteredDataSort, viewType });
+
                 setFilteredView(() => [...filteredDataSort]);
                 if (currentView === 'PLAYER') {
                     setViewableStats(() => [
@@ -101,6 +103,7 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                     setViewableStats(() => [...filteredDataSort]);
                 }
             }
+            setIsLoading(() => false);
         }
     }, [
         players,
@@ -108,6 +111,7 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
         currentView,
         selectedConferences,
         selectedTeams,
+        selectedLeague,
         sort,
         isAsc
     ]);
@@ -120,6 +124,17 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                 if (selectedConferences.length > 0) {
                     dataSet = dataSet.filter((x) =>
                         selectedConferences.includes(x.ConferenceID)
+                    );
+                }
+                if (
+                    selectedLeague &&
+                    leagueView === 'nba' &&
+                    selectedLeague.label.length > 0
+                ) {
+                    dataSet = dataSet.filter((x) =>
+                        leagueView === 'nba'
+                            ? !x.IsInternational
+                            : x.IsInternational
                     );
                 }
             }
@@ -139,22 +154,33 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                     teamList = teamList.concat([...selectedTeams]);
                     teamList = uniq_fast(teamList);
                 }
+
                 // filter out duplicates
                 if (teamList.length > 0) {
                     dataSet = dataSet.filter((x) =>
                         teamList.includes(x.TeamID)
                     );
                 }
+                if (selectedLeague && leagueView === 'nba') {
+                    if (selectedLeague.value === 1) {
+                        dataSet = dataSet.filter((x) => x.TeamID < 33);
+                    } else {
+                        dataSet = dataSet.filter((x) => x.TeamID > 32);
+                    }
+                }
 
                 switch (statType) {
                     case 'Overall':
                     case 'PerGame':
-                        dataSet =
-                            viewType === 'SEASON'
-                                ? dataSet.filter(
-                                      (x) => x.SeasonStats.Minutes > 0
-                                  )
-                                : dataSet.filter((x) => x.Stats.Minutes > 0);
+                        if (viewType === 'SEASON') {
+                            dataSet = dataSet.filter(
+                                (x) => x.SeasonStats.Minutes > 0
+                            );
+                        } else {
+                            dataSet = dataSet.filter(
+                                (x) => x.Stats.Minutes > 0
+                            );
+                        }
                         break;
 
                     default:
@@ -167,6 +193,7 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
     };
 
     const GetStatsPageInfo = async () => {
+        setIsLoading(() => true);
         const seasonID = Number(selectedSeason.value);
         let week = selectedWeek ? Number(selectedWeek.value) : 1;
         if (viewType === 'WEEK') {
@@ -175,8 +202,15 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                 // Nothing
             } else if (seasonID === 3) {
                 startingWeekID = 20;
-            } else {
+                if (leagueView !== 'cbb') {
+                    startingWeekID = 0;
+                }
+            } else if (seasonID === 4) {
+                startingWeekID = 62;
                 // startingWeekID = 40;
+                if (leagueView !== 'cbb') {
+                    startingWeekID = 30;
+                }
             }
             week += startingWeekID;
         }
@@ -184,6 +218,7 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
             leagueView,
             seasonID,
             week,
+            selectedMatchType,
             viewType
         );
         const isCBB = leagueView === 'cbb';
@@ -223,6 +258,40 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
         setDivisionOptions(() => divisionOptions);
         setPlayers(() => plList);
         setTeams(() => tList);
+    };
+
+    const ExportStats = async () => {
+        const seasonID = Number(selectedSeason.value);
+        let week = selectedWeek ? Number(selectedWeek.value) : 1;
+        if (viewType === 'WEEK') {
+            let startingWeekID = 0;
+            if (seasonID === 1 || seasonID === 2) {
+                // Nothing
+            } else if (seasonID === 3) {
+                startingWeekID = 20;
+                if (leagueView !== 'cbb') {
+                    startingWeekID = 0;
+                }
+            } else if (seasonID === 4) {
+                startingWeekID = 62;
+                // startingWeekID = 40;
+                if (leagueView !== 'cbb') {
+                    startingWeekID = 30;
+                }
+            } else {
+                // startingWeekID = 40;
+            }
+            week += startingWeekID;
+        }
+        // League, Season, Week, Match (A,B,C,D), View Type (SEASON, WEEK), currentView (PLAYER, TEAM)
+        await _statsService.ExportStats(
+            leagueView,
+            seasonID,
+            week,
+            selectedMatchType,
+            viewType,
+            currentView
+        );
     };
 
     const SelectLeagueType = (event) => {
@@ -326,6 +395,7 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
     };
 
     const ResetPlayerViewOptions = () => {
+        setIsLoading(() => true);
         setStatType(() => 'PerGame');
         setSelectedConferences(() => '');
         setSelectedTeams(() => '');
@@ -333,6 +403,7 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
     };
 
     const ResetTeamViewOptions = () => {
+        setIsLoading(() => true);
         setStatType(() => 'Offense');
         setSelectedTeams(() => '');
         setSelectedConferences(() => '');
@@ -417,7 +488,7 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
             <div className="row">
                 <div className="col-2">
                     <div className="row">
-                        <h3>League Options</h3>
+                        <h5>League Options</h5>
                     </div>
                     <div className="row mt-2 justify-content-center">
                         <div className="col-auto">
@@ -441,10 +512,10 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="row">
-                        <h3>Search Options</h3>
+                    <div className="row mt-2">
+                        <h5>Search Options</h5>
                     </div>
-                    <div className="row mt-2 justify-content-center">
+                    <div className="row mt-1 justify-content-center mb-1">
                         <div className="col-auto">
                             <div
                                 className="btn-group btn-group-lg"
@@ -466,43 +537,103 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="row">
-                        <h3>View Options</h3>
+                    {viewType === 'WEEK' && (
+                        <>
+                            <div className="row mt-2">
+                                <h5>Match Type (A,B,C,D)</h5>
+                            </div>
+                            <div className="row mt-1 justify-content-center mb-1">
+                                <div className="col-auto">
+                                    <div
+                                        className="btn-group btn-group-lg"
+                                        role="group"
+                                        aria-label="ViewOptions"
+                                    >
+                                        <button
+                                            type="button"
+                                            className={`btn btn-sm ${
+                                                selectedMatchType === 'A'
+                                                    ? 'btn-primary'
+                                                    : 'btn-danger'
+                                            }`}
+                                            onClick={() =>
+                                                setSelectedMatchType(() => 'A')
+                                            }
+                                        >
+                                            A
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={`btn btn-sm ${
+                                                selectedMatchType === 'B'
+                                                    ? 'btn-primary'
+                                                    : 'btn-danger'
+                                            }`}
+                                            onClick={() =>
+                                                setSelectedMatchType(() => 'B')
+                                            }
+                                        >
+                                            B
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={`btn btn-sm ${
+                                                selectedMatchType === 'C'
+                                                    ? 'btn-primary'
+                                                    : 'btn-danger'
+                                            }`}
+                                            onClick={() =>
+                                                setSelectedMatchType(() => 'C')
+                                            }
+                                        >
+                                            C
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={`btn btn-sm ${
+                                                selectedMatchType === 'D'
+                                                    ? 'btn-primary'
+                                                    : 'btn-danger'
+                                            }`}
+                                            onClick={() =>
+                                                setSelectedMatchType(() => 'D')
+                                            }
+                                        >
+                                            D
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )}
+
+                    <div className="row mt-2">
+                        <h5>View Options</h5>
                     </div>
-                    <div className="row mt-2 justify-content-center">
+                    <div className="row mt-1 justify-content-center">
                         <div className="col-md-auto">
                             <div
                                 className="btn-group btn-group-lg"
                                 role="group"
                                 aria-label="ViewOptions"
                             >
-                                <button
-                                    type="button"
-                                    className={
-                                        currentView === 'PLAYER'
-                                            ? 'btn btn-primary'
-                                            : 'btn btn-secondary'
-                                    }
-                                    onClick={SelectPlayerView}
-                                >
-                                    Player
-                                </button>
-                                <button
-                                    type="button"
-                                    className={
-                                        currentView === 'TEAM'
-                                            ? 'btn btn-primary'
-                                            : 'btn btn-secondary'
-                                    }
-                                    onClick={SelectTeamView}
-                                >
-                                    Team
-                                </button>
+                                <StatsPageButton
+                                    statType={currentView}
+                                    action={SelectPlayerView}
+                                    value="PLAYER"
+                                    label="Player"
+                                />
+                                <StatsPageButton
+                                    statType={currentView}
+                                    action={SelectTeamView}
+                                    value="TEAM"
+                                    label="Team"
+                                />
                             </div>
                         </div>
                     </div>
                     <div className="row mt-2">
-                        <h3>Categories</h3>
+                        <h5>Categories</h5>
                     </div>
                     <div className="row mt-1 justify-content-center">
                         <div className="col-md-auto">
@@ -513,70 +644,42 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                             >
                                 {currentView === 'PLAYER' ? (
                                     <>
-                                        <button
-                                            type="button"
-                                            className={
-                                                statType === 'Overall'
-                                                    ? 'btn btn-primary'
-                                                    : 'btn btn-secondary'
-                                            }
-                                            onClick={SelectStatType}
+                                        <StatsPageButton
+                                            statType={statType}
+                                            action={SelectStatType}
                                             value="Overall"
-                                        >
-                                            Overall
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={
-                                                statType === 'PerGame'
-                                                    ? 'btn btn-primary'
-                                                    : 'btn btn-secondary'
-                                            }
-                                            onClick={SelectStatType}
-                                            value="PerGame"
+                                            label="Overall"
                                             disabled={viewType === 'WEEK'}
-                                        >
-                                            Per Game
-                                        </button>
+                                        />
+                                        <StatsPageButton
+                                            statType={statType}
+                                            action={SelectStatType}
+                                            value="PerGame"
+                                            label="Per Game"
+                                            disabled={viewType === 'WEEK'}
+                                        />
                                     </>
                                 ) : (
                                     <>
-                                        <button
-                                            type="button"
-                                            className={
-                                                statType === 'Offense'
-                                                    ? 'btn btn-primary'
-                                                    : 'btn btn-secondary'
-                                            }
-                                            onClick={SelectStatType}
+                                        <StatsPageButton
+                                            statType={statType}
+                                            action={SelectStatType}
                                             value="Offense"
-                                        >
-                                            Offense
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={
-                                                statType === 'Defense'
-                                                    ? 'btn btn-primary'
-                                                    : 'btn btn-secondary'
-                                            }
-                                            onClick={SelectStatType}
+                                            label="Offense"
+                                        />
+                                        <StatsPageButton
+                                            statType={statType}
+                                            action={SelectStatType}
                                             value="Defense"
-                                        >
-                                            Defense
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={
-                                                statType === 'Differential'
-                                                    ? 'btn btn-primary'
-                                                    : 'btn btn-secondary'
-                                            }
-                                            onClick={SelectStatType}
+                                            label="Defense"
+                                        />
+                                        <StatsPageButton
+                                            statType={statType}
+                                            action={SelectStatType}
                                             value="Differential"
-                                        >
-                                            Differential
-                                        </button>
+                                            label="Differential"
+                                            disabled={viewType === 'WEEK'}
+                                        />
                                     </>
                                 )}
                             </div>
@@ -607,18 +710,20 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                             />
                         </div>
                         {viewType === 'WEEK' && (
-                            <div className="col-auto">
-                                <h5 className="text-start align-middle">
-                                    Week
-                                </h5>
-                                <Select
-                                    options={weekOptions}
-                                    isMulti={false}
-                                    className="basic-multi-select btn-dropdown-width-team z-index-6"
-                                    classNamePrefix="select"
-                                    onChange={ChangeWeek}
-                                />
-                            </div>
+                            <>
+                                <div className="col-auto">
+                                    <h5 className="text-start align-middle">
+                                        Week
+                                    </h5>
+                                    <Select
+                                        options={weekOptions}
+                                        isMulti={false}
+                                        className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                        classNamePrefix="select"
+                                        onChange={ChangeWeek}
+                                    />
+                                </div>
+                            </>
                         )}
                         {currentView === 'PLAYER' && (
                             <div className="col-md-auto">
@@ -687,6 +792,15 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                                 action={GetStatsPageInfo}
                             />
                         </div>
+                        <div className="col-auto">
+                            <h5 className="text-start align-middle">Export</h5>
+                            <StatsPageButton
+                                statType="export"
+                                value="export"
+                                label="Export Stats"
+                                action={ExportStats}
+                            />
+                        </div>
                     </div>
                     <div className="row mt-2">
                         <div className="col-md-auto"></div>
@@ -698,16 +812,6 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                             hasMore={true}
                             height={570}
                             scrollThreshold={0.8}
-                            loader={
-                                <div className="row justify-content-center">
-                                    Loading More Stats...
-                                </div>
-                            }
-                            endMessage={
-                                <div className="row justify-content-center">
-                                    <h4>...that's all the stats we have.</h4>
-                                </div>
-                            }
                         >
                             {isMobile ? (
                                 <>
@@ -729,38 +833,46 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                                     >
                                         <CurrentHeader />
                                     </thead>
-                                    <tbody className="overflow-auto">
-                                        {viewableStats.length > 0
-                                            ? viewableStats.map((x, idx) => {
-                                                  {
-                                                      return currentView ===
-                                                          'PLAYER' ? (
-                                                          <CBBPlayerStatRow
-                                                              statType={
-                                                                  statType
-                                                              }
-                                                              idx={idx}
-                                                              player={x}
-                                                              viewType={
-                                                                  viewType
-                                                              }
-                                                          />
-                                                      ) : (
-                                                          <CBBTeamStatRow
-                                                              statType={
-                                                                  statType
-                                                              }
-                                                              idx={idx}
-                                                              team={x}
-                                                              viewType={
-                                                                  viewType
-                                                              }
-                                                          />
-                                                      );
-                                                  }
-                                              })
-                                            : ''}
-                                    </tbody>
+                                    {isLoading ? (
+                                        <div className="justify-content-center mt-2">
+                                            <Spinner />
+                                        </div>
+                                    ) : (
+                                        <tbody className="overflow-auto">
+                                            {viewableStats.length > 0
+                                                ? viewableStats.map(
+                                                      (x, idx) => {
+                                                          {
+                                                              return currentView ===
+                                                                  'PLAYER' ? (
+                                                                  <CBBPlayerStatRow
+                                                                      statType={
+                                                                          statType
+                                                                      }
+                                                                      idx={idx}
+                                                                      player={x}
+                                                                      viewType={
+                                                                          viewType
+                                                                      }
+                                                                  />
+                                                              ) : (
+                                                                  <CBBTeamStatRow
+                                                                      statType={
+                                                                          statType
+                                                                      }
+                                                                      idx={idx}
+                                                                      team={x}
+                                                                      viewType={
+                                                                          viewType
+                                                                      }
+                                                                  />
+                                                              );
+                                                          }
+                                                      }
+                                                  )
+                                                : ''}
+                                        </tbody>
+                                    )}
                                 </table>
                             )}
                         </InfiniteScroll>

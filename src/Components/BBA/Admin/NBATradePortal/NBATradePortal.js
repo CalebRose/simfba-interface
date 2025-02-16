@@ -87,22 +87,22 @@ const AdminNBATradePortal = ({ currentUser }) => {
                 </div>
             </div>
             <div className="row mt-3">
-                <div className="col">
+                <div className="col col-sm-1">
                     <h3 className="align-middle">Proposing Team</h3>
                 </div>
-                <div className="col">
+                <div className="col col-sm-4">
                     <h3 className="align-middle">Proposing Team Options</h3>
                 </div>
-                <div className="col">
+                <div className="col col-sm-4">
                     <h3 className="align-middle">Receiving Team Options</h3>
                 </div>
-                <div className="col">
+                <div className="col col-sm-1">
                     <h3 className="align-middle">Receiving Team</h3>
                 </div>
-                <div className="col">
+                <div className="col-1">
                     <h3 className="align-middle">Accept</h3>
                 </div>
-                <div className="col">
+                <div className="col-1">
                     <h3 className="align-middle">Veto</h3>
                 </div>
             </div>

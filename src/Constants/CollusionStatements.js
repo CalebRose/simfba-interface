@@ -8,25 +8,35 @@ export const GetCollusionStatements = (user, team, recruit) => {
         `Coach ${user.username} reportedly asked a booster to orchestrate a business venture to give new recruits customized Ford F-150s!`,
         `Coach ${user.username} reportedly asked a booster to orchestrate a business venture to give new recruits customized Rolls-Royces!`,
         `A high school recruit after a recruiting visit to ${team.TeamName} was reportedly seen leaving campus in a brand new Bentley.`,
+        `A high school recruit removed ${team.TeamName} from his list of schools he considered after a poorly-made AI image of them wearing the school's uniform circulated on social media.`,
         `A high school recruit was reportedly offered crab legs for life from a local grocery store in ${team.City}, should they decide to commit to ${team.TeamName}`,
         `Local police in ${team.City} recently cleared out a back room where big money donors from ${team.TeamName} were conspiring on how much money they were to donate to a five star recruit.`,
+        `Local police in ${team.City} recently cracked down on a fake NIL initiative that was scamming high school recruits to attend a fake university.`,
+        `Authorities in ${team.City} reportedly cracked down on a suspicious recruiting event that took place in an old warehouse with a high school coach that supposed lived in the walls.`,
+        `Authorities in ${team.City} discovered a mass amount of mis-information circulating social media on how ${team.TeamName} athletics skimps out on offering scholarships.`,
         `A nationally ranked recruit has now added ${team.TeamName} to their top list of teams after a brief phone call with a well-renowned booster.`,
         `One of the top quarterbacks from ${team.State} was offered free buffalo wings for life to play for the ${team.TeamName} ${team.Mascot}`,
         `Breaking news! Coach ${user.username} reportedly attempted to DDOS the server as a means of preventing others from recruiting! Jokes on them, we're fool-proof.`,
         `Breaking news! Coach ${user.username} was seen using loaded dice as a means of improving their odds in the Recruit Sync.`,
-        `After a recent breakthrough case involving ${team.TeamName} donors, the SimFBA have decided to investigate and penalize the University of Missouri's athletic program of twenty scholarships.`,
+        `After a recent breakthrough case involving ${team.TeamName} donors, the SimSN have decided to investigate and penalize the University of Missouri's athletic program of twenty scholarships.`,
         `A local tip from an avid college football fan claims that ${team.TeamName} donors were conspiring to use DogeCoin to pay for recruits.`,
         `A local tip from an avid college football fan claims that the ${team.TeamName} Athletic Department is hiring software engineers to hack into the AI and convince AI teams to look elsewhere.`,
         `A leak from a source recently let go from ${team.TeamName} states that coach ${user.username} was attempting to convince David Ross into transferring to the university.`,
         `A nationally ranked recruit claims that the ${team.TeamName} football program was hosting an illegal practice consisting of recruits and current players.`,
         `Coach ${user.username} has claimed on national television that competing programs in their conference were using NIL illegally and against the benefit of student athletes.`,
         `A booster from ${team.TeamName} has sent us a bag of money asking us not to share that-- oh... oops. Sorry, I mean, that everything is fine!`,
+        `Fans have reported suspicious venmo transactions from an athletic staff member in ${team.TeamName}'s football program related to a match between two other conference opponents on their schedule.`,
         `The University of Missouri has agreed to take the fall for Coach ${user.username} of ${team.TeamName} after it was discovered that the ${team.Mascot} bought Chipotle for a visiting recruit.`,
         `An Olive Garden in ${team.City} is under investigation after reported offering free garlic bread after a high school recruit's visit ended.`,
+        `A booster from ${team.City}, ${team.State} was allegedly using AI as a means of providing false information on why a recruit should attend his alma-mater.`,
         `A booster from ${team.City}, ${team.State} was seen placing bags of money in the back of their car after it was announced a five star recruit was visiting a local university.`,
         `A university in ${team.State} is now under investigation for sending illegal NIL deals to recruits by means of carrier pigeons.`,
         `A university in ${team.State} is now under investigation for sending illegal NIL deals to recruits by means of an army of trash pandas under the university president's porch.`,
-        `We've received an anonymous tip that a boosters associated with the ${team.TeamName} ${team.Mascot} were threatening coaches from putting points on a certain recruit.`,
+        `We've received an anonymous tip that rogue boosters associated with ${team.TeamName} are self-sabotaging their program because they didn't like the coach.`,
+        `We've received an anonymous tip that boosters associated with ${team.TeamName} are starting an NIL initiative despite the fact this is all a simulation.`,
+        `We've received an anonymous tip from someone who heard from their brother, who heard from their cousin, who heard from their step-cousin, who heard from their roomate that-`,
+        `We've received an anonymous tip from someone who heard from their brother, who heard from their roomate that ${team.TeamName} miss-spent their croot points on a chicken.`,
+        `We've received an anonymous tip from someone who heard from their brother, who heard from their roomate that ${team.TeamName} miss-spent their croot points on a fake NIL Initiative.`,
         `Fans of the ${team.TeamName} ${team.Mascot} were reportedly pooling together money for a "Feed Developer" button as a means of improving their schools chances in the recruit sync. (It may work.)`,
         `A recent anonymous tip suggests that high school recruits were offered emotional-support monkeys if they were to verbally commit to ${team.TeamName}.`,
         `A ${team.TeamName} booster has verbally denounced conference opponents claiming they were offering recruits more money than what they had on hand.`,
@@ -48,6 +58,14 @@ export const GetCollusionStatements = (user, team, recruit) => {
                 `${recruit.College} signee ${recruit.FirstName} ${recruit.LastName} was reportedly found on an off-campus party after a recruiting visit this past weekend.`,
                 `A rumor has floated on social media alleging that ${recruit.College} ${recruit.Stars} signee ${recruit.FirstName} ${recruit.LastName} only committed for the NIL money.`,
                 `${recruit.College} ${recruit.Stars} signee ${recruit.FirstName} ${recruit.LastName} was reportedly seen volunteering at a homeless shelter near campus and helping the community. <3`,
+                `${recruit.College} ${recruit.Stars} star ${recruit.Position} signee ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard is a discount penny-pincher quarterback.`,
+                `${recruit.College} ${recruit.Stars} star ${recruit.Position} signee ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard passes the bill to his teammates when they go out partying.`,
+                `${recruit.College} ${recruit.Stars} star ${recruit.Position} signee ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard couldn't throw a football over a barn.`,
+                `${recruit.College} ${recruit.Stars} star ${recruit.Position} signee ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard couldn't dodge a linebacker like he dodges paying taxes.`,
+                `${recruit.College} ${recruit.Stars} star ${recruit.Position} signee ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard couldn't read a defense even if it was a picture book.`,
+                `${recruit.College} ${recruit.Stars} star ${recruit.Position} signee ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard focuses more on his social media antics than he does on the field.`,
+                `${recruit.College} ${recruit.Stars} star ${recruit.Position} signee ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard couldn't juke a linebacker like he does on the dance floor.`,
+                `${recruit.College} ${recruit.Stars} star ${recruit.Position} signee ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard passes a ball like he passed his classes. (Did he though?)`,
                 `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has promised ${recruit.College} fans that they will be winning a conference championship during his tenure.`,
                 `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has promised ${recruit.College} fans that they will be making the playoffs during his tenure.`,
                 `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has announced that they do not think Detroit is a real city.`,
@@ -68,10 +86,10 @@ export const GetCollusionStatements = (user, team, recruit) => {
                 `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he believes Burger King doesn't serve real burgers.`,
                 `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} is rumored to be working on an NIL shoe deal with Big Baller Brand.`,
                 `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName}'s dad announced that he's proud of his son's commitment and that he wants to be involved in his son's collegiate development during his tenure.`,
-                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} rethreaded a viral fan request that SimFBA needs a college hockey sim.`,
-                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} rethreaded a viral fan request that SimFBA needs an Aussie Football sim.`,
-                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} rethreaded a viral fan request that SimFBA needs an pickleball sim.`,
-                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} rethreaded a viral fan request that SimFBA needs a Bison sim.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} reposted a viral fan request that SimSN needs a college hockey sim.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} reposted a viral fan request that SimSN needs an Aussie Football sim.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} reposted a viral fan request that SimSN needs an pickleball sim.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} reposted a viral fan request that SimSN needs a Bison sim.`,
                 `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} told news outlets last night that rival insitutions were attempting to sway him away from his commitment.`,
                 `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has promised ${recruit.College} fans that they will never lose a game while he plays at ${recruit.College}.`
             ];
@@ -254,17 +272,33 @@ export const GetCollusionStatements = (user, team, recruit) => {
             recruitArr = [
                 `Breaking news! Coach ${user.username} reportedly attempted to DDOS the server as a means of preventing others from recruiting ${recruit.Stars} star ${recruit.Position} ${recruit.FirstName} ${recruit.LastName}!.`,
                 `A recruiting watch dog warns against recruiting ${recruit.FirstName} ${recruit.LastName} after it was discovered he de-committed after receiving NIL money from the same institution and has re-opened his recruiting.`,
-                `${recruit.FirstName} ${recruit.LastName} reported had a scholarship revoked from them due to their level of activity while playing Call of Duty.`,
-                `${recruit.FirstName} ${recruit.LastName} reported had a scholarship revoked from them due to their level of activity while playing Madden 24.`,
-                `${recruit.FirstName} ${recruit.LastName} reported had a scholarship revoked from them due to their level of activity while playing Fortnite.`,
-                `${recruit.FirstName} ${recruit.LastName} reported had a scholarship offered to them due to their level of activity while playing Backyard Football (tm).`,
-                `${recruit.FirstName} ${recruit.LastName} reported had a scholarship offered to them due to their level of activity while playing a DnD football variant called Locker Rooms and Quarterbacks.`,
-                `${recruit.FirstName} ${recruit.LastName} reported had a scholarship offered to them due to their level of activity while playing NCAA 14.`,
+                `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard is a discount penny-pincher quarterback.`,
+                `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard passes the bill to his teammates when they go out partying.`,
+                `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard couldn't throw a football over a barn.`,
+                `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard couldn't dodge a linebacker like he dodges paying taxes.`,
+                `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard couldn't read a defense even if it was a picture book.`,
+                `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard focuses more on his social media antics than he does on the field.`,
+                `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard couldn't juke a linebacker like he does on the dance floor.`,
+                `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} posted on Threads that Matt Howard passes a ball like he passed his classes. (Did he though?)`,
+                `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} posted on Threads that David Ross has better passing capabilities than Matt Howard.`,
+                `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} posted on Threads that he thinks he can out-throw Matt Howard.`,
+                `${recruit.FirstName} ${recruit.LastName} reported they had a scholarship revoked from them due to their level of activity while playing Call of Duty.`,
+                `${recruit.FirstName} ${recruit.LastName} reported they had a scholarship revoked from them due to their level of activity while playing Madden 24.`,
+                `${recruit.FirstName} ${recruit.LastName} reported they had a scholarship revoked from them due to their level of activity while playing Fortnite.`,
+                `${recruit.FirstName} ${recruit.LastName} reported they had a scholarship revoked from them due to their level of activity while playing Helldivers 2.`,
+                `${recruit.FirstName} ${recruit.LastName} reported they had a scholarship offered to them due to their level of activity while playing Backyard Football (tm).`,
+                `${recruit.FirstName} ${recruit.LastName} reported they had a scholarship offered to them due to their level of activity while playing a DnD football variant called Locker Rooms and Quarterbacks.`,
+                `${recruit.FirstName} ${recruit.LastName} reported they had a scholarship offered to them due to their level of activity while playing NCAA 14.`,
+                `${recruit.FirstName} ${recruit.LastName} reported they had a scholarship offered to them due to their level of activity while playing College Football 25.`,
                 `A reporter from ${recruit.State} reported that ${recruit.Stars} star ${recruit.Position} ${recruit.FirstName} ${recruit.LastName} was illegally betting on hedgehog races. Their biggest bet did not win the race.`,
                 `A reporter from ${recruit.State} reported that ${recruit.Stars} star ${recruit.Position} ${recruit.FirstName} ${recruit.LastName} was illegally betting on turtle races. Their biggest bet did not win the race.`,
-                `A reporter from ${recruit.State} reported that ${recruit.Stars} star ${recruit.Position} ${recruit.FirstName} ${recruit.LastName} was illegal betting on squirrel obstacle courses. Their biggest bet did not win the race.`,
+                `A reporter from ${recruit.State} reported that ${recruit.Stars} star ${recruit.Position} ${recruit.FirstName} ${recruit.LastName} was illegally betting on squirrel obstacle courses. Their biggest bet did not win the race.`,
+                `A reporter from ${recruit.State} reported that ${recruit.Stars} star ${recruit.Position} ${recruit.FirstName} ${recruit.LastName} was illegally injecting AI collusion statements into the interface.`,
                 `A reporter from ${recruit.State} reported that ${recruit.Stars} star ${recruit.Position} ${recruit.FirstName} ${recruit.LastName} was illegally betting on simulated sports matches. They reportedly did not get any money back.`,
+                `A reporter from ${recruit.State} reported that ${recruit.Stars} star ${recruit.Position} ${recruit.FirstName} ${recruit.LastName} was illegally teaching cats how to belly dance. Don't ask why it's illegal.`,
                 `${recruit.FirstName} ${recruit.LastName} alleges that a university in ${team.State} rescinded a scholarship after a false rumor went viral on Social Media.`,
+                `${recruit.FirstName} ${recruit.LastName} alleges that a university in ${team.State} rescinded a scholarship after an AI image of them committing to the team's rival went viral on Social Media.`,
+                `${recruit.FirstName} ${recruit.LastName} alleges that a university in ${team.State} rescinded a scholarship after an AI image of them wearing their rival's uniform went viral on Social Media.`,
                 `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} has allegedly stated he plans on shopping around NIL deals before he makes a commitment.`,
                 `A university in ${team.State} has reportedly rescinded a scholarship offer for ${recruit.FirstName} ${recruit.LastName} after it was discovered the recruit accepted an NIL deal from a rival institution.`,
                 `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} has recently threaded that he is interested in playing for ${team.TeamName}.`,
@@ -278,6 +312,7 @@ export const GetCollusionStatements = (user, team, recruit) => {
             if (recruit.Position == 'QB') {
                 positionArr = [
                     `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he is better than Matt Howard at throwing the ball.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he is better than Hiram Maronde at throwing the ball.`,
                     `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} threaded that his favorite QB in the NFL is Matt Howard.`,
                     `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} threaded that his favorite QB in the NFL is Dean Hammonds.`,
                     `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} threaded that his favorite QB in the NFL is Steven Connolly.`,
@@ -286,8 +321,10 @@ export const GetCollusionStatements = (user, team, recruit) => {
                     `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} threaded that his favorite QB in the NFL is Patrick Johnson.`,
                     `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} threaded that his favorite QB in the NFL is Jose Padilla.`,
                     `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} threaded that his favorite QB in the NFL is Jessie Noel.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} threaded that his favorite QB in the NFL is Kemoko Allard.`,
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} threaded that his favorite QB in the NFL is Gary Frietag.`,
                     `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} threaded that he does not like ${team.TeamName}'s QB depth and how they develop their QBs.`,
-                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} threaded that he sees opportunity for him to play at ${team.TeamName}.`
+                    `${recruit.Stars} star ${recruit.Position} recruit ${recruit.FirstName} ${recruit.LastName} threaded that he sees an opportunity for him to play at ${team.TeamName}.`
                 ];
             } else if (recruit.Position == 'RB') {
                 positionArr = [
@@ -449,7 +486,13 @@ export const GetBBallCollusionStatements = (user, team, recruit) => {
         `An athlete on the ${team.Team}'s basketball roster reported that an assistant from a team they played earlier in the season reached out for a potential transfer interest.`,
         `${user.username} would like everyone to know that they listen to Nickelback while they croot.`,
         `${user.username} was seen last week attempting to recruit a TE from the ${team.Team} football team to play basketball.`,
-        `A recruit has announced they are no longer considering ${team.Team} after allegedly not receiving a Rice Krispies Treat that he was promised during a visit on campus.`
+        `A recruit has announced they are no longer considering ${team.Team} after allegedly not receiving a Rice Krispies Treat that he was promised during a visit on campus.`,
+        `Fans of ${team.Team} are advocating for Guam to enter the sim as an independent for next season.`,
+        `Presidents within the ${team.Conference} conference are reportedly considering adding Guam as a conference member next season.`,
+        `Presidents within the ${team.Conference} conference are reportedly against Guam moving into D-1 on the basis that they don't want to travel and lose to Guam.`,
+        `Presidents within the ${team.Conference} conference are reportedly considering adding Guam as a basketball-only member.`,
+        `An undercover reporter has uncovered a plot by ${team.Team}'s president to prevent Guam from being added to SimBBA.`,
+        `The ${team.Team} has asked ${user.username} to consider adding Guam to their OOC schedule next season, and certainly not on the basis for a beach vacation.`
     ];
     let recruitArr = [];
     if (recruit !== undefined && recruit.College.length > 0) {
@@ -476,14 +519,15 @@ export const GetBBallCollusionStatements = (user, team, recruit) => {
             `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he can beat SimNBA All Star Jamel Bacon in a One-on-One matchup.`,
             `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} threaded his excitement over a potential relocation of the Vancouver Sea Lions to Las Vegas.`,
             `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} threaded that he'd rather see Vancouver not move their franchise to Las Vegas.`,
-            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he could be SimNFL QB Matt Howard in a 1x1 match up.`,
-            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he could be SimNBA PG Jesus Lloyd in a 1x1 match up.`,
-            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he could be SimNBA PG Larry Jenkins in a 1x1 match up.`,
-            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he could be SimNBA SG Saul Hunter in a 1x1 match up.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he could beat SimNFL QB Matt Howard in a 1x1 match up.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he could beat SimNBA PG Jesus Lloyd in a 1x1 match up.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he could beat SimNBA PG Larry Jenkins in a 1x1 match up.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he could beat SimNBA SG Saul Hunter in a 1x1 match up.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he could beat SimNBA SG Moises in a 1x1 match up.`,
             `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} is rumored to be working on an NIL shoe deal with Big Baller Brand.`,
             `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName}'s dad announced that he's proud of his son's commitment and that he wants to be involved in his son's collegiate development during his tenure.`,
-            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} rethreaded a viral fan request that SimFBA needs a college hockey sim.`,
-            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} rethreaded a viral fan request that SimFBA needs an Aussie Football sim.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} rethreaded a viral fan request that SimSN needs a college hockey sim.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} rethreaded a viral fan request that SimSN needs an Aussie Football sim.`,
             `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} told news outlets last night that rival insitutions were attempting to sway him away from his commitment.`,
             `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has promised ${recruit.College} fans that they will never lose a game while he plays at ${recruit.College}.`
         ];
@@ -504,6 +548,13 @@ export const GetBBallCollusionStatements = (user, team, recruit) => {
             `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} has recently threaded that he is interested in playing for ${team.Team}.`,
             `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} has threaded that he wants ${team.Team} to stop sliding into their DMs and to look elsewhere.`,
             `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} announced that he is not considering ${team.Team} after a rival institution allegedly left them a bag on money on his parent's porch.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he does not want to end up in the G-League.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he would be better off signing in the ISL before the SimNBA.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he doesn't want to end up playing for the Guandong Southern Tigers for his professional career.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he doesn't want to end up playing for ALBA Berlin for his professional career.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he doesn't want to end up playing for Shenzhen Sharks for his professional career.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he doesn't want to end up playing for the Goyang Carrot Jumpers for his professional career.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that if he doesn't pan well in the SimNBA, he would love to play for the Goyang Carrot Jumpers.`,
             `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he can beat SimNBA player Philip Taylor in a 1x1 matchup.`,
             `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he can beat SimNBA player Jamel Bacon in a 1x1 matchup.`,
             `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he can beat SimNFL player Matt Howard in a 1x1 matchup.`,
@@ -513,7 +564,10 @@ export const GetBBallCollusionStatements = (user, team, recruit) => {
             `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he can beat SimNBA player Russell Garcia in a 1x1 matchup.`,
             `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he can beat SimNBA player Stephen Williams in a 1x1 matchup.`,
             `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he can beat SimNBA player Jose Foster in a 1x1 matchup.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he can beat SimNBA player Kent Bridges in a 1x1 matchup.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he can beat SimNBA player Francis Doyle in a 1x1 matchup.`,
             `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he can beat SimNBA player Moises Farr in a 1x1 matchup.`,
+            `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he can beat SimNBA player Todd Jackson in a 1x1 matchup.`,
             `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he can beat SimNBA player Benjamin Morris in a 1x1 matchup.`,
             `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks the SimNBA refs want the Vancouver Sea Lions to win the Finals next season.`,
             `${recruit.Stars} star recruit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks this is all just a simulation.`,
@@ -526,6 +580,68 @@ export const GetBBallCollusionStatements = (user, team, recruit) => {
     }
     arr = arr.concat([...recruitArr]);
     let pick = arr[Math.floor(Math.random() * arr.length)];
+
+    return pick;
+};
+
+export const GetBBallTransferPortalStatements = (user, team, recruit) => {
+    let arr = [
+        `A booster alumnus for ${team.Team} allegedly threw a bag of money through a giant ring, thinking it was the transfer portal.`,
+        `Local ${team.City} news reports that the ${team.Team} athletics department attempted to 'deactivate' the transfer portal.`,
+        `A player in the portal posted on Threads saying that they would love to play for ${user.username} and his squad.`,
+        `A player in the portal posted on Threads saying they would rather play for ${user.username} than any other team.`,
+        `Local news reported that a player in the portal received an NIL deal from a booster representing ${team.Team} that amounted to only two sticks of chewing gum.`,
+        `Local news reported that a player in the portal received an NIL deal from a booster representing ${team.Team} that amounted to only a rubber ball and half a dollar.`,
+        `Local news reported that a player in the portal received an NIL deal from a booster representing ${team.Team} that amounted to tree fiddy.`,
+        `Local news reported that a player in the portal received an NIL deal from a booster representing ${team.Team} that amounted to $420,069.`,
+        `Local news reported that a player in the portal received an NIL deal from a booster representing ${team.Team} that amounted to an expired coupon to a local McDonald's.`,
+        `Local news reported that a player in the portal received an NIL deal from a booster representing ${team.Team} that amounted to an expired gift card to a local grocery store.`,
+        `Local news reported that a player in the portal received an NIL deal from a booster representing ${team.Team} that amounted to an expired gift card to a local Pizza Hut.`,
+        `Local news reported that a player in the portal received an NIL deal from a booster representing ${team.Team} that amounted to five 'SimSN Bucks'.`,
+        `Local news reported that a booster representing ${team.Team} is willing to throw down his entire stock portfolio to get ${team.Team} to a national championship.`,
+        `Local news reported that a booster representing ${team.Team} sold his entire stock portfolio to get ${team.Team} to a national championship.`,
+        `Local news reported that a booster representing ${team.Team} that he is willing to out-spend his rival school in the transfer portal.`,
+        `A player in the portal was allegedly promised by a ${team.Team} booster that they would get only one minute of playing time on the court.`,
+        `Alumni from ${team.Team} are frustrated after their athletic department asked for $10 million dollars towards an NIL fund for the school's esports program.`,
+        `Alumni from ${team.Team} are frustrated after their athletic department asked for $10 million dollars towards an NIL fund for the school's chess program.`,
+        `An NIL fund supported by alumni from ${team.Team} is rumored to be shutting down after it was discovered that its fund were made up entirely from the cryptocurrency SimFBACoin.`,
+        `Students of ${team.Team} brought up allegations on social media that a man with a sinister mustache was seen on campus taking large bags of money from the school's endowment.`,
+        `Local ${team.City} news reports that Slippery Jim was seen near the area attempting to get students to transfer to Bishop Sycamore.`,
+        `Local ${team.City} news reports that Slippery Jim was seen near the area attempting to get students to transfer to the online University of Phoenix for their clickbait program.`,
+        `Local ${team.City} news reports that Slippery Jim was seen near the area attempting to get student athletes to transfer to Canada and play hockey there.`,
+        `Local ${team.City} news reports that Slippery Jim was seen near the area attempting to get student athletes to transfer to a Jamaican college for their bobsled team.`
+    ];
+
+    let recruitArr = [];
+    if (recruit !== undefined) {
+        let positionArr = [
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that they wrote their last English paper at ${recruit.PreviousTeam} in pig-latin.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that the classes taught at ${recruit.PreviousTeam} were tougher than he expected.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that the strength & conditioning program at ${recruit.PreviousTeam} wasn't enough to prepare him for the SimNBA.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that the classes taught at ${recruit.PreviousTeam} were too easy for his academic career.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that on-campus life at ${recruit.PreviousTeam} was as stale as bread.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that he is glad they're transferring from ${recruit.PreviousTeam}.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that he thinks ${recruit.PreviousTeam} would be better off without him.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that he thinks ${recruit.PreviousTeam} is not the best place for a ${recruit.Position}.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that he's transferring from ${recruit.PreviousTeam} because of his grades.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that he's transferring from ${recruit.PreviousTeam} for a change of scenery and certainly not because of his grades.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that he's transferring from ${recruit.PreviousTeam} because the dining halls were awful.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that he's transferring from ${recruit.PreviousTeam} because of the dating pool.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that he's transferring from ${recruit.PreviousTeam} because of lack of parties.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that he's transferring from ${recruit.PreviousTeam} because of hedgehog races on campus.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that he's transferring from ${recruit.PreviousTeam} for mental health reasons and wants a change of scenery.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that he would rather beg to go back to ${recruit.PreviousTeam} than to transfer to ${team.Team}.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that he would rather transfer to Guam than to transfer to ${team.Team}.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that he would rather transfer to American Samoa than to transfer to ${team.Team}.`,
+            `${recruit.FirstName} ${recruit.LastName} posted on social media that he was promised a national championship title if he transferred to ${team.Team}.`
+        ];
+
+        recruitArr = recruitArr.concat([...positionArr]);
+    }
+
+    arr = arr.concat([...recruitArr]);
+    const limit = arr.length - 1;
+    let pick = arr[Math.floor(Math.random() * limit)];
 
     return pick;
 };

@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { auth } from '../../Firebase/firebase';
 import routes from '../../Constants/routes';
 // Redux
 import { connect } from 'react-redux';
 import { setCurrentUser } from '../../Redux/user/user.actions';
+import { InboxModal } from '../_Common/ModalComponents';
 
-const authorizedUser = (props) => {
-    const { user, setCurrentUser } = props;
+const authorizedUser = ({ user, setCurrentUser, inbox }) => {
+    const [unreadNoti, setUnreadNoti] = useState(false);
     var FBAdmin = () => {
         return (
             <li className="nav-item dropdown">
@@ -125,10 +126,72 @@ const authorizedUser = (props) => {
         setCurrentUser(null);
     };
 
+    useEffect(() => {
+        const {
+            cfbNotifications,
+            nflNotifications,
+            cbbNotifications,
+            nbaNotifications
+        } = inbox;
+        let unread = false;
+
+        for (let i = 0; i < cfbNotifications.length; i++) {
+            const noti = cfbNotifications[i];
+            if (!noti.IsRead) {
+                unread = true;
+                setUnreadNoti(() => true);
+                break;
+            }
+        }
+        if (unread) return;
+        for (let i = 0; i < nflNotifications.length; i++) {
+            const noti = nflNotifications[i];
+            if (!noti.IsRead) {
+                unread = true;
+                setUnreadNoti(() => true);
+                break;
+            }
+        }
+        if (unread) return;
+        for (let i = 0; i < cbbNotifications.length; i++) {
+            const noti = cbbNotifications[i];
+            if (!noti.IsRead) {
+                unread = true;
+                setUnreadNoti(() => true);
+                break;
+            }
+        }
+        if (unread) return;
+        for (let i = 0; i < nbaNotifications.length; i++) {
+            const noti = nbaNotifications[i];
+            if (!noti.IsRead) {
+                setUnreadNoti(() => true);
+                break;
+            }
+        }
+    }, [inbox]);
+
     return (
         <ul className="navbar-nav justify-content-end">
             {user && user.bba_roleID === 'Admin' ? <BBAdmin /> : ''}
             {user && user.roleID === 'Admin' ? <FBAdmin /> : ''}
+            <InboxModal inbox={inbox} />
+            <li className="nav-item">
+                <div className="nav-link">
+                    <button
+                        type="button"
+                        className="btn btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#inboxModal"
+                    >
+                        <i
+                            className={`bi bi-envelope-fill ${
+                                unreadNoti ? 'text-danger' : ''
+                            }`}
+                        />
+                    </button>
+                </div>
+            </li>
             <li className="nav-item">
                 <Link className="nav-link" to={routes.USER}>
                     <span className="glyphicon glyphicon-user"></span>
@@ -141,7 +204,7 @@ const authorizedUser = (props) => {
                     href="https://www.simfba.com"
                     target="_blank"
                 >
-                    SimFBA Site
+                    SimSN Site
                 </a>
             </li>
             <li className="nav-item">

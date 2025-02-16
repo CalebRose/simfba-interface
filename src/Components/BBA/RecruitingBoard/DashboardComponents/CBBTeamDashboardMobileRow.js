@@ -4,12 +4,20 @@ import { getLogo } from '../../../../Constants/getLogo';
 import ConfirmRemovePlayerFromBoardModal from '../../../TeamRecruitingBoard/CFBTeamRecruitingComponents/CFBTeamRemovePlayerModal';
 import ConfirmRevokeModal from '../../../TeamRecruitingBoard/CFBTeamRecruitingComponents/CFBTeamRevokeScholarshipModal';
 import CBBCrootModal from './CBBCrootModal';
+import {
+    MobileAttribute,
+    MobileInputRow,
+    MobileLabelRow
+} from '../../../_Common/MobileAttributeTab';
+import { SimCBB } from '../../../../Constants/CommonConstants';
 
 const CBBTeamDashboardMobileRow = (props) => {
-    const { recruitProfile, idx, theme } = props;
+    const { recruitProfile, idx, theme, retro } = props;
     const recruit = recruitProfile.Recruit;
     const logo =
-        recruit && recruit.College.length > 0 ? getLogo(recruit.College) : '';
+        recruit && recruit.TeamID > 0
+            ? getLogo(SimCBB, recruit.TeamID, retro)
+            : '';
     const crootModalTarget = '#crootModal' + idx;
     const revokeModalTarget = '#revokeModal' + idx;
     const removeModalTarget = '#removeModal' + idx;
@@ -24,9 +32,20 @@ const CBBTeamDashboardMobileRow = (props) => {
             (x, idx) => idx <= 2 && x.Odds > 0
         );
 
-        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+        const competingIDs = competingTeams.map((x) => x.TeamID);
 
-        return competingAbbrs.join(', ');
+        return competingIDs.map((x) => {
+            const logo = getLogo(SimCBB, x, retro);
+            return (
+                <>
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={logo}
+                        alt="competing-team"
+                    />
+                </>
+            );
+        });
     };
 
     const handleChange = (event) => {
@@ -34,11 +53,11 @@ const CBBTeamDashboardMobileRow = (props) => {
     };
 
     const toggleScholarship = () => {
-        return props.toggleScholarship(idx, data);
+        return props.toggleScholarship(idx, recruitProfile);
     };
 
     const removePlayerFromBoard = () => {
-        return props.remove(idx, data);
+        return props.remove(idx, recruitProfile);
     };
     let leadingTeams = leadingTeamsMapper(recruit);
 
@@ -47,153 +66,198 @@ const CBBTeamDashboardMobileRow = (props) => {
             <CBBCrootModal crt={recruit} idx={idx} />
             <ConfirmRevokeModal
                 idx={idx}
-                toggleScholarship={toggleScholarship}
+                revoke={toggleScholarship}
+                viewMode={theme}
             />
             <ConfirmRemovePlayerFromBoardModal
                 idx={idx}
                 removePlayer={removePlayerFromBoard}
             />
             <div className={`${mobileCardClass} mb-2`}>
-                <div className="card-body">
-                    <h5
-                        className={
-                            recruit.IsCustomCroot
-                                ? 'card-text text-primary'
-                                : 'card-title'
-                        }
-                    >
-                        {name}
-                    </h5>
-                    <h6 className="card-subtitle mb-2">
-                        <button
-                            type="button"
-                            className="btn btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target={crootModalTarget}
-                        >
-                            <i className="bi bi-info-circle" />
-                        </button>
-                    </h6>
-                    <p className="card-text">
-                        {recruit.Stars} star {recruit.Position} from {loc}
-                    </p>
-                </div>
-                <ul className="list-group list-group-flush">
-                    <li className="list-group-item">
-                        2pt Shooting: {recruit.Shooting2} | 3pt Shooting:{' '}
-                        {recruit.Shooting3}
-                    </li>
-                    <li className="list-group-item">
-                        Finishing: {recruit.Finishing} | Ballwork:{' '}
-                        {recruit.Ballwork}
-                    </li>
-                    <li className="list-group-item">
-                        Rebounding: {recruit.Rebounding} | Defense:{' '}
-                        {recruit.Defense}
-                    </li>
-                    <li className="list-group-item">
-                        Potential: {recruit.PotentialGrade}
-                    </li>
-                    {recruit.SigningStatus.length > 0 &&
-                    recruit.SigningStatus !== 'Signed' ? (
-                        <li className="list-group-item">
-                            Recruiting Status: {recruit.SigningStatus}
-                        </li>
-                    ) : (
-                        ''
-                    )}
-                    {recruit.HasStateBonus || recruit.HasRegionBonus ? (
-                        <li className="list-group-item">
-                            {recruit.HasStateBonus ? 'State' : 'Region'}
-                        </li>
-                    ) : (
-                        ''
-                    )}
-                    <li className="list-group-item">
-                        {!recruit.IsSigned ? (
-                            <h6>{leadingTeams}</h6>
-                        ) : (
-                            <img
-                                className="image-recruit-logo"
-                                src={logo}
-                                alt="WinningTeam"
-                            />
-                        )}
-                    </li>
-                    <li className="list-group-item">
-                        {recruit.IsSigned || recruitProfile.CaughtCheating ? (
-                            <h6>
-                                <input
-                                    name="CurrentPoints"
-                                    type="number"
-                                    className="form-control"
-                                    id="currentPoints"
-                                    aria-describedby="currentPoints"
-                                    value={recruitProfile.CurrentWeeksPoints}
-                                    disabled
-                                />
+                <div className="card-body text-start">
+                    <div className="row mb-2">
+                        <div className="col-7">
+                            <h5
+                                className={
+                                    recruit.IsCustomCroot
+                                        ? 'card-title text-primary'
+                                        : 'card-title'
+                                }
+                            >
+                                {name}
+                            </h5>
+                            <h6 className="card-subtitle mb-2">
+                                <button
+                                    type="button"
+                                    className="btn btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target={crootModalTarget}
+                                >
+                                    <i className="bi bi-info-circle" />
+                                </button>
                             </h6>
-                        ) : (
-                            <h6>
-                                <input
-                                    name="CurrentPoints"
-                                    type="number"
-                                    className="form-control"
-                                    id="currentPoints"
-                                    aria-describedby="currentPoints"
-                                    value={recruitProfile.CurrentWeeksPoints}
-                                    onChange={handleChange}
+                            <p className="card-text">
+                                {recruit.Stars} star {recruit.Position} from{' '}
+                                {loc}
+                            </p>
+                        </div>
+                        <div className="col-5">
+                            {recruit.SigningStatus.length > 0 &&
+                                recruit.SigningStatus !== 'Signed' && (
+                                    <p className="card-text text-muted">
+                                        Recruiting Status:{' '}
+                                        {recruit.SigningStatus}
+                                    </p>
+                                )}
+                            {!recruit.IsSigned ? (
+                                <>{leadingTeams}</>
+                            ) : (
+                                <>
+                                    <img
+                                        className="image-recruit-logo image-recruit-signed"
+                                        src={logo}
+                                        alt="WinningTeam"
+                                    />
+                                    <h6>{recruit.College}</h6>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                    <div className="row mb-3">
+                        <MobileAttribute
+                            label="Finishing"
+                            value={recruit.Finishing}
+                        />
+                        <MobileAttribute
+                            label="2pt Shooting"
+                            value={recruit.Shooting2}
+                        />
+                        <MobileAttribute
+                            label="3pt Shooting"
+                            value={recruit.Shooting3}
+                        />
+                        <MobileAttribute
+                            label="Free Throw"
+                            value={recruit.FreeThrow}
+                        />
+                        <MobileAttribute
+                            label="Ballwork"
+                            value={recruit.Ballwork}
+                        />
+                        <MobileAttribute
+                            label="Rebounding"
+                            value={recruit.Rebounding}
+                        />
+                        <MobileAttribute
+                            label="Int. Defense"
+                            value={recruit.InteriorDefense}
+                        />
+                        <MobileAttribute
+                            label="Per. Defense"
+                            value={recruit.PerimeterDefense}
+                        />
+                        <MobileAttribute
+                            label="Potential"
+                            value={recruit.PotentialGrade}
+                        />
+                        {recruit.HasStateBonus ||
+                            (recruit.HasRegionBonus && (
+                                <MobileAttribute
+                                    label="Bonus"
+                                    value={
+                                        recruit.HasStateBonus
+                                            ? 'State'
+                                            : 'Region'
+                                    }
                                 />
-                            </h6>
-                        )}
-                    </li>
-                    <li className="list-group-item">
-                        <h6>Total Points: {recruitProfile.TotalPoints}</h6>
-                    </li>
-                </ul>
-                <div className="card-body">
-                    {recruitProfile.ScholarshipRevoked ||
-                    recruitProfile.CaughtCheating ? (
-                        <h2>
-                            <i className="bi bi-heartbreak-fill link-danger card-link" />
-                        </h2>
-                    ) : recruitProfile.Scholarship ? (
-                        <button
-                            type="button"
-                            className="btn card-link"
-                            data-bs-toggle="modal"
-                            data-bs-target={revokeModalTarget}
-                        >
-                            <h2>
-                                <i className="bi bi-mortarboard-fill link-success card-link" />
-                            </h2>
-                        </button>
-                    ) : recruitProfile.IsSigned ? (
-                        <h2>
-                            <i className="bi bi-plus-circle-fill card-link" />
-                        </h2>
-                    ) : recruitProfile.IsLocked ? (
-                        <h2>
-                            <i class="bi bi-file-lock-fill card-link"></i>
-                        </h2>
-                    ) : (
-                        <h2>
-                            <i
-                                className="bi bi-plus-circle-fill card-link card-link"
-                                onClick={toggleScholarship}
-                            />
-                        </h2>
-                    )}
-                    <button
-                        type="button"
-                        className="btn card-link card-link"
-                        data-bs-toggle="modal"
-                        data-bs-target={removeModalTarget}
-                    >
-                        <h2>
-                            <i className="bi bi-x-circle-fill rounded-circle link-danger card-link"></i>
-                        </h2>
-                    </button>
+                            ))}
+                        <MobileInputRow
+                            label="Total Points"
+                            name="TotalPoints"
+                            value={recruitProfile.TotalPoints}
+                            disable={true}
+                        />
+                        <MobileInputRow
+                            label="Current Points"
+                            name="CurrentPoints"
+                            change={handleChange}
+                            value={recruitProfile.CurrentWeeksPoints}
+                            disable={
+                                recruit.IsSigned ||
+                                recruitProfile.CaughtCheating
+                            }
+                        />
+                    </div>
+                    <div className="row justify-content-center">
+                        <div className="col d-grid justify-content-center">
+                            {recruitProfile.ScholarshipRevoked ||
+                            recruitProfile.CaughtCheating ? (
+                                <>
+                                    <h2 className="text-center">
+                                        <i className="bi bi-heartbreak-fill link-danger card-link" />
+                                    </h2>
+                                    <h6 className="text-center">
+                                        Revoked Scholarship
+                                    </h6>
+                                </>
+                            ) : recruitProfile.Scholarship ? (
+                                <>
+                                    <button
+                                        type="button"
+                                        className="btn card-link"
+                                        data-bs-toggle="modal"
+                                        data-bs-target={revokeModalTarget}
+                                    >
+                                        <h2>
+                                            <i className="bi bi-mortarboard-fill link-success card-link" />
+                                        </h2>
+                                    </button>
+                                    <h6 className="text-center">Scholarship</h6>
+                                </>
+                            ) : recruitProfile.IsSigned ? (
+                                <>
+                                    <h2 className="text-center">
+                                        <i className="bi bi-plus-circle-fill card-link" />
+                                    </h2>
+                                    <h6 className="text-center">Signed</h6>
+                                </>
+                            ) : recruitProfile.IsLocked ? (
+                                <>
+                                    <h2 className="text-center">
+                                        <i class="bi bi-file-lock-fill card-link"></i>
+                                    </h2>
+                                    <h6 className="text-center">
+                                        Signed Elsewhere
+                                    </h6>
+                                </>
+                            ) : (
+                                <>
+                                    <h2 className="text-center">
+                                        <i
+                                            className="bi bi-plus-circle-fill card-link card-link"
+                                            onClick={toggleScholarship}
+                                        />
+                                    </h2>
+                                    <h6 className="text-center">
+                                        Offer Scholarship
+                                    </h6>
+                                </>
+                            )}
+                        </div>
+                        <div className="col d-grid justify-content-center">
+                            <button
+                                type="button"
+                                className="btn card-link card-link"
+                                data-bs-toggle="modal"
+                                data-bs-target={removeModalTarget}
+                            >
+                                <h2>
+                                    <i className="bi bi-x-circle-fill rounded-circle link-danger card-link"></i>
+                                </h2>
+                            </button>
+                            <h6 className="text-center">Remove</h6>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
+import toast from 'react-hot-toast';
 import { GetTableHoverClass } from '../../../../Constants/CSSClassHelper';
 import BBAPlayerService from '../../../../_Services/simNBA/BBAPlayerService';
 import BBATeamService from '../../../../_Services/simNBA/BBATeamService';
@@ -7,6 +8,7 @@ import BBATeamDropdownItem from '../../Team/BBATeamDropdownItem';
 import { NBASidebar } from '../Sidebar/NBASidebar';
 import NBATeamPlayerRow from './NBATeamPlayerRow';
 import BBATradeService from '../../../../_Services/simNBA/BBATradeService';
+import { useMediaQuery } from 'react-responsive';
 
 const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
     let _teamService = new BBATeamService();
@@ -17,7 +19,21 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
     const [teams, setTeams] = React.useState('');
     const [filteredTeams, setFilteredTeams] = React.useState('');
     const [roster, setRoster] = React.useState([]);
+    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     const tableHoverClass = GetTableHoverClass(viewMode);
+    // For mobile
+    React.useEffect(() => {
+        if (!viewWidth) {
+            setViewWidth(window.innerWidth);
+        }
+    }, [viewWidth]);
+
+    const handleResize = () => {
+        setViewWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
 
     useEffect(() => {
         if (currentUser) {
@@ -32,6 +48,18 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
         }
     }, [team]);
 
+    const [GLeagueCount, twoWayCount, activeRosterCount] = useMemo(() => {
+        let gCount = 0;
+        let tCount = 0;
+        let aCount = 0;
+        for (let i = 0; i < roster.length; i++) {
+            if (roster[i].IsGLeague) gCount++;
+            if (roster[i].IsTwoWay) tCount++;
+            if (!roster[i].IsGLeague && !roster[i].IsTwoWay) aCount++;
+        }
+        return [gCount, tCount, aCount];
+    }, [roster]);
+
     const getTeamRecord = async (id) => {
         let response = await _teamService.GetNBATeamByTeamID(id);
         setTeam(() => response);
@@ -39,7 +67,7 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
     };
 
     const getTeams = async () => {
-        let response = await _teamService.GetNBATeams();
+        let response = await _teamService.GetAllProfessionalTeams();
         response = response.filter((x) => x.ID !== currentUser.NBATeamID);
         setTeams(() => response);
         setFilteredTeams(() => response);
@@ -67,27 +95,88 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
 
     const CutPlayerFromRoster = async (player) => {
         const res = await _playerService.CutNBAPlayerFromRoster(player.ID);
-        if (res) {
-            const currentRoster = [...roster];
-            setRoster(() => []);
 
-            const filteredRoster = currentRoster.filter(
-                (x) => x.ID !== player.ID
-            );
+        const currentRoster = [...roster];
+        setRoster(() => []);
 
-            const t = { ...team };
-            const contract = player.Contract;
-            t.Capsheet.Year1Total -= contract.Year1Total;
-            t.Capsheet.Year2Total -= contract.Year2Total;
-            t.Capsheet.Year3Total -= contract.Year3Total;
-            t.Capsheet.Year4Total -= contract.Year4Total;
-            t.Capsheet.Year5Total -= contract.Year5Total;
-            setRoster(() => filteredRoster);
-            setTeam(() => t);
-        }
+        const filteredRoster = currentRoster.filter((x) => x.ID !== player.ID);
+
+        const t = { ...team };
+        const contract = player.Contract;
+        t.Capsheet.Year1Total -= contract.Year1Total;
+        t.Capsheet.Year2Total -= contract.Year2Total;
+        t.Capsheet.Year3Total -= contract.Year3Total;
+        t.Capsheet.Year4Total -= contract.Year4Total;
+        t.Capsheet.Year5Total -= contract.Year5Total;
+        setRoster(() => filteredRoster);
+        setTeam(() => t);
     };
 
-    const ExtendPlayer = () => {};
+    const ExtendPlayer = async (player, offer) => {
+        let res = await _playerService.CreateExtensionOffer(offer);
+        const offerData = await res.json();
+        const r = [...roster];
+        const playerIDX = r.findIndex((x) => x.ID === player.ID);
+        if (offer.ID > 0) {
+            const offerIDX = r[playerIDX].Extensions.findIndex(
+                (x) => x.ID === offer.ID
+            );
+            r[playerIDX].Extensions[offerIDX] = offerData;
+        } else {
+            const offerObj = { offerData };
+            r[playerIDX].Extensions.push(offerObj);
+        }
+        toast(
+            `Successfully sent extension offer to ${player.Position} ${player.FirstName} ${player.LastName}`,
+            {
+                icon: '💰'
+            }
+        );
+        setRoster(() => r);
+    };
+
+    const CancelOffer = async (player, offer) => {
+        let res = await _playerService.CancelExtensionOffer(offer);
+        const r = [...roster];
+        const playerIDX = r.findIndex((x) => x.ID === player.ID);
+        const exs = r[playerIDX].Extensions.filter((x) => x.ID !== offer.ID);
+        r[playerIDX].Extensions = exs;
+        toast(
+            `Cancelled extension offer for ${player.Position} ${player.FirstName} ${player.LastName}`,
+            {
+                icon: '😞'
+            }
+        );
+        setRoster(() => r);
+    };
+
+    const ActivateOption = async (id) => {
+        const res = _playerService.ActivatePlayerOption(id);
+    };
+
+    const ActivateToast = (id) => {
+        toast.promise(ActivateOption(id), {
+            loading: 'Saving...',
+            success: 'Activated Next Year Option!',
+            error: 'Error! Could not activate option.'
+        });
+    };
+
+    const ExtendToast = (player, offer) => {
+        toast.promise(ExtendPlayer(player, offer), {
+            loading: 'Extending...',
+            success: 'Successfully extended offer to player!',
+            error: 'Error! Could not extend offer.'
+        });
+    };
+
+    const CancelToast = (player, offer) => {
+        toast.promise(CancelOffer(player, offer), {
+            loading: 'Cancelling...',
+            success: 'Cancelled the extension offer!',
+            error: 'Error! Could cancel extension offer.'
+        });
+    };
 
     const PlacePlayerOnTradeBlock = async (player) => {
         const res = await _tradeService.PlaceNBAPlayerOnTradeBlock(player.ID);
@@ -140,6 +229,11 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
         }
     };
 
+    const exportRoster = async () => {
+        // Removing if-check on if team is the user's...
+        let response = _playerService.ExportNBARoster(team.ID, team.Team);
+    };
+
     const playerRows = roster ? (
         roster.map((x, i) => {
             return (
@@ -152,11 +246,17 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
                         view={userTeam.ID === team.ID}
                         theme={viewMode}
                         cut={CutPlayerFromRoster}
-                        extend={ExtendPlayer}
+                        extend={ExtendToast}
+                        cancel={CancelToast}
+                        activateOption={ActivateToast}
                         tradeblock={PlacePlayerOnTradeBlock}
                         setToGLeague={SetToGLeague}
                         setToTwoWay={SetToTwoWay}
                         team={team}
+                        twoWayCount={twoWayCount}
+                        gLeagueCount={GLeagueCount}
+                        retro={currentUser.IsRetro}
+                        isMobile={isMobile}
                     />
                 </>
             );
@@ -209,17 +309,37 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
                                     <li>
                                         <hr className="dropdown-divider" />
                                     </li>
-                                    {filteredTeams
-                                        ? filteredTeams.map((x) => (
-                                              <BBATeamDropdownItem
-                                                  key={x.ID}
-                                                  selectTeam={selectTeam}
-                                                  team={x}
-                                              />
-                                          ))
-                                        : ''}
+                                    {filteredTeams &&
+                                        filteredTeams.map((x) => (
+                                            <BBATeamDropdownItem
+                                                key={x.ID}
+                                                selectTeam={selectTeam}
+                                                team={x}
+                                            />
+                                        ))}
                                 </ul>
                             </div>
+                        </div>
+                        <div className="col-md-auto">
+                            <button
+                                type="button"
+                                className="btn btn-outline-info"
+                                onClick={exportRoster}
+                            >
+                                Export
+                            </button>
+                        </div>
+                        <div className="col-auto">
+                            <h5>Active Roster Count:</h5>
+                            <p>{activeRosterCount}</p>
+                        </div>
+                        <div className="col-auto">
+                            <h5>G-League Count:</h5>
+                            <p>{GLeagueCount}</p>
+                        </div>
+                        <div className="col-auto">
+                            <h5>Two-Way Count:</h5>
+                            <p>{twoWayCount}</p>
                         </div>
                     </div>
                     <div className="row mt-3 mb-5">
@@ -229,16 +349,18 @@ const NBARosterPage = ({ currentUser, cbb_Timestamp, viewMode }) => {
                                     <th scope="col">Name</th>
                                     <th scope="col">Age | Exp</th>
                                     <th scope="col">Overall</th>
-                                    <th scope="col">2pt Shooting</th>
-                                    <th scope="col">3pt Shooting</th>
-                                    <th scope="col">Free Throw</th>
-                                    <th scope="col">Finishing</th>
-                                    <th scope="col">Ballwork</th>
-                                    <th scope="col">Rebounding</th>
-                                    <th scope="col">Int. Defense</th>
-                                    <th scope="col">Per. Defense</th>
-                                    <th scope="col">Stamina</th>
                                     <th scope="col">Potential</th>
+                                    <th scope="col">Health</th>
+                                    <th scope="col">Stamina</th>
+                                    <th scope="col">Minutes Expectations</th>
+                                    <th scope="col">Draft Info</th>
+                                    <th scope="col">Accolades</th>
+                                    <th scope="col">Contract Length</th>
+                                    <th scope="col">Year 1</th>
+                                    <th scope="col">Year 2</th>
+                                    <th scope="col">Year 3</th>
+                                    <th scope="col">Year 4</th>
+                                    <th scope="col">Year 5</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>

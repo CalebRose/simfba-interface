@@ -25,4 +25,8 @@ export default class BBADraftService {
     async GetScoutingData(id) {
         return await GetCall(`${url}nba/draft/scout/${id}`);
     }
+
+    async ExportPlayers(dto) {
+        return await PostCall(`${url}nba/draft/export/picks`, dto);
+    }
 }

@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const GetMaxForPassPlays = (scheme, idx) => {
     let max = '20';
     if (idx === 0) {
@@ -55,12 +57,20 @@ export const ValidateRunPlayDistribution = (gp) => {
     let valid = true;
 
     if (
-        gp.RunOutsideLeft > 50 ||
-        gp.RunOutsideRight > 50 ||
-        gp.RunInsideLeft > 50 ||
-        gp.RunInsideRight > 50 ||
-        gp.RunPowerLeft > 50 ||
-        gp.RunPowerRight > 50 ||
+        gp.RunOutsideLeft > 80 ||
+        gp.RunOutsideRight > 80 ||
+        gp.RunInsideLeft > 80 ||
+        gp.RunInsideRight > 80 ||
+        gp.RunPowerLeft > 80 ||
+        gp.RunPowerRight > 80 ||
+        gp.ReadOptionLeft > 80 ||
+        gp.ReadOptionRight > 80 ||
+        gp.SpeedOptionLeft > 80 ||
+        gp.SpeedOptionRight > 80 ||
+        gp.InvertedOptionLeft > 80 ||
+        gp.InvertedOptionRight > 80 ||
+        gp.TripleOptionLeft > 80 ||
+        gp.TripleOptionRight > 80 ||
         gp.RunDrawLeft > 15 ||
         gp.RunDrawRight > 15
     ) {
@@ -75,30 +85,27 @@ export const ValidatePassPlayDistribution = (gp) => {
 
     switch (scheme) {
         case 'Air Raid':
+        case 'Vertical':
+        case 'West Coast':
+        case 'Run and Shoot':
             if (gp.PassQuick > 50) {
                 return false;
             }
 
-            if (gp.PassShort > 50) {
+            if (gp.PassShort + gp.PassPAShort > 50) {
                 return false;
             }
-            if (gp.PassLong > 50) {
+            if (gp.PassLong + gp.PassPALong > 50) {
                 return false;
             }
 
             if (gp.PassScreen > 20) {
                 return false;
             }
-
-            if (gp.PassPAShort > 20) {
-                return false;
-            }
-
-            if (gp.PassPALong > 20) {
-                return false;
-            }
             break;
         case 'Pro':
+        case 'Power Run':
+        case 'I Option':
             if (gp.PassQuick > 45) {
                 return false;
             }
@@ -123,6 +130,9 @@ export const ValidatePassPlayDistribution = (gp) => {
             }
             break;
         case 'Double Wing Option':
+        case 'Wing-T':
+        case 'Flexbone':
+        case 'Wishbone':
             if (gp.PassQuick > 50) {
                 return false;
             }
@@ -148,6 +158,7 @@ export const ValidatePassPlayDistribution = (gp) => {
             }
             break;
         case 'Spread Option':
+        case 'Pistol':
             if (gp.PassQuick > 50) {
                 return false;
             }
@@ -163,11 +174,11 @@ export const ValidatePassPlayDistribution = (gp) => {
                 return false;
             }
 
-            if (gp.PassPAShort > 20) {
+            if (gp.PassPAShort > 25) {
                 return false;
             }
 
-            if (gp.PassPALong > 20) {
+            if (gp.PassPALong > 25) {
                 return false;
             }
             break;
@@ -177,3 +188,18 @@ export const ValidatePassPlayDistribution = (gp) => {
 
     return true;
 };
+
+export const GetDefensivePositions = (list) => {
+    return list.map((item, index) => {
+        if (item === '\n') return <br key={index} />;
+
+        return (
+            <span key={index}>
+                {item}
+                {index < list.length - 1 ? ', ' : ''}
+            </span>
+        );
+    });
+};
+
+export const GetDefaultChanges = (scheme) => {};

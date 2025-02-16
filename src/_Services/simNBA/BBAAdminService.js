@@ -1,4 +1,5 @@
 import url from '../../Constants/SimBBA_url';
+import { GetActionCall } from '../simFBA/FetchHelper';
 
 export default class BBAAdminService {
     async GetCurrentTimestamp() {
@@ -53,6 +54,18 @@ export default class BBAAdminService {
             );
             return false;
         }
+    }
+
+    async ShowGames(matchType) {
+        return await GetActionCall(`${url}admin/show/${matchType}`);
+    }
+
+    async SyncFreeAgency() {
+        return await GetActionCall(`${url}nba/freeagency/sync/round`);
+    }
+
+    async ChangeDraftTime() {
+        return await GetActionCall(`${url}nba/draft/time/change`);
     }
 
     async ShowAGames() {
@@ -121,5 +134,9 @@ export default class BBAAdminService {
             );
             return false;
         }
+    }
+
+    async RunCron() {
+        return await GetActionCall(`${url}simbba/run/cron`);
     }
 }

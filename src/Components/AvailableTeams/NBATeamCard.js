@@ -4,8 +4,7 @@ import { GetMobileCardClass } from '../../Constants/CSSClassHelper';
 const NBATeamCard = (props) => {
     const { ovr, off, def, team, logo, disable, viewMode, request } = props;
     const [requested, setRequested] = React.useState(false);
-    const { Team, Nickname, Conference, LeagueID } = team;
-
+    const { Team, Nickname, Conference, LeagueID, City, Country } = team;
     const sendRequest = () => {
         if (disable === false) {
             const role = event.target.value;
@@ -29,8 +28,13 @@ const NBATeamCard = (props) => {
                     <h5 className="card-title ">
                         {Team} {Nickname}
                     </h5>
+                    {team.ID > 32 && (
+                        <h6 className="card-subtitle mb-1 text-muted">
+                            Based in {City}, {Country}
+                        </h6>
+                    )}
                     <h6 className="card-subtitle mb-1 text-muted">
-                        {Conference} Conference
+                        {Conference} {team.ID < 33 && 'Conference'}
                     </h6>
                 </div>
                 <ul className="list-group list-group-flush">
@@ -55,9 +59,9 @@ const NBATeamCard = (props) => {
                                 Owner:
                             </div>
                             <div className="col-sm-auto justify-content-end">
-                                {team.NBAOwnerID > 0 ||
-                                (team.NBAOwnerName &&
-                                    team.NBAOwnerName.length > 0) ? (
+                                {team.NBAOwnerName &&
+                                team.NBAOwnerName.length > 0 &&
+                                team.NBAOwnerName !== '' ? (
                                     team.NBAOwnerName
                                 ) : (
                                     <button
@@ -82,7 +86,8 @@ const NBATeamCard = (props) => {
                             <div className="col-sm-auto justify-content-end">
                                 {team.NBAGMID > 0 ||
                                 (team.NBAGMName &&
-                                    team.NBAGMName.length > 0) ? (
+                                    team.NBAGMName.length > 0 &&
+                                    team.NBAGMName !== '') ? (
                                     team.NBAGMName
                                 ) : (
                                     <button
@@ -107,7 +112,8 @@ const NBATeamCard = (props) => {
                             <div className="col-sm-auto justify-content-end">
                                 {team.NBACoachID > 0 ||
                                 (team.NBACoachName &&
-                                    team.NBACoachName.length > 0) ? (
+                                    team.NBACoachName.length > 0 &&
+                                    team.NBACoachName !== '') ? (
                                     team.NBACoachName
                                 ) : (
                                     <button
@@ -132,7 +138,8 @@ const NBATeamCard = (props) => {
                             <div className="col-sm-auto justify-content-end">
                                 {team.NBAAssistantID > 0 ||
                                 (team.NBAAssistantName &&
-                                    team.NBAAssistantName.length > 0) ? (
+                                    team.NBAAssistantName.length > 0 &&
+                                    team.NBAAssistantName !== '') ? (
                                     team.NBAAssistantName
                                 ) : (
                                     <button

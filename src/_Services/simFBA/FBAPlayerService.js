@@ -1,9 +1,9 @@
 import { saveAs } from 'file-saver';
 import url from '../../Constants/url.js';
-import { GetCall, PostCall } from './FetchHelper.js';
+import { GetActionCall, GetCall, PostCall } from './FetchHelper.js';
 
 export default class FBAPlayerService {
-    async GetPlayersByTeam(teamID) {
+    async GetCFBRosterDataByTeamID(teamID) {
         return await GetCall(`${url}collegeplayers/team/${teamID}`);
     }
 
@@ -66,8 +66,10 @@ export default class FBAPlayerService {
         return json;
     }
 
-    async AssignRedshirt(dto) {
-        return await PostCall(`${url}collegeplayers/assign/redshirt/`, dto);
+    async AssignRedshirt(playerID) {
+        return await GetActionCall(
+            `${url}collegeplayers/assign/redshirt/${playerID}`
+        );
     }
 
     async CutNFLPlayerFromRoster(PlayerID) {
@@ -76,6 +78,12 @@ export default class FBAPlayerService {
 
     async PlaceNFLPlayerOnPracticeSquad(PlayerID) {
         return await GetCall(`${url}nflplayers/place/player/squad/${PlayerID}`);
+    }
+
+    async PlaceNFLPlayerOnInjuryReserve(PlayerID) {
+        return await GetCall(
+            `${url}nflplayers/injury/reserve/player/${PlayerID}`
+        );
     }
 
     async GetInjuryData() {
@@ -100,5 +108,23 @@ export default class FBAPlayerService {
 
     async CancelWaiverOffer(dto) {
         return await PostCall(`${url}nfl/waiverwire/cancel/offer`, dto);
+    }
+
+    async CreateExtensionOffer(dto) {
+        return await PostCall(`${url}nfl/extension/create/offer`, dto);
+    }
+
+    async CancelExtensionOffer(dto) {
+        return await PostCall(`${url}nfl/extension/cancel/offer`, dto);
+    }
+
+    async CutCFBPlayerFromRoster(playerID) {
+        return await GetActionCall(
+            `${url}collegeplayers/cut/player/${playerID.toString()}`
+        );
+    }
+
+    async TagPlayer(dto) {
+        return await PostCall(`${url}nflplayers/tag/player/`, dto);
     }
 }

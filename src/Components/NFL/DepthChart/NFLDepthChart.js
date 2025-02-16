@@ -1,12 +1,8 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
-import {
-    SavingMessage,
-    SuccessfulDepthChartSaveMessage,
-    UnsuccessfulDepthChartSaveMessage
-} from '../../../Constants/SystemMessages';
-import { ServiceMessageBanner } from '../../_Common/ServiceMessageBanner';
+import toast from 'react-hot-toast';
+
 import DCPositionItem from '../../DepthChart/DC_PositionItem';
 import { DepthChartPositionList } from '../../DepthChart/DepthChartConstants';
 import DepthChartHeader from '../../DepthChart/DepthChartHeader';
@@ -32,7 +28,7 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
     const [userTeam, setUserTeam] = React.useState('');
     const [team, setTeam] = React.useState('');
     const [teamColors, setTeamColors] = React.useState('');
-    const [collegeTeams, setCollegeTeams] = React.useState('');
+    const [nflTeams, setNFLTeams] = React.useState('');
     const [roster, setRoster] = React.useState([]);
     const [rosterMap, setRosterMap] = React.useState(null);
     const [initialDC, setInitialDC] = React.useState([]);
@@ -48,8 +44,6 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
     const [availablePlayers, setAvailablePlayers] = React.useState([]);
     const [canModify, setCanModify] = React.useState(false);
     const [isValid, setValidation] = React.useState(false);
-    const [errorMessage, setErrorMessage] = React.useState('');
-    const [serviceMessage, setServiceMessage] = React.useState('');
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     const tableClass = GetTableClass(viewMode);
@@ -94,9 +88,7 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
     const SelectTeam = async (selectedTeam) => {
         setCanModify(
             () =>
-                (selectedTeam.ID === currentUser.NFLTeamID &&
-                    (currentUser.NFLRole === 'Owner' ||
-                        currentUser.NFLRole === 'Coach')) ||
+                selectedTeam.ID === currentUser.NFLTeamID ||
                 currentUser.roleID === 'Admin'
         );
         await GetRoster(selectedTeam.ID);
@@ -129,6 +121,12 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
         setCurrentPosition(() => pos);
     };
 
+    const SaveToast = () => {
+        toast.promise(SaveDepthChart(), {
+            loading: 'Saving...'
+        });
+    };
+
     const SaveDepthChart = async () => {
         if (!isValid || !canModify) return;
         const dc = currentDepthChart.map((x) => ({
@@ -146,21 +144,25 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
             UpdatedPlayerPositions: dc
         };
 
-        // Save Call
-        setServiceMessage(() => SavingMessage);
-
         const save = await depthChartService.SaveNFLDepthChart(
             UpdateDepthChartDTO
         );
 
         if (save.ok) {
-            setServiceMessage(() => SuccessfulDepthChartSaveMessage);
-            setTimeout(() => setServiceMessage(() => ''), 5000);
+            toast.success('Successfully Saved Gameplan!', {
+                style: {
+                    border: `1px solid ${team.ColorOne}`,
+                    padding: '16px',
+                    color: team.ColorTwo
+                },
+                iconTheme: {
+                    primary: team.ColorOne,
+                    secondary: team.ColorTwo
+                },
+                duration: 4000
+            });
         } else {
-            setServiceMessage(() => '');
-            alert('HTTP-Error:', save.status);
-            setErrorMessage(UnsuccessfulDepthChartSaveMessage);
-            setTimeout(() => setErrorMessage(() => ''), 8000);
+            toast.error('Could not save depth chart.');
         }
 
         // Update Initial DC
@@ -196,7 +198,7 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
     const GetTeams = async () => {
         //
         let teams = await teamService.GetAllNFLTeams();
-        setCollegeTeams(() => teams);
+        setNFLTeams(() => teams);
     };
 
     const GetRoster = async (ID) => {
@@ -232,7 +234,18 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
         const originalDepthChart = initialDC.map((x) => ({
             ...x
         }));
-
+        toast('Depth Chart has been reset', {
+            style: {
+                border: `1px solid ${team.ColorOne}`,
+                padding: '16px',
+                color: team.ColorTwo
+            },
+            iconTheme: {
+                primary: team.ColorOne,
+                secondary: team.ColorTwo
+            },
+            duration: 4000
+        });
         setCurrentDepthChart(() => originalDepthChart);
     };
 
@@ -291,8 +304,16 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
 
     const ValidateDepthChart = () => {
         if (!canModify) {
-            setServiceMessage(
-                () => "Viewing other team's depth charts in read-only mode."
+            toast.error(
+                (t) => (
+                    <span>
+                        {"Viewing other team's depth charts in read-only mode."}{' '}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 7000 }
             );
             return;
         }
@@ -306,24 +327,27 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
             let row = dc[i];
             if (!rosterMap[row.PlayerID]) {
                 setValidation(() => false);
-                setErrorMessage(
-                    `${row.FirstName} ${row.LastName} is listed on the depth chart at position ${row.Position}, but is not part of the roster. They are unable to play for ${team.TeamName}. Please remove them from the depth chart.`
+                toast.error(
+                    `${row.FirstName} ${row.LastName} is listed on the depth chart at position ${row.Position}, but is not part of the roster. They are unable to play for ${team.TeamName}. Please remove them from the depth chart.`,
+                    { duration: 6000 }
                 );
                 return;
             }
 
             if (row.NFLPlayer.IsPracticeSquad) {
                 setValidation(() => false);
-                setErrorMessage(
-                    `${row.FirstName} ${row.LastName} is on the practice squad but is listed in the depth chart. Please swap them from their ${row.Position} position level.`
+                toast.error(
+                    `${row.FirstName} ${row.LastName} is on the practice squad but is listed in the depth chart. Please swap them from their ${row.Position} position level.`,
+                    { duration: 6000 }
                 );
                 return;
             }
 
             if (row.NFLPlayer.IsInjured) {
                 setValidation(() => false);
-                setErrorMessage(
-                    `${row.FirstName} ${row.LastName} is injured with ${row.NFLPlayer.InjuryType}. They are unable to play for ${row.NFLPlayer.WeeksOfRecovery} Weeks. Please swap them from their ${row.Position} position level.`
+                toast.error(
+                    `${row.FirstName} ${row.LastName} is injured with ${row.NFLPlayer.InjuryType}. They are unable to play for ${row.NFLPlayer.WeeksOfRecovery} Weeks. Please swap them from their ${row.Position} position level.`,
+                    { duration: 6000 }
                 );
                 return;
             }
@@ -364,9 +388,8 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
                         pos === 'RT';
 
                     if (isLinemenPosition) {
-                        setErrorMessage(
-                            () =>
-                                `You have an offensive linemen set at First String for two OLine Positions. Please resolve this issue`
+                        toast.error(
+                            `You have an offensive linemen set at First String for two OLine Positions. Please resolve this issue.`
                         );
                         return;
                     }
@@ -374,9 +397,9 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
                         pos === 'DT' || pos === 'LE' || pos === 'RE';
 
                     if (isDlinePosition) {
-                        setErrorMessage(
-                            () =>
-                                `You have a defensive linemen set at First String for two DLine Positions. Please resolve this issue`
+                        toast.error(
+                            `You have a defensive linemen set at First String for two DLine Positions. Please resolve this issue`,
+                            { duration: 6000 }
                         );
                         return;
                     }
@@ -385,9 +408,9 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
                         pos === 'LOLB' || pos === 'OLB' || pos === 'MLB';
 
                     if (isLinebackerPosition) {
-                        setErrorMessage(
-                            () =>
-                                `You have a linebacker set at First String for Linebacker positions. Please resolve this issue`
+                        toast.error(
+                            `You have a linebacker set at First String for Linebacker positions. Please resolve this issue`,
+                            { duration: 6000 }
                         );
                         return;
                     }
@@ -396,16 +419,28 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
                         pos === 'CB' || pos === 'FS' || pos === 'SS';
 
                     if (isSecondaryPosition)
-                        setErrorMessage(
-                            () =>
-                                `You have a defensive back set at First String for two DB Positions. Please resolve this issue`
+                        toast.error(
+                            `You have a defensive back set at First String for two DB Positions. Please resolve this issue`,
+                            { duration: 6000 }
                         );
                     return;
                 }
             }
         }
-        setServiceMessage(() => '');
-        setErrorMessage(() => '');
+        if (validStatus) {
+            toast.success('Ready to save!', {
+                style: {
+                    border: `1px solid ${team.ColorOne}`,
+                    padding: '16px',
+                    color: team.ColorTwo
+                },
+                iconTheme: {
+                    primary: team.ColorOne,
+                    secondary: team.ColorTwo
+                },
+                duration: 2000
+            });
+        }
         setValidation(() => validStatus);
     };
 
@@ -421,37 +456,22 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
                             </h2>
                         </div>
                         <div className="col-md-auto ms-auto">
-                            {canModify ? (
+                            {canModify && (
                                 <button
                                     className="btn btn-danger me-2"
                                     onClick={ResetCurrentDepthChart}
                                 >
                                     Reset Depth Chart
                                 </button>
-                            ) : (
-                                ''
                             )}
-                            {isValid && canModify ? (
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={SaveDepthChart}
-                                >
-                                    Save Depth Chart
-                                </button>
-                            ) : (
-                                <button className="btn btn-secondary" disabled>
-                                    Save Depth Chart
-                                </button>
-                            )}
+                            <button
+                                className="btn btn-primary"
+                                onClick={SaveToast}
+                                disabled={!(isValid && canModify)}
+                            >
+                                Save Depth Chart
+                            </button>
                         </div>
-                        {!isMobile ? (
-                            <ServiceMessageBanner
-                                serMessage={serviceMessage}
-                                errMessage={errorMessage}
-                            />
-                        ) : (
-                            ''
-                        )}
                     </div>
                     <div className="row">
                         <div className="col-md-auto">
@@ -481,8 +501,8 @@ const NFLDepthChart = ({ currentUser, nflTeam, viewMode }) => {
                                         }
                                     />
                                     <hr className="dropdown-divider"></hr>
-                                    {collegeTeams && collegeTeams.length > 0
-                                        ? collegeTeams.map((x) => (
+                                    {nflTeams && nflTeams.length > 0
+                                        ? nflTeams.map((x) => (
                                               <DropdownItemObj
                                                   key={x.ID}
                                                   value={

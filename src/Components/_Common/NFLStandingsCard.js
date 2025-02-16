@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { getLogo } from '../../Constants/getLogo';
+import { SimNFL } from '../../Constants/CommonConstants';
 
 const StandingsRow = (props) => {
-    const { row, rank } = props;
-    const logoKey = row.TeamName + ' ' + row.Mascot;
-    const logo = getLogo(logoKey);
+    const { row, rank, retro } = props;
+    const logoKey = row.TeamID;
+    const logo = getLogo(SimNFL, logoKey, retro);
     return (
         <div className="row mb-2">
             <div className="col">{rank}</div>
@@ -24,7 +25,7 @@ const StandingsRow = (props) => {
     );
 };
 
-const NFLStandingsCard = ({ standings }) => {
+const NFLStandingsCard = ({ standings, retro }) => {
     const [standingsOne, setStandingsOne] = React.useState([]);
 
     const label =
@@ -71,7 +72,7 @@ const NFLStandingsCard = ({ standings }) => {
             </div>
             {standingsOne.length > 0 &&
                 standingsOne.map((x, idx) => (
-                    <StandingsRow row={x} rank={idx + 1} />
+                    <StandingsRow row={x} rank={idx + 1} retro={retro} />
                 ))}
         </div>
     );

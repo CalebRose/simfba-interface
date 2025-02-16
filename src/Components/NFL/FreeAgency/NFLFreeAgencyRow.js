@@ -6,6 +6,7 @@ import { FreeAgencyPlayerModal } from './FreeAgencyPlayerModal';
 import { FreeAgentOfferModal, WaiverOfferModal } from './FreeAgentOfferModal';
 import { GetNFLOverall } from '../../../_Utility/RosterHelper';
 import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
+import { SimNFL } from '../../../Constants/CommonConstants';
 
 const NFLFreeAgencyRow = ({
     teamID,
@@ -18,7 +19,8 @@ const NFLFreeAgencyRow = ({
     ts,
     team,
     rosterCount,
-    freeAgencyView
+    freeAgencyView,
+    retro
 }) => {
     const rank = idx + 1;
     const {
@@ -26,7 +28,9 @@ const NFLFreeAgencyRow = ({
         FirstName,
         LastName,
         Position,
+        PositionTwo,
         Archetype,
+        ArchetypeTwo,
         Overall,
         ShowLetterGrade,
         Age,
@@ -47,8 +51,17 @@ const NFLFreeAgencyRow = ({
     const viewWW = freeAgencyView === 'WW';
     let ovr = GetNFLOverall(Overall, ShowLetterGrade);
     const hasOffer = CheckForOffer(player, teamID);
+    const positionLabel = `${Position}${
+        PositionTwo.length > 0 ? `/${PositionTwo}` : ''
+    }`;
+    const archetypeLabel = `${Archetype}${
+        ArchetypeTwo.length > 0 ? `/${ArchetypeTwo}` : ''
+    }`;
 
     const leadingTeamsMapper = (player) => {
+        if (IsNegotiating) {
+            return 'Negotiating...';
+        }
         if (
             ((viewFA || viewPS) &&
                 (player.Offers === null || player.Offers.length === 0)) ||
@@ -63,7 +76,7 @@ const NFLFreeAgencyRow = ({
         const offers = viewFA || viewPS ? player.Offers : player.WaiverOffers;
 
         return offers.map((x, index) => {
-            const logo = getLogo(x.Team);
+            const logo = getLogo(SimNFL, x.TeamID, retro);
             return (
                 <img
                     key={index}
@@ -78,9 +91,11 @@ const NFLFreeAgencyRow = ({
 
     const StatusLabel = IsAcceptingOffers ? 'Open' : 'Negotiating';
 
+    const thisItem = 0;
+
     const canMakeOffer =
         canModify &&
-        (ts.IsOffseason ||
+        (ts.IsNFLOffSeason ||
             ts.NFLPreseason ||
             (!ts.IsNFLOffSeason && !ts.NFLPreseason && rosterCount < 56)) &&
         (!IsNegotiating || (IsNegotiating && hasOffer));
@@ -118,6 +133,7 @@ const NFLFreeAgencyRow = ({
                 player={player}
                 idx={idx}
                 viewMode={viewMode}
+                retro={retro}
             />
             {viewFA || viewPS ? (
                 <FreeAgentOfferModal
@@ -172,10 +188,10 @@ const NFLFreeAgencyRow = ({
                     <h6>{NameLabel}</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{Position}</h6>
+                    <h6>{positionLabel}</h6>
                 </td>
                 <td className="align-middle" style={{ width: 175 }}>
-                    <h6>{Archetype}</h6>
+                    <h6>{archetypeLabel}</h6>
                 </td>
                 <td className="align-middle">
                     <h6>

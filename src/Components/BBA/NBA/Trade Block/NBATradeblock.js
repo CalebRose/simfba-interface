@@ -135,7 +135,8 @@ const NBATradeBlock = ({ currentUser, cbb_Timestamp, viewMode, nbaTeam }) => {
         setSentTradeProposals(() => sentProposals);
     };
 
-    const AcceptTrade = async (id) => {
+    const AcceptTrade = async (item) => {
+        const id = item.ID;
         const res = _tradeService.AcceptTradeProposal(id);
         const proposals = [...receivedTradeProposals];
 
@@ -143,14 +144,16 @@ const NBATradeBlock = ({ currentUser, cbb_Timestamp, viewMode, nbaTeam }) => {
         setReceivedTradeProposals(() => filteredProposals);
     };
 
-    const RejectTrade = async (id) => {
+    const RejectTrade = async (item) => {
+        const id = item.ID;
         const res = _tradeService.RejectTradeProposal(id);
         const proposals = [...receivedTradeProposals];
         const filteredProposals = proposals.filter((x) => x.ID !== id);
         setReceivedTradeProposals(() => filteredProposals);
     };
 
-    const CancelTrade = async (id) => {
+    const CancelTrade = async (item) => {
+        const id = item.ID;
         const res = _tradeService.CancelTradeProposal(id);
         const proposals = [...sentTradeProposals];
         const filteredProposals = proposals.filter((x) => x.ID !== id);

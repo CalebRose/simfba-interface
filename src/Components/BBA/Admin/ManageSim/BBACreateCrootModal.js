@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import {
-    PositionList,
+    BBPositionList,
     StatesList,
     CountryList
 } from '../../../../Constants/BBAConstants';
@@ -21,7 +21,7 @@ import {
 const BBACreateCrootModal = (props) => {
     const [Recruit, setRecruit] = React.useState({});
     const [validStatus, setValidStatus] = React.useState(false);
-    const positions = [...PositionList.map((x) => x.abbr)];
+    const positions = [...BBPositionList.map((x) => x.abbr)];
     const { handleChange } = props;
 
     useEffect(() => {

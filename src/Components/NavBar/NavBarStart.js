@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import routes from '../../Constants/routes';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
+import { inconspicuousLink } from '../../_Utility/utilHelper';
 
-const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
+const NavBar_Start = ({ currentUser, cbb_Timestamp, cfb_Timestamp }) => {
     const user = currentUser;
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     const DesktopBarrier = () => {
@@ -57,6 +58,7 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                             Depth Chart
                         </Link>
                     </li>
+
                     <li>
                         <Link
                             className="dropdown-item"
@@ -65,6 +67,7 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                             Recruiting Overview
                         </Link>
                     </li>
+
                     <li>
                         <Link
                             to={routes.CFB_TEAM_RECRUITING_BOARD}
@@ -73,6 +76,7 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                             {user.team} Recruiting Board
                         </Link>
                     </li>
+
                     <li>
                         <Link to={routes.CFB_STATS} className="dropdown-item">
                             Statistics
@@ -84,6 +88,14 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                             className="dropdown-item"
                         >
                             Schedule
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
+                            to={routes.CFB_TRANSFER}
+                            className="dropdown-item"
+                        >
+                            Transfer Portal
                         </Link>
                     </li>
                 </ul>
@@ -139,7 +151,7 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                     </li>
                     <li>
                         <Link to={routes.CFB_STATS} className="dropdown-item">
-                            Stats
+                            Statistics
                         </Link>
                     </li>
                     <li>
@@ -158,6 +170,16 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                             Trade Block
                         </Link>
                     </li>
+                    {cfb_Timestamp && cfb_Timestamp.IsNFLOffSeason && (
+                        <li>
+                            <Link
+                                to={routes.NFL_DRAFT_ROOM}
+                                className="dropdown-item"
+                            >
+                                Draft Room
+                            </Link>
+                        </li>
+                    )}
                 </ul>
             </li>
         );
@@ -195,7 +217,7 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                     </li>
                     <li>
                         <Link to={routes.CBB_STATS} className="dropdown-item">
-                            Team Statistics
+                            Statistics
                         </Link>
                     </li>
                     <li>
@@ -220,6 +242,14 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                             className="dropdown-item"
                         >
                             {currentUser.cbb_team} Recruiting Board
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
+                            to={routes.CBB_TRANSFER}
+                            className="dropdown-item"
+                        >
+                            Transfer Portal
                         </Link>
                     </li>
                 </ul>
@@ -259,7 +289,7 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
                     </li>
                     <li>
                         <Link to={routes.CBB_STATS} className="dropdown-item">
-                            Team Statistics
+                            Statistics
                         </Link>
                     </li>
                     <li>
@@ -371,10 +401,11 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp }) => {
 
 const mapStateToProps = ({
     user: { currentUser },
-    timestamp: { cbb_Timestamp }
+    timestamp: { cbb_Timestamp, cfb_Timestamp }
 }) => ({
     currentUser,
-    cbb_Timestamp
+    cbb_Timestamp,
+    cfb_Timestamp
 });
 
 export default connect(mapStateToProps)(NavBar_Start);

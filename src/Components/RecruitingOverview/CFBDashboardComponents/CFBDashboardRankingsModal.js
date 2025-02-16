@@ -3,7 +3,7 @@ import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
 
 const CFBDashboardRankingsModal = (props) => {
-    const { teamProfiles, viewMode } = props;
+    const { teamProfiles, viewMode, retro } = props;
     const modalId = 'rankingsModal';
     const sortedProfiles =
         teamProfiles &&
@@ -30,25 +30,34 @@ const CFBDashboardRankingsModal = (props) => {
                     <div className="modal-body">
                         <div className="row">
                             <div className="col-sm-1 ms-auto">
-                                <h3>Rank</h3>
+                                <h5>Rank</h5>
                             </div>
                             <div className="col-sm-2 ms-auto">
-                                <h3>Team</h3>
+                                <h5>Team</h5>
                             </div>
                             <div className="col-sm-1 ms-auto">
-                                <h4>Signees</h4>
+                                <h5>Signees</h5>
+                            </div>
+                            <div className="col-sm-1 ms-auto">
+                                <h5>Five Stars</h5>
+                            </div>
+                            <div className="col-sm-1 ms-auto">
+                                <h5>Four Stars</h5>
+                            </div>
+                            <div className="col-sm-1 ms-auto">
+                                <h5>Three Stars</h5>
                             </div>
                             <div className="col-sm-2 ms-auto">
-                                <h4>Composite Score</h4>
+                                <h5>Composite Score</h5>
                             </div>
-                            <div className="col-sm-2 ms-auto">
-                                <h4>ESPN Score</h4>
+                            <div className="col-sm-1 ms-auto">
+                                <h6>ESPN Score</h6>
                             </div>
-                            <div className="col-sm-2 ms-auto">
-                                <h4>Rivals Score</h4>
+                            <div className="col-sm-1 ms-auto">
+                                <h6>Rivals Score</h6>
                             </div>
-                            <div className="col-sm-2 ms-auto">
-                                <h4>247 Score</h4>
+                            <div className="col-sm-1 ms-auto">
+                                <h6>247 Score</h6>
                             </div>
                         </div>
                         {sortedProfiles &&
@@ -65,22 +74,31 @@ const CFBDashboardRankingsModal = (props) => {
                                             <div className="col-sm-1 ms-auto">
                                                 {x.TotalCommitments}
                                             </div>
+                                            <div className="col-sm-1 ms-auto">
+                                                {x.FiveStars}
+                                            </div>
+                                            <div className="col-sm-1 ms-auto">
+                                                {x.FourStars}
+                                            </div>
+                                            <div className="col-sm-1 ms-auto">
+                                                {x.ThreeStars}
+                                            </div>
                                             <div className="col-sm-2 ms-auto">
                                                 {RoundToTwoDecimals(
                                                     x.CompositeScore
                                                 )}
                                             </div>
-                                            <div className="col-sm-2 ms-auto">
+                                            <div className="col-sm-1 ms-auto">
                                                 {RoundToTwoDecimals(
                                                     x.ESPNScore
                                                 )}
                                             </div>
-                                            <div className="col-sm-2 ms-auto">
+                                            <div className="col-sm-1 ms-auto">
                                                 {RoundToTwoDecimals(
                                                     x.RivalsScore
                                                 )}
                                             </div>
-                                            <div className="col-sm-2 ms-auto">
+                                            <div className="col-sm-1 ms-auto">
                                                 {RoundToTwoDecimals(
                                                     x.Rank247Score
                                                 )}

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
+import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { getLogo } from '../../../../Constants/getLogo';
 import routes from '../../../../Constants/routes';
@@ -12,6 +13,7 @@ import { Spinner } from '../../../_Common/Spinner';
 import CFBMatchCard from './CFBMatchCard';
 import { NewsLogSmall } from '../../../_Common/NewsLog';
 import FBALandingPageService from '../../../../_Services/simFBA/FBALandingPageService';
+import { SimCFB } from '../../../../Constants/CommonConstants';
 
 const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     let teamService = new FBATeamService();
@@ -39,7 +41,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     useEffect(() => {
         if (currentUser) {
             setTeam(currentUser.team);
-            setLogo(getLogo(currentUser.teamAbbr));
+            setLogo(getLogo(SimCFB, currentUser.teamId, currentUser.IsRetro));
         }
         if (!cfbTeam) {
             getTeam();
@@ -75,15 +77,26 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             nextIdx = games.findIndex((x) => x.Week === nextWeek);
             while (prevIdx === -1) {
                 prevWeek += 1;
+                if (prevWeek > 20) {
+                    prevIdx = -2;
+                    break;
+                }
                 prevIdx = games.findIndex((x) => x.Week === prevWeek);
             }
             while (nextIdx === -1) {
                 nextWeek -= 1;
                 nextIdx = games.findIndex((x) => x.Week === nextWeek);
+                if (nextWeek <= prevWeek) {
+                    nextIdx = prevIdx;
+                    break;
+                }
             }
-
-            let gameRange = games.slice(prevIdx, nextIdx + 1);
-            setViewableMatches(() => gameRange);
+            if (nextIdx === prevIdx && prevIdx === -2) {
+                setViewableMatches(() => []);
+            } else {
+                let gameRange = games.slice(prevIdx, nextIdx + 1);
+                setViewableMatches(() => gameRange);
+            }
         }
     }, [cfb_Timestamp, games]);
 
@@ -135,6 +148,12 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
         );
 
         setNewsFeed(() => res);
+    };
+
+    const getBread = () => {
+        toast(`Here's some bread!`, {
+            icon: '🍞'
+        });
     };
 
     return (
@@ -201,14 +220,26 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                     >
                                         Depth Chart
                                     </Link>
-                                    <Link
-                                        to={routes.CFB_RECRUITING}
-                                        type="button"
-                                        className="btn btn-primary btn-sm me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
-                                    >
-                                        Recruit
-                                    </Link>
+                                    {cfb_Timestamp &&
+                                    cfb_Timestamp.TransferPortalPhase < 2 ? (
+                                        <Link
+                                            to={routes.CFB_RECRUITING}
+                                            type="button"
+                                            className="btn btn-primary btn-sm me-2 shadow"
+                                            style={teamColors ? teamColors : {}}
+                                        >
+                                            Recruit
+                                        </Link>
+                                    ) : (
+                                        <Link
+                                            to={routes.CFB_TRANSFER}
+                                            type="button"
+                                            className="btn btn-primary btn-sm me-2 shadow"
+                                            style={teamColors ? teamColors : {}}
+                                        >
+                                            Portal
+                                        </Link>
+                                    )}
                                 </div>
                             </div>
                             <div className="row mt-2 mb-2">
@@ -260,18 +291,40 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                     >
                                         Depth Chart
                                     </Link>
+                                    {currentUser &&
+                                        currentUser.teamId === 59 && (
+                                            <button
+                                                type="button"
+                                                className="btn btn-small btn-outline-light"
+                                                onClick={getBread}
+                                            >
+                                                🍞
+                                            </button>
+                                        )}
                                 </div>
                             </div>
                             <div className="row mt-2 mb-2">
                                 <div className="btn-group btn-group-sm d-flex">
-                                    <Link
-                                        to={routes.CFB_RECRUITING}
-                                        type="button"
-                                        className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
-                                    >
-                                        Recruiting
-                                    </Link>
+                                    {cfb_Timestamp &&
+                                    cfb_Timestamp.TransferPortalPhase < 2 ? (
+                                        <Link
+                                            to={routes.CFB_RECRUITING}
+                                            type="button"
+                                            className="btn btn-primary btn-sm me-2 shadow"
+                                            style={teamColors ? teamColors : {}}
+                                        >
+                                            Recruit
+                                        </Link>
+                                    ) : (
+                                        <Link
+                                            to={routes.CFB_TRANSFER}
+                                            type="button"
+                                            className="btn btn-primary btn-sm me-2 shadow"
+                                            style={teamColors ? teamColors : {}}
+                                        >
+                                            Portal
+                                        </Link>
+                                    )}
                                     <Link
                                         to={routes.CFB_STATS}
                                         type="button"
@@ -309,6 +362,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         team={cfbTeam}
                                         isNFL={false}
                                         timestamp={cfb_Timestamp}
+                                        retro={currentUser.IsRetro}
                                     />
                                 </div>
                             );
@@ -340,7 +394,11 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                             : 'desktop-display'
                                     }
                                 >
-                                    <StandingsCard standings={standings} />
+                                    <StandingsCard
+                                        standings={standings}
+                                        league={SimCFB}
+                                        retro={currentUser.IsRetro}
+                                    />
                                     <div className="cfb-news-feed">
                                         {newsFeed.length > 0 &&
                                             newsFeed.map((x) => (

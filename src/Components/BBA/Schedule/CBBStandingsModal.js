@@ -3,22 +3,39 @@ import Select from 'react-select';
 import BBAStandingsService from '../../../_Services/simNBA/BBAStandingsService';
 import { Spinner } from '../../_Common/Spinner';
 import StandingsCard from './StandingsModalCard';
+import { NBAStandingsCard } from '../../_Common/NBAStandingsCard';
+import {
+    SeasonsList,
+    SimCBB,
+    SimNBA
+} from '../../../Constants/CommonConstants';
 
 const CBBStandingsModal = (props) => {
     let _standingsService = new BBAStandingsService();
     const modalId = `standingsModal`;
-    const { ts } = props;
+    const { ts, isNBA, retro } = props;
     const [conferences, setConferences] = useState([]);
+    const [seasons, setSeasons] = useState(SeasonsList);
     const [allStandings, setAllStandings] = useState([]);
     const [viewableStandings, setViewableStandings] = useState([]);
     const [selectedConferences, setSelectedConferences] = useState([]);
+    const [selectedSeason, setSelectedSeason] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         if (ts !== undefined || ts !== null) {
-            GetAllStandingsData();
+            if (selectedSeason === null) {
+                const year = {
+                    label: ts.Season,
+                    value: ts.SeasonID
+                };
+                setSelectedSeason(() => year);
+            } else {
+                setIsLoading(() => true);
+                GetAllStandingsData();
+            }
         }
-    }, [ts]);
+    }, [ts, selectedSeason, isNBA]);
 
     useEffect(() => {
         let fcs = [...allStandings];
@@ -31,9 +48,13 @@ const CBBStandingsModal = (props) => {
     }, [selectedConferences]);
 
     const GetAllStandingsData = async () => {
-        let response = await _standingsService.GetAllConferenceStandings(
-            ts.SeasonID
-        );
+        let response = !isNBA
+            ? await _standingsService.GetAllConferenceStandings(
+                  selectedSeason.value
+              )
+            : await _standingsService.GetAllNBAConferenceStandings(
+                  selectedSeason.value
+              );
         let confs = response.map((x) => {
             return { label: x.ConferenceName, value: x.ConferenceID };
         });
@@ -52,6 +73,7 @@ const CBBStandingsModal = (props) => {
                 curr.push(response[i]);
             } else {
                 currentID++;
+                while (response[i].ConferenceID !== currentID) currentID++;
                 stack.push(curr);
                 curr = [];
                 curr.push(response[i]);
@@ -71,6 +93,11 @@ const CBBStandingsModal = (props) => {
         setSelectedConferences(() => opts);
     };
 
+    const ChangeSeason = (options) => {
+        const opts = { label: options.label, value: options.value };
+        setSelectedSeason(() => opts);
+    };
+
     return (
         <div
             className="modal fade"
@@ -84,7 +111,12 @@ const CBBStandingsModal = (props) => {
                     <div className="modal-header">
                         <h4 className="modal-title" id="crootModalLabel">
                             {!isLoading
-                                ? `${ts.Season} SimCBB Conference Standings`
+                                ? `${
+                                      selectedSeason !== undefined &&
+                                      selectedSeason !== null
+                                          ? selectedSeason.label
+                                          : 0
+                                  } SimCBB Conference Standings`
                                 : ''}
                         </h4>
                         <button
@@ -110,6 +142,18 @@ const CBBStandingsModal = (props) => {
                                             onChange={ChangeConferences}
                                         />
                                     </div>
+                                    <div className="col-md-auto">
+                                        <h5 className="text-start align-middle">
+                                            Seasons
+                                        </h5>
+                                        <Select
+                                            options={seasons}
+                                            isMulti={false}
+                                            className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                            classNamePrefix="select"
+                                            onChange={ChangeSeason}
+                                        />
+                                    </div>
                                     <div className="col-md-auto ms-2">
                                         <i>
                                             C.W.: Conference Wins | C.L.:
@@ -120,7 +164,11 @@ const CBBStandingsModal = (props) => {
                                 </div>
                                 <div className="row g-2 gy-2 mb-1">
                                     {viewableStandings.map((x) => (
-                                        <StandingsCard standings={x} />
+                                        <NBAStandingsCard
+                                            standings={x}
+                                            retro={retro}
+                                            league={isNBA ? SimNBA : SimCBB}
+                                        />
                                     ))}
                                 </div>
                             </>

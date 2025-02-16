@@ -2,9 +2,10 @@ import React from 'react';
 import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
 import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
+import { SimCBB } from '../../../Constants/CommonConstants';
 
 const CBBRankingsModal = (props) => {
-    const { teamProfiles, viewMode } = props;
+    const { teamProfiles, viewMode, retro } = props;
     const modalId = 'rankingsModal';
     const sortedProfiles =
         teamProfiles &&
@@ -28,63 +29,87 @@ const CBBRankingsModal = (props) => {
                     </div>
                     <div className="modal-body">
                         <div className="row">
+                            <div className="col-1 ms-auto">
+                                <h5>Rank</h5>
+                            </div>
+                            <div className="col-2 ms-auto">
+                                <h5>Team</h5>
+                            </div>
+                            <div className="col-1 ms-auto">
+                                <h5>Signees</h5>
+                            </div>
                             <div className="col-sm-1 ms-auto">
-                                <h3>Rank</h3>
-                            </div>
-                            <div className="col-sm-2 ms-auto">
-                                <h3>Team</h3>
+                                <h5>Five Stars</h5>
                             </div>
                             <div className="col-sm-1 ms-auto">
-                                <h4>Signees</h4>
+                                <h5>Four Stars</h5>
                             </div>
-                            <div className="col-sm-2 ms-auto">
-                                <h4>Composite Score</h4>
+                            <div className="col-sm-1 ms-auto">
+                                <h5>Three Stars</h5>
                             </div>
-                            <div className="col-sm-2 ms-auto">
-                                <h4>ESPN Score</h4>
+                            <div className="col-2 ms-auto">
+                                <h5>Composite Score</h5>
                             </div>
-                            <div className="col-sm-2 ms-auto">
-                                <h4>Rivals Score</h4>
+                            <div className="col-1 ms-auto">
+                                <h6>ESPN Score</h6>
                             </div>
-                            <div className="col-sm-2 ms-auto">
-                                <h4>247 Score</h4>
+                            <div className="col-1 ms-auto">
+                                <h6>Rivals Score</h6>
+                            </div>
+                            <div className="col-1 ms-auto">
+                                <h6>247 Score</h6>
                             </div>
                         </div>
                         {sortedProfiles &&
                             sortedProfiles.map((x, idx) => {
-                                const logo = getLogo(x.TeamAbbr);
+                                const logo = getLogo(SimCBB, x.TeamID, retro);
                                 if (x.CompositeScore > 0)
                                     return (
-                                        <div className="row cbb-rank-row">
-                                            <div className="col-sm-1 ms-auto">
+                                        <div className="row cbb-rank-row flex flex-row align-items-center justify-content-center">
+                                            <div className="col-1 ms-auto">
                                                 <strong>{idx + 1}</strong>
                                             </div>
-                                            <div className="col-sm-2 ms-auto">
+                                            <div
+                                                className="col-2 ms-auto flex flex-row align-items-center justify-content-center"
+                                                style={{ display: 'flex' }}
+                                            >
                                                 <img
                                                     className="image-recruit-logo"
                                                     src={logo}
                                                     alt="rankedTeam"
                                                 />
+                                                <h6 className="ms-2">
+                                                    {x.TeamAbbr}
+                                                </h6>
                                             </div>
-                                            <div className="col-sm-1 ms-auto">
+                                            <div className="col-1 ms-auto">
                                                 {x.TotalCommitments}
                                             </div>
-                                            <div className="col-sm-2 ms-auto">
+                                            <div className="col-1 ms-auto">
+                                                {x.FiveStars}
+                                            </div>
+                                            <div className="col-1 ms-auto">
+                                                {x.FourStars}
+                                            </div>
+                                            <div className="col-1 ms-auto">
+                                                {x.ThreeStars}
+                                            </div>
+                                            <div className="col-2 ms-auto">
                                                 {RoundToTwoDecimals(
                                                     x.CompositeScore
                                                 )}
                                             </div>
-                                            <div className="col-sm-2 ms-auto">
+                                            <div className="col-1 ms-auto">
                                                 {RoundToTwoDecimals(
                                                     x.ESPNScore
                                                 )}
                                             </div>
-                                            <div className="col-sm-2 ms-auto">
+                                            <div className="col-1 ms-auto">
                                                 {RoundToTwoDecimals(
                                                     x.RivalsScore
                                                 )}
                                             </div>
-                                            <div className="col-sm-2 ms-auto">
+                                            <div className="col-1 ms-auto">
                                                 {RoundToTwoDecimals(
                                                     x.Rank247Score
                                                 )}

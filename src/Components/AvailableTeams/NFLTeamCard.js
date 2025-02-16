@@ -1,11 +1,12 @@
 import React from 'react';
 import { GetMobileCardClass } from '../../Constants/CSSClassHelper';
 import { getLogo } from '../../Constants/getLogo';
+import { SimNFL } from '../../Constants/CommonConstants';
 
-const NFLTeamCard = ({ team, request, disable, viewMode }) => {
+const NFLTeamCard = ({ team, request, disable, viewMode, retro }) => {
     const [requested, setRequested] = React.useState(false);
 
-    const logo = getLogo(team.TeamName + ' ' + team.Mascot);
+    const logo = getLogo(SimNFL, team.ID, retro);
 
     const sendRequest = (event) => {
         if (disable === false) {

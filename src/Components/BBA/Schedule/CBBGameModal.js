@@ -8,7 +8,7 @@ import {
 } from '../../_Common/BBAGameModalComponents';
 
 const CBBGameModal = (props) => {
-    const { game } = props;
+    const { game, isNBA } = props;
     let _matchService = new BBAMatchService();
     const modalId = `gameModal`;
     const [homePlayers, setHomePlayers] = useState([]);
@@ -24,8 +24,9 @@ const CBBGameModal = (props) => {
     }, [game]);
 
     const GetMatchResults = async () => {
-        const response = await _matchService.GetMatchResultData(game.ID);
-
+        const response = isNBA
+            ? await _matchService.GetNBAMatchResultData(game.ID)
+            : await _matchService.GetMatchResultData(game.ID);
         setHomePlayers(() => response.HomePlayers);
         setAwayPlayers(() => response.AwayPlayers);
         setHomeStats(() => response.HomeStats);
@@ -35,7 +36,7 @@ const CBBGameModal = (props) => {
 
     return (
         <div
-            className="modal fade"
+            className="modal modal-xl fade"
             id={modalId}
             tabIndex="-1"
             aria-labelledby="gameModalLabel"
@@ -59,14 +60,16 @@ const CBBGameModal = (props) => {
                     <div className="modal-body">
                         {!isLoading ? (
                             <>
-                                <BBABoxScoreHeader />
+                                <BBABoxScoreHeader isNBA={isNBA} />
                                 <BBABoxScoreRow
                                     team={game.HomeTeam}
                                     teamStats={homeStats}
+                                    isNBA={isNBA}
                                 />
                                 <BBABoxScoreRow
                                     team={game.AwayTeam}
                                     teamStats={awayStats}
+                                    isNBA={isNBA}
                                 />
                                 <BBAPlayerStatsTable
                                     team={game.HomeTeam}

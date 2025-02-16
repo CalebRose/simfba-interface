@@ -1,3 +1,28 @@
+/* 
+    I recognize that this is not a fool-proof method that is not 
+    cryptographically secure, but because this is only 
+    game data, I think it's okay to use this function
+    */
+export const GenerateUniqueID = () => {
+    const length = 32;
+    const timestamp = new Date().getTime().toString(36);
+    let randomString = '';
+    const characters =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (let i = 0; i < length - timestamp.length; i++) {
+        randomString += characters.charAt(
+            Math.floor(Math.random() * characters.length)
+        );
+    }
+
+    return timestamp + randomString;
+};
+
+export const getKeyByValue = (object, value) => {
+    return Object.keys(object).find((key) => object[key] === value);
+};
+
 export const LowerCaseCheck = (stringA, stringB) => {
     return stringA.toLowerCase() === stringB.toLowerCase();
 };
@@ -13,6 +38,10 @@ export const HeightToFeetAndInches = (height) => {
 
 export const RoundToTwoDecimals = (num) => {
     return Math.round(num * 100) / 100;
+};
+
+export const PickFromArray = (arr) => {
+    return arr[~~(Math.random() * arr.length)];
 };
 
 export const GetDefaultStatsOrder = (
@@ -275,8 +304,17 @@ export const RevealResults = (game, timestamp) => {
     return false;
 };
 
+export const RevealCBBResults = (game, timestamp) => {
+    const { MatchOfWeek, GameComplete } = game;
+    if (MatchOfWeek === 'A' && timestamp.GamesARan) return GameComplete;
+    if (MatchOfWeek === 'B' && timestamp.GamesBRan) return GameComplete;
+    if (MatchOfWeek === 'C' && timestamp.GamesCRan) return GameComplete;
+    if (MatchOfWeek === 'D' && timestamp.GamesDRan) return GameComplete;
+
+    return false;
+};
+
 export const GetPredictionRound = (r) => {
-    console.log({ r });
     if (r === 1) {
         return 'Early First Round';
     } else if (r === 2) {
@@ -292,4 +330,138 @@ export const GetPredictionRound = (r) => {
     } else {
         return 'Likely UDFA';
     }
+};
+
+export const inconspicuousLink = 'https://bit.ly/3BlS71b';
+
+export const GenerateNumberFromRange = (min, max) => {
+    if (min > max) {
+        // Swap min and max if min is greater than max
+        [min, max] = [max, min];
+    }
+    return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
+export const GetCollegeYear = (player) => {
+    const isRedshirt = player.IsRedshirt;
+    if (player.Year === 5 && isRedshirt) {
+        return '(Sr)';
+    } else if (player.Year === 4 && !isRedshirt) {
+        return 'Sr';
+    } else if (player.Year === 4 && isRedshirt) {
+        return '(Jr)';
+    } else if (player.Year === 3 && !isRedshirt) {
+        return 'Jr';
+    } else if (player.Year === 3 && isRedshirt) {
+        return '(So)';
+    } else if (player.Year === 2 && !isRedshirt) {
+        return 'So';
+    } else if (player.Year === 2 && isRedshirt) {
+        return '(Fr)';
+    }
+    return 'Fr';
+};
+
+export const GetPromiseWeight = (promise, benchmark, position, isCFB) => {
+    if (promise.length === 0) {
+        return 'Very Low';
+    }
+    if ((promise === 'Wins' && !isCFB) || promise === 'Minutes') {
+        if (benchmark <= 5) return 'Very Low';
+        if (benchmark <= 10) return 'Low';
+        if (benchmark <= 25) return 'Medium';
+        return 'High';
+    } else if (promise === 'Wins' && isCFB) {
+        if (benchmark <= 4) return 'Very Low';
+        if (benchmark <= 6) return 'Low';
+        if (benchmark <= 10) return 'Medium';
+        if (benchmark <= 12) return 'High';
+        return 'Very High';
+    } else if (promise === 'Snap Count') {
+        if (position === 'K' || position === 'P') {
+            if (benchmark <= 5) return 'Low';
+            if (benchmark <= 8) return 'Medium';
+            if (benchmark <= 10) return 'High';
+        } else {
+            if (benchmark <= 10) return 'Very Low';
+            if (benchmark <= 20) return 'Low';
+            if (benchmark <= 30) return 'Medium';
+            if (benchmark <= 50) return 'High';
+            return 'Very High';
+        }
+    } else if (promise === 'Home State Game') {
+        return 'Medium';
+    } else if (promise === 'No Redshirt') {
+        return 'Low';
+    } else if (promise === 'Not Bad Gameplan Fit') {
+        return 'Low';
+    } else if (promise === 'Good Gameplan Fit') {
+        return 'Medium';
+    } else if (promise === 'Conference Championship') {
+        return 'High';
+    } else if (promise === 'Playoffs' && isCFB) {
+        return 'High';
+    } else if (promise === 'Playoffs' && !isCFB) {
+        return 'Medium';
+    } else if (promise === 'Bowl Game') {
+        return 'Medium';
+    } else if (promise === 'Elite 8') {
+        return 'High';
+    } else if (promise === 'Final Four') {
+        return 'Very High';
+    } else if (promise === 'National Championship') {
+        return 'Very High';
+    }
+    return 'Very Low';
+};
+
+export const GetPromiseMultiplier = (promiseObj) => {
+    if (!promiseObj || promiseObj === undefined || promiseObj.ID === 0)
+        return 1;
+    const { PromiseWeight } = promiseObj;
+    if (PromiseWeight === 'Very Low') return 1.05;
+    if (PromiseWeight === 'Low') return 1.1;
+    if (PromiseWeight === 'Medium') return 1.3;
+    if (PromiseWeight === 'High') return 1.5;
+    if (PromiseWeight === 'Very High') return 1.75;
+    return 1;
+};
+
+export const GetDownStr = (down) => {
+    if (down === 0 || down === '0') return down;
+    if (down === 1 || down === '1') return '1st';
+    if (down === 2 || down === '2') return '2nd';
+    if (down === 3 || down === '3') return '3rd';
+    if (down === 4 || down === '4') return '4th';
+    return '';
+};
+
+export const ShuffleList = (list) => {
+    const newList = [...list];
+    let currentIndex = list.length;
+
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+        // Pick a remaining element...
+        let randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [newList[currentIndex], newList[randomIndex]] = [
+            newList[randomIndex],
+            newList[currentIndex]
+        ];
+    }
+
+    return newList;
+};
+
+export const GetAdjStaminaByPace = (sta, pace) => {
+    let mod = 0;
+    if (pace === 'Balanced') return sta;
+    else if (pace === 'Fast') mod -= 3;
+    else if (pace === 'Very Fast') mod -= 6;
+    else if (pace === 'Slow') mod += 3;
+    else if (pace === 'Very Slow') mod += 6;
+    return sta + mod;
 };

@@ -57,6 +57,14 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
         } else if (selectedLeague == 'NBA') {
             news = [...nbaNews];
         }
+        // Prevent Overflow
+        if (
+            selectedSeason.length === 0 &&
+            selectedNewsTypes.length === 0 &&
+            selectedWeeks.length === 0
+        ) {
+            news = news.slice(0, 100);
+        }
         const filterLogs = FilterLogs(news);
         setCurrentNews(() => filterLogs);
     }, [selectedWeeks, selectedNewsTypes, selectedLeague, selectedSeason]);
@@ -186,7 +194,7 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
     return (
         <div className="container-fluid">
             <div className="justify-content-start">
-                <h2>SimFBA News</h2>
+                <h2>SimSN News</h2>
                 <h4 className="align-end">
                     CFB Week: {cfb_Timestamp.CollegeWeek} | CBB Week:{' '}
                     {cbb_Timestamp.CollegeWeek} | NFL Week:{' '}
@@ -214,7 +222,7 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
                                 onChange={ChangeNewsTypes}
                             />
                         </div>
-                        <div className="row">
+                        <div className="row mb-2">
                             <h6>Season</h6>
                             <Select
                                 options={seasonOptions}

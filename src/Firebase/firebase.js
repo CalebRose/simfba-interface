@@ -64,13 +64,55 @@ export const useFirestore = (collection, docName) => {
 
     const updateData = useCallback(
         (newData) => {
-            console.log('PING!');
-            firestore.collection(collection).doc(docName).update(newData);
+            firestore
+                .collection(collection)
+                .doc(docName)
+                .update(newData)
+                .catch((error) => console.error('Update failed:', error));
         },
         [collection, docName]
     );
 
     return [data, updateData];
+};
+
+export const useFireStoreCollection = (collectionName) => {
+    const [data, setData] = useState([]);
+    const firestore = useMemo(() => firebase.firestore(), []);
+    const docRef = useMemo(
+        () => firestore.collection(collectionName),
+        [firestore, collectionName]
+    );
+    useEffect(() => {
+        const collectionRef = firestore.collection(collectionName);
+        const unsubscribe = collectionRef.onSnapshot(
+            (snapshot) => {
+                const docs = snapshot.docs.map((doc) => ({
+                    ...doc.data(),
+                    id: doc.id
+                }));
+                setData(docs);
+            },
+            (error) => {
+                console.error('Error fetching collection: ', error);
+                setData([]);
+            }
+        );
+
+        return () => unsubscribe();
+    }, [docRef, collectionName]);
+
+    const updateDocument = useCallback(
+        (docId, newData) => {
+            const docRef = firestore.collection(collectionName).doc(docId);
+            docRef
+                .update(newData)
+                .catch((error) => console.error('Update failed:', error));
+        },
+        [firestore, collectionName]
+    );
+
+    return [data, updateDocument];
 };
 
 export const auth = firebase.auth();

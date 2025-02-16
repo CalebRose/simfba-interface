@@ -1,12 +1,12 @@
 import React from 'react';
 import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
-import { baseUrl } from '../../../Constants/logos';
 import { GetNFLOverall } from '../../../_Utility/RosterHelper';
 import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
 import { CancelOfferModal } from './CancelOfferModal';
 import { FreeAgencyPlayerModal } from './FreeAgencyPlayerModal';
 import { FreeAgentOfferModal } from './FreeAgentOfferModal';
+import { SimNFL } from '../../../Constants/CommonConstants';
 
 export const NFLFreeAgencyMobileRow = ({
     teamID,
@@ -18,10 +18,11 @@ export const NFLFreeAgencyMobileRow = ({
     cancel,
     rosterCount,
     ts,
+    retro,
     team
 }) => {
     const rank = idx + 1;
-    const NameLabel = player.FirstName + ' ' + player.LastName;
+    const NameLabel = `Rank ${rank} | ${player.FirstName} ${player.LastName}`;
     const modalTarget = '#playerModal' + idx;
     const offerTarget = '#offerModal' + idx;
     const cancelTarget = '#cancelOffer' + idx;
@@ -44,12 +45,15 @@ export const NFLFreeAgencyMobileRow = ({
     const hasOffer = checkForOffer(player);
 
     const leadingTeamsMapper = (player) => {
+        if (player.IsNegotiating) {
+            return 'Negotiating...';
+        }
         if (player.Offers === null || player.Offers.length === 0) {
             return 'None';
         }
 
         return player.Offers.map((x) => {
-            const logo = getLogo(x.Team);
+            const logo = getLogo(SimNFL, x.TeamID, retro);
             return (
                 <>
                     <img
@@ -67,7 +71,7 @@ export const NFLFreeAgencyMobileRow = ({
 
     const canMakeOffer =
         canModify &&
-        (ts.IsOffseason ||
+        (ts.IsNFLOffSeason ||
             ts.NFLPreseason ||
             (!ts.IsNFLOffSeason && !ts.NFLPreseason && rosterCount < 56)) &&
         (!player.IsNegotiating || (player.IsNegotiating && hasOffer));
@@ -79,6 +83,7 @@ export const NFLFreeAgencyMobileRow = ({
                 player={player}
                 idx={idx}
                 viewMode={viewMode}
+                retro={retro}
             />
             <FreeAgentOfferModal
                 key={player.ID}
@@ -99,12 +104,13 @@ export const NFLFreeAgencyMobileRow = ({
             />
             <div className={`${mobileCardClass} mb-2`}>
                 <div className="card-body">
-                    <h5 className="card-title">
-                        Rank:{rank} | {player.FirstName} {player.LastName}
-                    </h5>
+                    <h5 className="card-title">{NameLabel}</h5>
                     <h6 className="card-subtitle mb-2 text-muted">
                         {year === 'R' ? 'Rookie' : `${year} Year`}{' '}
-                        {player.Archetype} {player.Position} from{' '}
+                        {player.Archetype} {player.Position}
+                        {player.PositionTwo.length > 0
+                            ? `/${player.PositionTwo}`
+                            : ''}
                         {player.Hometown}, {player.State}
                     </h6>
                     <p className="card-text">

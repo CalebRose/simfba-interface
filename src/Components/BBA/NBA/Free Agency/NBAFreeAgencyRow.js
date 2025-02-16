@@ -7,6 +7,7 @@ import {
     NBAWaiverOfferModal
 } from './NBAFreeAgencyModals';
 import { getLogo } from '../../../../Constants/getLogo';
+import { SimNBA } from '../../../../Constants/CommonConstants';
 
 export const NBAFreeAgencyMobileRow = ({}) => {};
 
@@ -20,10 +21,10 @@ export const NBAFreeAgencyRow = ({
     cancel,
     ts,
     team,
+    retro,
     rosterCount,
     freeAgencyView
 }) => {
-    console.log(freeAgencyView);
     const {
         ID,
         FirstName,
@@ -57,7 +58,7 @@ export const NBAFreeAgencyRow = ({
         const offers = viewFA ? player.Offers : player.WaiverOffers;
 
         return offers.map((x) => {
-            const logo = getLogo(x.Team);
+            const logo = getLogo(SimNBA, x.TeamID, retro);
             return (
                 <>
                     <img
@@ -77,7 +78,7 @@ export const NBAFreeAgencyRow = ({
         canModify &&
         (ts.IsOffseason ||
             ts.NBAPreseason ||
-            (!ts.IsNBAOffSeason && !ts.NBAPreseason && rosterCount < 15)) &&
+            (!ts.IsNBAOffSeason && !ts.NBAPreseason && rosterCount < 18)) &&
         (!IsNegotiating || (IsNegotiating && hasOffer));
 
     return (
@@ -87,6 +88,7 @@ export const NBAFreeAgencyRow = ({
                 player={player}
                 idx={idx}
                 viewMode={viewMode}
+                retro={retro}
             />
             {viewFA ? (
                 <NBAFreeAgentOfferModal
@@ -162,7 +164,11 @@ export const NBAFreeAgencyRow = ({
                     <h6>${player.MinimumValue}M</h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{leadingTeams}</h6>
+                    <h6>
+                        {!player.IsNegotiating
+                            ? leadingTeams
+                            : 'Negotiating...'}
+                    </h6>
                 </td>
                 <td className="align-middle">
                     <div className="btn-group">
@@ -172,7 +178,10 @@ export const NBAFreeAgencyRow = ({
                             title="Make An Offer"
                             data-bs-toggle="modal"
                             data-bs-target={viewFA ? offerTarget : waiverTarget}
-                            disabled={!canMakeOffer}
+                            disabled={
+                                !canMakeOffer ||
+                                (player.IsInternational && !player.IsNBA)
+                            }
                         >
                             <i className="bi bi-cash-coin image-nfl-roster" />
                         </button>

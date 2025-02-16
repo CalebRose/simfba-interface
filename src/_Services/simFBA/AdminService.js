@@ -1,3 +1,4 @@
+import BBAURL from '../../Constants/SimBBA_url';
 import url from '../../Constants/url';
 import { GetActionCall, GetCall } from './FetchHelper';
 export default class AdminService {
@@ -55,5 +56,49 @@ export default class AdminService {
 
     async RunTheGames() {
         return await GetActionCall(`${url}admin/run/the/games/`);
+    }
+
+    async SyncAIRecruitingBoards() {
+        return await GetActionCall(`${url}admin/ai/sync/boards`);
+    }
+
+    async UpdateAIDepthCharts() {
+        return await GetActionCall(
+            `${url}gameplan/college/depthchart/ai/update/`
+        );
+    }
+
+    async MassUpdateAIDepthCharts(off, def) {
+        return await GetActionCall(`${url}simfba/mass/${off}/${def}/`);
+    }
+
+    async RunCron() {
+        return await GetActionCall(`${url}simfba/run/cron`);
+    }
+
+    async GetInbox(league, collegeId, profID) {
+        let apiUrl = url;
+        if (league === 'bba') {
+            apiUrl = BBAURL;
+        }
+        return await GetCall(
+            `${apiUrl}${league}/inbox/get/${collegeId}/${profID}`
+        );
+    }
+
+    async ToggleNotification(ID, league) {
+        let apiUrl = url;
+        if (league === 'CBB' || league === 'NBA') {
+            apiUrl = BBAURL;
+        }
+        return await GetCall(`${apiUrl}notification/toggle/${ID}`);
+    }
+
+    async DeleteNotification(ID, league) {
+        let apiUrl = url;
+        if (league === 'CBB' || league === 'NBA') {
+            apiUrl = BBAURL;
+        }
+        return await GetCall(`${apiUrl}notification/delete/${ID}`);
     }
 }

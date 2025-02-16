@@ -1,7 +1,7 @@
 import React from 'react';
 
 const BBATeamDropdownItem = (props) => {
-    let team = props.team;
+    let { team } = props;
 
     const handleChange = (event) => {
         return props.selectTeam(team);

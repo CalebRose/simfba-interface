@@ -23,6 +23,7 @@ export const GetAvailablePlayers = (pos, players) => {
             availablePlayers = availablePlayers.concat(
                 players.filter(
                     (x) =>
+                        x.Position === 'ATH' ||
                         x.Position === 'P' ||
                         x.Position === 'K' ||
                         x.Position === 'RB' ||
@@ -35,6 +36,7 @@ export const GetAvailablePlayers = (pos, players) => {
             availablePlayers = availablePlayers.concat(
                 players.filter(
                     (x) =>
+                        x.Position === 'ATH' ||
                         x.Position === 'FB' ||
                         x.Position === 'WR' ||
                         x.Position === 'QB'
@@ -45,7 +47,10 @@ export const GetAvailablePlayers = (pos, players) => {
             availablePlayers = players.filter((x) => x.Position === 'FB');
             availablePlayers = availablePlayers.concat(
                 players.filter(
-                    (x) => x.Position === 'RB' || x.Position === 'TE'
+                    (x) =>
+                        x.Position === 'ATH' ||
+                        x.Position === 'RB' ||
+                        x.Position === 'TE'
                 )
             );
             break;
@@ -54,8 +59,10 @@ export const GetAvailablePlayers = (pos, players) => {
             availablePlayers = availablePlayers.concat(
                 players.filter(
                     (x) =>
+                        x.Position === 'ATH' ||
                         x.Position === 'RB' ||
                         x.Position === 'TE' ||
+                        x.Position === 'FB' ||
                         x.Position === 'QB'
                 )
             );
@@ -65,8 +72,10 @@ export const GetAvailablePlayers = (pos, players) => {
             availablePlayers = availablePlayers.concat(
                 players.filter(
                     (x) =>
+                        x.Position === 'ATH' ||
                         x.Position === 'WR' ||
                         x.Position === 'FB' ||
+                        x.Position === 'RB' ||
                         x.Position === 'QB'
                 )
             );
@@ -74,40 +83,79 @@ export const GetAvailablePlayers = (pos, players) => {
         case 'LT':
             availablePlayers = players.filter((x) => x.Position === 'OT');
             availablePlayers = availablePlayers.concat(
-                players.filter((x) => x.Position === 'OG' || x.Position === 'C')
+                players.filter(
+                    (x) =>
+                        x.Position === 'ATH' ||
+                        x.Position === 'OG' ||
+                        x.Position === 'C' ||
+                        x.Position === 'TE' ||
+                        x.Position === 'FB'
+                )
             );
             break;
         case 'LG':
             availablePlayers = players.filter((x) => x.Position === 'OG');
             availablePlayers = availablePlayers.concat(
-                players.filter((x) => x.Position === 'OT' || x.Position === 'C')
+                players.filter(
+                    (x) =>
+                        x.Position === 'ATH' ||
+                        x.Position === 'OT' ||
+                        x.Position === 'C' ||
+                        x.Position === 'TE' ||
+                        x.Position === 'FB'
+                )
             );
             break;
         case 'C':
             availablePlayers = players.filter((x) => x.Position === 'C');
             availablePlayers = availablePlayers.concat(
                 players.filter(
-                    (x) => x.Position === 'OT' || x.Position === 'OG'
+                    (x) =>
+                        x.Position === 'ATH' ||
+                        x.Position === 'OT' ||
+                        x.Position === 'OG' ||
+                        x.Position === 'TE' ||
+                        x.Position === 'FB'
                 )
             );
             break;
         case 'RG':
             availablePlayers = players.filter((x) => x.Position === 'OG');
             availablePlayers = availablePlayers.concat(
-                players.filter((x) => x.Position === 'OT' || x.Position === 'C')
+                players.filter(
+                    (x) =>
+                        x.Position === 'ATH' ||
+                        x.Position === 'OT' ||
+                        x.Position === 'C' ||
+                        x.Position === 'TE' ||
+                        x.Position === 'FB'
+                )
             );
             break;
         case 'RT':
             availablePlayers = players.filter((x) => x.Position === 'OT');
             availablePlayers = availablePlayers.concat(
-                players.filter((x) => x.Position === 'OG' || x.Position === 'C')
+                players.filter(
+                    (x) =>
+                        x.Position === 'ATH' ||
+                        x.Position === 'OG' ||
+                        x.Position === 'C' ||
+                        x.Position === 'TE' ||
+                        x.Position === 'FB'
+                )
             );
             break;
         case 'LE':
             availablePlayers = players.filter((x) => x.Position === 'DE');
             availablePlayers = availablePlayers.concat(
                 players.filter(
-                    (x) => x.Position === 'DT' || x.Position === 'OLB'
+                    (x) =>
+                        x.Position === 'ATH' ||
+                        x.Position === 'DT' ||
+                        x.Position === 'OLB' ||
+                        x.Position === 'ILB' ||
+                        x.Position === 'SS' ||
+                        x.Position === 'FS'
                 )
             );
             break;
@@ -115,7 +163,11 @@ export const GetAvailablePlayers = (pos, players) => {
             availablePlayers = players.filter((x) => x.Position === 'DT');
             availablePlayers = availablePlayers.concat(
                 players.filter(
-                    (x) => x.Position === 'DE' || x.Position === 'OLB'
+                    (x) =>
+                        x.Position === 'ATH' ||
+                        x.Position === 'DE' ||
+                        x.Position === 'OLB' ||
+                        x.Position === 'ILB'
                 )
             );
             break;
@@ -123,7 +175,13 @@ export const GetAvailablePlayers = (pos, players) => {
             availablePlayers = players.filter((x) => x.Position === 'DE');
             availablePlayers = availablePlayers.concat(
                 players.filter(
-                    (x) => x.Position === 'DT' || x.Position === 'OLB'
+                    (x) =>
+                        x.Position === 'ATH' ||
+                        x.Position === 'DT' ||
+                        x.Position === 'OLB' ||
+                        x.Position === 'ILB' ||
+                        x.Position === 'SS' ||
+                        x.Position === 'FS'
                 )
             );
             break;
@@ -132,9 +190,13 @@ export const GetAvailablePlayers = (pos, players) => {
             availablePlayers = availablePlayers.concat(
                 players.filter(
                     (x) =>
+                        x.Position === 'ATH' ||
                         x.Position === 'ILB' ||
                         x.Position === 'DE' ||
-                        x.Position === 'SS'
+                        x.Position === 'SS' ||
+                        x.Position === 'DT' ||
+                        x.Position === 'FS' ||
+                        x.Position === 'CB'
                 )
             );
             break;
@@ -142,7 +204,14 @@ export const GetAvailablePlayers = (pos, players) => {
             availablePlayers = players.filter((x) => x.Position === 'ILB');
             availablePlayers = availablePlayers.concat(
                 players.filter(
-                    (x) => x.Position === 'OLB' || x.Position === 'SS'
+                    (x) =>
+                        x.Position === 'ATH' ||
+                        x.Position === 'OLB' ||
+                        x.Position === 'SS' ||
+                        x.Position === 'FS' ||
+                        x.Position === 'CB' ||
+                        x.Position === 'DT' ||
+                        x.Position === 'DE'
                 )
             );
             break;
@@ -151,9 +220,13 @@ export const GetAvailablePlayers = (pos, players) => {
             availablePlayers = availablePlayers.concat(
                 players.filter(
                     (x) =>
+                        x.Position === 'ATH' ||
                         x.Position === 'ILB' ||
                         x.Position === 'DE' ||
-                        x.Position === 'SS'
+                        x.Position === 'SS' ||
+                        x.Position === 'DT' ||
+                        x.Position === 'FS' ||
+                        x.Position === 'CB'
                 )
             );
             break;
@@ -161,7 +234,12 @@ export const GetAvailablePlayers = (pos, players) => {
             availablePlayers = players.filter((x) => x.Position === 'CB');
             availablePlayers = availablePlayers.concat(
                 players.filter(
-                    (x) => x.Position === 'FS' || x.Position === 'SS'
+                    (x) =>
+                        x.Position === 'ATH' ||
+                        x.Position === 'FS' ||
+                        x.Position === 'SS' ||
+                        x.Position === 'OLB' ||
+                        x.Position === 'ILB'
                 )
             );
             break;
@@ -169,7 +247,12 @@ export const GetAvailablePlayers = (pos, players) => {
             availablePlayers = players.filter((x) => x.Position === 'FS');
             availablePlayers = availablePlayers.concat(
                 players.filter(
-                    (x) => x.Position === 'CB' || x.Position === 'SS'
+                    (x) =>
+                        x.Position === 'ATH' ||
+                        x.Position === 'CB' ||
+                        x.Position === 'SS' ||
+                        x.Position === 'OLB' ||
+                        x.Position === 'ILB'
                 )
             );
             break;
@@ -177,14 +260,24 @@ export const GetAvailablePlayers = (pos, players) => {
             availablePlayers = players.filter((x) => x.Position === 'SS');
             availablePlayers = availablePlayers.concat(
                 players.filter(
-                    (x) => x.Position === 'FS' || x.Position === 'CB'
+                    (x) =>
+                        x.Position === 'ATH' ||
+                        x.Position === 'FS' ||
+                        x.Position === 'CB' ||
+                        x.Position === 'OLB' ||
+                        x.Position === 'ILB'
                 )
             );
             break;
         case 'P':
             availablePlayers = players.filter((x) => x.Position === 'P');
             availablePlayers = availablePlayers.concat(
-                players.filter((x) => x.Position === 'K' || x.Position === 'QB')
+                players.filter(
+                    (x) =>
+                        x.Position === 'K' ||
+                        x.Position === 'ATH' ||
+                        x.Position === 'QB'
+                )
             );
             break;
         case 'PR':
@@ -192,6 +285,7 @@ export const GetAvailablePlayers = (pos, players) => {
                 (x) =>
                     x.Position === 'RB' ||
                     x.Position === 'WR' ||
+                    x.Position === 'ATH' ||
                     x.Position === 'FB' ||
                     x.Position === 'CB' ||
                     x.Position === 'FS'
@@ -203,7 +297,12 @@ export const GetAvailablePlayers = (pos, players) => {
         case 'K':
             availablePlayers = players.filter((x) => x.Position === 'K');
             availablePlayers = availablePlayers.concat(
-                players.filter((x) => x.Position === 'P' || x.Position === 'QB')
+                players.filter(
+                    (x) =>
+                        x.Position === 'P' ||
+                        x.Position === 'ATH' ||
+                        x.Position === 'QB'
+                )
             );
             break;
         case 'KR':
@@ -211,6 +310,7 @@ export const GetAvailablePlayers = (pos, players) => {
                 (x) =>
                     x.Position === 'RB' ||
                     x.Position === 'WR' ||
+                    x.Position === 'ATH' ||
                     x.Position === 'FB' ||
                     x.Position === 'CB' ||
                     x.Position === 'FS'
@@ -224,6 +324,7 @@ export const GetAvailablePlayers = (pos, players) => {
                 (x) =>
                     x.Position === 'K' ||
                     x.Position === 'P' ||
+                    x.Position === 'ATH' ||
                     x.Position === 'QB'
             );
             break;
@@ -335,4 +436,13 @@ export const GetPosition = (pos, individualPlayerPosition) => {
         default:
             return pos;
     }
+};
+
+export const GetShotgunRating = (value) => {
+    if (value === 1) {
+        return 'Shotgun';
+    } else if (value === -1) {
+        return 'Under Center';
+    }
+    return 'Balanced';
 };

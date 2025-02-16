@@ -5,8 +5,9 @@ import { getLogo } from '../../Constants/getLogo';
 import FBARecruitingService from '../../_Services/simFBA/FBARecruitingService';
 import BBARecruitingService from '../../_Services/simNBA/BBARecruitingService';
 import { GetOverall } from '../../_Utility/RosterHelper';
+import { SimCBB, SimCFB } from '../../Constants/CommonConstants';
 
-const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode }) => {
+const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode, retro }) => {
     let _recruitingService = new FBARecruitingService();
     let _bbaRecruitingService = new BBARecruitingService();
     const modalId = `recruitingClassModal`;
@@ -24,9 +25,8 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode }) => {
         teamOptions.sort((a, b) => (a.label > b.label ? 1 : -1));
     const [currentTeam, setCurrentTeam] = React.useState(userTeam.ID);
     const [recruitingClass, setClass] = React.useState(null);
-    const [logoKey, setLogoKey] = React.useState(
-        isCFB ? userTeam.TeamAbbr : userTeam.Abbr
-    );
+    const [logoKey, setLogoKey] = React.useState(userTeam.ID);
+    const league = isCFB ? SimCFB : SimCBB;
     const [logo, setLogo] = React.useState('');
 
     useEffect(() => {
@@ -34,14 +34,14 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode }) => {
     }, [currentTeam]);
 
     useEffect(() => {
-        const logoSrc = getLogo(logoKey);
+        const logoSrc = getLogo(league, logoKey, retro);
         setLogo(() => logoSrc);
     }, [logoKey]);
 
     const SelectTeam = (options) => {
         const opts = options.value;
         setCurrentTeam(() => opts);
-        setLogoKey(() => options.label);
+        setLogoKey(() => opts);
     };
 
     const GetRecruitingClass = async () => {
@@ -52,7 +52,12 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode }) => {
             res = await _bbaRecruitingService.GetRecruitingClass(currentTeam);
         }
 
-        const result = isCFB ? res.Recruits : res;
+        let cfbRecruits = [];
+        if (isCFB && res.Recruits) {
+            cfbRecruits = res.Recruits;
+        }
+
+        const result = isCFB ? cfbRecruits : res;
 
         setClass(() => result);
     };
@@ -99,8 +104,12 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode }) => {
                         {croot.FirstName} {croot.LastName}
                     </h6>
                 </div>
-                <div className="col">{croot.Position}</div>
-                <div className="col">{croot.Archetype}</div>
+                <div className="col">
+                    <p>{croot.Position}</p>
+                </div>
+                <div className="col">
+                    <p>{croot.Archetype}</p>
+                </div>
                 <div className="col">
                     <h6>{croot.City}</h6>
                 </div>
@@ -153,8 +162,11 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode }) => {
                 <div className="col" title="Rebounding">
                     <h5>Reb</h5>
                 </div>
-                <div className="col" title="Defense">
-                    <h5>Def</h5>
+                <div className="col" title="Interior Defense">
+                    <h5>Int. Def</h5>
+                </div>
+                <div className="col" title="Perimeter Defense">
+                    <h5>Per. Def</h5>
                 </div>
                 <div className="col" title="Potential">
                     <h5>Pot</h5>
@@ -203,7 +215,10 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode }) => {
                     <h6>{croot.Rebounding}</h6>
                 </div>
                 <div className="col">
-                    <h6>{croot.Defense}</h6>
+                    <h6>{croot.InteriorDefense}</h6>
+                </div>
+                <div className="col">
+                    <h6>{croot.PerimeterDefense}</h6>
                 </div>
                 <div className="col">
                     <h6>{croot.PotentialGrade}</h6>

@@ -41,7 +41,8 @@ export const QBAttributes = [
     { attr: 'FootballIQ', label: 'Football IQ', abbr: 'FBIQ' },
     { attr: 'Agility', label: 'Agility', abbr: 'Agi' },
     { attr: 'Speed', label: 'Speed', abbr: 'Spd' },
-    { attr: 'Stamina', label: 'Stamina', abbr: 'Sta' }
+    { attr: 'Stamina', label: 'Stamina', abbr: 'Sta' },
+    { attr: 'Shotgun', label: 'Shotgun Rating', abbr: 'SGR' }
 ];
 
 export const OLineAttributes = [

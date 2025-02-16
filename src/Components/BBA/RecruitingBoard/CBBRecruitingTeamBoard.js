@@ -1,14 +1,16 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import toast from 'react-hot-toast';
 import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
 import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 import routes from '../../../Constants/routes';
 import BBARecruitingService from '../../../_Services/simNBA/BBARecruitingService';
-import { ServiceMessageBanner } from '../../_Common/ServiceMessageBanner';
 import { Spinner } from '../../_Common/Spinner';
 import CBBTeamDashboardMobileRow from './DashboardComponents/CBBTeamDashboardMobileRow';
 import CBBTeamDashboardPlayerRow from './DashboardComponents/CBBTeamDashboardPlayerRow';
+import { PickFromArray } from '../../../_Utility/utilHelper';
+import { RecruitingLoadMessages } from '../../../Constants/CommonConstants';
 
 const CBBRecruitingTeamBoard = ({
     currentUser,
@@ -23,11 +25,12 @@ const CBBRecruitingTeamBoard = ({
     const [recruitingProfile, setRecruitingProfile] = React.useState(null);
     const [recruits, setRecruits] = React.useState([]);
     const [isValid, setValidation] = React.useState(true);
-    const [errorMessage, setErrorMessage] = React.useState('');
-    const [serviceMessage, setServiceMessage] = React.useState('');
     const savingMessage = 'Saving Recruiting Options...';
     const successMessage = 'Saved successfully!';
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const [loadMessage] = React.useState(() =>
+        PickFromArray(RecruitingLoadMessages)
+    );
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     const tableHoverClass = GetTableHoverClass(viewMode);
 
@@ -82,6 +85,8 @@ const CBBRecruitingTeamBoard = ({
             (x) => x.RecruitID !== player.RecruitID
         );
 
+        toast.success('Successfully removed player from board :(');
+
         setRecruits(() => recruitList);
     };
 
@@ -108,12 +113,21 @@ const CBBRecruitingTeamBoard = ({
         );
         if (response.ok) {
             setRecruits(croots);
-
+            const croot = croots[idx].Recruit;
             const teamProfile = { ...recruitingProfile };
             teamProfile.ScholarshipsAvailable = !revokedVal
                 ? teamProfile.ScholarshipsAvailable + 1
                 : teamProfile.ScholarshipsAvailable - 1;
             setRecruitingProfile(() => teamProfile);
+            if (!revokedVal) {
+                toast.success(
+                    `Successfully Offered a Scholarship to ${croot.FirstName} ${croot.LastName}!`
+                );
+            } else {
+                toast.error(
+                    `${croot.FirstName} ${croot.LastName}'s scholarship has been revoked. You will not be able to recruit this player anymore.`
+                );
+            }
         }
     };
 
@@ -163,8 +177,18 @@ const CBBRecruitingTeamBoard = ({
         }
         profile.SpentPoints = currentPointsSpent;
         setRecruitingProfile(() => profile);
-        setErrorMessage(() => message);
+        if (!valid) {
+            toast.error(message, { duration: 6000 });
+        }
         setValidation(() => valid);
+    };
+
+    const SaveToast = () => {
+        toast.promise(savePointAllocations(), {
+            loading: savingMessage,
+            success: successMessage,
+            error: 'ERROR: Could not successfully save. Please reach out to admin'
+        });
     };
 
     const savePointAllocations = async () => {
@@ -177,27 +201,16 @@ const CBBRecruitingTeamBoard = ({
             TeamID: currentUser.cbb_id
         };
 
-        setServiceMessage(() => savingMessage);
-
         let response = await _recruitingService.SaveRecruitingBoard(payload);
 
         if (response.ok) {
             profile.Recruits = croots;
             setRecruitingProfile(profile);
             setRecruits(croots);
-            setServiceMessage(successMessage);
-            console.log('Saved successful for team ', payload.TeamId);
+            console.log('Saved successful for team ', payload.TeamID);
         } else {
-            setServiceMessage('');
-            setErrorMessage(
-                'ERROR: Could not successfully save. Please reach out to admin'
-            );
             alert('HTTP-Error:', response.status);
         }
-        setTimeout(() => {
-            setServiceMessage('');
-            setErrorMessage('');
-        }, 5000);
     };
 
     return (
@@ -227,36 +240,43 @@ const CBBRecruitingTeamBoard = ({
                             {recruitingProfile && recruitingProfile.Region}
                         </div>
                     </div>
-                    <div className="row gx-1 mt-3 justify-content-center">
-                        <h6>Scholarships Available</h6>
-                        {recruitingProfile
-                            ? recruitingProfile.RecruitClassSize -
-                              recruitingProfile.TotalCommitments
-                            : 'N/A'}
+                    <div className="row gx-1 mt-3 gap-2 justify-content-center">
+                        <div className="col-auto">
+                            <h6>Scholarships Available</h6>
+                            {recruitingProfile
+                                ? recruitingProfile.RecruitClassSize -
+                                  recruitingProfile.TotalCommitments
+                                : 'N/A'}
+                        </div>
+                        <div className="col-auto">
+                            <h6>Offers Available</h6>
+                            {recruitingProfile
+                                ? recruitingProfile.ScholarshipsAvailable
+                                : 'N/A'}
+                        </div>
                     </div>
-                    <div className="row gx-1 mt-3 justify-content-center">
-                        <h6>Scholarship Offers Available</h6>
-                        {recruitingProfile
-                            ? recruitingProfile.ScholarshipsAvailable
-                            : 'N/A'}
+                    <div className="row gx-1 mt-3 gap-2 justify-content-center">
+                        <h5>Ratings</h5>
                     </div>
-                    <div className="row gx-1 mt-3 justify-content-center">
-                        <h6>ESPN Score</h6>
-                        {recruitingProfile
-                            ? recruitingProfile.ESPNScore
-                            : 'N/A'}
-                    </div>
-                    <div className="row gx-1 mt-3 justify-content-center">
-                        <h6>Rivals Score</h6>
-                        {recruitingProfile
-                            ? recruitingProfile.RivalsScore
-                            : 'N/A'}
-                    </div>
-                    <div className="row gx-1 mt-3 justify-content-center">
-                        <h6>247Sports Score</h6>
-                        {recruitingProfile
-                            ? recruitingProfile.Rank247Score
-                            : 'N/A'}
+                    <div className="row gx-1 mt-1 gap-2 justify-content-center">
+                        <div className="col-auto">
+                            <h6>ESPN</h6>
+                            {recruitingProfile
+                                ? recruitingProfile.ESPNScore
+                                : 'N/A'}
+                        </div>
+                        <div className="col-auto">
+                            <h6>Rivals</h6>
+                            {recruitingProfile
+                                ? recruitingProfile.RivalsScore
+                                : 'N/A'}
+                        </div>
+                        <div className="col-auto">
+                            <h6>247Sports</h6>
+                            {recruitingProfile
+                                ? recruitingProfile.Rank247Score
+                                : 'N/A'}
+                        </div>
                     </div>
                 </div>
                 <div className="col-md-10 px-md-4">
@@ -281,7 +301,7 @@ const CBBRecruitingTeamBoard = ({
                                     !cbb_Timestamp.IsRecruitingLocked ? (
                                         <button
                                             className="btn btn-primary"
-                                            onClick={savePointAllocations}
+                                            onClick={SaveToast}
                                         >
                                             Save
                                         </button>
@@ -294,10 +314,6 @@ const CBBRecruitingTeamBoard = ({
                             </div>
                         </div>
                     </div>
-                    <ServiceMessageBanner
-                        serMessage={serviceMessage}
-                        errMessage={errorMessage}
-                    />
                     <div
                         className={`row mt-2 dashboard-table-height${
                             viewMode === 'dark' ? '-dark' : ''
@@ -308,22 +324,22 @@ const CBBRecruitingTeamBoard = ({
                         !cbb_Timestamp.IsRecruitingLocked ? (
                             <>
                                 {recruits !== undefined &&
-                                recruits !== null &&
-                                recruits.length > 0
-                                    ? recruits.map((x, idx) => (
-                                          <CBBTeamDashboardMobileRow
-                                              key={x.ID}
-                                              idx={idx}
-                                              recruitProfile={x}
-                                              remove={removeRecruitFromBoard}
-                                              toggleScholarship={
-                                                  toggleScholarship
-                                              }
-                                              changePoints={allocatePoints}
-                                              theme={viewMode}
-                                          />
-                                      ))
-                                    : ''}
+                                    recruits !== null &&
+                                    recruits.length > 0 &&
+                                    recruits.map((x, idx) => (
+                                        <CBBTeamDashboardMobileRow
+                                            key={x.ID}
+                                            idx={idx}
+                                            recruitProfile={x}
+                                            remove={removeRecruitFromBoard}
+                                            toggleScholarship={
+                                                toggleScholarship
+                                            }
+                                            changePoints={allocatePoints}
+                                            theme={viewMode}
+                                            retro={currentUser.IsRetro}
+                                        />
+                                    ))}
                             </>
                         ) : (
                             <table className={tableHoverClass}>
@@ -337,12 +353,14 @@ const CBBRecruitingTeamBoard = ({
                                         <th scope="col">Height</th>
                                         <th scope="col">State/Region</th>
                                         <th scope="col">Stars</th>
+                                        <th scope="col">Fin.</th>
                                         <th scope="col">Sht. 2</th>
                                         <th scope="col">Sht. 3</th>
-                                        <th scope="col">Fin.</th>
+                                        <th scope="col">FT</th>
                                         <th scope="col">Bal.</th>
                                         <th scope="col">Reb.</th>
-                                        <th scope="col">Def.</th>
+                                        <th scope="col">Int. Def.</th>
+                                        <th scope="col">Per. Def.</th>
                                         <th scope="col">Pot.</th>
                                         <th scope="col">Status</th>
                                         <th scope="col">Leading Teams</th>
@@ -355,59 +373,45 @@ const CBBRecruitingTeamBoard = ({
                                 </thead>
                                 <tbody className="overflow-auto">
                                     {cbb_Timestamp &&
-                                    !cbb_Timestamp.IsRecruitingLocked &&
-                                    recruits !== undefined &&
-                                    recruits !== null &&
-                                    recruits &&
-                                    recruits.length > 0
-                                        ? recruits.map((x, idx) => (
-                                              <CBBTeamDashboardPlayerRow
-                                                  key={x.ID}
-                                                  player={x}
-                                                  idx={idx}
-                                                  remove={
-                                                      removeRecruitFromBoard
-                                                  }
-                                                  toggleScholarship={
-                                                      toggleScholarship
-                                                  }
-                                                  changePoints={allocatePoints}
-                                                  viewMode={viewMode}
-                                              />
-                                          ))
-                                        : ''}
+                                        !cbb_Timestamp.IsRecruitingLocked &&
+                                        recruits !== undefined &&
+                                        recruits !== null &&
+                                        recruits &&
+                                        recruits.length > 0 &&
+                                        recruits.map((x, idx) => (
+                                            <CBBTeamDashboardPlayerRow
+                                                key={x.ID}
+                                                player={x}
+                                                idx={idx}
+                                                remove={removeRecruitFromBoard}
+                                                toggleScholarship={
+                                                    toggleScholarship
+                                                }
+                                                changePoints={allocatePoints}
+                                                viewMode={viewMode}
+                                            />
+                                        ))}
                                 </tbody>
                             </table>
                         )}
-                        {recruits === undefined || recruits === null ? (
-                            <div className="row justify-content-center pt-2 mt-4 mb-2">
-                                <Spinner />
-                            </div>
-                        ) : (
-                            ''
-                        )}
+                        {recruits === undefined ||
+                            (recruits === null && (
+                                <div className="row justify-content-center pt-2 mt-4 mb-2">
+                                    <Spinner />
+                                </div>
+                            ))}
                         {recruits !== undefined &&
-                        recruits !== null &&
-                        recruits.length === 0 ? (
+                            recruits !== null &&
+                            recruits.length === 0 && (
+                                <div className="row justify-content-center">
+                                    Have you considered adding a croot to your
+                                    team board?
+                                </div>
+                            )}
+                        {cbb_Timestamp && cbb_Timestamp.IsRecruitingLocked && (
                             <div className="row justify-content-center">
-                                Have you considered adding a croot to your team
-                                board?
+                                {loadMessage}
                             </div>
-                        ) : (
-                            ''
-                        )}
-                        {cbb_Timestamp && cbb_Timestamp.IsRecruitingLocked ? (
-                            <div className="row justify-content-center">
-                                Good morning! If you're seeing this, it means
-                                that the recruiting sync is currently occurring.
-                                Please make a cup of coffee, tea, and have some
-                                breakfast and enjoy the smells of the morning
-                                air until recruiting completes. Also, congrats
-                                to Southern Alabama for considering Giovanni
-                                Giorgio as the future of their team.
-                            </div>
-                        ) : (
-                            ''
                         )}
                     </div>
                 </div>

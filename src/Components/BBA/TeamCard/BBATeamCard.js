@@ -13,7 +13,8 @@ const BBATeamCard = (props) => {
         teamId,
         coach,
         disable,
-        viewMode
+        viewMode,
+        isUser
     } = props;
     const [requested, setRequested] = React.useState(false);
 
@@ -57,7 +58,7 @@ const BBATeamCard = (props) => {
                         </div>
                     </li>
                 </ul>
-                {coach.length === 0 || coach === 'AI' ? (
+                {!isUser ? (
                     <footer
                         onClick={sendRequest}
                         className={

@@ -1,10 +1,14 @@
 import React from 'react';
-import { getCBBPositionList } from '../../../../_Utility/utilHelper';
+import {
+    GetAdjStaminaByPace,
+    getCBBPositionList
+} from '../../../../_Utility/utilHelper';
 import { Dropdown } from '../../../_Common/Dropdown';
 
 const NBAGameplanPlayerRow = ({
     player,
     idx,
+    pace,
     updatePlayer,
     gameplan,
     updatePosition
@@ -12,7 +16,7 @@ const NBAGameplanPlayerRow = ({
     const minutes = player.P1Minutes + player.P2Minutes + player.P3Minutes;
     const positionList = getCBBPositionList(player.Position);
     const getYear = (player) => {
-        if (player.Year === 1) return 'R';
+        if (player.Year === 0) return 'R';
         return player.Year;
     };
 
@@ -25,10 +29,18 @@ const NBAGameplanPlayerRow = ({
     const handlePosition = (name, value) => {
         return updatePosition(idx, name, value);
     };
+
+    const adjStamina = GetAdjStaminaByPace(player.Stamina, pace);
     return (
         <tr>
             <th scope="row" className="align-middle">
-                <h6 className={player.IsGLeague ? 'text-danger' : ''}>
+                <h6
+                    className={
+                        player.IsGLeague || player.IsInjured
+                            ? 'text-danger'
+                            : ''
+                    }
+                >
                     {year} | {player.Age} | {player.Position}{' '}
                     {player.FirstName + ' ' + player.LastName}
                 </h6>
@@ -62,7 +74,9 @@ const NBAGameplanPlayerRow = ({
                 <input
                     name="InsideProportion"
                     type="number"
-                    class="form-control"
+                    className={`form-control ${
+                        player.InsideProportion > 15 ? 'border-danger' : ''
+                    }`}
                     id="gameMinutes"
                     aria-describedby="gameMinutes"
                     value={player.InsideProportion}
@@ -73,7 +87,9 @@ const NBAGameplanPlayerRow = ({
                 <input
                     name="MidRangeProportion"
                     type="number"
-                    class="form-control"
+                    className={`form-control ${
+                        player.MidRangeProportion > 15 ? 'border-danger' : ''
+                    }`}
                     id="gameMinutes"
                     aria-describedby="gameMinutes"
                     value={player.MidRangeProportion}
@@ -84,7 +100,9 @@ const NBAGameplanPlayerRow = ({
                 <input
                     name="ThreePointProportion"
                     type="number"
-                    class="form-control"
+                    className={`form-control ${
+                        player.ThreePointProportion > 15 ? 'border-danger' : ''
+                    }`}
                     id="gameMinutes"
                     aria-describedby="gameMinutes"
                     value={player.ThreePointProportion}
@@ -103,7 +121,7 @@ const NBAGameplanPlayerRow = ({
                 <input
                     name="P1Minutes"
                     type="number"
-                    class="form-control"
+                    className="form-control"
                     id="gameMinutes"
                     aria-describedby="gameMinutes"
                     value={player.P1Minutes}
@@ -124,7 +142,7 @@ const NBAGameplanPlayerRow = ({
                         <input
                             name="P2Minutes"
                             type="number"
-                            class="form-control"
+                            className="form-control"
                             id="gameMinutes"
                             aria-describedby="gameMinutes"
                             value={player.P2Minutes}
@@ -147,7 +165,7 @@ const NBAGameplanPlayerRow = ({
                         <input
                             name="P3Minutes"
                             type="number"
-                            class="form-control"
+                            className="form-control"
                             id="gameMinutes"
                             aria-describedby="gameMinutes"
                             value={player.P3Minutes}
@@ -156,8 +174,14 @@ const NBAGameplanPlayerRow = ({
                     </td>
                 </>
             )}
-            <td className="align-middle">{minutes}</td>
-            <td className="align-middle">{player.Stamina}</td>
+            <td
+                className={`align-middle ${
+                    minutes > adjStamina ? 'text-danger' : ''
+                }`}
+            >
+                {minutes}
+            </td>
+            <td className="align-middle">{adjStamina}</td>
             <td className="align-middle">{player.PlaytimeExpectations}</td>
         </tr>
     );

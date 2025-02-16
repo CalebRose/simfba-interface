@@ -1,17 +1,24 @@
 import React from 'react';
 import { GetOverall } from '../../../_Utility/RosterHelper';
-import { CalculateAdjustedPoints } from '../../../_Utility/CFBRecruitingHelper';
+import {
+    CalculateAdjustedPoints,
+    isBadFit,
+    isGoodFit
+} from '../../../_Utility/CFBRecruitingHelper';
 import CrootModal from '../../RecruitingOverview/CFBDashboardComponents/CFBDashboardCrootModal';
 import ConfirmRemovePlayerFromBoardModal from './CFBTeamRemovePlayerModal';
 import ConfirmRevokeModal from './CFBTeamRevokeScholarshipModal';
 import { getLogo } from '../../../Constants/getLogo';
+import { SimCFB } from '../../../Constants/CommonConstants';
 
 const CFBTeamDashboardPlayerRow = (props) => {
-    const { recruitProfile, idx, viewMode } = props;
+    const { recruitProfile, idx, viewMode, retro, teamProfile } = props;
     const { Recruit } = recruitProfile;
-    const customClass = Recruit.IsCustomCroot ? 'text-primary' : '';
+
     const logo =
-        Recruit && Recruit.College.length > 0 ? getLogo(Recruit.College) : '';
+        Recruit && Recruit.TeamID > 0
+            ? getLogo(SimCFB, Recruit.TeamID, retro)
+            : '';
     const crootModalTarget = '#crootModal' + idx;
     const revokeModalTarget = '#revokeModal' + idx;
     const removeModalTarget = '#removeModal' + idx;
@@ -27,10 +34,10 @@ const CFBTeamDashboardPlayerRow = (props) => {
             (x, idx) => idx <= 2 && x.Odds > 0
         );
 
-        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+        const competingIDs = competingTeams.map((x) => x.TeamID);
 
-        return competingAbbrs.map((x) => {
-            const logo = getLogo(x);
+        return competingIDs.map((x) => {
+            const logo = getLogo(SimCFB, x, retro);
             return (
                 <>
                     <img
@@ -65,9 +72,36 @@ const CFBTeamDashboardPlayerRow = (props) => {
         return props.remove(idx, recruitProfile);
     };
 
+    const goodFit = isGoodFit(
+        teamProfile.OffensiveScheme,
+        teamProfile.DefensiveScheme,
+        Recruit.Position,
+        Recruit.Archetype
+    );
+
+    const badFit = isBadFit(
+        teamProfile.OffensiveScheme,
+        teamProfile.DefensiveScheme,
+        Recruit.Position,
+        Recruit.Archetype
+    );
+
+    let customClass = 'align-middle';
+    if (Recruit.IsCustomCroot) {
+        customClass += ' text-primary';
+    } else if (goodFit && !badFit) {
+        customClass += ' text-success';
+    } else if (!goodFit && badFit) {
+        customClass += ' text-danger';
+    }
     return (
         <>
-            <CrootModal crt={Recruit} idx={idx} viewMode={viewMode} />
+            <CrootModal
+                crt={Recruit}
+                idx={idx}
+                viewMode={viewMode}
+                retro={retro}
+            />
             <ConfirmRevokeModal
                 idx={idx}
                 revoke={revokeScholarship}
@@ -173,11 +207,14 @@ const CFBTeamDashboardPlayerRow = (props) => {
                 </td>
                 <td className="align-middle">
                     {Recruit.IsSigned ? (
-                        <img
-                            className="image-recruit-logo"
-                            src={logo}
-                            alt="WinningTeam"
-                        />
+                        <>
+                            <img
+                                className="image-recruit-logo"
+                                src={logo}
+                                alt="WinningTeam"
+                            />
+                            <h6>{Recruit.College}</h6>
+                        </>
                     ) : (
                         <>{leadingTeams}</>
                     )}

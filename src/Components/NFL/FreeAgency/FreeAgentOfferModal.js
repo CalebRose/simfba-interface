@@ -19,6 +19,7 @@ import {
     NFLTotalRow,
     OfferValueRow
 } from '../../_Common/CommonOfferComponents';
+import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
 
 export const FreeAgentOfferModal = ({
     team,
@@ -76,7 +77,12 @@ export const FreeAgentOfferModal = ({
                 return {
                     NFLPlayerID: player.ID,
                     TeamID: team.ID,
-                    Team: `${team.TeamName} ${team.Mascot}`
+                    Team: `${team.TeamName} ${team.Mascot}`,
+                    Y1BaseSalary: 0,
+                    Y2BaseSalary: 0,
+                    Y3BaseSalary: 0,
+                    Y4BaseSalary: 0,
+                    Y5BaseSalary: 0
                 };
             }
             setExistingOffer(() => offers[offerIdx]);
@@ -85,7 +91,12 @@ export const FreeAgentOfferModal = ({
             return {
                 NFLPlayerID: player.ID,
                 TeamID: team.ID,
-                Team: `${team.TeamName} ${team.Mascot}`
+                Team: `${team.TeamName} ${team.Mascot}`,
+                Y1BaseSalary: 0,
+                Y2BaseSalary: 0,
+                Y3BaseSalary: 0,
+                Y4BaseSalary: 0,
+                Y5BaseSalary: 0
             };
         }
     });
@@ -150,31 +161,31 @@ export const FreeAgentOfferModal = ({
         const y5Value = y5Bonus * 0.6 + offer.Y5BaseSalary * 0.05;
         const y1Space = GetCapSpace(
             ts.Y1Capspace,
-            y1Bonus,
+            capsheet.Y1Bonus,
             capsheet.Y1Salary,
             capsheet.Y1CapHit
         );
         const y2Space = GetCapSpace(
             ts.Y2Capspace,
-            y2Bonus,
+            capsheet.Y2Bonus,
             capsheet.Y2Salary,
             capsheet.Y2CapHit
         );
         const y3Space = GetCapSpace(
             ts.Y3Capspace,
-            y3Bonus,
+            capsheet.Y3Bonus,
             capsheet.Y3Salary,
             capsheet.Y3CapHit
         );
         const y4Space = GetCapSpace(
             ts.Y4Capspace,
-            y4Bonus,
+            capsheet.Y4Bonus,
             capsheet.Y4Salary,
             capsheet.Y4CapHit
         );
         const y5Space = GetCapSpace(
             ts.Y5Capspace,
-            y5Bonus,
+            capsheet.Y5Bonus,
             capsheet.Y5Salary,
             capsheet.Y5CapHit
         );
@@ -253,12 +264,15 @@ export const FreeAgentOfferModal = ({
             offer.Y2BaseSalary,
             offer.Y3BaseSalary,
             offer.Y4BaseSalary,
-            offer.Y5BaseSalary
+            offer.Y5BaseSalary,
+            contractLength
         );
 
-        const canMakeOffer =
-            player.IsAcceptingOffers ||
-            (player.IsNegotiating && hasExistingOffer);
+        // const canMakeOffer =
+        //     player.IsAcceptingOffers ||
+        //     (player.IsNegotiating && hasExistingOffer);
+
+        const canMakeOffer = player.IsAcceptingOffers || player.IsNegotiating;
 
         const validToExistingOffer = !existingOffer
             ? true
@@ -400,7 +414,8 @@ export const FreeAgentOfferModal = ({
                             </div>
                             <div className="col-md-auto ms-auto">
                                 <h4 className="">
-                                    Minimum Value: ${MinimumValue}M
+                                    Minimum Value: $
+                                    {RoundToTwoDecimals(MinimumValue)}M
                                 </h4>
                             </div>
                         </div>
@@ -433,7 +448,9 @@ export const FreeAgentOfferModal = ({
                                             5: Before the draft, at least 30% of
                                             any contract must be bonus money.
                                             After the draft, bonus can be any
-                                            amount, even 0%.
+                                            amount; but once the total value is
+                                            greater than $5M, 30% of the
+                                            contract must be bonus money.
                                         </p>
                                     </div>
                                     <div className="col">

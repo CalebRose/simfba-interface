@@ -1,28 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { GetModalClass } from '../../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../../Constants/getLogo';
-import { RoundToTwoDecimals } from '../../../../_Utility/utilHelper';
+import {
+    RoundToTwoDecimals,
+    ShuffleList
+} from '../../../../_Utility/utilHelper';
 import {
     GetMaxPercentage,
     GetNBACapSpace,
     GetTotalValue,
+    ValidateNBARule1,
     ValidateNBARule2,
-    ValidateNBARule3
+    ValidateNBARule3,
+    ValidateNBARule4,
+    ValidateNBARule5
 } from '../../../NFL/FreeAgency/FreeAgencyHelper';
 import {
     OfferInput,
     TotalInput
 } from '../../../NFL/FreeAgency/FreeAgencyOfferInput';
 import { SwitchToggle } from '../../../_Common/SwitchToggle';
+import { BBAStatsRow } from '../../../_Common/SeasonStatsRow';
+import { SimNBA } from '../../../../Constants/CommonConstants';
 
-export const NBAFreeAgencyPlayerModal = ({ player, idx, theme }) => {
+export const NBAFreeAgencyPlayerModal = ({ player, idx, theme, retro }) => {
     const modalId = 'playerModal' + idx;
 
     const AllOffers = player && player.Offers;
+    const { SeasonStats } = player;
+    const teamsList = AllOffers && AllOffers.map((x) => x.Team);
+    const shuffledTeamList = teamsList && ShuffleList(teamsList);
     const modalClass = GetModalClass(theme);
 
     const OfferingTeam = ({ offer, idx }) => {
-        const logo = getLogo(offer.Team);
+        const logo = getLogo(SimNBA, offer.TeamID, retro);
         const rank = idx + 1;
         return (
             <div className="row">
@@ -106,8 +117,18 @@ export const NBAFreeAgencyPlayerModal = ({ player, idx, theme }) => {
                             </div>
                         </div>
                         <div className="row g-2 mb-3">
-                            <div className="col"></div>
-                            <div className="col"></div>
+                            <div className="col">
+                                <h5>Work Ethic</h5>
+                                <p>{player.WorkEthic}</p>
+                            </div>
+                            <div className="col">
+                                <h5>Free Agency Bias</h5>
+                                <p>{player.FreeAgency}</p>
+                            </div>
+                            <div className="col">
+                                <h5>Personality</h5>
+                                <p>{player.Personality}</p>
+                            </div>
                             <div className="col">
                                 <h5>Region</h5>
                                 {player.Country === 'USA'
@@ -122,6 +143,7 @@ export const NBAFreeAgencyPlayerModal = ({ player, idx, theme }) => {
                             </div>
                         </div>
                         {player &&
+                            !player.IsNegotiating &&
                             AllOffers !== null &&
                             AllOffers.length > 0 && (
                                 <div className="row g-1 mb-3">
@@ -133,27 +155,104 @@ export const NBAFreeAgencyPlayerModal = ({ player, idx, theme }) => {
                                     })}
                                 </div>
                             )}
+                        {player && player.IsNegotiating && (
+                            <div className="row g-1 mb-3">
+                                <h5>This player is now negotiating.</h5>
+                                <p>
+                                    Teams with an offer will have one more week
+                                    to update their offers before the player
+                                    signs. Until then, all contract info will
+                                    remain hidden.
+                                </p>
+                                <h6>Teams Negotiating</h6>
+                                {shuffledTeamList.map((x) => (
+                                    <p>{x}</p>
+                                ))}
+                            </div>
+                        )}
                         <div className="row">
                             <div className="col">
                                 <h5>Career Stats</h5>
+                                <div className="row mt-2">
+                                    <div className="col-auto">
+                                        <h6>Games Played</h6>
+                                        <p className="text-small">
+                                            {SeasonStats.GamesPlayed}
+                                        </p>
+                                    </div>
+                                    <div className="ms-2 col-auto">
+                                        <h6>Minutes</h6>
+                                        <p className="text-small">
+                                            {RoundToTwoDecimals(
+                                                SeasonStats.MinutesPerGame
+                                            )}
+                                        </p>
+                                    </div>
+                                    <div className="col-auto">
+                                        <h6>Possessions</h6>
+                                        <p className="text-small">
+                                            {RoundToTwoDecimals(
+                                                SeasonStats.PossessionsPerGame
+                                            )}
+                                        </p>
+                                    </div>
+                                </div>
+                                <BBAStatsRow SeasonStats={SeasonStats} />
                             </div>
                             <div className="col">
-                                <div className="row g-2 mb-2">
-                                    <div className="col">
-                                        <h5>Work Ethic</h5>
-                                        <p>{player.WorkEthic}</p>
+                                <h5>Attributes</h5>
+                                <div className="row">
+                                    <div className="col-3">
+                                        <p className="text-small">Finishing</p>
+                                        <p className="text-small">
+                                            {player.Finishing}
+                                        </p>
                                     </div>
-                                </div>
-                                <div className="row g-2 mb-2">
-                                    <div className="col">
-                                        <h5>Free Agency Bias</h5>
-                                        <p>{player.FreeAgency}</p>
+                                    <div className="col-3">
+                                        <p className="text-small">Shooting2</p>
+                                        <p className="text-small">
+                                            {player.Shooting2}
+                                        </p>
                                     </div>
-                                </div>
-                                <div className="row g-2 mb-2">
-                                    <div className="col">
-                                        <h5>Personality</h5>
-                                        <p>{player.Personality}</p>
+                                    <div className="col-3">
+                                        <p className="text-small">Shooting3</p>
+                                        <p className="text-small">
+                                            {player.Shooting3}
+                                        </p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p className="text-small">Free Throw</p>
+                                        <p className="text-small">
+                                            {player.FreeThrow}
+                                        </p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p className="text-small">Ballwork</p>
+                                        <p className="text-small">
+                                            {player.Ballwork}
+                                        </p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p className="text-small">Rebounding</p>
+                                        <p className="text-small">
+                                            {player.Rebounding}
+                                        </p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p className="text-small">
+                                            Int. Defense
+                                        </p>
+                                        <p className="text-small">
+                                            {player.InteriorDefense}
+                                        </p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p className="text-small">
+                                            Per. Defense
+                                        </p>
+                                        <p className="text-small">
+                                            {player.PerimeterDefense}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -216,6 +315,7 @@ export const NBAFreeAgentOfferModal = ({
     const [rule2Valid, setRule2] = useState(true);
     const [rule3Valid, setRule3] = useState(true);
     const [rule4Valid, setRule4] = useState(true);
+    const [rule5Valid, setRule5] = useState(true);
     const { MinimumValue, MaxRequested, IsSuperMaxQualified, Year } = player;
     const maxPercentage = GetMaxPercentage(
         Year,
@@ -331,7 +431,7 @@ export const NBAFreeAgentOfferModal = ({
             TotalYears: totalYears
         };
 
-        const isRule1Valid = totalYears > 0 && totalYears < 6;
+        const isRule1Valid = ValidateNBARule1(totalYears, player.Year);
         const isRule2Valid = ValidateNBARule2(
             totalYears,
             y1Total,
@@ -350,7 +450,24 @@ export const NBAFreeAgentOfferModal = ({
             offer.Year5Opt
         );
 
-        const isRule4Valid = true;
+        const isRule4Valid = ValidateNBARule4(
+            totalYears,
+            y1Total,
+            y2Total,
+            y3Total,
+            y4Total,
+            y5Total,
+            MinimumValue
+        );
+        const isRule5Valid = ValidateNBARule5(
+            totalYears,
+            y1Total,
+            y2Total,
+            y3Total,
+            y4Total,
+            y5Total,
+            player.Overall
+        );
 
         const canMakeOffer =
             player.IsAcceptingOffers ||
@@ -377,6 +494,7 @@ export const NBAFreeAgentOfferModal = ({
             isRule2Valid &&
             isRule3Valid &&
             isRule4Valid &&
+            isRule5Valid &&
             canMakeOffer &&
             validToExistingOffer;
 
@@ -384,6 +502,7 @@ export const NBAFreeAgentOfferModal = ({
         setRule2(() => isRule2Valid);
         setRule3(() => isRule3Valid);
         setRule4(() => isRule4Valid);
+        setRule5(() => isRule5Valid);
         setValidOffer(() => isValid);
         setOffer(() => updatedOffer);
     };
@@ -513,32 +632,54 @@ export const NBAFreeAgentOfferModal = ({
                                 <div className="row">
                                     <div className="col">
                                         <p
-                                            className={
+                                            className={`${
                                                 !rule1Valid ? 'text-danger' : ''
-                                            }
+                                            } text-small`}
                                         >
                                             1: Contracts can only be between 1-5
-                                            years
+                                            years. (3 years if the player has
+                                            been in the league for less than 4
+                                            years)
                                         </p>
                                         <p
-                                            className={
+                                            className={`${
                                                 !rule3Valid ? 'text-danger' : ''
-                                            }
+                                            } text-small`}
                                         >
                                             3: The final year of a contract may
                                             be an option.
                                         </p>
+                                        <p
+                                            className={`${
+                                                !rule5Valid ? 'text-danger' : ''
+                                            } text-small`}
+                                        >
+                                            5: Yearly amounts do not need to be
+                                            equal, but bids must be within 8% of
+                                            the preceding year. (If a player's
+                                            overall is less than 90, the yearly
+                                            amounts must increase by 1M for
+                                            every year of the contract instead.)
+                                        </p>
                                     </div>
                                     <div className="col">
                                         <p
-                                            className={
+                                            className={`${
                                                 !rule2Valid ? 'text-danger' : ''
-                                            }
+                                            } text-small`}
                                         >
-                                            2: Yearly amounts do not need to be
-                                            equal, but bids must be equal or
-                                            greater than the subsequent year in
-                                            the contract.
+                                            2: Bids cannot offer yearly amounts
+                                            outside the designated contract
+                                            length.
+                                        </p>
+                                        <p
+                                            className={`${
+                                                !rule4Valid ? 'text-danger' : ''
+                                            } text-small`}
+                                        >
+                                            4: An input for salary that isn't
+                                            zero must be greater than the
+                                            minimum asking amount.
                                         </p>
                                     </div>
                                 </div>
@@ -815,7 +956,6 @@ export const NBAWaiverOfferModal = ({
             Capsheet.Year5Total,
             Capsheet.Year5Cap
         );
-        console.log({ y1Space, y2Space, y3Space, y4Space, y5Space });
         const y1Value = c.Year1Total * 1;
         const y2Value = c.Year2Total * 0.9;
         const y3Value = c.Year3Total * 0.8;

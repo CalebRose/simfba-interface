@@ -513,13 +513,13 @@ export const GetCBBOverall = (croot) => {
 };
 
 export const GetStarRating = (ovr) => {
-    if (ovr > 59) {
+    if (ovr > 67) {
         return 5;
-    } else if (ovr > 52) {
+    } else if (ovr > 61) {
         return 4;
-    } else if (ovr > 44) {
+    } else if (ovr > 52) {
         return 3;
-    } else if (ovr > 36) {
+    } else if (ovr > 45) {
         return 2;
     }
     return 1;

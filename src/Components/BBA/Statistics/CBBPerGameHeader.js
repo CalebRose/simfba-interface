@@ -17,10 +17,10 @@ export const CBBPerGameHeader = ({ sortFunc, cv, viewType }) => {
                 label="Possessions Per Game"
                 onClick={() => returnSort('PossessionsPerGame', cv)}
             >
-                PPG
+                Poss.
             </th>
             <th scope="col" onClick={() => returnSort('PPG', cv)}>
-                PTS
+                PPG
             </th>
             <th scope="col" onClick={() => returnSort('FGMPG', cv)}>
                 FGM

@@ -54,10 +54,10 @@ const DraftPickRow = ({ pick, theme }) => {
             <div className={`${mobileCardClass} mb-2`}>
                 <div className="card-body">
                     <h5 className="card-title">
-                        {pick.Season} {pick.Round} Round
+                        {pick.Season} {pick.DraftRound} Round
                     </h5>
                     <h6 className="card-subtitle mb-2 text-muted">
-                        Pick No. {pick.PickNumber} | Original Team:{' '}
+                        Pick No. {pick.DraftNumber} | Original Team:{' '}
                         {pick.OriginalTeam}
                     </h6>
                     <p className="card-text">Trade Value: {pick.TradeValue}</p>

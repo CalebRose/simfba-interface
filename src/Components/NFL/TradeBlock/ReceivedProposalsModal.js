@@ -33,15 +33,15 @@ const ProposalItem = ({ item, idx, isSent, accept, reject, cancel, isNBA }) => {
         : item.NBATeamTradeOptions;
     const receivedOptions = item.RecepientTeamTradeOptions;
     const acceptHelper = () => {
-        return accept(item.ID);
+        return accept(item);
     };
 
     const rejectHelper = () => {
-        return reject(item.ID);
+        return reject(item);
     };
 
     const cancelHelper = () => {
-        return cancel(item.ID);
+        return cancel(item);
     };
 
     return (
@@ -186,11 +186,11 @@ export const ReceivedProposalsModal = ({
                     </div>
                     <div className="modal-body proposal-body">
                         <div className="row">
-                            <div className="col-6">
+                            <div className="col-sm-6">
                                 <div className="row justify-content-start">
                                     <h4>Sent</h4>
                                 </div>
-                                {sent.length > 0 && (
+                                {sent && sent.length > 0 && (
                                     <div className="accordion mt-2">
                                         {sent.map((x, idx) => (
                                             <ProposalItem
@@ -206,11 +206,11 @@ export const ReceivedProposalsModal = ({
                                     </div>
                                 )}
                             </div>
-                            <div className="col-6">
+                            <div className="col-sm-6">
                                 <div className="row justify-content-start">
                                     <h4>Received</h4>
                                 </div>
-                                {received.length > 0 && (
+                                {received && received.length > 0 && (
                                     <div className="accordion mt-2">
                                         {received.map((x, idx) => (
                                             <ProposalItem

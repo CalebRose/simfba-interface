@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import toast from 'react-hot-toast';
 import TeamCard from './TeamCard.js';
 import { getLogo } from '../../Constants/getLogo.js';
 import { connect } from 'react-redux';
@@ -11,6 +12,7 @@ import constants from '../../Constants/acronyms.js';
 import BBATeamCard from '../BBA/TeamCard/BBATeamCard.js';
 import NFLTeamCard from './NFLTeamCard.js';
 import NBATeamCard from './NBATeamCard.js';
+import { SimCBB, SimCFB, SimNBA } from '../../Constants/CommonConstants.js';
 
 class AvailableTeams extends Component {
     state = {
@@ -19,6 +21,7 @@ class AvailableTeams extends Component {
         sentRequest: false,
         selectedSport: 'CFB'
     };
+    _retroService = this.props.currentUser && this.props.currentUser.IsRetro;
     _FBTeamService = new FBATeamService();
     CFBRequestService = new FBARequestService();
     BBATeamService = new BBATeamService();
@@ -57,10 +60,7 @@ class AvailableTeams extends Component {
 
     NBAGetAvailableTeams = async () => {
         let teams = await this.BBATeamService.GetAllProfessionalTeams();
-        const sortedTeams = teams.sort(
-            (a, b) => '' + a.Team.localeCompare(b.Team)
-        );
-        this.setState({ teams: teams, filterTeams: sortedTeams });
+        this.setState({ teams: teams, filterTeams: teams });
     };
 
     sendCFBRequest = async (team) => {
@@ -69,7 +69,7 @@ class AvailableTeams extends Component {
                 team,
                 this.props.currentUser.username
             );
-
+            toast.success('Request Sent!');
             this.setState({ sentRequest: true });
         } else {
             alert(
@@ -97,6 +97,7 @@ class AvailableTeams extends Component {
             };
 
             await this.CFBRequestService.CreateNFLTeamRequest(requestDTO);
+            toast.success('Request Sent!');
             this.setState({ sentRequest: true });
         } else {
             alert(
@@ -110,7 +111,7 @@ class AvailableTeams extends Component {
             team,
             this.props.currentUser.username
         );
-
+        toast.success('Request Sent!');
         this.setState({ sentRequest: true });
     };
 
@@ -135,6 +136,7 @@ class AvailableTeams extends Component {
             const res = await this.BBARequestService.CreateNBATeamRequest(
                 requestDTO
             );
+            toast.success('Request Sent!');
             this.setState({ sentRequest: true });
         } else {
             alert(
@@ -179,7 +181,7 @@ class AvailableTeams extends Component {
                         team={team.TeamName}
                         mascot={team.Mascot}
                         conference={team.Conference}
-                        logo={getLogo(team.TeamAbbr)}
+                        logo={getLogo(SimCFB, team.ID, this._retroService)}
                         request={this.sendCFBRequest}
                         disable={this.state.sentRequest}
                         isFBS={team.IsFBS}
@@ -195,6 +197,7 @@ class AvailableTeams extends Component {
                         request={this.sendNFLRequest}
                         disable={this.state.sentRequest}
                         viewMode={this.props.viewMode}
+                        retro={this._retroService}
                     />
                 );
             } else if (this.state.selectedSport === constants.CBB) {
@@ -205,13 +208,14 @@ class AvailableTeams extends Component {
                         team={team.Team}
                         mascot={team.Nickname}
                         conference={team.Conference}
-                        logo={getLogo(team.Abbr)}
+                        logo={getLogo(SimCBB, team.ID, this._retroService)}
                         request={this.sendCBBRequest}
                         disable={this.state.sentRequest}
                         ovr={team.OverallGrade}
                         off={team.OffenseGrade}
                         def={team.DefenseGrade}
                         coach={team.Coach}
+                        isUser={team.IsUserCoached}
                         viewMode={this.props.viewMode}
                     />
                 );
@@ -221,7 +225,7 @@ class AvailableTeams extends Component {
                         key={team.ID}
                         teamId={team.ID}
                         team={team}
-                        logo={getLogo(team.Team + ' ' + team.Nickname)}
+                        logo={getLogo(SimNBA, team.ID, this._retroService)}
                         request={this.sendNBARequest}
                         disable={this.state.sentRequest}
                         viewMode={this.props.viewMode}
@@ -248,7 +252,7 @@ class AvailableTeams extends Component {
                             target="_blank"
                             href="https://www.simfba.com/index.php"
                         >
-                            SimFBA
+                            SimSN
                         </a>{' '}
                         and go to the{' '}
                         <a
@@ -312,7 +316,7 @@ class AvailableTeams extends Component {
                     </div>
                     <div className="col-md-10">
                         <div className="availableScrollbar available-ui-height availableTeams">
-                            <div className="row row-cols-1 row-cols-md-3 g-4 mb-2">
+                            <div className="row row-cols-1 row-cols-md-4 g-4 mb-2">
                                 {teamCards}
                             </div>
                         </div>

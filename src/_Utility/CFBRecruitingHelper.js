@@ -1,6 +1,7 @@
 import { LowerCaseCheck } from './utilHelper';
 import StateMatcher from './stateMatcher.json';
 import RegionMatcher from './regionMatcher.json';
+import { FormationMap } from '../Components/Gameplan/GameplanConstants';
 
 export const ValidateAffinity = (CrootAffinity, TeamRecruitingProfile) => {
     const TeamAffinityList = TeamRecruitingProfile.Affinities;
@@ -60,4 +61,73 @@ export const CalculateAdjustedPoints = (recruitProfile) => {
     }
 
     return Math.round(points * res * 100) / 100;
+};
+
+export const GetRecruitingTendency = (mod) => {
+    if (mod === 0.02) return 'Signing Day Decision';
+    if (mod > 1.79) {
+        return 'Signs Very Early';
+    } else if (mod < 1.8 && mod > 1.51) {
+        return 'Signs Early';
+    } else if (mod < 1.5 && mod > 1.2) {
+        return 'Average';
+    } else if (mod < 1.21 && mod > 1) {
+        return 'Signs Late';
+    } else {
+        return 'Signs Very Late';
+    }
+};
+
+export const isGoodFit = (offensiveScheme, defensiveScheme, pos, arch) => {
+    if (offensiveScheme.length === 0 || defensiveScheme.length === 0) {
+        return false;
+    }
+    let scheme = offensiveScheme;
+    if (
+        pos === 'DT' ||
+        pos === 'DE' ||
+        pos === 'ILB' ||
+        pos === 'OLB' ||
+        pos === 'CB' ||
+        pos === 'FS' ||
+        pos === 'SS'
+    ) {
+        scheme = defensiveScheme;
+    }
+
+    const schemeMap = FormationMap[scheme];
+    const { SchemeFits } = schemeMap;
+    const label = `${arch} ${pos}`;
+    const idx = SchemeFits.findIndex((x) => x === label);
+    if (idx > -1) {
+        return true;
+    }
+    return false;
+};
+
+export const isBadFit = (offensiveScheme, defensiveScheme, pos, arch) => {
+    if (offensiveScheme.length === 0 || defensiveScheme.length === 0) {
+        return false;
+    }
+    let scheme = offensiveScheme;
+    if (
+        pos === 'DT' ||
+        pos === 'DE' ||
+        pos === 'ILB' ||
+        pos === 'OLB' ||
+        pos === 'CB' ||
+        pos === 'FS' ||
+        pos === 'SS'
+    ) {
+        scheme = defensiveScheme;
+    }
+
+    const schemeMap = FormationMap[scheme];
+    const { BadFits } = schemeMap;
+    const label = `${arch} ${pos}`;
+    const idx = BadFits.findIndex((x) => x === label);
+    if (idx > -1) {
+        return true;
+    }
+    return false;
 };

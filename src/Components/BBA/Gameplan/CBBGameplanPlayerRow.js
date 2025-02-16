@@ -1,37 +1,22 @@
 import React from 'react';
 import { Dropdown } from '../../_Common/Dropdown';
-import { getCBBPositionList } from '../../../_Utility/utilHelper';
+import {
+    GetAdjStaminaByPace,
+    GetCollegeYear,
+    getCBBPositionList
+} from '../../../_Utility/utilHelper';
 
 const GameplanPlayerRow = ({
     player,
     idx,
+    pace,
     updatePlayer,
     gameplan,
     updatePosition
 }) => {
     const minutes = player.P1Minutes + player.P2Minutes + player.P3Minutes;
     const positionList = getCBBPositionList(player.Position);
-    const getYear = (player) => {
-        let isRedshirt = player.IsRedshirt;
-        if (player.Year === 5 && isRedshirt) {
-            return '(Sr)';
-        } else if (player.Year === 4 && !isRedshirt) {
-            return 'Sr';
-        } else if (player.Year === 4 && isRedshirt) {
-            return '(Jr)';
-        } else if (player.Year === 3 && !isRedshirt) {
-            return 'Jr';
-        } else if (player.Year === 3 && isRedshirt) {
-            return '(So)';
-        } else if (player.Year === 2 && !isRedshirt) {
-            return 'So';
-        } else if (player.Year === 2 && isRedshirt) {
-            return '(Fr)';
-        }
-        return 'Fr';
-    };
-
-    let year = getYear(player);
+    let year = GetCollegeYear(player);
 
     const handleChange = (event) => {
         return updatePlayer(idx, event);
@@ -41,10 +26,18 @@ const GameplanPlayerRow = ({
         return updatePosition(idx, name, value);
     };
 
+    const adjStamina = GetAdjStaminaByPace(player.Stamina, pace);
+
     return (
         <tr>
             <th scope="row" className="align-middle">
-                <h6 className={player.IsRedshirting ? 'text-danger' : ''}>
+                <h6
+                    className={
+                        player.IsRedshirting || player.IsInjured
+                            ? 'text-danger'
+                            : ''
+                    }
+                >
                     {year} {player.Position}{' '}
                     {player.FirstName + ' ' + player.LastName}
                 </h6>
@@ -78,7 +71,9 @@ const GameplanPlayerRow = ({
                 <input
                     name="InsideProportion"
                     type="number"
-                    class="form-control"
+                    className={`form-control ${
+                        player.InsideProportion > 15 ? 'border-danger' : ''
+                    }`}
                     id="gameMinutes"
                     aria-describedby="gameMinutes"
                     value={player.InsideProportion}
@@ -89,7 +84,9 @@ const GameplanPlayerRow = ({
                 <input
                     name="MidRangeProportion"
                     type="number"
-                    class="form-control"
+                    className={`form-control ${
+                        player.MidRangeProportion > 15 ? 'border-danger' : ''
+                    }`}
                     id="gameMinutes"
                     aria-describedby="gameMinutes"
                     value={player.MidRangeProportion}
@@ -100,7 +97,9 @@ const GameplanPlayerRow = ({
                 <input
                     name="ThreePointProportion"
                     type="number"
-                    class="form-control"
+                    className={`form-control ${
+                        player.ThreePointProportion > 15 ? 'border-danger' : ''
+                    }`}
                     id="gameMinutes"
                     aria-describedby="gameMinutes"
                     value={player.ThreePointProportion}
@@ -119,7 +118,7 @@ const GameplanPlayerRow = ({
                 <input
                     name="P1Minutes"
                     type="number"
-                    class="form-control"
+                    className="form-control"
                     id="gameMinutes"
                     aria-describedby="gameMinutes"
                     value={player.P1Minutes}
@@ -140,7 +139,7 @@ const GameplanPlayerRow = ({
                         <input
                             name="P2Minutes"
                             type="number"
-                            class="form-control"
+                            className="form-control"
                             id="gameMinutes"
                             aria-describedby="gameMinutes"
                             value={player.P2Minutes}
@@ -163,7 +162,7 @@ const GameplanPlayerRow = ({
                         <input
                             name="P3Minutes"
                             type="number"
-                            class="form-control"
+                            className="form-control"
                             id="gameMinutes"
                             aria-describedby="gameMinutes"
                             value={player.P3Minutes}
@@ -172,8 +171,14 @@ const GameplanPlayerRow = ({
                     </td>
                 </>
             )}
-            <td className="align-middle">{minutes}</td>
-            <td className="align-middle">{player.Stamina}</td>
+            <td
+                className={`align-middle ${
+                    minutes > adjStamina ? 'text-danger' : ''
+                }`}
+            >
+                {minutes}
+            </td>
+            <td className="align-middle">{adjStamina}</td>
             <td className="align-middle">{player.PlaytimeExpectations}</td>
         </tr>
     );

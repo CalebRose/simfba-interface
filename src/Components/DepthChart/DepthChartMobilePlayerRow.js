@@ -96,7 +96,10 @@ const DepthChartMobilePlayerRow = ({
                     positionAttributes.length > 0 &&
                     positionAttributes.map((x, idx) => {
                         if (!playerData) return '';
-                        const label = idx > 5 ? x.attr : x.label;
+                        const label =
+                            idx > 5 && x.label !== 'Shotgun Rating'
+                                ? x.attr
+                                : x.label;
                         const mobileLabel = label
                             .replace(/([A-Z])/g, ' $1')
                             .trim();
@@ -123,6 +126,14 @@ const DepthChartMobilePlayerRow = ({
                                     : GetNFLYear(playerData);
                             } else if (label === 'PotentialGrade') {
                                 attr = playerData.PotentialGrade;
+                            } else if (label === 'Shotgun Rating') {
+                                if (playerData.Shotgun === 1) {
+                                    attr = 'Shotgun';
+                                } else if (playerData.Shotgun === -1) {
+                                    attr = 'Under Center';
+                                } else {
+                                    attr = 'Balanced';
+                                }
                             } else {
                                 let val = playerData[label];
                                 // May want to go off of the original position values

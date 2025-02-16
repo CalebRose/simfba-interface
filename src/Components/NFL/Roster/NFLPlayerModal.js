@@ -11,14 +11,15 @@ import {
     RoundToTwoDecimals
 } from '../../../_Utility/utilHelper';
 import AttributeRow from '../../Roster/AttributeRow';
+import { SimCFB, SimNFL } from '../../../Constants/CommonConstants';
 
-export const NFLPlayerModal = ({ team, player, idx, viewMode }) => {
+export const NFLPlayerModal = ({ team, player, idx, viewMode, retro }) => {
     const modalId = 'playerModal' + idx;
     const modalClass = GetModalClass(viewMode);
     const heightObj = HeightToFeetAndInches(player.Height);
     player['priorityAttributes'] = SetNFLPriority(player);
-    const logo = getLogo(team.TeamName + ' ' + team.Mascot);
-    const CollegeLogo = getLogo(player.College);
+    const logo = getLogo(SimNFL, team.ID, retro);
+    const CollegeLogo = getLogo(SimCFB, player.CollegeID, retro);
     const CurrentYearSalary =
         player.Contract.Y1BaseSalary + player.Contract.Y1Bonus;
     const draftedRound = GetNFLRound(player.DraftedRound);
@@ -42,7 +43,7 @@ export const NFLPlayerModal = ({ team, player, idx, viewMode }) => {
                 <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="playerModalLabel">
-                            {player.Archetype} {player.Position}{' '}
+                            {player.ID} {player.Archetype} {player.Position}{' '}
                             {player.FirstName} {player.LastName}
                         </h4>
                         <button
@@ -61,6 +62,12 @@ export const NFLPlayerModal = ({ team, player, idx, viewMode }) => {
                                 <h5>Experience</h5>
                                 {player.Experience}
                             </div>
+                            {player.PositionTwo.length > 0 && (
+                                <div className="col">
+                                    <h5>Secondary Pos.</h5>
+                                    {player.ArchetypeTwo} {player.PositionTwo}
+                                </div>
+                            )}
                             <div className="col">
                                 <h5>Age</h5>
                                 {player.Age}
@@ -119,23 +126,22 @@ export const NFLPlayerModal = ({ team, player, idx, viewMode }) => {
                             <div className="col">
                                 <div className="row g-2 mb-2">
                                     {player.priorityAttributes &&
-                                    player.priorityAttributes.length > 0
-                                        ? player.priorityAttributes.map(
-                                              (attribute) => (
-                                                  <AttributeRow
-                                                      key={attribute.Name}
-                                                      data={attribute}
-                                                      theme={viewMode}
-                                                  />
-                                              )
-                                          )
-                                        : ''}
+                                        player.priorityAttributes.length > 0 &&
+                                        player.priorityAttributes.map(
+                                            (attribute) => (
+                                                <AttributeRow
+                                                    key={attribute.Name}
+                                                    data={attribute}
+                                                    theme={viewMode}
+                                                />
+                                            )
+                                        )}
                                 </div>
                             </div>
-                            <div className="col-auto">
+                            <div className="col-2">
                                 <div className="row g-1 mb-2">
                                     <div className="col">
-                                        <h5>Contract</h5>
+                                        <h6>Contract</h6>
                                         <p>
                                             {player.Contract.ContractLength}{' '}
                                             Years
@@ -146,19 +152,19 @@ export const NFLPlayerModal = ({ team, player, idx, viewMode }) => {
                                 </div>
                                 <div className="row g-1 mb-2">
                                     <div className="col">
-                                        <h5>Work Ethic</h5>
+                                        <h6>Work Ethic</h6>
                                         <p>{player.WorkEthic}</p>
                                     </div>
                                 </div>
                                 <div className="row g-1 mb-2">
                                     <div className="col">
-                                        <h5>Free Agency Bias</h5>
+                                        <h6>FA Bias</h6>
                                         <p>{player.FreeAgency}</p>
                                     </div>
                                 </div>
                                 <div className="row g-1 mb-2">
                                     <div className="col">
-                                        <h5>Personality</h5>
+                                        <h6>Personality</h6>
                                         <p>{player.Personality}</p>
                                     </div>
                                 </div>

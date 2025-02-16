@@ -1,56 +1,61 @@
 import React from 'react';
 import { GetModalClass } from '../../../../Constants/CSSClassHelper';
 import { RoundToTwoDecimals } from '../../../../_Utility/utilHelper';
+import { getLogo } from '../../../../Constants/getLogo';
+import { SimCBB } from '../../../../Constants/CommonConstants';
 
 const CBBCrootModal = (props) => {
-    const { crt, idx, viewMode } = props;
+    const { crt, idx, viewMode, retro } = props;
     const modalId = 'crootModal' + idx;
     const modalClass = GetModalClass(viewMode);
-    const LeadingTeam = (props) => {
-        const { lt } = props;
-        const { TeamAbbr, Odds } = lt;
+    const LeadingTeam = ({ lt }) => {
+        const { TeamID, TeamAbbr, Odds, Scholarship } = lt;
         const displayOdds = Math.round(Odds * 100);
-        let displayStatus = '';
-        if (displayOdds > 50) {
-            displayStatus = 'Strong Favorite';
-        } else if (displayOdds > 19) {
-            displayStatus = 'In Contention';
-        } else {
-            displayStatus = 'Unlikely';
-        }
-        return crt && crt.College === TeamAbbr ? (
+
+        const getDisplayStatus = (odds) => {
+            if (odds > 50) return 'Strong Favorite';
+            if (odds > 19) return 'In Contention';
+            return 'Unlikely';
+        };
+        let displayStatus = getDisplayStatus(displayOdds);
+        const hasCommitted = crt && crt.College.length > 0;
+        const isCommittedToCollege = (crt, teamAbbr) =>
+            crt && crt.College === teamAbbr;
+        const logo = getLogo(SimCBB, TeamID, retro);
+
+        return (
             <div className="row">
-                <div className="col">
-                    <h6 className="text-success">{TeamAbbr}</h6>
+                <div className={`col-${hasCommitted ? '3' : '4'}`}>
+                    <h6
+                        className={
+                            isCommittedToCollege(crt, TeamAbbr)
+                                ? 'text-success'
+                                : ''
+                        }
+                    >
+                        <img
+                            className="image-nfl-fa mx-1"
+                            src={logo}
+                            alt="competing-team"
+                        />{' '}
+                        {TeamAbbr}
+                    </h6>
                 </div>
-                <div className="col">
-                    <h6>Committed!</h6>
+                <div className={`col-${hasCommitted ? '3' : '4'}`}>
+                    {Scholarship ? 'Yes' : 'No'}
                 </div>
-                <div className="col">
-                    <h6>Odds: {displayOdds}%</h6>
-                </div>
-            </div>
-        ) : (
-            <div className="row">
-                <div className="col">
-                    <h6>{TeamAbbr}</h6>
-                </div>
-                {crt && crt.College.length > 0 && crt.College !== TeamAbbr ? (
-                    <div className="col">
-                        <h6>Unlikely</h6>
-                    </div>
-                ) : (
-                    ''
-                )}
-                <div className="col">
+                <div className={`col-${hasCommitted ? '3' : '4'}`}>
                     <h6>
-                        {crt &&
-                        crt.College.length > 0 &&
-                        crt.College !== TeamAbbr
-                            ? 'Odds: ' + displayOdds + '%'
+                        {isCommittedToCollege(crt, TeamAbbr)
+                            ? 'Committed!'
                             : displayStatus}
                     </h6>
                 </div>
+                {hasCommitted && (
+                    <div className="col-3">
+                        <h6>{displayOdds}%</h6>
+                    </div>
+                )}
             </div>
         );
     };
@@ -63,11 +68,18 @@ const CBBCrootModal = (props) => {
             aria-labelledby="crootModalLabel"
             aria-hidden="true"
         >
-            <div className="modal-dialog">
+            <div
+                className={`modal-dialog ${
+                    crt.LeadingTeams !== null &&
+                    crt.LeadingTeams.length > 6 &&
+                    'modal-dialog-scrollable cbb-modal'
+                }`}
+            >
                 <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="crootModalLabel">
-                            {crt.FirstName} {crt.LastName}
+                            {crt.ID} {crt.Position} {crt.FirstName}{' '}
+                            {crt.LastName}
                         </h4>
                         <button
                             type="button"
@@ -78,57 +90,66 @@ const CBBCrootModal = (props) => {
                     </div>
                     <div className="modal-body">
                         <div className="row g-2 gy-2 mb-2">
-                            <div className="col">
-                                <h5>Position</h5>
-                                {crt.Position}
-                            </div>
-                            <div className="col">
+                            <div
+                                className={crt.IsCustomCroot ? 'col-3' : 'col'}
+                            >
                                 <h5>Stars</h5>
                                 {crt.Stars}
                             </div>
-                            <div className="col">
+                            <div
+                                className={crt.IsCustomCroot ? 'col-3' : 'col'}
+                            >
+                                <h5>Potential:</h5> {crt.PotentialGrade}
+                            </div>
+                            {crt.IsCustomCroot && (
+                                <div className="col-3">
+                                    <h5>Custom Croot By {crt.CreatedFor}</h5>
+                                </div>
+                            )}
+                            <div
+                                className={crt.IsCustomCroot ? 'col-3' : 'col'}
+                            >
                                 <h5>Status: </h5>
                                 {crt.TeamID === 0 ? 'Unsigned' : 'Signed'}
                             </div>
                         </div>
-                        <div className="row g-2 gy-2 mb-3">
-                            <div className="col">
-                                <h5>Potential:</h5> {crt.PotentialGrade}
-                            </div>
-                            <div className="col">
+                        <div className="row g-2 mb-3">
+                            <div
+                                className={crt.RelativeID > 0 ? 'col-3' : 'col'}
+                            >
                                 <h5>Height:</h5> {crt.Height}
                             </div>
-                            {crt.IsCustomCroot ? (
-                                <div className="col">
-                                    <h5>Custom Croot By {crt.CreatedFor}</h5>
-                                </div>
-                            ) : (
-                                ''
-                            )}
-                        </div>
-                        <div className="row g-2 mb-3">
-                            {crt.State.length > 0 ? (
-                                <div className="col">
+                            {crt.State.length > 0 && (
+                                <div
+                                    className={
+                                        crt.RelativeID > 0 ? 'col-3' : 'col'
+                                    }
+                                >
                                     <h5>State:</h5> {crt.State}
                                 </div>
-                            ) : (
-                                <></>
                             )}
-                            <div className="col">
+                            <div
+                                className={crt.RelativeID > 0 ? 'col-3' : 'col'}
+                            >
                                 <h5>Country</h5>
                                 {crt.Country}
                             </div>
-                        </div>
-                        {crt.HasStateBonus || crt.HasRegionBonus ? (
-                            <div className="row g-2 gy-2 mb-3">
-                                <div className="col">
-                                    <h5>Bonus Applied</h5>
-                                    {crt.HasStateBonus ? 'State' : 'Region'}
+                            {crt.RelativeID > 0 && (
+                                <div className="col-3">
+                                    <h5>Notes</h5>
+                                    <p>{crt.Notes}</p>
                                 </div>
-                            </div>
-                        ) : (
-                            ''
-                        )}
+                            )}
+                        </div>
+                        {crt.HasStateBonus ||
+                            (crt.HasRegionBonus && (
+                                <div className="row g-2 gy-2 mb-3">
+                                    <div className="col">
+                                        <h5>Bonus Applied</h5>
+                                        {crt.HasStateBonus ? 'State' : 'Region'}
+                                    </div>
+                                </div>
+                            ))}
                         <div className="row g-2 gy-2 mb-3">
                             <div className="col">
                                 <h5>Rivals Rank:</h5>{' '}
@@ -142,27 +163,37 @@ const CBBCrootModal = (props) => {
                                 {RoundToTwoDecimals(crt.Rank247)}
                             </div>
                         </div>
-                        <div className="row g-1 mb-3">
-                            {crt && crt.College.length > 0 ? (
-                                <h5>Results</h5>
-                            ) : (
-                                <h5>Prediction</h5>
+                        <div className="row g-1 mb-2">
+                            <div className="col">
+                                <h5>Team</h5>
+                            </div>
+                            <div className="col">
+                                <h5>Scholarship</h5>
+                            </div>
+                            <div className="col">
+                                {crt && crt.College.length > 0 ? (
+                                    <h5>Results</h5>
+                                ) : (
+                                    <h5>Prediction</h5>
+                                )}
+                            </div>
+                            {crt && crt.College.length > 0 && (
+                                <div className="col">
+                                    <h5>Odds</h5>
+                                </div>
                             )}
-
-                            {crt &&
-                                crt.LeadingTeams !== null &&
-                                crt.LeadingTeams.length > 0 &&
-                                crt.LeadingTeams.map((lt) => {
-                                    return <LeadingTeam lt={lt} />;
-                                })}
                         </div>
-                        <div className="row g-2 mb-2">
+                        {crt &&
+                            crt.LeadingTeams !== null &&
+                            crt.LeadingTeams.length > 0 &&
+                            crt.LeadingTeams.map((lt) => {
+                                return <LeadingTeam lt={lt} />;
+                            })}
+                        <div className="row g-2 mb-2 mt-1">
                             <div className="col">
                                 <h5>Recruiting Preferences</h5>
                                 <p>{crt.RecruitingBias}</p>
                             </div>
-                        </div>
-                        <div className="row g-2 mb-2">
                             <div className="col">
                                 <h5>Work Ethic</h5>
                                 <p>{crt.WorkEthic}</p>
@@ -173,8 +204,6 @@ const CBBCrootModal = (props) => {
                                 <h5>Academic Bias</h5>
                                 <p>{crt.AcademicBias}</p>
                             </div>
-                        </div>
-                        <div className="row g-2 mb-2">
                             <div className="col">
                                 <h5>Personality</h5>
                                 <p>{crt.Personality}</p>

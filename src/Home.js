@@ -35,7 +35,6 @@ import CBBSchedule from './Components/BBA/Schedule/CBBSchedule';
 import CBBStatistics from './Components/BBA/Statistics/CBBStatistics';
 import ApproveNFLRequests from './Components/Admin/ApproveNFLRequests/ApproveNFLRequests';
 import NFLRoster from './Components/NFL/Roster/NFLRoster';
-import NFLGameplan from './Components/NFL/Gameplan/NFLGameplan';
 import NFLDepthChart from './Components/NFL/DepthChart/NFLDepthChart';
 import NFLFreeAgency from './Components/NFL/FreeAgency/NFLFreeAgency';
 import NFLTradeBlock from './Components/NFL/TradeBlock/NFLTradeBlock';
@@ -48,8 +47,11 @@ import NFLSchedulePage from './Components/NFL/Schedule/NFLSchedulePage';
 import NBAGameplan from './Components/BBA/NBA/Gameplan/NBAGameplan';
 import NBADraftPage from './Components/BBA/NBA/Draft Room/NBADraftPage';
 import NBATradePortal from './Components/BBA/Admin/NBATradePortal/NBATradePortal';
+import { Toaster } from 'react-hot-toast';
+import NFLDraftPage from './Components/NFL/Draft Room/NFLDraftPage';
+import TransferPortal from './Components/TransferPortal/TransferPortal';
 
-const Home = ({ viewMode }) => {
+const Home = ({ viewMode, cfb_Timestamp }) => {
     const user = useSelector((state) => state.user.currentUser);
     const [roleId, setRole] = React.useState('');
     const [bbaRoleId, setBBARole] = React.useState('');
@@ -78,6 +80,7 @@ const Home = ({ viewMode }) => {
     const footerClasses = viewMode === 'light' ? 'bg-light' : 'bg-dark';
     return (
         <div className={`App ${viewMode}`}>
+            <Toaster position="top-right" />
             <NavBar />
             <Route exact path={routes.LANDING} component={LandingPage} />
             <Route
@@ -210,6 +213,28 @@ const Home = ({ viewMode }) => {
             />
             <Route
                 exact
+                path={routes.CFB_TRANSFER}
+                render={() =>
+                    CFBTeam > 0 ? (
+                        <TransferPortal isCFB={true} />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
+                path={routes.CBB_TRANSFER}
+                render={() =>
+                    CBBTeam > 0 ? (
+                        <TransferPortal />
+                    ) : (
+                        <Redirect to={routes.LANDING} />
+                    )
+                }
+            />
+            <Route
+                exact
                 path={routes.CFB_STATS}
                 render={() =>
                     CFBTeam > 0 || NFLTeam > 0 ? (
@@ -246,7 +271,7 @@ const Home = ({ viewMode }) => {
                 path={routes.NFL_GAMEPLAN}
                 render={() =>
                     NFLTeam > 0 ? (
-                        <NFLGameplan />
+                        <CFBGameplan isNFL />
                     ) : (
                         <Redirect to={routes.LANDING} />
                     )
@@ -296,6 +321,14 @@ const Home = ({ viewMode }) => {
                     )
                 }
             />
+
+            <Route exact path={routes.NFL_DRAFT_ROOM}>
+                {NFLTeam > 0 ? (
+                    <NFLDraftPage />
+                ) : (
+                    <Redirect to={routes.LANDING} />
+                )}
+            </Route>
 
             <Route exact path={routes.SIGNUP} component={SignUp} />
             <Route exact path={routes.LOGIN} component={Login} />
@@ -421,7 +454,7 @@ const Home = ({ viewMode }) => {
                 exact
                 path={routes.CBB_SCHEDULE}
                 render={() =>
-                    CBBTeam > 0 ? (
+                    CBBTeam > 0 || NBATeam > 0 ? (
                         <CBBSchedule />
                     ) : (
                         <Redirect to={routes.LANDING} />
@@ -432,7 +465,7 @@ const Home = ({ viewMode }) => {
                 exact
                 path={routes.CBB_STATS}
                 render={() =>
-                    CBBTeam > 0 ? (
+                    CBBTeam > 0 || NBATeam > 0 ? (
                         <CBBStatistics />
                     ) : (
                         <Redirect to={routes.LANDING} />
@@ -447,7 +480,7 @@ const Home = ({ viewMode }) => {
                 }
             >
                 <div className="container">
-                    <span>Simfba, {new Date().getFullYear()}</span>
+                    <span>SimSN, {new Date().getFullYear()}</span>
                 </div>
             </footer>
         </div>

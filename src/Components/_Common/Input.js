@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const NumberInput = ({ name, value, change }) => {
+export const NumberInput = ({ name, value, change, disable }) => {
     return (
         <input
             name={name}
@@ -10,6 +10,7 @@ export const NumberInput = ({ name, value, change }) => {
             aria-describedby={name}
             value={value}
             onChange={change}
+            disabled={disable}
         />
     );
 };

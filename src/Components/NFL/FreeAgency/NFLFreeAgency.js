@@ -3,10 +3,11 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import Select from 'react-select';
+import toast from 'react-hot-toast';
 import {
     ArchetypesListForFA,
-    LetterGradesList,
-    PositionList
+    FBPositionList,
+    LetterGradesList
 } from '../../../Constants/CommonConstants';
 import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 import EasterEggService from '../../../_Services/simFBA/EasterEggService';
@@ -18,11 +19,12 @@ import { FilterFreeAgencyPlayers } from './FreeAgencyHelper';
 import { NFLFreeAgencyMobileRow } from './NFLFreeAgencyMobileRow';
 import NFLFreeAgencyRow from './NFLFreeAgencyRow';
 import { ShortMessage } from '../../_Common/ServiceMessageBanner';
+import { GetDefaultOrder } from '../../../_Utility/RosterHelper';
 
 const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     let _rosterService = new FBAPlayerService();
     let _easterEggService = new EasterEggService();
-    const positions = MapObjOptions(PositionList);
+    const positions = MapObjOptions(FBPositionList);
     const archetypes = MapObjOptions(ArchetypesListForFA);
     const letterGrades = MapOptions(LetterGradesList);
     const [selectedPositions, setSelectedPositions] = useState('');
@@ -46,6 +48,8 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     const [showTamperingButton, setShowButton] = useState(true);
     const [viewWidth, setViewWidth] = useState(window.innerWidth);
     const [count, SetCount] = useState(100);
+    const [sort, setSort] = React.useState('ovr');
+    const [isAsc, setIsAsc] = React.useState(false);
     const [weekLabel, setWeekLabel] = useState('');
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     let luckyTeam = Math.floor(Math.random() * (20 - 1) + 1);
@@ -62,12 +66,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     useEffect(() => {
         if (allPlayers.length === 0 && currentUser) {
             GetAvailablePlayers(currentUser.NFLTeamID);
-            setCanModify(
-                () =>
-                    currentUser.NFLRole === 'Owner' ||
-                    currentUser.NFLRole === 'Manager' ||
-                    currentUser.roleID === 'Admin'
-            );
+            setCanModify(() => true);
         }
     }, [allPlayers, currentUser]);
 
@@ -233,9 +232,18 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
         let res;
         if (viewingFA || viewingPS) {
             res = await _rosterService.CreateFAOffer(offer);
+            toast(
+                `Created Free Agency Offer for ${player.Position} ${player.FirstName} ${player.LastName}`,
+                { duration: 3000 }
+            );
         } else {
             res = await _rosterService.CreateWaiverOffer(offer);
+            toast(
+                `Created Waiver Wire Offer for ${player.Position} ${player.FirstName} ${player.LastName}`,
+                { duration: 3000 }
+            );
         }
+        const offerData = await res.json();
         let players = [];
         if (viewingFA) {
             players = [...allFreeAgents];
@@ -258,10 +266,10 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                 const existingOffersIdx = ExistingOffers.findIndex(
                     (x) => x.ID === offer.ID
                 );
-                ExistingOffers[existingOffersIdx] = offer;
-                players[playerIDX].Offers[offerIDX] = offer;
+                ExistingOffers[existingOffersIdx] = offerData;
+                players[playerIDX].Offers[offerIDX] = offerData;
             } else {
-                const offerObj = { ...offer, ID: res.ID };
+                const offerObj = { ...offerData };
                 if (viewingFA || viewingPS) {
                     const offers = players[playerIDX].Offers;
                     offers.push(offerObj);
@@ -296,8 +304,16 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
         let res;
         if (viewingFA || viewingPS) {
             res = await _rosterService.CancelFAOffer(offer);
+            toast(
+                `Cancelled Free Agency Offer for ${player.Position} ${player.FirstName} ${player.LastName}`,
+                { duration: 3000 }
+            );
         } else {
             res = await _rosterService.CancelWaiverOffer(offer);
+            toast(
+                `Created Waiver Wire Offer for ${player.Position} ${player.FirstName} ${player.LastName}`,
+                { duration: 3000 }
+            );
         }
         if (res) {
             let players = [];
@@ -332,6 +348,76 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     };
 
     // Sorts
+    // Sorting
+    const setSortValues = (value) => {
+        const newSort = value;
+
+        // determine default sort by attribute selected
+        const isAscending = GetDefaultOrder(newSort, sort, isAsc);
+        let fp = [...filteredPlayers];
+
+        switch (newSort) {
+            case 'ovr':
+                fp = [...fp].sort((a, b) => {
+                    if (a.ShowLetterGrade) return 1;
+                    if (b.ShowLetterGrade) return -1;
+                    return (a.Overall - b.Overall) * (isAscending ? 1 : -1);
+                });
+
+                break;
+            case 'name':
+                fp = [...fp].sort(
+                    (a, b) =>
+                        a.LastName.localeCompare(b.LastName) *
+                        (isAscending ? 1 : -1)
+                );
+
+                break;
+            case 'year':
+                fp = [...fp].sort(
+                    (a, b) => (a.Year - b.Year) * (isAscending ? 1 : -1)
+                );
+
+                break;
+            case 'pos':
+                fp = [...fp].sort(
+                    (a, b) =>
+                        a.Position.localeCompare(b.Position) *
+                        (isAscending ? 1 : -1)
+                );
+
+                break;
+            case 'pot':
+                fp = [...fp].sort(
+                    (a, b) =>
+                        a.PotentialGrade.localeCompare(b.PotentialGrade) *
+                        (isAscending ? 1 : -1)
+                );
+
+                break;
+            case 'arch':
+                fp = [...fp].sort(
+                    (a, b) =>
+                        a.Archetype.localeCompare(b.Archetype) *
+                        (isAscending ? 1 : -1)
+                );
+
+                break;
+            case 'minv':
+                fp = [...fp].sort(
+                    (a, b) =>
+                        (a.MinimumValue - b.MinimumValue) *
+                        (isAscending ? 1 : -1)
+                );
+
+                break;
+            default:
+                break;
+        }
+        setViewablePlayers(() => fp.slice(0, count));
+        setSort(() => newSort);
+        setIsAsc(() => isAscending);
+    };
 
     return (
         <div className="container-fluid">
@@ -462,6 +548,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                     }`}
                                     onClick={ToggleFAView}
                                     value="PS"
+                                    disabled={cfb_Timestamp.IsNFLOffSeason}
                                 >
                                     Practice Squad
                                 </button>
@@ -526,7 +613,10 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                 scrollThreshold={0.8}
                                 loader={
                                     <div className="row justify-content-center">
-                                        Loading More Players...
+                                        {/* Loading More Players... */}
+                                        <h4>
+                                            ...that's all the players we have.
+                                        </h4>
                                     </div>
                                 }
                                 endMessage={
@@ -553,6 +643,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                                 cancel={CancelOffer}
                                                 extend={CreateFAOffer}
                                                 rosterCount={rosterCount}
+                                                retro={currentUser.IsRetro}
                                                 freeAgencyView={freeAgencyView}
                                             />
                                         </>
@@ -578,21 +669,57 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                                 >
                                                     Name
                                                 </th>
-                                                <th scope="col">Position</th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        setSortValues('pos')
+                                                    }
+                                                >
+                                                    Position
+                                                </th>
                                                 <th
                                                     scope="col"
                                                     style={{ width: 175 }}
+                                                    onClick={() =>
+                                                        setSortValues('arch')
+                                                    }
                                                 >
                                                     Archetype
                                                 </th>
-                                                <th scope="col">Age | Exp</th>
-                                                <th scope="col">Overall</th>
-                                                <th scope="col">Potential</th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        setSortValues('year')
+                                                    }
+                                                >
+                                                    Age | Exp
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        setSortValues('ovr')
+                                                    }
+                                                >
+                                                    Overall
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        setSortValues('pot')
+                                                    }
+                                                >
+                                                    Potential
+                                                </th>
                                                 <th scope="col">
                                                     Previous Team
                                                 </th>
                                                 <th scope="col">Status</th>
-                                                <th scope="col">
+                                                <th
+                                                    scope="col"
+                                                    onClick={() =>
+                                                        setSortValues('minv')
+                                                    }
+                                                >
                                                     Minimum Value
                                                 </th>
                                                 <th scope="col">
@@ -624,6 +751,9 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                                             }
                                                             rosterCount={
                                                                 rosterCount
+                                                            }
+                                                            retro={
+                                                                currentUser.IsRetro
                                                             }
                                                             freeAgencyView={
                                                                 freeAgencyView

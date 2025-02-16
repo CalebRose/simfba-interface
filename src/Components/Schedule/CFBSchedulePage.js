@@ -7,7 +7,12 @@ import FBAScheduleService from '../../_Services/simFBA/FBAScheduleService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import GameRow from './CFBGameRow';
 import CFBStandingsModal from './CFBStandingsModal';
-import { SeasonsList } from '../../Constants/CommonConstants';
+import { SeasonsList, SimCFB } from '../../Constants/CommonConstants';
+import { SimFBAGameModal } from '../_Common/SimFBAGameModal';
+import { SubmitCollegePollForm } from '../_Common/SubmitCollegePollModal';
+import { CollegePollModal } from '../_Common/CollegePollModal';
+import { useMediaQuery } from 'react-responsive';
+import { FBAToggle } from '../_Common/SwitchToggle';
 
 const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
     // Services
@@ -30,9 +35,20 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
     const [satEveningCount, setSatEveningCount] = useState(0);
     const [satNightCount, setSatNightCount] = useState(0);
     const [selectedSeason, setSelectedSeason] = useState(null);
+    const [viewAdmin, setViewAdmin] = useState(false);
     const [viewGame, setViewGame] = useState(null);
     const [viewType, setViewType] = useState('TEAM');
     const isAdmin = currentUser && currentUser.roleID === acronyms.ADMIN;
+    const [viewWidth, setViewWidth] = useState(window.innerWidth);
+    const isMobile = useMediaQuery({ query: `(max-width:851px)` });
+    const [exportType, setExportType] = useState('Thursday Night');
+
+    // For mobile
+    useEffect(() => {
+        if (!viewWidth) {
+            setViewWidth(window.innerWidth);
+        }
+    }, [viewWidth]);
 
     // Use Effects
     useEffect(() => {
@@ -95,20 +111,12 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
     };
 
     const GetAllWeeks = async () => {
-        const response = await _landingService.GetWeeksInSeason(
-            cfb_Timestamp.CollegeSeasonID,
-            cfb_Timestamp.CollegeWeekID
-        );
+        const weeksForm = [];
+        for (let i = 0; i < 21; i++) {
+            weeksForm.push({ label: i, value: i });
+        }
 
-        const weekOptionsForm = [
-            ...response.map((x) => {
-                return { label: x.Week, value: x.Week };
-            })
-        ];
-
-        weekOptionsForm.unshift({ label: 0, value: 0 });
-
-        setWeekOptions(() => weekOptionsForm);
+        setWeekOptions(() => weeksForm);
     };
 
     const GetAllGames = async (seasonID) => {
@@ -148,16 +156,16 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
         setSelectedWeek(() => opts);
     };
 
-    const ChangeSeason = (options) => {
+    const ChangeSeason = async (options) => {
         const opts = { label: options.label, value: options.value };
-        GetAllGames(options.value);
         setSelectedSeason(() => opts);
+        await GetAllGames(options.value);
     };
 
     const ChangeTimeSlot = async (time, game) => {
         const dto = { GameID: game.ID, Timeslot: time, League: 'CFB' };
-        // const res = await _scheduleService.UpdateTimeslot(dto);
-        await _scheduleService.UpdateTimeslot(dto);
+        const res = await _scheduleService.UpdateTimeslot(dto);
+        // await _scheduleService.UpdateTimeslot(dto);
         const ag = [...allGames];
         const idx = ag.findIndex((x) => x.ID === game.ID);
         ag[idx] = {
@@ -177,11 +185,43 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
         setViewGame(() => game);
     };
 
+    const toggleAdminView = () => {
+        const av = viewAdmin;
+        setViewAdmin(() => !av);
+    };
+
+    const ExportResults = async () => {
+        const seasonID = Number(selectedSeason.value);
+        let week = selectedWeek ? Number(selectedWeek) : 1;
+        let startingWeekID = 0;
+        if (seasonID === 1) {
+            // Nothing
+        } else if (seasonID === 2) {
+            startingWeekID = 21;
+        } else if (seasonID === 3) {
+            startingWeekID = 43;
+        } else {
+            startingWeekID = 65;
+        }
+        week += startingWeekID;
+
+        await _scheduleService.ExportResults(
+            seasonID,
+            week,
+            0,
+            exportType,
+            selectedWeek
+        );
+    };
+
     // Return
     return (
         <div className="container-fluid">
             <div className="justify-content-start">
-                <h2>SimFBA {cfb_Timestamp.Season} Schedule</h2>
+                <h2>
+                    SimSN {cfb_Timestamp.Season} Schedule
+                    {viewType === 'WEEK' ? `, Week ${selectedWeek}` : ''}
+                </h2>
                 <div className="row">
                     <div className="col-md-2">
                         <h5>Schedule Filters</h5>
@@ -217,6 +257,19 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
                                 </div>
                             </div>
                         </div>
+
+                        {isAdmin && (
+                            <div className="row mt-2 justify-content-center">
+                                <div className="col-6">
+                                    <FBAToggle
+                                        change={toggleAdminView}
+                                        label="View Games"
+                                        value={viewAdmin}
+                                        checkValue={viewAdmin}
+                                    />
+                                </div>
+                            </div>
+                        )}
                         {viewType === 'TEAM' ? (
                             <div className="row mt-2 mb-2">
                                 <h6>Teams</h6>
@@ -260,8 +313,162 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
                                 Standings
                             </button>
                         </div>
+                        <div className="row mt-2 mb-2 justify-content-center px-2">
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#collegePollModal"
+                            >
+                                College Poll
+                            </button>
+                        </div>
+                        {cfb_Timestamp.ThursdayGames && (
+                            <div className="row mt-2 mb-2 justify-content-center px-2">
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#submitPollModal"
+                                >
+                                    Submit College Poll
+                                </button>
+                            </div>
+                        )}
+                        <h5>Export Day of Week</h5>
+                        <div className="row mt-2 justify-content-center">
+                            <div className="col-md-auto">
+                                <div
+                                    className="btn-group btn-group-sm"
+                                    role="group"
+                                    aria-label="ViewOptions"
+                                >
+                                    <button
+                                        type="button"
+                                        className={`btn btn-sm ${
+                                            exportType === 'Thursday Night'
+                                                ? 'btn-primary'
+                                                : 'btn-danger'
+                                        }`}
+                                        onClick={() =>
+                                            setExportType(
+                                                () => 'Thursday Night'
+                                            )
+                                        }
+                                    >
+                                        Thur.
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`btn btn-sm ${
+                                            exportType === 'Friday Night'
+                                                ? 'btn-primary'
+                                                : 'btn-danger'
+                                        }`}
+                                        onClick={() =>
+                                            setExportType(() => 'Friday Night')
+                                        }
+                                    >
+                                        Fri.
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`btn btn-sm ${
+                                            exportType === 'Saturday Morning'
+                                                ? 'btn-primary'
+                                                : 'btn-danger'
+                                        }`}
+                                        onClick={() =>
+                                            setExportType(
+                                                () => 'Saturday Morning'
+                                            )
+                                        }
+                                    >
+                                        Sat. M.
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`btn btn-sm ${
+                                            exportType === 'Saturday Afternoon'
+                                                ? 'btn-primary'
+                                                : 'btn-danger'
+                                        }`}
+                                        onClick={() =>
+                                            setExportType(
+                                                () => 'Saturday Afternoon'
+                                            )
+                                        }
+                                    >
+                                        Sat. Noon.
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`btn btn-sm ${
+                                            exportType === 'Saturday Evening'
+                                                ? 'btn-primary'
+                                                : 'btn-danger'
+                                        }`}
+                                        onClick={() =>
+                                            setExportType(
+                                                () => 'Saturday Evening'
+                                            )
+                                        }
+                                    >
+                                        Sat. Eve.
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`btn btn-sm ${
+                                            exportType === 'Saturday Night'
+                                                ? 'btn-primary'
+                                                : 'btn-danger'
+                                        }`}
+                                        onClick={() =>
+                                            setExportType(
+                                                () => 'Saturday Night'
+                                            )
+                                        }
+                                    >
+                                        Sat. Night
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row mt-2 mb-2 justify-content-center px-2">
+                            <h6 className="">Export</h6>
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                disabled
+                                // disabled={!selectedWeek || !selectedSeason}
+                                // onClick={ExportResults}
+                            >
+                                Export Week {selectedWeek} {exportType} Results
+                            </button>
+                        </div>
                     </div>
-                    <CFBStandingsModal ts={cfb_Timestamp} viewMode={viewMode} />
+                    <SimFBAGameModal
+                        game={viewGame}
+                        isNFL={false}
+                        isMobile={isMobile}
+                    />
+                    <CFBStandingsModal
+                        ts={cfb_Timestamp}
+                        viewMode={viewMode}
+                        retro={currentUser.IsRetro}
+                    />
+                    <SubmitCollegePollForm
+                        currentUser={currentUser}
+                        timestamp={cfb_Timestamp}
+                        isCFB={true}
+                    />
+                    <CollegePollModal
+                        currentUser={currentUser}
+                        timestamp={cfb_Timestamp}
+                        seasonOptions={seasons}
+                        league={SimCFB}
+                        isCFB
+                    />
                     <div className="col-md-10 px-md-4">
                         <div className="row mb-2">
                             <div className="col">
@@ -291,11 +498,13 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
                                         key={x.ID}
                                         game={x}
                                         viewMode={viewMode}
-                                        isAdmin={isAdmin}
+                                        isAdmin={viewAdmin}
                                         change={ChangeTimeSlot}
                                         ts={cfb_Timestamp}
                                         isNFL={false}
                                         SetGame={SetGame}
+                                        retro={currentUser.IsRetro}
+                                        viewType={viewType}
                                     />
                                 ))}
                         </div>

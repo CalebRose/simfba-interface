@@ -11,11 +11,25 @@ import { setCBBTeam } from '../../Redux/cbbTeam/cbbTeam.actions';
 import { setNBATeam } from '../../Redux/nbaTeam/nbaTeam.actions';
 import BBATeamService from '../../_Services/simNBA/BBATeamService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
+import AdminService from '../../_Services/simFBA/AdminService';
 import { getLogo } from '../../Constants/getLogo';
+import {
+    setCBBNotifications,
+    setCFBNotifications,
+    setNBANotifications,
+    setNFLNotifications
+} from '../../Redux/inbox/inbox.actions';
+import {
+    SimCBB,
+    SimCFB,
+    SimNBA,
+    SimNFL
+} from '../../Constants/CommonConstants';
 
 const LandingPage = ({ currentUser }) => {
     let _teamService = new BBATeamService();
     let teamService = new FBATeamService();
+    const _adminService = new AdminService();
     const [sport, setSport] = useState('');
     const [viewWidth, setViewWidth] = useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:845px)` });
@@ -37,50 +51,68 @@ const LandingPage = ({ currentUser }) => {
     };
 
     useEffect(() => {
-        if (currentUser) {
-            if (currentUser.teamId && currentUser.teamId > 0) {
-                const logo = getLogo(currentUser.teamAbbr);
-                setCFBLogo(() => logo);
-                setSport('CFB');
-            } else if (currentUser.NFLTeamID) {
-                setSport('NFL');
-            } else if (currentUser.cbb_id) {
-                setSport('CBB');
-            } else if (currentUser.nba_id) {
-                setSport('NBA');
-            } else {
-                setSport('');
-            }
+        if (currentUser && currentUser.teamId && currentUser.teamId > 0) {
+            const logo = getLogo(
+                SimCFB,
+                currentUser.teamId,
+                currentUser.IsRetro
+            );
+            setCFBLogo(() => logo);
+            setSport(SimCFB);
+        } else if (currentUser && currentUser.NFLTeamID) {
+            setSport(SimNFL);
+        } else if (currentUser && currentUser.cbb_id) {
+            setSport(SimCBB);
+        } else if (currentUser && currentUser.nba_id) {
+            setSport(SimNBA);
+        } else {
+            setSport('');
+        }
 
-            if (
-                currentUser.NFLTeam !== undefined &&
-                currentUser.NFLTeam.length > 0 &&
-                currentUser.NFLTeamID > 0
-            ) {
-                GetNFLTeam();
-            }
+        if (
+            currentUser &&
+            currentUser.NFLTeam !== undefined &&
+            currentUser.NFLTeam.length > 0 &&
+            currentUser.NFLTeamID > 0
+        ) {
+            GetNFLTeam();
+        }
 
-            if (
-                (currentUser.cbb_team !== undefined &&
-                    currentUser.cbb_team.length > 0) ||
-                currentUser.cbb_id > 0
-            ) {
-                GetCBBTeam();
-            }
+        if (
+            currentUser &&
+            (currentUser.NFLTeamID > 0 || currentUser.teamId > 0)
+        ) {
+            getFBAInbox();
+        }
 
-            if (
-                currentUser.NBATeam !== undefined &&
-                currentUser.NBATeam.length > 0 &&
-                currentUser.NBATeamID > 0
-            ) {
-                GetNBATeam();
-            }
+        if (
+            currentUser &&
+            ((currentUser.cbb_team !== undefined &&
+                currentUser.cbb_team.length > 0) ||
+                currentUser.cbb_id > 0)
+        ) {
+            GetCBBTeam();
+        }
+
+        if (
+            currentUser &&
+            currentUser.NBATeam !== undefined &&
+            currentUser.NBATeam.length > 0 &&
+            currentUser.NBATeamID > 0
+        ) {
+            GetNBATeam();
+        }
+        if (
+            currentUser &&
+            (currentUser.cbb_id > 0 || currentUser.NBATeamID > 0)
+        ) {
+            getBBAInbox();
         }
     }, [currentUser]);
 
     const GetCBBTeam = async () => {
         let response = await _teamService.GetTeamByTeamId(currentUser.cbb_id);
-        const logo = getLogo(currentUser.cbb_abbr);
+        const logo = getLogo(SimCBB, currentUser.cbb_id, currentUser.IsRetro);
         setCBBLogo(() => logo);
         dispatch(setCBBTeam(response));
     };
@@ -89,7 +121,11 @@ const LandingPage = ({ currentUser }) => {
         let response = await teamService.GetNFLTeamByTeamID(
             currentUser.NFLTeamID
         );
-        const logo = getLogo(currentUser.NFLTeam);
+        const logo = getLogo(
+            SimNFL,
+            currentUser.NFLTeamID,
+            currentUser.IsRetro
+        );
         setNFLLogo(() => logo);
         dispatch(setNFLTeam(response));
     };
@@ -98,23 +134,46 @@ const LandingPage = ({ currentUser }) => {
         let response = await _teamService.GetNBATeamByTeamID(
             currentUser.NBATeamID
         );
-        const logo = getLogo(currentUser.NBATeam);
+        const logo = getLogo(
+            SimNBA,
+            currentUser.NBATeamID,
+            currentUser.IsRetro
+        );
         setNBALogo(() => logo);
         dispatch(setNBATeam(response));
     };
 
+    const getFBAInbox = async () => {
+        const collegeID = currentUser.teamId || 0;
+        const profID = currentUser.NFLTeamID || 0;
+        const res = await _adminService.GetInbox('fba', collegeID, profID);
+
+        dispatch(setCFBNotifications(res.CFBNotifications));
+        dispatch(setNFLNotifications(res.NFLNotifications));
+    };
+
+    const getBBAInbox = async () => {
+        const collegeID = currentUser.cbb_id || 0;
+        const profID = currentUser.NBATeamID || 0;
+        const res = await _adminService.GetInbox('bba', collegeID, profID);
+        dispatch(setCBBNotifications(res.CBBNotifications));
+        dispatch(setNBANotifications(res.NBANotifications));
+    };
+
     return (
         <div className="container-fluid">
-            <div className="row mt-3 justify-content-start">
+            <div
+                className={`row mt-3 justify-content-${
+                    !isMobile ? 'start' : 'center'
+                }`}
+            >
                 {isMobile ? (
-                    ''
-                ) : (
-                    <div className="col-1">
-                        <div className="btn-group-sm btn-group-vertical d-flex">
+                    <div className="row">
+                        <div className="btn-group-sm btn-group d-flex">
                             {currentUser && currentUser.teamId && (
                                 <button
                                     type="button"
-                                    className="btn btn-outline-light btn-sm mb-2"
+                                    className="btn btn-outline-light btn-sm mb-2 btn-mobile"
                                     value="CFB"
                                     onClick={selectSport}
                                 >
@@ -128,7 +187,7 @@ const LandingPage = ({ currentUser }) => {
                             {currentUser && currentUser.NFLTeamID && (
                                 <button
                                     type="button"
-                                    className="btn btn-outline-light btn-sm mb-2"
+                                    className="btn btn-outline-light btn-sm mb-2 btn-mobile"
                                     value="NFL"
                                     onClick={selectSport}
                                 >
@@ -142,7 +201,7 @@ const LandingPage = ({ currentUser }) => {
                             {currentUser && currentUser.cbb_id && (
                                 <button
                                     type="button"
-                                    className="btn btn-outline-light btn-sm mb-2"
+                                    className="btn btn-outline-light btn-sm mb-2 btn-mobile"
                                     value="CBB"
                                     onClick={selectSport}
                                 >
@@ -156,8 +215,69 @@ const LandingPage = ({ currentUser }) => {
                             {currentUser && currentUser.NBATeamID && (
                                 <button
                                     type="button"
-                                    className="btn btn-outline-light btn-sm"
+                                    className="btn btn-outline-light btn-sm btn-mobile"
                                     value="NBA"
+                                    onClick={selectSport}
+                                >
+                                    <img
+                                        className="image-standings-logo"
+                                        src={nbaLogo}
+                                    />{' '}
+                                    SimNBA
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                ) : (
+                    <div className="col-1">
+                        <div className="btn-group-sm btn-group-vertical d-flex">
+                            {currentUser && currentUser.teamId && (
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-light btn-sm mb-2"
+                                    value={SimCFB}
+                                    onClick={selectSport}
+                                >
+                                    <img
+                                        className="image-standings-logo"
+                                        src={cfbLogo}
+                                    />{' '}
+                                    SimCFB
+                                </button>
+                            )}
+                            {currentUser && currentUser.NFLTeamID && (
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-light btn-sm mb-2"
+                                    value={SimNFL}
+                                    onClick={selectSport}
+                                >
+                                    <img
+                                        className="image-standings-logo"
+                                        src={nflLogo}
+                                    />{' '}
+                                    SimNFL
+                                </button>
+                            )}
+                            {currentUser && currentUser.cbb_id && (
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-light btn-sm mb-2"
+                                    value={SimCBB}
+                                    onClick={selectSport}
+                                >
+                                    <img
+                                        className="image-standings-logo"
+                                        src={cbbLogo}
+                                    />{' '}
+                                    SimCBB
+                                </button>
+                            )}
+                            {currentUser && currentUser.NBATeamID && (
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-light btn-sm"
+                                    value={SimNBA}
                                     onClick={selectSport}
                                 >
                                     <img
@@ -171,13 +291,13 @@ const LandingPage = ({ currentUser }) => {
                     </div>
                 )}
                 <div className={isMobile ? 'col-sm-12' : 'col-sm-11'}>
-                    {currentUser && sport === constants.CBB ? (
+                    {currentUser && sport === SimCBB ? (
                         <CBBHomePage />
-                    ) : currentUser && sport === constants.NBA ? (
+                    ) : currentUser && sport === SimNBA ? (
                         <NBAHomepage />
-                    ) : currentUser && sport === constants.CFB ? (
+                    ) : currentUser && sport === SimCFB ? (
                         <CFBHomepage />
-                    ) : currentUser && sport === constants.NFL ? (
+                    ) : currentUser && sport === SimNFL ? (
                         <NFLHomepage />
                     ) : (
                         'No Team? Click the Available Teams button'

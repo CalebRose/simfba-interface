@@ -6,16 +6,32 @@ import { Divider } from '../../_Common/Divider';
 const TradeOptionRow = ({ opt, isNBA }) => {
     const isPlayer = isNBA ? opt.NBAPlayerID > 0 : opt.NFLPlayerID > 0;
     const obj = isPlayer ? opt.Player : opt.Draftpick;
+    const Contract = obj && isPlayer ? obj.Contract : null;
+    const yearsRemaining = isPlayer
+        ? !isNBA
+            ? Contract.ContractLength
+            : Contract.YearsRemaining
+        : 0;
+
+    const salary = isPlayer ? (!isNBA ? Contract.Y1BaseSalary : 0) : 0;
+    const bonus = isPlayer
+        ? !isNBA
+            ? Contract.Y1Bonus
+            : Contract.Year1Total
+        : 0;
+
+    const salaryPercentage = isPlayer ? opt.SalaryPercentage : 0;
 
     return isPlayer ? (
-        <p className="align-middle">
-            {obj.Overall} Overall {obj.Position} | {obj.FirstName}{' '}
-            {obj.LastName}
+        <p className="align-middle text-small">
+            {obj.Overall} Overall {obj.Position} {obj.Age}|{obj.Experience} |{' '}
+            {obj.FirstName} {obj.LastName} | {bonus}m/{salary}
+            m/{salaryPercentage}/{yearsRemaining}
         </p>
     ) : (
-        <p className="align-middle">
-            {obj.Season} Round {obj.Round} Draft Pick{' '}
-            {obj.PickNumber > 0 && `| Pick Number ${obj.PickNumber}`}
+        <p className="align-middle text-small">
+            {obj.Season} Round {obj.DraftRound} Draft Pick{' '}
+            {`| Pick Number ${obj.DraftNumber}`}
         </p>
     );
 };
@@ -34,25 +50,25 @@ export const TradePortalRow = ({ trade, accept, veto, isNBA }) => {
     };
     return (
         <div className="row mt-2">
-            <div className="col">
-                <h5 className="align-middle">
+            <div className="col col-sm-1">
+                <h6 className="align-middle">
                     {isNBA ? trade.NBATeam : trade.NFLTeam}
-                </h5>
+                </h6>
             </div>
-            <div className="col">
+            <div className="col col-sm-4">
                 {sentOptions.map((x) => (
                     <TradeOptionRow opt={x} isNBA={isNBA} />
                 ))}
             </div>
-            <div className="col">
+            <div className="col col-sm-4">
                 {recepientOptions.map((x) => (
                     <TradeOptionRow opt={x} isNBA={isNBA} />
                 ))}
             </div>
-            <div className="col">
-                <h5 className="align-middle">{trade.RecepientTeam}</h5>
+            <div className="col col-sm-1">
+                <h6 className="align-middle">{trade.RecepientTeam}</h6>
             </div>
-            <div className="col btn-group">
+            <div className="col-1 btn-group">
                 <button
                     type="button"
                     className="btn btn-outline-success"
@@ -61,7 +77,7 @@ export const TradePortalRow = ({ trade, accept, veto, isNBA }) => {
                     Accept
                 </button>
             </div>
-            <div className="col btn-group">
+            <div className="col-1 btn-group">
                 <button
                     type="button"
                     className="btn btn-outline-danger"
@@ -158,17 +174,23 @@ const AdminTradePortal = ({ currentUser }) => {
                     )}
                 </div>
             </div>
-            <div className="row mt-3">
-                <div className="col">
+            <div className="row mt-2">
+                <div className="col col-sm-1">
                     <h3 className="align-middle">Proposing Team</h3>
                 </div>
-                <div className="col">
+                <div className="col col-sm-4">
                     <h3 className="align-middle">Proposing Team Options</h3>
+                    <p className="text-small align-middle">
+                        (bon/sal/sal%/yrs)
+                    </p>
                 </div>
-                <div className="col">
+                <div className="col col-sm-4">
                     <h3 className="align-middle">Receiving Team Options</h3>
+                    <p className="text-small align-middle">
+                        (bon/sal/sal%/yrs)
+                    </p>
                 </div>
-                <div className="col">
+                <div className="col col-sm-1">
                     <h3 className="align-middle">Receiving Team</h3>
                 </div>
                 <div className="col">

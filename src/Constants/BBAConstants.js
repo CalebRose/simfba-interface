@@ -1,4 +1,4 @@
-export const PositionList = [
+export const BBPositionList = [
     { name: 'Point Guards', abbr: 'PG' },
     { name: 'Shooting Guards', abbr: 'SG' },
     { name: 'Power Forwards', abbr: 'PF' },

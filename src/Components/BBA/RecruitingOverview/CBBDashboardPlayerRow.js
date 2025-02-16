@@ -1,17 +1,21 @@
 import React, { useEffect } from 'react';
 import { getLogo } from '../../../Constants/getLogo';
 import CBBCrootModal from '../RecruitingBoard/DashboardComponents/CBBCrootModal';
+import { SimCBB } from '../../../Constants/CommonConstants';
 
 const CBBDashboardPlayerRow = (props) => {
     const [flag, setFlag] = React.useState(false);
-    const { idx, timestamp, map, viewMode } = props;
+    const { idx, timestamp, map, viewMode, retro } = props;
     const data = props.player;
     const name = data.FirstName + ' ' + data.LastName;
     const keyCode =
         data.FirstName + data.LastName + data.Stars + data.State + data.Country;
     const crootModalTarget = '#crootModal' + idx;
 
-    const logo = data && data.College.length > 0 ? getLogo(data.College) : '';
+    const logo =
+        data && data.College.length > 0
+            ? getLogo(SimCBB, data.TeamID, retro)
+            : '';
 
     useEffect(() => {
         if (map) {
@@ -28,9 +32,20 @@ const CBBDashboardPlayerRow = (props) => {
             (x, idx) => idx <= 2 && x.Odds > 0
         );
 
-        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+        const competingIDs = competingTeams.map((x) => x.TeamID);
 
-        return competingAbbrs.join(', ');
+        return competingIDs.map((x) => {
+            const logo = getLogo(SimCBB, x, retro);
+            return (
+                <>
+                    <img
+                        className="image-nfl-fa mx-1"
+                        src={logo}
+                        alt="competing-team"
+                    />
+                </>
+            );
+        });
     };
 
     const addToProfile = () => {
@@ -75,6 +90,9 @@ const CBBDashboardPlayerRow = (props) => {
                     <h6>{data.Stars}</h6>
                 </td>
                 <td className="align-middle">
+                    <h6>{data.Finishing}</h6>
+                </td>
+                <td className="align-middle">
                     <h6>{data.Shooting2}</h6>
                 </td>
                 <td className="align-middle">
@@ -82,9 +100,6 @@ const CBBDashboardPlayerRow = (props) => {
                 </td>
                 <td className="align-middle">
                     <h6>{data.FreeThrow}</h6>
-                </td>
-                <td className="align-middle">
-                    <h6>{data.Finishing}</h6>
                 </td>
                 <td className="align-middle">
                     <h6>{data.Ballwork}</h6>
@@ -106,11 +121,14 @@ const CBBDashboardPlayerRow = (props) => {
                     {!data.IsSigned ? (
                         <h6>{leadingTeams}</h6>
                     ) : (
-                        <img
-                            className="image-recruit-logo"
-                            src={logo}
-                            alt="WinningTeam"
-                        />
+                        <>
+                            <img
+                                className="image-recruit-logo"
+                                src={logo}
+                                alt="WinningTeam"
+                            />
+                            <h6>{data.College}</h6>
+                        </>
                     )}
                 </td>
                 <td className="align-middle">

@@ -20,6 +20,9 @@ const NFLMobileRosterRow = ({
     practicesquad,
     tradeblock,
     extend,
+    retro,
+    tagPlayer,
+    ir,
     cut
 }) => {
     let modalTarget = `#playerModal${idx}`;
@@ -41,7 +44,42 @@ const NFLMobileRosterRow = ({
         (ts.NFLWeek >= 15 || ts.NFLWeek === 0) && userView && canModify;
     const canTradeBlockPlayer = ts.NFLWeek <= 9 && userView && canModify;
     const mobileCardClass = GetMobileCardClass(theme);
+    const injuryReservePlayer = () => {
+        return ir(player);
+    };
+    const { Contract, Extensions } = player;
 
+    const offeredExtensionIdx =
+        Extensions && Extensions.findIndex((x) => x.IsActive === true);
+    const acceptedExtensionIdx =
+        Extensions && Extensions.findIndex((x) => x.IsAccepted === true);
+    const offeredExtensionBool = Extensions && offeredExtensionIdx > -1;
+    const acceptedExtensionBool = Extensions && acceptedExtensionIdx > -1;
+    const offeredExtension =
+        offeredExtensionBool && Extensions[offeredExtensionIdx];
+
+    let extensionStatus = '';
+    if (
+        (offeredExtensionBool &&
+            (offeredExtension.IsRejected || offeredExtension.Rejections > 2)) ||
+        player.Rejections > 2
+    ) {
+        extensionStatus = 'btn-danger';
+    } else if (
+        (offeredExtensionBool && offeredExtension.Rejections > 0) ||
+        player.Rejections > 0
+    ) {
+        extensionStatus = 'btn-warning';
+    } else if (offeredExtensionBool) {
+        extensionStatus = 'btn-info';
+    }
+    if (acceptedExtensionBool) {
+        extensionStatus = 'btn-success';
+    }
+
+    const bringUpPlayer = () => {
+        return practicesquad(player);
+    };
     return (
         <>
             <CutPlayerModal
@@ -55,6 +93,7 @@ const NFLMobileRosterRow = ({
                 key={player.ID}
                 player={player}
                 idx={idx}
+                team={team}
                 extend={extend}
                 viewMode={theme}
             />
@@ -107,6 +146,24 @@ const NFLMobileRosterRow = ({
                         </button>
                     </li>
                     <li className="list-group-item">
+                        Place {player.LastName} on IR
+                        <button
+                            type="button"
+                            className={`btn ${
+                                player.InjuryReserve && 'btn-danger'
+                            }`}
+                            title="Place player on IR"
+                            onClick={injuryReservePlayer}
+                            disabled={
+                                (!player.IsInjured && !player.InjuryReserve) ||
+                                !userView ||
+                                !canModify
+                            }
+                        >
+                            <i class="bi bi-bandaid" />
+                        </button>
+                    </li>
+                    <li className="list-group-item">
                         Cut {player.LastName} |{' '}
                         {canCutOrPracticeSquad ? (
                             <button
@@ -131,8 +188,50 @@ const NFLMobileRosterRow = ({
                                 title={extendPlayerTitle}
                                 data-bs-toggle="modal"
                                 data-bs-target={extendPlayerTarget}
+                                disabled={
+                                    !(
+                                        ts.NFLWeek >= 15 &&
+                                        userView &&
+                                        canModify &&
+                                        !player.IsPracticeSquad
+                                    ) ||
+                                    Contract.ContractLength > 1 ||
+                                    player.IsPracticeSquad ||
+                                    player.Rejections > 2 ||
+                                    acceptedExtensionBool
+                                }
                             >
                                 <i class="bi bi-currency-dollar" />
+                            </button>
+                        ) : (
+                            'Unavailable'
+                        )}
+                    </li>
+                    <li className="list-group-item">
+                        Tag {player.LastName} |
+                        {canExtendPlayer ? (
+                            <button
+                                className={`btn ${
+                                    player.TagType > 0 ? 'btn-success' : ''
+                                }`}
+                                title="Tag Player"
+                                data-bs-toggle="modal"
+                                data-bs-target="tagPlayer"
+                                disabled={
+                                    !(
+                                        ts.NFLWeek >= 15 &&
+                                        userView &&
+                                        canModify &&
+                                        !player.IsPracticeSquad
+                                    ) ||
+                                    player.IsTagged ||
+                                    Contract.ContractLength > 1 ||
+                                    player.IsPracticeSquad ||
+                                    acceptedExtensionBool
+                                }
+                                onClick={() => tagPlayer(() => player)}
+                            >
+                                <i class="bi bi-tag-fill" />
                             </button>
                         ) : (
                             'Unavailable'
@@ -170,7 +269,7 @@ const NFLMobileRosterRow = ({
                     <li className="list-group-item">
                         Place {player.LastName} on PS |{' '}
                         {canCutOrPracticeSquad &&
-                        (psCount <= 16 || player.IsPracticeSquad) &&
+                        psCount <= 16 &&
                         player.Experience <= 3 ? (
                             <button
                                 type="button"
@@ -180,6 +279,7 @@ const NFLMobileRosterRow = ({
                                 title={practiceSquadTitle}
                                 data-bs-toggle="modal"
                                 data-bs-target={practiceSquadTarget}
+                                disabled={player.Experience > 3}
                             >
                                 {player.IsPracticeSquad ? (
                                     <i class="bi bi-person-fill-up" />
@@ -188,7 +288,21 @@ const NFLMobileRosterRow = ({
                                 )}
                             </button>
                         ) : (
-                            'Unavailable'
+                            <button
+                                type="button"
+                                className={`btn ${
+                                    player.IsPracticeSquad ? 'btn-warning' : ''
+                                }`}
+                                title={practiceSquadTitle}
+                                onClick={bringUpPlayer}
+                                disabled={player.Experience > 3}
+                            >
+                                {player.IsPracticeSquad ? (
+                                    <i class="bi bi-person-fill-up" />
+                                ) : (
+                                    <i class="bi bi-person-fill-down" />
+                                )}
+                            </button>
                         )}
                     </li>
                 </ul>

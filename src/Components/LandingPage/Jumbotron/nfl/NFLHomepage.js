@@ -12,6 +12,7 @@ import CFBMatchCard from '../cfb/CFBMatchCard';
 import NFLStandingsCard from '../../../_Common/NFLStandingsCard';
 import FBALandingPageService from '../../../../_Services/simFBA/FBALandingPageService';
 import { NewsLogSmall } from '../../../_Common/NewsLog';
+import { SimNFL } from '../../../../Constants/CommonConstants';
 
 const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
     let _teamService = new FBATeamService();
@@ -38,7 +39,9 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
     useEffect(() => {
         if (currentUser) {
             setTeam(currentUser.NFLTeam);
-            setLogo(getLogo(currentUser.NFLTeam));
+            setLogo(
+                getLogo(SimNFL, currentUser.NFLTeamID, currentUser.IsRetro)
+            );
         }
         if (!nflTeam) {
             getTeam();
@@ -90,6 +93,10 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
             prevIdx = games.findIndex((x) => x.Week === prevWeek);
             nextIdx = games.findIndex((x) => x.Week === nextWeek);
             while (prevIdx === -1) {
+                if (prevWeek > 23) {
+                    prevIdx = -2;
+                    break;
+                }
                 prevWeek += 1;
                 prevIdx = games.findIndex((x) => x.Week === prevWeek);
             }
@@ -98,8 +105,16 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                 nextIdx = games.findIndex((x) => x.Week === nextWeek);
             }
 
-            let gameRange = games.slice(prevIdx, nextIdx + 1);
-            setViewableMatches(() => gameRange);
+            if (nextIdx === prevIdx && prevIdx === -2) {
+                setViewableMatches(() => []);
+            } else {
+                let gameRange = games.slice(prevIdx, nextIdx + 1);
+                gameRange = gameRange.filter(
+                    (x) => x.WeekID >= cfb_Timestamp.NFLWeekID
+                );
+
+                setViewableMatches(() => gameRange);
+            }
         }
     }, [cfb_Timestamp, games]);
 
@@ -134,6 +149,8 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
             nflTeam.ID,
             cfb_Timestamp.NFLSeasonID
         );
+
+        console.log({ res });
 
         setGames(() => res);
     };
@@ -173,59 +190,122 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                 </div>
             </div>
             <div className="row mt-2">
-                <div className="col-4">
-                    <div className="row mt-2 mb-2">
-                        <div className="btn-group btn-group-sm d-flex">
-                            <Link
-                                to={routes.NFL_ROSTER}
-                                role="button"
-                                className="btn btn-primary btn-md me-2 shadow"
-                                style={teamColors ? teamColors : {}}
-                            >
-                                Team
-                            </Link>
-                            <Link
-                                to={routes.NFL_GAMEPLAN}
-                                role="button"
-                                className="btn btn-primary btn-md me-2 shadow"
-                                style={teamColors ? teamColors : {}}
-                            >
-                                Gameplan
-                            </Link>
-                            <Link
-                                to={routes.NFL_DEPTHCHART}
-                                role="button"
-                                className="btn btn-primary btn-md me-2 shadow"
-                                style={teamColors ? teamColors : {}}
-                            >
-                                Depth Chart
-                            </Link>
-                            <Link
-                                to={routes.NFL_FREE_AGENCY}
-                                role="button"
-                                className="btn btn-primary btn-md me-2 shadow"
-                                style={teamColors ? teamColors : {}}
-                            >
-                                Free Agency
-                            </Link>
-                            <Link
-                                to={routes.NFL_SCHEDULE}
-                                role="button"
-                                className="btn btn-primary btn-md me-2 shadow"
-                                style={teamColors ? teamColors : {}}
-                            >
-                                Schedule
-                            </Link>
-                            <Link
-                                to={routes.CFB_STATS}
-                                role="button"
-                                className="btn btn-primary btn-md me-2 shadow"
-                                style={teamColors ? teamColors : {}}
-                            >
-                                Stats
-                            </Link>
-                        </div>
-                    </div>
+                <div className="col-md-4">
+                    {isMobile ? (
+                        <>
+                            <div className="row mt-2 mb-2">
+                                <div className="btn-group btn-group-sm d-flex">
+                                    <Link
+                                        to={routes.NFL_ROSTER}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Team
+                                    </Link>
+                                    <Link
+                                        to={routes.NFL_GAMEPLAN}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Gameplan
+                                    </Link>
+                                    <Link
+                                        to={routes.NFL_DEPTHCHART}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Depth Chart
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className="row mt-2 mb-2">
+                                <div className="btn-group btn-group-sm d-flex">
+                                    <Link
+                                        to={routes.NFL_FREE_AGENCY}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Free Agency
+                                    </Link>
+                                    <Link
+                                        to={routes.NFL_SCHEDULE}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Schedule
+                                    </Link>
+                                    <Link
+                                        to={routes.CFB_STATS}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Stats
+                                    </Link>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="row mt-2 mb-2">
+                                <div className="btn-group btn-group-sm d-flex">
+                                    <Link
+                                        to={routes.NFL_ROSTER}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Team
+                                    </Link>
+                                    <Link
+                                        to={routes.NFL_GAMEPLAN}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Gameplan
+                                    </Link>
+                                    <Link
+                                        to={routes.NFL_DEPTHCHART}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Depth Chart
+                                    </Link>
+                                    <Link
+                                        to={routes.NFL_FREE_AGENCY}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Free Agency
+                                    </Link>
+                                    <Link
+                                        to={routes.NFL_SCHEDULE}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Schedule
+                                    </Link>
+                                    <Link
+                                        to={routes.CFB_STATS}
+                                        role="button"
+                                        className="btn btn-primary btn-md me-2 shadow"
+                                        style={teamColors ? teamColors : {}}
+                                    >
+                                        Stats
+                                    </Link>
+                                </div>
+                            </div>
+                        </>
+                    )}
                     {viewableMatches && viewableMatches.length > 0 ? (
                         viewableMatches.map((x) => {
                             return (
@@ -235,6 +315,7 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                         team={nflTeam}
                                         timestamp={cfb_Timestamp}
                                         isNFL={true}
+                                        retro={currentUser.IsRetro}
                                     />
                                 </div>
                             );
@@ -249,35 +330,46 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                         </div>
                     )}
                 </div>
-                <div className="col-md-6 ms-1">
-                    <div className="row mb-2">
+                <div className="col-md-7 ms-1">
+                    <div
+                        className={
+                            isMobile
+                                ? 'row justify-content-start mb-2 mt-2  ms-1'
+                                : 'row justify-content-start  ms-1'
+                        }
+                    >
                         {standings && standings.length > 0 ? (
                             <>
-                                {isMobile ? (
-                                    <div className="mobile-card-viewer">
-                                        <NFLStandingsCard
-                                            standings={standings}
-                                        />
+                                <div
+                                    className={
+                                        isMobile
+                                            ? 'mobile-card-viewer'
+                                            : 'desktop-display'
+                                    }
+                                >
+                                    <NFLStandingsCard
+                                        standings={standings}
+                                        retro={currentUser.IsRetro}
+                                    />
+                                    <div className="nfl-news-feed">
+                                        {newsFeed.length > 0 &&
+                                            newsFeed.map((x) => (
+                                                <NewsLogSmall
+                                                    key={x.ID}
+                                                    news={x}
+                                                    season={
+                                                        cfb_Timestamp.Season
+                                                    }
+                                                />
+                                            ))}
                                     </div>
-                                ) : (
-                                    <NFLStandingsCard standings={standings} />
-                                )}
+                                </div>
                             </>
                         ) : (
                             <div className="row justify-content-center pt-2 mt-4 mb-2">
                                 <Spinner />
                             </div>
                         )}
-                    </div>
-                    <div className="row news-feed">
-                        {newsFeed.length > 0 &&
-                            newsFeed.map((x) => (
-                                <NewsLogSmall
-                                    key={x.ID}
-                                    news={x}
-                                    season={cfb_Timestamp.Season}
-                                />
-                            ))}
                     </div>
                 </div>
             </div>
