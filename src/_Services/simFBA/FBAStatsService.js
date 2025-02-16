@@ -1,11 +1,12 @@
 import { saveAs } from 'file-saver';
 import url from '../../Constants/url';
+import { GetCall } from './FetchHelper';
 
 export default class FBAStatsService {
-    async GetStatsForStatisticsPage(league, season, week, viewType) {
+    async GetStatsForStatisticsPage(league, season, week, viewType, gameType) {
         let json;
         let response = await fetch(
-            `${url}statistics/interface/${league}/${season}/${week}/${viewType}`,
+            `${url}statistics/interface/${league}/${season}/${week}/${viewType}/${gameType}`,
             {
                 headers: {
                     authorization: 'Bearer ' + localStorage.getItem('token')
@@ -27,9 +28,10 @@ export default class FBAStatsService {
         season,
         weekID,
         week,
-        viewType
+        viewType,
+        gameType
     ) {
-        let fullURL = `${url}statistics/export/${league}/${seasonID}/${weekID}/${viewType}`;
+        let fullURL = `${url}statistics/export/${league}/${seasonID}/${weekID}/${viewType}/${gameType}`;
         let res = await fetch(fullURL, {
             headers: {
                 authorization: 'Bearer ' + localStorage.getItem('token'),
@@ -54,7 +56,7 @@ export default class FBAStatsService {
 
     async GetCollegeSeasonStatsByPlayerID(playerID, seasonID) {
         return await GetCall(
-            `${url}/stats/player/${playerID}/season/${seasonID}`
+            `${url}stats/cfb/player/${playerID}/season/${seasonID}`
         );
     }
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import { getLogo } from '../../Constants/getLogo';
 
-export const StandingsRow = ({ row, rank, retro }) => {
-    const logo = getLogo(row.TeamAbbr, retro);
+export const StandingsRow = ({ league, row, rank, retro }) => {
+    const logo = getLogo(league, row.TeamID, retro);
     return (
         <div className="row mb-2" style={{ height: '30px' }}>
             <div className="col" style={{ width: '50px' }}>
@@ -27,7 +27,7 @@ export const StandingsRow = ({ row, rank, retro }) => {
     );
 };
 
-export const NBAStandingsCard = ({ standings, retro }) => {
+export const NBAStandingsCard = ({ league, standings, retro }) => {
     const Conference = standings.length > 0 ? standings[0].ConferenceName : '';
 
     return (
@@ -53,7 +53,12 @@ export const NBAStandingsCard = ({ standings, retro }) => {
             </div>
             {standings.length > 0 &&
                 standings.map((x, idx) => (
-                    <StandingsRow row={x} rank={idx + 1} retro={retro} />
+                    <StandingsRow
+                        row={x}
+                        rank={idx + 1}
+                        retro={retro}
+                        league={league}
+                    />
                 ))}
         </div>
     );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import AttributeAverages from '../../Constants/AttributeAverages';
 import {
     GetLetterGrade,
@@ -21,28 +21,52 @@ const DepthChartPlayerRow = (props) => {
         isCFB
     } = props;
     const playerData = isCFB ? player.CollegePlayer : player.NFLPlayer;
+    const dropdownButtonRef = useRef(null);
+    const dropdownInstance = useRef(null);
     const name = player.FirstName + ' ' + player.LastName;
     const PositionLabel =
         player.OriginalPosition.length > 0 &&
-        player.OriginalPosition !== player.Position
-            ? player.Position + ' (' + player.OriginalPosition + ')'
+        player.OriginalPosition !== player.Position &&
+        player.OriginalPosition !== playerData.PositionTwo
+            ? `${playerData.Position}${
+                  playerData.PositionTwo.length > 0
+                      ? `/${playerData.PositionTwo}`
+                      : ''
+              } (${player.OriginalPosition})`
             : player.Position;
     const playerLabel = playerData.IsInjured
-        ? `${name} | ${playerData.Position} (${playerData.WeeksOfRecovery})`
-        : `${name} | ${playerData.Position}`;
+        ? `${name} | ${playerData.Position}${
+              playerData.PositionTwo.length > 0
+                  ? `/${playerData.PositionTwo}`
+                  : ''
+          } (${playerData.WeeksOfRecovery})`
+        : `${name} | ${playerData.Position}${
+              playerData.PositionTwo.length > 0
+                  ? `/${playerData.PositionTwo}`
+                  : ''
+          }`;
 
     const handleChange = (newPlayer) => {
         if (newPlayer.ID !== playerData.ID) {
-            return swapPlayer(player, newPlayer);
+            swapPlayer(player, newPlayer);
+            dropdownInstance.current.hide(); // Close dropdown after swap
         }
-        return;
     };
+
+    useEffect(() => {
+        if (dropdownButtonRef.current) {
+            dropdownInstance.current = new window.bootstrap.Dropdown(
+                dropdownButtonRef.current
+            );
+        }
+    }, []); // Reinitialize Bootstrap dropdown on state change
 
     return (
         <tr>
             {canModify ? (
                 <th className="drop-start btn-dropdown-width-dc">
                     <button
+                        ref={dropdownButtonRef}
                         type="button"
                         name="name"
                         className={`btn btn-secondary dropdown-toggle btn-dropdown-width-dc ${
@@ -50,7 +74,6 @@ const DepthChartPlayerRow = (props) => {
                         }`}
                         id="dropdownMenuButton1"
                         data-bs-toggle="dropdown"
-                        aria-expanded="false"
                     >
                         <span>{playerLabel}</span>
                     </button>
@@ -61,20 +84,20 @@ const DepthChartPlayerRow = (props) => {
                             player={playerData}
                         />
                         <hr className="dropdown-divider"></hr>
-                        {availablePlayers && availablePlayers.length > 0
-                            ? availablePlayers.map((x) => {
-                                  const id = x && x.ID ? x.ID : 0;
-                                  return (
-                                      <PlayerDropdownItem
-                                          key={id}
-                                          name={x.FirstName + ' ' + x.LastName}
-                                          player={x}
-                                          id={id}
-                                          click={handleChange}
-                                      />
-                                  );
-                              })
-                            : ''}
+                        {availablePlayers &&
+                            availablePlayers.length > 0 &&
+                            availablePlayers.map((x) => {
+                                const id = x && x.ID ? x.ID : 0;
+                                return (
+                                    <PlayerDropdownItem
+                                        key={id}
+                                        name={x.FirstName + ' ' + x.LastName}
+                                        player={x}
+                                        id={id}
+                                        click={handleChange}
+                                    />
+                                );
+                            })}
                     </ul>
                 </th>
             ) : (

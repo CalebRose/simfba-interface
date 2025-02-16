@@ -16,7 +16,7 @@ const NBAGameplanPlayerRow = ({
     const minutes = player.P1Minutes + player.P2Minutes + player.P3Minutes;
     const positionList = getCBBPositionList(player.Position);
     const getYear = (player) => {
-        if (player.Year === 1) return 'R';
+        if (player.Year === 0) return 'R';
         return player.Year;
     };
 
@@ -34,7 +34,13 @@ const NBAGameplanPlayerRow = ({
     return (
         <tr>
             <th scope="row" className="align-middle">
-                <h6 className={player.IsGLeague ? 'text-danger' : ''}>
+                <h6
+                    className={
+                        player.IsGLeague || player.IsInjured
+                            ? 'text-danger'
+                            : ''
+                    }
+                >
                     {year} | {player.Age} | {player.Position}{' '}
                     {player.FirstName + ' ' + player.LastName}
                 </h6>

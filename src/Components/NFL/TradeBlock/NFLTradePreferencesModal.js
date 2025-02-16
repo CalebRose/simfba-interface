@@ -97,7 +97,7 @@ export const NFLTradePreferencesModal = ({
                                     'Any',
                                     'Balanced',
                                     'Pocket',
-                                    'Scrambling',
+                                    'Scrambler',
                                     'Field General'
                                 ]}
                             />

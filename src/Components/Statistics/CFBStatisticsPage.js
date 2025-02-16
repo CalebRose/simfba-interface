@@ -26,6 +26,7 @@ import TeamDefensiveHeaders from './CFBStatsComponents/TeamDefenseHeaders';
 import HeismanModal from './CFBStatsComponents/HeismanModal';
 import OLineHeaders from './CFBStatsComponents/OLineStats';
 import {
+    GameTypeList,
     NFLConferenceList,
     NFLDivisionList,
     SeasonsList
@@ -48,6 +49,8 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
     const [teamOptions, setTeamOptions] = useState([]);
     const [conferenceOptions, setConferenceOptions] = useState([]);
     const [divisionOptions, setDivisionOptions] = useState(NFLDivisionList);
+    const [gameTypeOptions] = useState(GameTypeList);
+    const [selectedGameType, setSelectedGameType] = useState(null);
     const [weekOptions, setWeekOptions] = useState(() => {
         const weeks = [...Array(21).keys()];
 
@@ -217,7 +220,10 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
     };
 
     const GetStatsPageInfo = async () => {
+        setFilteredView(() => []);
+        setViewableStats(() => []);
         const seasonID = selectedSeason.value;
+        const gameType = selectedGameType.value || '';
         const isCFB = leagueView === 'cfb';
 
         let res;
@@ -242,7 +248,8 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
             leagueView,
             seasonID,
             week,
-            viewType
+            viewType,
+            gameType
         );
         const teamList = isCFB ? res.CollegeTeams : res.NFLTeams;
         const playerList = isCFB ? res.CollegePlayers : res.NFLPlayers;
@@ -269,6 +276,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
 
     const ExportStatsPageInfo = async () => {
         const seasonID = selectedSeason.value;
+        const gameType = selectedGameType.value || '';
         const isCFB = leagueView === 'cfb';
 
         let res;
@@ -294,7 +302,8 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
             cfb_Timestamp.Season,
             week,
             startingWeek,
-            viewType
+            viewType,
+            gameType
         );
     };
 
@@ -406,6 +415,11 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
     const ChangeWeek = (options) => {
         const opts = { label: options.label, value: options.value };
         setSelectedWeek(() => opts);
+    };
+
+    const ChangeGametype = (options) => {
+        const opts = { label: options.label, value: options.value };
+        setSelectedGameType(() => opts);
     };
 
     const ResetPlayerViewOptions = () => {
@@ -723,6 +737,18 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                     </div>
                     <div className="row">
                         <div className="col-auto">
+                            <h6 className="text-start align-middle">
+                                Game Type
+                            </h6>
+                            <Select
+                                options={gameTypeOptions}
+                                isMulti={false}
+                                className="basic-multi-select btn-dropdown-width-team z-index-6"
+                                classNamePrefix="select"
+                                onChange={ChangeGametype}
+                            />
+                        </div>
+                        <div className="col-auto">
                             <h6 className="text-start align-middle">Seasons</h6>
                             <Select
                                 options={seasons}
@@ -795,6 +821,10 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                     viewType === 'SEASON' ? 'Season' : 'Week'
                                 }`}
                                 action={GetStatsPageInfo}
+                                disable={
+                                    selectedGameType === null ||
+                                    selectedSeason === null
+                                }
                             />
                         </div>
                         <div className="col-auto">
@@ -806,6 +836,10 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                     viewType === 'SEASON' ? 'Season' : 'Week'
                                 }`}
                                 action={ExportStatsPageInfo}
+                                disable={
+                                    selectedGameType === null ||
+                                    selectedSeason === null
+                                }
                             />
                         </div>
                     </div>

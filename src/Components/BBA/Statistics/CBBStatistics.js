@@ -161,16 +161,12 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                         teamList.includes(x.TeamID)
                     );
                 }
-
-                if (
-                    selectedLeague &&
-                    leagueView === 'nba' &&
-                    selectedLeague.value.length > 0
-                ) {
-                    dataSet = dataSet.filter(
-                        (x) =>
-                            selectedLeague.value === 'SimNBA' && x.TeamID < 33
-                    );
+                if (selectedLeague && leagueView === 'nba') {
+                    if (selectedLeague.value === 1) {
+                        dataSet = dataSet.filter((x) => x.TeamID < 33);
+                    } else {
+                        dataSet = dataSet.filter((x) => x.TeamID > 32);
+                    }
                 }
 
                 switch (statType) {
@@ -209,8 +205,12 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                 if (leagueView !== 'cbb') {
                     startingWeekID = 0;
                 }
-            } else {
+            } else if (seasonID === 4) {
+                startingWeekID = 62;
                 // startingWeekID = 40;
+                if (leagueView !== 'cbb') {
+                    startingWeekID = 30;
+                }
             }
             week += startingWeekID;
         }
@@ -271,6 +271,12 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                 startingWeekID = 20;
                 if (leagueView !== 'cbb') {
                     startingWeekID = 0;
+                }
+            } else if (seasonID === 4) {
+                startingWeekID = 62;
+                // startingWeekID = 40;
+                if (leagueView !== 'cbb') {
+                    startingWeekID = 30;
                 }
             } else {
                 // startingWeekID = 40;
@@ -672,6 +678,7 @@ const CBBStatsPage = ({ currentUser, viewMode, cbb_Timestamp }) => {
                                             action={SelectStatType}
                                             value="Differential"
                                             label="Differential"
+                                            disabled={viewType === 'WEEK'}
                                         />
                                     </>
                                 )}

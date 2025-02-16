@@ -204,7 +204,7 @@ const authorizedUser = ({ user, setCurrentUser, inbox }) => {
                     href="https://www.simfba.com"
                     target="_blank"
                 >
-                    SimFBA Site
+                    SimSN Site
                 </a>
             </li>
             <li className="nav-item">

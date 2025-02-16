@@ -5,7 +5,7 @@ import { useMediaQuery } from 'react-responsive';
 import Select from 'react-select';
 import {
     LetterGradesList,
-    PositionList
+    BBPositionList
 } from '../../../../Constants/BBAConstants';
 import { NBAArchetypesList } from '../../../../Constants/CommonConstants';
 import { GetTableHoverClass } from '../../../../Constants/CSSClassHelper';
@@ -18,7 +18,7 @@ import { Spinner } from '../../../_Common/Spinner';
 
 const NBAFreeAgency = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     const _playerService = new BBAPlayerService();
-    const positions = MapObjOptions(PositionList);
+    const positions = MapObjOptions(BBPositionList);
     const letterGrades = MapOptions(LetterGradesList);
     const archetypes = MapObjOptions(NBAArchetypesList);
     const statusOptions = MapOptions(['Open', 'Negotiating']);

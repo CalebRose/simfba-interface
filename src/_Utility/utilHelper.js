@@ -369,17 +369,16 @@ export const GetPromiseWeight = (promise, benchmark, position, isCFB) => {
     if ((promise === 'Wins' && !isCFB) || promise === 'Minutes') {
         if (benchmark <= 5) return 'Very Low';
         if (benchmark <= 10) return 'Low';
-        if (benchmark <= 20) return 'Medium';
-        if (benchmark <= 25) return 'High';
-        return 'Very High';
+        if (benchmark <= 25) return 'Medium';
+        return 'High';
     } else if (promise === 'Wins' && isCFB) {
         if (benchmark <= 4) return 'Very Low';
         if (benchmark <= 6) return 'Low';
-        if (benchmark <= 8) return 'Medium';
-        if (benchmark <= 11) return 'High';
+        if (benchmark <= 10) return 'Medium';
+        if (benchmark <= 12) return 'High';
         return 'Very High';
-    } else if (promise === 'Snaps') {
-        if (position !== 'K' || position !== 'P') {
+    } else if (promise === 'Snap Count') {
+        if (position === 'K' || position === 'P') {
             if (benchmark <= 5) return 'Low';
             if (benchmark <= 8) return 'Medium';
             if (benchmark <= 10) return 'High';

@@ -10,10 +10,10 @@ import {
 } from './ModalComponents';
 import { getLogo } from '../../Constants/getLogo';
 
-const RankRow = ({ row, idx, standingsMap, retro }) => {
+const RankRow = ({ league, row, idx, standingsMap, retro }) => {
     const num = idx + 1;
     const { Team, TeamID, Votes, No1Votes } = row;
-    const logo = getLogo(Team, retro);
+    const logo = getLogo(league, TeamID, retro);
     const standings = standingsMap[TeamID];
     let description = '';
     if (standings) {
@@ -63,7 +63,8 @@ export const CollegePollModal = ({
     currentUser,
     timestamp,
     isCFB,
-    seasonOptions
+    seasonOptions,
+    league
 }) => {
     const header = `Official College ${isCFB ? 'Football' : 'Basketball'} Poll`;
     const modalId = `collegePollModal`;
@@ -201,6 +202,7 @@ export const CollegePollModal = ({
                             idx={idx}
                             standingsMap={standingsMap}
                             retro={currentUser.IsRetro}
+                            league={league}
                         />
                     ))}
                 </>

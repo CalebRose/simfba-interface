@@ -31,7 +31,13 @@ const GameplanPlayerRow = ({
     return (
         <tr>
             <th scope="row" className="align-middle">
-                <h6 className={player.IsRedshirting ? 'text-danger' : ''}>
+                <h6
+                    className={
+                        player.IsRedshirting || player.IsInjured
+                            ? 'text-danger'
+                            : ''
+                    }
+                >
                     {year} {player.Position}{' '}
                     {player.FirstName + ' ' + player.LastName}
                 </h6>

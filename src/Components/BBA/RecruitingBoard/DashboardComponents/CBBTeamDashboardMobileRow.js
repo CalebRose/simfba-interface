@@ -9,13 +9,14 @@ import {
     MobileInputRow,
     MobileLabelRow
 } from '../../../_Common/MobileAttributeTab';
+import { SimCBB } from '../../../../Constants/CommonConstants';
 
 const CBBTeamDashboardMobileRow = (props) => {
     const { recruitProfile, idx, theme, retro } = props;
     const recruit = recruitProfile.Recruit;
     const logo =
-        recruit && recruit.College.length > 0
-            ? getLogo(recruit.College, retro)
+        recruit && recruit.TeamID > 0
+            ? getLogo(SimCBB, recruit.TeamID, retro)
             : '';
     const crootModalTarget = '#crootModal' + idx;
     const revokeModalTarget = '#revokeModal' + idx;
@@ -31,10 +32,10 @@ const CBBTeamDashboardMobileRow = (props) => {
             (x, idx) => idx <= 2 && x.Odds > 0
         );
 
-        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+        const competingIDs = competingTeams.map((x) => x.TeamID);
 
-        return competingAbbrs.map((x) => {
-            const logo = getLogo(x, retro);
+        return competingIDs.map((x) => {
+            const logo = getLogo(SimCBB, x, retro);
             return (
                 <>
                     <img
@@ -65,7 +66,7 @@ const CBBTeamDashboardMobileRow = (props) => {
             <CBBCrootModal crt={recruit} idx={idx} />
             <ConfirmRevokeModal
                 idx={idx}
-                toggleScholarship={toggleScholarship}
+                revoke={toggleScholarship}
                 viewMode={theme}
             />
             <ConfirmRemovePlayerFromBoardModal
@@ -111,11 +112,14 @@ const CBBTeamDashboardMobileRow = (props) => {
                             {!recruit.IsSigned ? (
                                 <>{leadingTeams}</>
                             ) : (
-                                <img
-                                    className="image-recruit-logo image-recruit-signed"
-                                    src={logo}
-                                    alt="WinningTeam"
-                                />
+                                <>
+                                    <img
+                                        className="image-recruit-logo image-recruit-signed"
+                                        src={logo}
+                                        alt="WinningTeam"
+                                    />
+                                    <h6>{recruit.College}</h6>
+                                </>
                             )}
                         </div>
                     </div>

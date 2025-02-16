@@ -3,6 +3,7 @@ import { getLogo } from '../../../Constants/getLogo';
 import { GetOverall } from '../../../_Utility/RosterHelper';
 import CrootModal from './CFBDashboardCrootModal';
 import { isBadFit, isGoodFit } from '../../../_Utility/CFBRecruitingHelper';
+import { SimCFB } from '../../../Constants/CommonConstants';
 
 const CFBDashboardPlayerRow = (props) => {
     const [flag, setFlag] = React.useState(false);
@@ -16,7 +17,7 @@ const CFBDashboardPlayerRow = (props) => {
     const modalTarget = '#crootModal' + idx;
     const mapKey = croot.FirstName + croot.LastName + croot.HighSchool;
     const logo =
-        croot && croot.College.length > 0 ? getLogo(croot.College, retro) : '';
+        croot && croot.TeamID > 0 ? getLogo(SimCFB, croot.TeamID, retro) : '';
 
     useEffect(() => {
         if (map) {
@@ -33,10 +34,10 @@ const CFBDashboardPlayerRow = (props) => {
             (x, idx) => idx <= 2 && x.Odds > 0
         );
 
-        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+        const competingIDs = competingTeams.map((x) => x.TeamID);
 
-        return competingAbbrs.map((x) => {
-            const logo = getLogo(x, retro);
+        return competingIDs.map((x) => {
+            const logo = getLogo(SimCFB, x, retro);
             return (
                 <>
                     <img
@@ -138,11 +139,14 @@ const CFBDashboardPlayerRow = (props) => {
                     {!croot.IsSigned ? (
                         <>{leadingTeams}</>
                     ) : (
-                        <img
-                            className="image-recruit-logo"
-                            src={logo}
-                            alt="WinningTeam"
-                        />
+                        <>
+                            <img
+                                className="image-recruit-logo"
+                                src={logo}
+                                alt="WinningTeam"
+                            />
+                            <h6>{croot.College}</h6>
+                        </>
                     )}
                 </td>
                 <td className="align-middle">

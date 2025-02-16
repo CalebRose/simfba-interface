@@ -6,6 +6,7 @@ import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
 import { CancelOfferModal } from './CancelOfferModal';
 import { FreeAgencyPlayerModal } from './FreeAgencyPlayerModal';
 import { FreeAgentOfferModal } from './FreeAgentOfferModal';
+import { SimNFL } from '../../../Constants/CommonConstants';
 
 export const NFLFreeAgencyMobileRow = ({
     teamID,
@@ -52,7 +53,7 @@ export const NFLFreeAgencyMobileRow = ({
         }
 
         return player.Offers.map((x) => {
-            const logo = getLogo(x.Team, retro);
+            const logo = getLogo(SimNFL, x.TeamID, retro);
             return (
                 <>
                     <img
@@ -106,7 +107,10 @@ export const NFLFreeAgencyMobileRow = ({
                     <h5 className="card-title">{NameLabel}</h5>
                     <h6 className="card-subtitle mb-2 text-muted">
                         {year === 'R' ? 'Rookie' : `${year} Year`}{' '}
-                        {player.Archetype} {player.Position} from{' '}
+                        {player.Archetype} {player.Position}
+                        {player.PositionTwo.length > 0
+                            ? `/${player.PositionTwo}`
+                            : ''}
                         {player.Hometown}, {player.State}
                     </h6>
                     <p className="card-text">

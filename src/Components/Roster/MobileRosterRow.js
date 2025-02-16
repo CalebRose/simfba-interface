@@ -4,28 +4,50 @@ import { GetOverall, GetYear } from '../../_Utility/RosterHelper';
 import { HeightToFeetAndInches } from '../../_Utility/utilHelper';
 
 const MobileRosterRow = (props) => {
-    const { idx, redshirtCount, ts, view, theme } = props;
+    const {
+        idx,
+        redshirtCount,
+        ts,
+        view,
+        theme,
+        setPromisePlayer,
+        rosterCount,
+        data,
+        cutPlayer
+    } = props;
     let player = props.data;
     let modalTarget = '#redshirtModal' + idx;
     const playerTarget = '#playerModal' + idx;
     let ovr = GetOverall(player.Overall, player.Year);
+    const cutPlayerTitle = `Cut ${player.FirstName}`;
     const year = GetYear(player);
     const heightObj = HeightToFeetAndInches(player.Height);
 
     const mobileCardClass = GetMobileCardClass(theme);
-
+    const cut = () => {
+        return cutPlayer(data);
+    };
+    const promiseHelper = () => {
+        return setPromisePlayer(data.PlayerID);
+    };
     return (
         <>
             <div className={`${mobileCardClass} mb-2`}>
                 <div className="card-body">
-                    {' '}
                     <h5 className="card-title">
                         {player.FirstName} {player.LastName}
                     </h5>
                     <h6 className="card-subtitle mb-2 text-muted">
-                        {year} {player.Stars} star {player.Archetype}{' '}
-                        {player.Position} from {player.HighSchool} in{' '}
-                        {player.City}, {player.State}
+                        {year} {player.Stars} star {player.Archetype}
+                        {player.ArchetypeTwo.length > 0
+                            ? `/${player.ArchetypeTwo}`
+                            : ''}{' '}
+                        {player.Position}
+                        {player.PositionTwo.length > 0
+                            ? `/${player.PositionTwo}`
+                            : ''}{' '}
+                        from {player.HighSchool} in {player.City},{' '}
+                        {player.State}
                     </h6>
                     <p className="card-text">
                         {heightObj.feet}' {heightObj.inches}", {player.Weight}{' '}
@@ -57,7 +79,7 @@ const MobileRosterRow = (props) => {
                             >
                                 <i className="bi bi-check-circle-fill rounded-circle link-danger"></i>
                             </button>
-                        ) : redshirtCount < 15 &&
+                        ) : redshirtCount < 20 &&
                           !player.IsRedshirt &&
                           !ts.CFBSpringGames &&
                           ts.CollegeWeek < 5 &&
@@ -93,6 +115,20 @@ const MobileRosterRow = (props) => {
                                         : 'link-success'
                                 }`}
                             ></i>
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            title={cutPlayerTitle}
+                            disabled={
+                                rosterCount < 80 ||
+                                !view ||
+                                (ts.CollegeWeek > 0 && ts.CollegeWeek < 21) ||
+                                ts.TransferPortalPhase !== 3
+                            }
+                            onClick={cut}
+                        >
+                            <i className="bi bi-scissors" />
                         </button>
                     </div>
                 </div>

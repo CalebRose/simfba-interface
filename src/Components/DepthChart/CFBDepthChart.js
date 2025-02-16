@@ -29,6 +29,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
     const [teamColors, setTeamColors] = useState('');
     const [collegeTeams, setCollegeTeams] = useState('');
     const [roster, setRoster] = useState([]);
+    const [rosterMap, setRosterMap] = useState({});
     const [initialDC, setInitialDC] = useState([]);
     const [currentDepthChart, setCurrentDepthChart] = useState(null);
     const [offensiveScheme, setOffensiveScheme] = useState(null);
@@ -82,10 +83,10 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
             GetRoster(team.ID);
             GetDepthChart(team.ID);
             const colors = {
-                color: '#fff',
+                color: team && team.ColorTwo ? team.ColorTwo : '#000',
                 backgroundColor:
                     team && team.ColorOne ? team.ColorOne : '#6c757d',
-                borderColor: team && team.ColorOne ? team.ColorOne : '#6c757d'
+                borderColor: team && team.ColorTwo ? team.ColorTwo : '#6c757d'
             };
             setTeamColors(colors);
             setCurrentPosition({
@@ -220,6 +221,11 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
         if (ID !== null || ID > 0) {
             let roster = await rosterService.GetPlayersByTeamNoRedshirts(ID);
             setRoster(() => roster);
+            const rMap = {};
+            for (let i = 0; i < roster.length; i++) {
+                rMap[roster[i].ID] = true;
+            }
+            setRosterMap(() => rMap);
         }
     };
 
@@ -254,7 +260,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
             style: {
                 border: `1px solid ${team.ColorOne}`,
                 padding: '16px',
-                color: team.ColorTwo
+                color: '#000'
             },
             iconTheme: {
                 primary: team.ColorOne,
@@ -315,7 +321,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
             dc[originalPlayerRowIndex].OriginalPosition = newPlayer.Position;
             dc[originalPlayerRowIndex].CollegePlayer = newPlayer;
         }
-        setCurrentDepthChart(dc);
+        setCurrentDepthChart(() => dc);
     };
 
     const ValidateDepthChart = () => {
@@ -340,12 +346,28 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
         const dc = [...currentDepthChart];
         let DepthChartMap = {};
         // It is not possible to have duplicate records under the same position
+        console.log({ rosterMap });
         for (let i = 0; i < dc.length; i++) {
             let row = dc[i];
             const pos = row.Position;
             let NameKey = row.FirstName + row.LastName + row.PlayerID;
+            if (!rosterMap[row.PlayerID]) {
+                toast.error(
+                    (t) => (
+                        <span>
+                            {row.FirstName} {row.LastName} is no longer on the
+                            team. Please swap them from their {row.Position}{' '}
+                            position level.
+                            <button onClick={() => toast.dismiss(t.id)}>
+                                Dismiss
+                            </button>
+                        </span>
+                    ),
+                    { duration: 10000 }
+                );
+                setValidation(() => false);
+            }
             if (row.CollegePlayer.IsRedshirting) {
-                setValidation(false);
                 toast.error(
                     (t) => (
                         <span>
@@ -359,6 +381,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
                     ),
                     { duration: 10000 }
                 );
+                setValidation(() => false);
                 return;
             }
             if (row.CollegePlayer.IsInjured) {
@@ -469,7 +492,7 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
                 duration: 2000
             });
         }
-        setValidation(validStatus);
+        setValidation(() => validStatus);
     };
 
     return (

@@ -19,6 +19,12 @@ import {
     setNBANotifications,
     setNFLNotifications
 } from '../../Redux/inbox/inbox.actions';
+import {
+    SimCBB,
+    SimCFB,
+    SimNBA,
+    SimNFL
+} from '../../Constants/CommonConstants';
 
 const LandingPage = ({ currentUser }) => {
     let _teamService = new BBATeamService();
@@ -46,15 +52,19 @@ const LandingPage = ({ currentUser }) => {
 
     useEffect(() => {
         if (currentUser && currentUser.teamId && currentUser.teamId > 0) {
-            const logo = getLogo(currentUser.teamAbbr, currentUser.IsRetro);
+            const logo = getLogo(
+                SimCFB,
+                currentUser.teamId,
+                currentUser.IsRetro
+            );
             setCFBLogo(() => logo);
-            setSport('CFB');
+            setSport(SimCFB);
         } else if (currentUser && currentUser.NFLTeamID) {
-            setSport('NFL');
+            setSport(SimNFL);
         } else if (currentUser && currentUser.cbb_id) {
-            setSport('CBB');
+            setSport(SimCBB);
         } else if (currentUser && currentUser.nba_id) {
-            setSport('NBA');
+            setSport(SimNBA);
         } else {
             setSport('');
         }
@@ -92,11 +102,17 @@ const LandingPage = ({ currentUser }) => {
         ) {
             GetNBATeam();
         }
+        if (
+            currentUser &&
+            (currentUser.cbb_id > 0 || currentUser.NBATeamID > 0)
+        ) {
+            getBBAInbox();
+        }
     }, [currentUser]);
 
     const GetCBBTeam = async () => {
         let response = await _teamService.GetTeamByTeamId(currentUser.cbb_id);
-        const logo = getLogo(currentUser.cbb_abbr, currentUser.IsRetro);
+        const logo = getLogo(SimCBB, currentUser.cbb_id, currentUser.IsRetro);
         setCBBLogo(() => logo);
         dispatch(setCBBTeam(response));
     };
@@ -105,7 +121,11 @@ const LandingPage = ({ currentUser }) => {
         let response = await teamService.GetNFLTeamByTeamID(
             currentUser.NFLTeamID
         );
-        const logo = getLogo(currentUser.NFLTeam, currentUser.IsRetro);
+        const logo = getLogo(
+            SimNFL,
+            currentUser.NFLTeamID,
+            currentUser.IsRetro
+        );
         setNFLLogo(() => logo);
         dispatch(setNFLTeam(response));
     };
@@ -114,7 +134,11 @@ const LandingPage = ({ currentUser }) => {
         let response = await _teamService.GetNBATeamByTeamID(
             currentUser.NBATeamID
         );
-        const logo = getLogo(currentUser.NBATeam, currentUser.IsRetro);
+        const logo = getLogo(
+            SimNBA,
+            currentUser.NBATeamID,
+            currentUser.IsRetro
+        );
         setNBALogo(() => logo);
         dispatch(setNBATeam(response));
     };
@@ -211,7 +235,7 @@ const LandingPage = ({ currentUser }) => {
                                 <button
                                     type="button"
                                     className="btn btn-outline-light btn-sm mb-2"
-                                    value="CFB"
+                                    value={SimCFB}
                                     onClick={selectSport}
                                 >
                                     <img
@@ -225,7 +249,7 @@ const LandingPage = ({ currentUser }) => {
                                 <button
                                     type="button"
                                     className="btn btn-outline-light btn-sm mb-2"
-                                    value="NFL"
+                                    value={SimNFL}
                                     onClick={selectSport}
                                 >
                                     <img
@@ -239,7 +263,7 @@ const LandingPage = ({ currentUser }) => {
                                 <button
                                     type="button"
                                     className="btn btn-outline-light btn-sm mb-2"
-                                    value="CBB"
+                                    value={SimCBB}
                                     onClick={selectSport}
                                 >
                                     <img
@@ -253,7 +277,7 @@ const LandingPage = ({ currentUser }) => {
                                 <button
                                     type="button"
                                     className="btn btn-outline-light btn-sm"
-                                    value="NBA"
+                                    value={SimNBA}
                                     onClick={selectSport}
                                 >
                                     <img
@@ -267,13 +291,13 @@ const LandingPage = ({ currentUser }) => {
                     </div>
                 )}
                 <div className={isMobile ? 'col-sm-12' : 'col-sm-11'}>
-                    {currentUser && sport === constants.CBB ? (
+                    {currentUser && sport === SimCBB ? (
                         <CBBHomePage />
-                    ) : currentUser && sport === constants.NBA ? (
+                    ) : currentUser && sport === SimNBA ? (
                         <NBAHomepage />
-                    ) : currentUser && sport === constants.CFB ? (
+                    ) : currentUser && sport === SimCFB ? (
                         <CFBHomepage />
-                    ) : currentUser && sport === constants.NFL ? (
+                    ) : currentUser && sport === SimNFL ? (
                         <NFLHomepage />
                     ) : (
                         'No Team? Click the Available Teams button'

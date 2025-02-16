@@ -11,6 +11,7 @@ import BBAMatchService from '../../../../_Services/simNBA/BBAMatchService';
 import BBANewsService from '../../../../_Services/simNBA/BBANewsService';
 import { NewsLogSmall } from '../../../_Common/NewsLog';
 import { BBAMatchCard } from '../../../_Common/BBAMatchCard';
+import { SimNBA } from '../../../../Constants/CommonConstants';
 
 const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
     const _teamService = new BBATeamService();
@@ -35,7 +36,9 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
     useEffect(() => {
         if (currentUser) {
             setTeamName(currentUser.NBATeam);
-            setLogo(getLogo(currentUser.NBATeam, currentUser.IsRetro));
+            setLogo(
+                getLogo(SimNBA, currentUser.NBATeamID, currentUser.IsRetro)
+            );
         }
         if (nbaTeam) {
             setTeam(() => nbaTeam);
@@ -278,6 +281,7 @@ const NBAHomePage = ({ currentUser, nbaTeam, cbb_Timestamp }) => {
                                     <NBAStandingsCard
                                         standings={standings}
                                         retro={currentUser.IsRetro}
+                                        league={SimNBA}
                                     />
                                     <div className="cbb-news-feed">
                                         {newsFeed.length > 0 &&

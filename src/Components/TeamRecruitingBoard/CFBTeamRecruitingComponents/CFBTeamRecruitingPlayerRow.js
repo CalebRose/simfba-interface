@@ -9,14 +9,15 @@ import CrootModal from '../../RecruitingOverview/CFBDashboardComponents/CFBDashb
 import ConfirmRemovePlayerFromBoardModal from './CFBTeamRemovePlayerModal';
 import ConfirmRevokeModal from './CFBTeamRevokeScholarshipModal';
 import { getLogo } from '../../../Constants/getLogo';
+import { SimCFB } from '../../../Constants/CommonConstants';
 
 const CFBTeamDashboardPlayerRow = (props) => {
     const { recruitProfile, idx, viewMode, retro, teamProfile } = props;
     const { Recruit } = recruitProfile;
 
     const logo =
-        Recruit && Recruit.College.length > 0
-            ? getLogo(Recruit.College, retro)
+        Recruit && Recruit.TeamID > 0
+            ? getLogo(SimCFB, Recruit.TeamID, retro)
             : '';
     const crootModalTarget = '#crootModal' + idx;
     const revokeModalTarget = '#revokeModal' + idx;
@@ -33,10 +34,10 @@ const CFBTeamDashboardPlayerRow = (props) => {
             (x, idx) => idx <= 2 && x.Odds > 0
         );
 
-        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+        const competingIDs = competingTeams.map((x) => x.TeamID);
 
-        return competingAbbrs.map((x) => {
-            const logo = getLogo(x, retro);
+        return competingIDs.map((x) => {
+            const logo = getLogo(SimCFB, x, retro);
             return (
                 <>
                     <img
@@ -206,11 +207,14 @@ const CFBTeamDashboardPlayerRow = (props) => {
                 </td>
                 <td className="align-middle">
                     {Recruit.IsSigned ? (
-                        <img
-                            className="image-recruit-logo"
-                            src={logo}
-                            alt="WinningTeam"
-                        />
+                        <>
+                            <img
+                                className="image-recruit-logo"
+                                src={logo}
+                                alt="WinningTeam"
+                            />
+                            <h6>{Recruit.College}</h6>
+                        </>
                     ) : (
                         <>{leadingTeams}</>
                     )}

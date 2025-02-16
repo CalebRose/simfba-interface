@@ -91,7 +91,6 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
     // API Calls
     const getRosterData = async (id) => {
         let res = await _teamService.GetNFLRosterData(id);
-        console.log({ res });
         const isUserTeam = id === currentUser.NFLTeamID;
         if (isUserTeam && !userTeam) {
             setUserTeam(() => res.Team);
@@ -471,6 +470,7 @@ const NFLRoster = ({ currentUser, cfb_Timestamp, viewMode }) => {
         if (playerIDX > -1) {
             const res = await _rosterService.TagPlayer(dto);
             r[playerIDX].TagType = tagEnum;
+            r[playerIDX].IsTagged = true;
             setRoster(() => r);
 
             if (tagEnum === 1 || tagEnum === 2);

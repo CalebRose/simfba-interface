@@ -9,7 +9,7 @@ import {
     GetPromiseWeight,
     RoundToTwoDecimals
 } from '../../_Utility/utilHelper';
-import { BBAStatsRow } from './SeasonStatsRow';
+import { BBAStatsRow, FBAStatsRow } from './SeasonStatsRow';
 import { MapOptions } from '../../_Utility/filterHelper';
 import Select from 'react-select';
 import { MinMaxRange } from './InputRange';
@@ -24,6 +24,7 @@ import {
     setNFLNotifications
 } from '../../Redux/inbox/inbox.actions';
 import AdminService from '../../_Services/simFBA/AdminService';
+import { GetYear } from '../../_Utility/RosterHelper';
 
 export const InfoModal = (props) => (
     <div
@@ -106,7 +107,7 @@ export const ExtraLargeModal = (props) => (
         aria-hidden="true"
     >
         <div className="modal-dialog modal-dialog-scrollable">
-            <div className="modal-content">
+            <div className="modal-content modal-content-xl">
                 <div className="modal-header">
                     <h4 className="modal-title" id="crootModalLabel">
                         {props.header}
@@ -282,7 +283,7 @@ export const PromisePlayerModal = (props) => {
         if (!promisePlayer) return;
         const isNumeric =
             promiseType === 'Wins' ||
-            promiseType === 'Snaps' ||
+            promiseType === 'Snap Count' ||
             promiseType === 'Minutes';
         setIsNumericPromise(() => isNumeric);
         if (promiseType === 'Wins') {
@@ -292,7 +293,7 @@ export const PromisePlayerModal = (props) => {
         if (promiseType === 'Minutes') {
             setMaxRange(() => promisePlayer.Stamina);
         }
-        if (promiseType === 'Snaps') {
+        if (promiseType === 'Snap Count') {
             setMaxRange(() => 60);
         }
         const weight = GetPromiseWeight(
@@ -337,6 +338,7 @@ export const PromisePlayerModal = (props) => {
 
     const ChangePromiseType = (options) => {
         setPromiseType(() => options.value);
+        setBenchmark(() => 0);
     };
 
     const ChangeBenchmark = (event) => {
@@ -345,9 +347,13 @@ export const PromisePlayerModal = (props) => {
     };
 
     const ValidatePromise = (pt, benchmark, player, isCFB) => {
+        if (pt === '' || pt === 'None') {
+            setIsValid(() => false);
+            return;
+        }
         let valid = true;
 
-        if (pt === 'Home State Game' && player.Country !== 'USA') {
+        if (pt === 'Home State Game' && !isCFB && player.Country !== 'USA') {
             valid = false;
             setValidMessage(
                 () =>
@@ -416,10 +422,14 @@ export const PromisePlayerModal = (props) => {
                                     <h6>Transfer Likeliness</h6>
                                     <p>{promisePlayer.TransferLikeliness}</p>
                                 </div>
-                                <div className="col-3">
-                                    <h6>Expected Minutes</h6>
-                                    <p>{promisePlayer.PlaytimeExpectations}</p>
-                                </div>
+                                {!isCFB && (
+                                    <div className="col-3">
+                                        <h6>Expected Minutes</h6>
+                                        <p>
+                                            {promisePlayer.PlaytimeExpectations}
+                                        </p>
+                                    </div>
+                                )}
                                 {promisePlayer.LegacyID > 0 && (
                                     <div className="col-3">
                                         <h6>
@@ -441,7 +451,7 @@ export const PromisePlayerModal = (props) => {
                                     <p>{promisePlayer.Personality}</p>
                                 </div>
                             </div>
-                            {seasonStats && (
+                            {seasonStats && !isCFB && (
                                 <>
                                     <div className="row mt-2">
                                         <div className="col-auto">
@@ -451,6 +461,7 @@ export const PromisePlayerModal = (props) => {
                                             <h6>Games Played</h6>
                                             <p>{seasonStats.GamesPlayed}</p>
                                         </div>
+
                                         <div className="ms-2 col-auto">
                                             <h6>Minutes</h6>
                                             <p>
@@ -459,6 +470,7 @@ export const PromisePlayerModal = (props) => {
                                                 )}
                                             </p>
                                         </div>
+
                                         <div className="col-auto">
                                             <h6>Possessions</h6>
                                             <p>
@@ -469,6 +481,20 @@ export const PromisePlayerModal = (props) => {
                                         </div>
                                     </div>
                                     <BBAStatsRow SeasonStats={seasonStats} />
+                                </>
+                            )}
+                            {seasonStats && isCFB && (
+                                <>
+                                    <div className="row mt-2">
+                                        <div className="col-auto">
+                                            <h5>Season Stats</h5>
+                                        </div>
+                                        <div className="col-auto">
+                                            <h6>Games Played</h6>
+                                            <p>{seasonStats.GamesPlayed}</p>
+                                        </div>
+                                    </div>
+                                    <FBAStatsRow SeasonStats={seasonStats} />
                                 </>
                             )}
                         </div>
@@ -538,7 +564,7 @@ export const InboxModal = ({ inbox }) => {
     } = inbox;
 
     const toggleNotification = async (noti) => {
-        await _adminService.ToggleNotification(noti.ID);
+        await _adminService.ToggleNotification(noti.ID, league);
         if (league === 'CFB') {
             handleNotifications(cfbNotifications, noti, setCFBNotifications);
         } else if (league === 'NFL') {
@@ -547,6 +573,35 @@ export const InboxModal = ({ inbox }) => {
             handleNotifications(cbbNotifications, noti, setCBBNotifications);
         } else if (league === 'NBA') {
             handleNotifications(nbaNotifications, noti, setNBANotifications);
+        }
+    };
+
+    const removeNotification = async (noti) => {
+        await _adminService.DeleteNotification(noti.ID, league);
+        if (league === 'CFB') {
+            handleRemoveNotification(
+                cfbNotifications,
+                noti,
+                setCFBNotifications
+            );
+        } else if (league === 'NFL') {
+            handleRemoveNotification(
+                nflNotifications,
+                noti,
+                setNFLNotifications
+            );
+        } else if (league === 'CBB') {
+            handleRemoveNotification(
+                cbbNotifications,
+                noti,
+                setCBBNotifications
+            );
+        } else if (league === 'NBA') {
+            handleRemoveNotification(
+                nbaNotifications,
+                noti,
+                setNBANotifications
+            );
         }
     };
 
@@ -559,7 +614,14 @@ export const InboxModal = ({ inbox }) => {
         }
     };
 
-    const removeNotification = async (noti) => {};
+    const handleRemoveNotification = async (list, noti, setNotification) => {
+        let listNoti = [...list];
+        const notiIDX = listNoti.findIndex((x) => x.ID === noti.ID);
+        if (notiIDX > -1) {
+            listNoti = listNoti.filter((x) => x.ID !== noti.ID);
+            dispatch(setNotification(listNoti));
+        }
+    };
 
     return (
         <CommonModal Header={header} ID={id} ModalClass="modal-content">
@@ -590,21 +652,107 @@ export const InboxModal = ({ inbox }) => {
             <div className="row mb-2 overflow-y-scroll">
                 {league === 'CFB' &&
                     cfbNotifications.map((x) => (
-                        <Notification noti={x} toggle={toggleNotification} />
+                        <Notification
+                            noti={x}
+                            toggle={toggleNotification}
+                            remove={removeNotification}
+                        />
                     ))}
                 {league === 'NFL' &&
                     nflNotifications.map((x) => (
-                        <Notification noti={x} toggle={toggleNotification} />
+                        <Notification
+                            noti={x}
+                            toggle={toggleNotification}
+                            remove={removeNotification}
+                        />
                     ))}
                 {league === 'CBB' &&
                     cbbNotifications.map((x) => (
-                        <Notification noti={x} toggle={toggleNotification} />
+                        <Notification
+                            noti={x}
+                            toggle={toggleNotification}
+                            remove={removeNotification}
+                        />
                     ))}
                 {league === 'NBA' &&
                     nbaNotifications.map((x) => (
-                        <Notification noti={x} toggle={toggleNotification} />
+                        <Notification
+                            noti={x}
+                            toggle={toggleNotification}
+                            remove={removeNotification}
+                        />
                     ))}
             </div>
+        </CommonModal>
+    );
+};
+
+export const TeamPromisesModal = ({ isCFB, team, promises, rosterMap }) => {
+    const header = isCFB ? team.TeamName : team.Team;
+    const id = 'teamPromisesModal';
+    return (
+        <CommonModal
+            Header={header}
+            ID={id}
+            ModalClass="modal-content modal-content-lg"
+        >
+            <div className="row mb-1">
+                <div className="col-3">
+                    <h6>Player</h6>
+                </div>
+                <div className="col-3">
+                    <h6>Type</h6>
+                </div>
+                <div className="col-2">
+                    <h6>Weight</h6>
+                </div>
+                <div className="col-2">
+                    <h6>Benchmark</h6>
+                </div>
+                <div className="col-2">
+                    <h6>Status</h6>
+                </div>
+            </div>
+            {promises.length > 0 &&
+                promises.map((promise) => {
+                    const player = rosterMap[promise.CollegePlayerID];
+                    if (!player || !promise.IsActive) return <></>;
+                    const year = GetYear(player);
+                    const playerLabel = `${year} ${player.Position} ${player.FirstName} ${player.LastName}`;
+                    return (
+                        <div className="row mb-1">
+                            <div className="col-3">
+                                <p className="text-small">{playerLabel}</p>
+                            </div>
+                            <div className="col-3">
+                                <p className="text-small">
+                                    {promise.PromiseType}
+                                </p>
+                            </div>
+                            <div className="col-2">
+                                <p className="text-small">
+                                    {promise.PromiseWeight}
+                                </p>
+                            </div>
+                            <div className="col-2">
+                                <p className="text-small">
+                                    {promise.Benchmark}
+                                </p>
+                            </div>
+                            <div className="col-2">
+                                <p className="text-small">
+                                    {promise.PromiseMade
+                                        ? 'Promise Made'
+                                        : promise.IsActive
+                                        ? 'Awaiting Response'
+                                        : promise.IsFulfilled
+                                        ? 'Fulfilled'
+                                        : 'Failed'}
+                                </p>
+                            </div>
+                        </div>
+                    );
+                })}
         </CommonModal>
     );
 };

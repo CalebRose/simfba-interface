@@ -1,3 +1,4 @@
+import BBAURL from '../../Constants/SimBBA_url';
 import url from '../../Constants/url';
 import { GetActionCall, GetCall } from './FetchHelper';
 export default class AdminService {
@@ -76,12 +77,28 @@ export default class AdminService {
     }
 
     async GetInbox(league, collegeId, profID) {
+        let apiUrl = url;
+        if (league === 'bba') {
+            apiUrl = BBAURL;
+        }
         return await GetCall(
-            `${url}${league}/inbox/get/${collegeId}/${profID}`
+            `${apiUrl}${league}/inbox/get/${collegeId}/${profID}`
         );
     }
 
-    async ToggleNotification(ID) {
-        return await GetCall(`${url}notification/toggle/${ID}`);
+    async ToggleNotification(ID, league) {
+        let apiUrl = url;
+        if (league === 'CBB' || league === 'NBA') {
+            apiUrl = BBAURL;
+        }
+        return await GetCall(`${apiUrl}notification/toggle/${ID}`);
+    }
+
+    async DeleteNotification(ID, league) {
+        let apiUrl = url;
+        if (league === 'CBB' || league === 'NBA') {
+            apiUrl = BBAURL;
+        }
+        return await GetCall(`${apiUrl}notification/delete/${ID}`);
     }
 }

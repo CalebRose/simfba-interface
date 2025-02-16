@@ -197,6 +197,23 @@ const NBAGameplan = ({ currentUser, viewMode }) => {
             return false;
         }
 
+        if (totalMinutes > 0 && player.IsInjured) {
+            const message = `${FirstName} ${LastName} has allocated minutes but is unfortunately injured. Please set the number of minutes to 0.`;
+            setValidation(false);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
+            return false;
+        }
+
         return true;
     };
 

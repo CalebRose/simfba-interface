@@ -154,7 +154,12 @@ export const DrafteeRow = ({ idx, player, map, draftMap, add, isMobile }) => {
                     <h4>{idx + 1}</h4>
                 </th>
                 <td className="align-middle">
-                    <h6>{player.Position}</h6>
+                    <h6>
+                        {player.Position}
+                        {player.PositionTwo.length > 0
+                            ? `/${player.PositionTwo}`
+                            : ''}
+                    </h6>
                 </td>
                 <td className="align-middle">
                     {player.FirstName} {player.LastName}
@@ -264,8 +269,8 @@ export const AttributeColumn = ({
                     disabled={
                         modalView ||
                         (isPotential
-                            ? SpentPoints + 10 > 750
-                            : SpentPoints + 4 > 750)
+                            ? SpentPoints + 10 > 1000
+                            : SpentPoints + 4 > 1000)
                     }
                     style={{ fontSize: '1.6vh' }}
                 >
@@ -348,11 +353,7 @@ export const ScoutPlayerRow = ({
                             <div className="col-auto">
                                 <div className="align-middle">
                                     <h6>Overall</h6>
-                                    <p>
-                                        {profile.ShowCount < 4
-                                            ? Draftee.OverallGrade
-                                            : Draftee.Overall}
-                                    </p>
+                                    <p>{Draftee.OverallGrade}</p>
                                 </div>
                             </div>
                             {attrList.map((x, idx) => (
@@ -412,15 +413,16 @@ export const ScoutPlayerRow = ({
                         {Draftee.FirstName} {Draftee.LastName}
                     </h5>
                     <h6 className="card-subtitle mb-2 text-body-secondary">
-                        {Draftee.Age} year old {Draftee.Height}{' '}
-                        {Draftee.Position} from {Draftee.College}
+                        {Draftee.Age} year old {heightObj.feet}'
+                        {heightObj.inches}" {Draftee.Position}
+                        {Draftee.PositionTwo.length > 0
+                            ? `/${Draftee.PositionTwo}`
+                            : ''}{' '}
+                        from {Draftee.College}
                     </h6>
                     <div className="row">
                         <p className="card-text">
-                            Overall:{' '}
-                            {profile.ShowCount < 4
-                                ? Draftee.OverallGrade
-                                : Draftee.Overall}
+                            Overall: {Draftee.OverallGrade}
                         </p>
                     </div>
                     <div className="row justify-content-center">

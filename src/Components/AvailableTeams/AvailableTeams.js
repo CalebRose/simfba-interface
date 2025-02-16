@@ -12,6 +12,7 @@ import constants from '../../Constants/acronyms.js';
 import BBATeamCard from '../BBA/TeamCard/BBATeamCard.js';
 import NFLTeamCard from './NFLTeamCard.js';
 import NBATeamCard from './NBATeamCard.js';
+import { SimCBB, SimCFB, SimNBA } from '../../Constants/CommonConstants.js';
 
 class AvailableTeams extends Component {
     state = {
@@ -180,7 +181,7 @@ class AvailableTeams extends Component {
                         team={team.TeamName}
                         mascot={team.Mascot}
                         conference={team.Conference}
-                        logo={getLogo(team.TeamAbbr, this._retroService)}
+                        logo={getLogo(SimCFB, team.ID, this._retroService)}
                         request={this.sendCFBRequest}
                         disable={this.state.sentRequest}
                         isFBS={team.IsFBS}
@@ -207,7 +208,7 @@ class AvailableTeams extends Component {
                         team={team.Team}
                         mascot={team.Nickname}
                         conference={team.Conference}
-                        logo={getLogo(team.Abbr, this._retroService)}
+                        logo={getLogo(SimCBB, team.ID, this._retroService)}
                         request={this.sendCBBRequest}
                         disable={this.state.sentRequest}
                         ovr={team.OverallGrade}
@@ -219,14 +220,12 @@ class AvailableTeams extends Component {
                     />
                 );
             } else if (this.state.selectedSport === constants.NBA) {
-                let logoKey = `${team.Team} ${team.Nickname}`;
-                logoKey = logoKey.trim();
                 return (
                     <NBATeamCard
                         key={team.ID}
                         teamId={team.ID}
                         team={team}
-                        logo={getLogo(logoKey, this._retroService)}
+                        logo={getLogo(SimNBA, team.ID, this._retroService)}
                         request={this.sendNBARequest}
                         disable={this.state.sentRequest}
                         viewMode={this.props.viewMode}
@@ -253,7 +252,7 @@ class AvailableTeams extends Component {
                             target="_blank"
                             href="https://www.simfba.com/index.php"
                         >
-                            SimFBA
+                            SimSN
                         </a>{' '}
                         and go to the{' '}
                         <a

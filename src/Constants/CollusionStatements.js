@@ -18,7 +18,7 @@ export const GetCollusionStatements = (user, team, recruit) => {
         `One of the top quarterbacks from ${team.State} was offered free buffalo wings for life to play for the ${team.TeamName} ${team.Mascot}`,
         `Breaking news! Coach ${user.username} reportedly attempted to DDOS the server as a means of preventing others from recruiting! Jokes on them, we're fool-proof.`,
         `Breaking news! Coach ${user.username} was seen using loaded dice as a means of improving their odds in the Recruit Sync.`,
-        `After a recent breakthrough case involving ${team.TeamName} donors, the SimFBA have decided to investigate and penalize the University of Missouri's athletic program of twenty scholarships.`,
+        `After a recent breakthrough case involving ${team.TeamName} donors, the SimSN have decided to investigate and penalize the University of Missouri's athletic program of twenty scholarships.`,
         `A local tip from an avid college football fan claims that ${team.TeamName} donors were conspiring to use DogeCoin to pay for recruits.`,
         `A local tip from an avid college football fan claims that the ${team.TeamName} Athletic Department is hiring software engineers to hack into the AI and convince AI teams to look elsewhere.`,
         `A leak from a source recently let go from ${team.TeamName} states that coach ${user.username} was attempting to convince David Ross into transferring to the university.`,
@@ -86,10 +86,10 @@ export const GetCollusionStatements = (user, team, recruit) => {
                 `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} announced on Instagram that he believes Burger King doesn't serve real burgers.`,
                 `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} is rumored to be working on an NIL shoe deal with Big Baller Brand.`,
                 `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName}'s dad announced that he's proud of his son's commitment and that he wants to be involved in his son's collegiate development during his tenure.`,
-                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} reposted a viral fan request that SimFBA needs a college hockey sim.`,
-                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} reposted a viral fan request that SimFBA needs an Aussie Football sim.`,
-                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} reposted a viral fan request that SimFBA needs an pickleball sim.`,
-                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} reposted a viral fan request that SimFBA needs a Bison sim.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} reposted a viral fan request that SimSN needs a college hockey sim.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} reposted a viral fan request that SimSN needs an Aussie Football sim.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} reposted a viral fan request that SimSN needs an pickleball sim.`,
+                `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} reposted a viral fan request that SimSN needs a Bison sim.`,
                 `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} told news outlets last night that rival insitutions were attempting to sway him away from his commitment.`,
                 `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has promised ${recruit.College} fans that they will never lose a game while he plays at ${recruit.College}.`
             ];
@@ -526,8 +526,8 @@ export const GetBBallCollusionStatements = (user, team, recruit) => {
             `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} threaded that he thinks he could beat SimNBA SG Moises in a 1x1 match up.`,
             `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} is rumored to be working on an NIL shoe deal with Big Baller Brand.`,
             `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName}'s dad announced that he's proud of his son's commitment and that he wants to be involved in his son's collegiate development during his tenure.`,
-            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} rethreaded a viral fan request that SimFBA needs a college hockey sim.`,
-            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} rethreaded a viral fan request that SimFBA needs an Aussie Football sim.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} rethreaded a viral fan request that SimSN needs a college hockey sim.`,
+            `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} rethreaded a viral fan request that SimSN needs an Aussie Football sim.`,
             `${recruit.College} ${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} told news outlets last night that rival insitutions were attempting to sway him away from his commitment.`,
             `${recruit.Stars} star commit ${recruit.FirstName} ${recruit.LastName} has promised ${recruit.College} fans that they will never lose a game while he plays at ${recruit.College}.`
         ];
@@ -597,7 +597,7 @@ export const GetBBallTransferPortalStatements = (user, team, recruit) => {
         `Local news reported that a player in the portal received an NIL deal from a booster representing ${team.Team} that amounted to an expired coupon to a local McDonald's.`,
         `Local news reported that a player in the portal received an NIL deal from a booster representing ${team.Team} that amounted to an expired gift card to a local grocery store.`,
         `Local news reported that a player in the portal received an NIL deal from a booster representing ${team.Team} that amounted to an expired gift card to a local Pizza Hut.`,
-        `Local news reported that a player in the portal received an NIL deal from a booster representing ${team.Team} that amounted to five 'SimFBA Bucks'.`,
+        `Local news reported that a player in the portal received an NIL deal from a booster representing ${team.Team} that amounted to five 'SimSN Bucks'.`,
         `Local news reported that a booster representing ${team.Team} is willing to throw down his entire stock portfolio to get ${team.Team} to a national championship.`,
         `Local news reported that a booster representing ${team.Team} sold his entire stock portfolio to get ${team.Team} to a national championship.`,
         `Local news reported that a booster representing ${team.Team} that he is willing to out-spend his rival school in the transfer portal.`,

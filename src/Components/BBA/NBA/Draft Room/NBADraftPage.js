@@ -13,7 +13,7 @@ import { GetTableHoverClass } from '../../../../Constants/CSSClassHelper';
 import { NBAScoutPlayerRow } from './NBAScoutPlayerRow';
 import { NBADraftHelpModal, ScoutingModal } from './NBADraftModals';
 import { MapObjOptions } from '../../../../_Utility/filterHelper';
-import { PositionList } from '../../../../Constants/BBAConstants';
+import { BBPositionList } from '../../../../Constants/BBAConstants';
 import {
     GetCurrentDraftPick,
     GetPickTeamLogo,
@@ -33,7 +33,10 @@ import {
     GetStartTimer
 } from '../../../../_Utility/DraftHelper';
 import { WarRoomPick, WarRoomTab } from '../../../_Common/DraftComponents';
-import { NBAArchetypesList } from '../../../../Constants/CommonConstants';
+import {
+    NBAArchetypesList,
+    SimNBA
+} from '../../../../Constants/CommonConstants';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
@@ -55,7 +58,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
     const [scoutMap, setScoutMap] = useState({});
     const [nbaTeams, setNBATeams] = useState([]);
     const [draftPickList, setDraftPickList] = useState([]);
-    const positions = MapObjOptions(PositionList);
+    const positions = MapObjOptions(BBPositionList);
     const archetypes = MapObjOptions(NBAArchetypesList);
     const [selectedPositions, setPositions] = useState('');
     const [selectedArchetypes, setArchetypes] = useState('');
@@ -204,7 +207,7 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
 
     // Click Functionality
     const adminSelectTeam = async (team) => {
-        if (currentUser.username !== 'TuscanSota') {
+        if (isAdmin) {
             alert('Sorry, but this is something only Tuscan can do for now.');
             return;
         }
@@ -604,7 +607,8 @@ const NBADraftPage = ({ currentUser, nbaTeam, cbb_Timestamp, viewMode }) => {
                         <div className="draft-pick-container">
                             {currentDraftPicks.map((x, idx) => {
                                 const TeamLogo = getLogo(
-                                    x.Team,
+                                    SimNBA,
+                                    x.TeamID,
                                     currentUser.IsRetro
                                 );
 

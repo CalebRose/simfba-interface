@@ -6,8 +6,8 @@ import Select from 'react-select';
 import toast from 'react-hot-toast';
 import {
     ArchetypesListForFA,
-    LetterGradesList,
-    PositionList
+    FBPositionList,
+    LetterGradesList
 } from '../../../Constants/CommonConstants';
 import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 import EasterEggService from '../../../_Services/simFBA/EasterEggService';
@@ -24,7 +24,7 @@ import { GetDefaultOrder } from '../../../_Utility/RosterHelper';
 const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     let _rosterService = new FBAPlayerService();
     let _easterEggService = new EasterEggService();
-    const positions = MapObjOptions(PositionList);
+    const positions = MapObjOptions(FBPositionList);
     const archetypes = MapObjOptions(ArchetypesListForFA);
     const letterGrades = MapOptions(LetterGradesList);
     const [selectedPositions, setSelectedPositions] = useState('');
@@ -548,6 +548,7 @@ const NFLFreeAgency = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                                     }`}
                                     onClick={ToggleFAView}
                                     value="PS"
+                                    disabled={cfb_Timestamp.IsNFLOffSeason}
                                 >
                                     Practice Squad
                                 </button>

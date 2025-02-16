@@ -4,7 +4,11 @@ import BBAStandingsService from '../../../_Services/simNBA/BBAStandingsService';
 import { Spinner } from '../../_Common/Spinner';
 import StandingsCard from './StandingsModalCard';
 import { NBAStandingsCard } from '../../_Common/NBAStandingsCard';
-import { SeasonsList } from '../../../Constants/CommonConstants';
+import {
+    SeasonsList,
+    SimCBB,
+    SimNBA
+} from '../../../Constants/CommonConstants';
 
 const CBBStandingsModal = (props) => {
     let _standingsService = new BBAStandingsService();
@@ -163,6 +167,7 @@ const CBBStandingsModal = (props) => {
                                         <NBAStandingsCard
                                             standings={x}
                                             retro={retro}
+                                            league={isNBA ? SimNBA : SimCBB}
                                         />
                                     ))}
                                 </div>

@@ -2,13 +2,14 @@ import React from 'react';
 import { GetModalClass } from '../../../../Constants/CSSClassHelper';
 import { RoundToTwoDecimals } from '../../../../_Utility/utilHelper';
 import { getLogo } from '../../../../Constants/getLogo';
+import { SimCBB } from '../../../../Constants/CommonConstants';
 
 const CBBCrootModal = (props) => {
     const { crt, idx, viewMode, retro } = props;
     const modalId = 'crootModal' + idx;
     const modalClass = GetModalClass(viewMode);
     const LeadingTeam = ({ lt }) => {
-        const { TeamAbbr, Odds, Scholarship } = lt;
+        const { TeamID, TeamAbbr, Odds, Scholarship } = lt;
         const displayOdds = Math.round(Odds * 100);
 
         const getDisplayStatus = (odds) => {
@@ -20,7 +21,7 @@ const CBBCrootModal = (props) => {
         const hasCommitted = crt && crt.College.length > 0;
         const isCommittedToCollege = (crt, teamAbbr) =>
             crt && crt.College === teamAbbr;
-        const logo = getLogo(TeamAbbr, retro);
+        const logo = getLogo(SimCBB, TeamID, retro);
 
         return (
             <div className="row">
@@ -77,7 +78,8 @@ const CBBCrootModal = (props) => {
                 <div className={modalClass}>
                     <div className="modal-header">
                         <h4 className="modal-title" id="crootModalLabel">
-                            {crt.Position} {crt.FirstName} {crt.LastName}
+                            {crt.ID} {crt.Position} {crt.FirstName}{' '}
+                            {crt.LastName}
                         </h4>
                         <button
                             type="button"

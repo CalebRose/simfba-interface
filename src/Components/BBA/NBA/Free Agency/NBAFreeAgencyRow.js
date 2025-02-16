@@ -7,6 +7,7 @@ import {
     NBAWaiverOfferModal
 } from './NBAFreeAgencyModals';
 import { getLogo } from '../../../../Constants/getLogo';
+import { SimNBA } from '../../../../Constants/CommonConstants';
 
 export const NBAFreeAgencyMobileRow = ({}) => {};
 
@@ -57,7 +58,7 @@ export const NBAFreeAgencyRow = ({
         const offers = viewFA ? player.Offers : player.WaiverOffers;
 
         return offers.map((x) => {
-            const logo = getLogo(x.Team, retro);
+            const logo = getLogo(SimNBA, x.TeamID, retro);
             return (
                 <>
                     <img

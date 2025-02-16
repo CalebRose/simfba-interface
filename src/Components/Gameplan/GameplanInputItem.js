@@ -93,7 +93,7 @@ export const RunInput = ({
     return (
         <div className="input-group input-group-sm mb-3">
             <span
-                className="input-group-text text-small"
+                className="input-group-text text-tiny"
                 id="inputGroup-sizing-sm"
             >
                 {nameLabel}
@@ -146,7 +146,8 @@ export const TargetInput = ({
     else {
         archLabel = Archetype;
     }
-    const nameLabel = `${archLabel} ${Position} ${FirstName} ${LastName} | ${overallGrade}`;
+    const firstNameAbbreviation = `${FirstName[0]}.`;
+    const nameLabel = `${archLabel} ${Position} ${firstNameAbbreviation} ${LastName} | ${overallGrade}`;
     const isTargetDist = name !== 'RunnerDistributionWR';
     const list = isTargetDist ? TargetDepthLabel : WRRunnerList;
     return (

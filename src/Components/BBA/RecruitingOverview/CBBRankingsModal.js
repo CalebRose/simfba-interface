@@ -2,6 +2,7 @@ import React from 'react';
 import { GetModalClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
 import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
+import { SimCBB } from '../../../Constants/CommonConstants';
 
 const CBBRankingsModal = (props) => {
     const { teamProfiles, viewMode, retro } = props;
@@ -61,19 +62,25 @@ const CBBRankingsModal = (props) => {
                         </div>
                         {sortedProfiles &&
                             sortedProfiles.map((x, idx) => {
-                                const logo = getLogo(x.TeamAbbr, retro);
+                                const logo = getLogo(SimCBB, x.TeamID, retro);
                                 if (x.CompositeScore > 0)
                                     return (
-                                        <div className="row cbb-rank-row">
+                                        <div className="row cbb-rank-row flex flex-row align-items-center justify-content-center">
                                             <div className="col-1 ms-auto">
                                                 <strong>{idx + 1}</strong>
                                             </div>
-                                            <div className="col-2 ms-auto">
+                                            <div
+                                                className="col-2 ms-auto flex flex-row align-items-center justify-content-center"
+                                                style={{ display: 'flex' }}
+                                            >
                                                 <img
                                                     className="image-recruit-logo"
                                                     src={logo}
                                                     alt="rankedTeam"
                                                 />
+                                                <h6 className="ms-2">
+                                                    {x.TeamAbbr}
+                                                </h6>
                                             </div>
                                             <div className="col-1 ms-auto">
                                                 {x.TotalCommitments}
@@ -92,17 +99,17 @@ const CBBRankingsModal = (props) => {
                                                     x.CompositeScore
                                                 )}
                                             </div>
-                                            <div className="col-2 ms-auto">
+                                            <div className="col-1 ms-auto">
                                                 {RoundToTwoDecimals(
                                                     x.ESPNScore
                                                 )}
                                             </div>
-                                            <div className="col-2 ms-auto">
+                                            <div className="col-1 ms-auto">
                                                 {RoundToTwoDecimals(
                                                     x.RivalsScore
                                                 )}
                                             </div>
-                                            <div className="col-2 ms-auto">
+                                            <div className="col-1 ms-auto">
                                                 {RoundToTwoDecimals(
                                                     x.Rank247Score
                                                 )}

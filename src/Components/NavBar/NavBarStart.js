@@ -58,6 +58,7 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp, cfb_Timestamp }) => {
                             Depth Chart
                         </Link>
                     </li>
+
                     <li>
                         <Link
                             className="dropdown-item"
@@ -66,6 +67,7 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp, cfb_Timestamp }) => {
                             Recruiting Overview
                         </Link>
                     </li>
+
                     <li>
                         <Link
                             to={routes.CFB_TEAM_RECRUITING_BOARD}
@@ -74,6 +76,7 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp, cfb_Timestamp }) => {
                             {user.team} Recruiting Board
                         </Link>
                     </li>
+
                     <li>
                         <Link to={routes.CFB_STATS} className="dropdown-item">
                             Statistics

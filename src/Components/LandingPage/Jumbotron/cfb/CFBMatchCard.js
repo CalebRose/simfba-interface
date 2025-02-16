@@ -1,13 +1,17 @@
 import React from 'react';
 import { getLogo } from '../../../../Constants/getLogo';
 import { RevealResults } from '../../../../_Utility/utilHelper';
+import { SimCFB, SimNFL } from '../../../../Constants/CommonConstants';
 
 const CFBMatchCard = ({ game, team, timestamp, isNFL, retro }) => {
     const currentWeek = !isNFL ? timestamp.CollegeWeek : timestamp.NFLWeek;
     const teamAbbr =
         !isNFL && team ? team.TeamAbbr : `${team.TeamName} ${team.Mascot}`;
+    const league = isNFL ? SimNFL : SimCFB;
     const opposingTeam =
         game.HomeTeam === teamAbbr ? game.AwayTeam : game.HomeTeam;
+    const opposingTeamID =
+        game.HomeTeam === teamAbbr ? game.AwayTeamID : game.HomeTeamID;
     let opposingTeamLabel = opposingTeam;
     if (game.HomeTeam === teamAbbr && game.AwayTeamRank > 0) {
         opposingTeamLabel = `(${game.AwayTeamRank}) ${opposingTeam}`;
@@ -27,7 +31,7 @@ const CFBMatchCard = ({ game, team, timestamp, isNFL, retro }) => {
             (game.AwayTeam === teamAbbr && game.HomeTeamWin));
     const awayGame =
         game.HomeTeam === teamAbbr || game.IsNeutral ? false : true;
-    const opposingTeamLogo = getLogo(opposingTeam, retro);
+    const opposingTeamLogo = getLogo(league, opposingTeamID, retro);
     const gameWeek = game.Week;
     const ConferenceGame = game.IsConference;
     const ConferenceLabel = team && team.Conference;

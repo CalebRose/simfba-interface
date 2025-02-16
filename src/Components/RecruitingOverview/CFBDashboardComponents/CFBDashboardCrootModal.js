@@ -4,6 +4,7 @@ import { HeightToFeetAndInches } from '../../../_Utility/utilHelper';
 import { GetRecruitingTendency } from '../../../_Utility/CFBRecruitingHelper';
 import { CommonModal } from '../../_Common/ModalComponents';
 import { getLogo } from '../../../Constants/getLogo';
+import { SimCFB } from '../../../Constants/CommonConstants';
 
 const CrootModal = (props) => {
     const { crt, idx, viewMode, retro } = props;
@@ -13,7 +14,7 @@ const CrootModal = (props) => {
 
     const LeadingTeam = (props) => {
         const { lt } = props;
-        const { TeamAbbr, Odds, HasScholarship } = lt;
+        const { TeamAbbr, Odds, HasScholarship, TeamID } = lt;
         const displayOdds = Math.round(Odds * 100);
 
         const getDisplayStatus = (odds) => {
@@ -30,7 +31,7 @@ const CrootModal = (props) => {
         const hasCommitted = crt && crt.College.length > 0;
         const isCommittedToCollege = (crt, teamAbbr) =>
             crt && crt.College === teamAbbr;
-        const logo = getLogo(TeamAbbr, retro);
+        const logo = getLogo(SimCFB, TeamID, retro);
 
         return (
             <div className="row">
@@ -120,6 +121,11 @@ const CrootModal = (props) => {
                 {crt.IsCustomCroot && (
                     <div className="col">
                         <h6>Custom Croot By {crt.CustomCrootFor}</h6>
+                    </div>
+                )}
+                {crt.ID === 91822 && (
+                    <div className="col">
+                        <h6>FOUND ME! DM TOUCAN A SCREENSHOT OF THIS CARD!</h6>
                     </div>
                 )}
                 <div className="col">

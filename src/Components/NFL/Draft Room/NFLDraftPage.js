@@ -11,7 +11,8 @@ import {
 import { MapObjOptions } from '../../../_Utility/filterHelper';
 import {
     ArchetypesListForFA,
-    PositionList
+    FBPositionList,
+    SimNFL
 } from '../../../Constants/CommonConstants';
 import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
 import {
@@ -27,10 +28,10 @@ import {
 import {
     GetPauseTimer,
     GetResetTimer,
-    GetStartTimer
+    GetStartTimerNFL
 } from '../../../_Utility/DraftHelper';
 import { Spinner } from '../../_Common/Spinner';
-import { BBATeamDropdown, NFLTeamDropdown } from '../../_Common/Dropdown';
+import { NFLTeamDropdown } from '../../_Common/Dropdown';
 import {
     DesktopDraftPick,
     DrafteeRow,
@@ -77,7 +78,7 @@ const NFLDraftPage = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     const [scoutMap, setScoutMap] = useState({});
     const [nflTeams, setNFLTeams] = useState([]);
     const [draftPickList, setDraftPickList] = useState([]);
-    const positions = MapObjOptions(PositionList);
+    const positions = MapObjOptions(FBPositionList);
     const archetypes = MapObjOptions(ArchetypesListForFA);
     const [colleges, setColleges] = useState([]);
     const [selectedPositions, setPositions] = useState('');
@@ -183,7 +184,7 @@ const NFLDraftPage = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     const tradeWarRoom = GetTradeWarRoom(warRoom, tradeCollection);
 
     const StartTimer = () => {
-        GetStartTimer(data, currentPick, timeLeft, isPaused, updateData);
+        GetStartTimerNFL(data, currentPick, timeLeft, isPaused, updateData);
     };
 
     const PauseTimer = () => {
@@ -282,7 +283,7 @@ const NFLDraftPage = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     };
 
     const adminSelectTeam = async (team) => {
-        if (currentUser.username !== 'TuscanSota') {
+        if (!isAdmin) {
             alert('Sorry, but this is something only Tuscan can do for now.');
             return;
         }
@@ -599,7 +600,7 @@ const NFLDraftPage = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
     };
 
     const ProcessTrade = async (id) => {
-        // Will need to send the entire object to the SimFBA API to process the trade from the backend.
+        // Will need to send the entire object to the SimSN API to process the trade from the backend.
         // Some things to note: The Draft Picks section will likely remain static unless the teams reload on the page.
         // That is unless I make the draft pick list in the war room derived from the API call itself
         const adminTradeQueue = [...approvedRequests];
@@ -823,7 +824,8 @@ const NFLDraftPage = ({ currentUser, nflTeam, cfb_Timestamp, viewMode }) => {
                         <div className="draft-pick-container">
                             {currentDraftPicks.map((x, idx) => {
                                 const TeamLogo = getLogo(
-                                    x.Team,
+                                    SimNFL,
+                                    x.TeamID,
                                     currentUser.IsRetro
                                 );
 

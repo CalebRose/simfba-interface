@@ -7,7 +7,7 @@ import {
     AffinitiesList,
     CloseToHome,
     LetterGradesList,
-    PositionList,
+    FBPositionList,
     RecruitingLoadMessages,
     SimpleLetterGrades,
     StarsList,
@@ -40,7 +40,7 @@ const CFBRecruitingOverview = ({
     let _easterEggService = new EasterEggService();
 
     // Hooks
-    const positions = MapObjOptions(PositionList);
+    const positions = MapObjOptions(FBPositionList);
     const [selectedPositions, setSelectedPositions] = useState('');
     const states = MapOptions(StatesList);
     const [selectedStates, setSelectedStates] = useState('');

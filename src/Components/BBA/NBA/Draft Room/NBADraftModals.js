@@ -11,6 +11,12 @@ import FBADraftService from '../../../../_Services/simFBA/FBADraftService';
 import { GetScoutableAttributes } from '../../../../_Utility/DraftHelper';
 import { AttributeColumn } from '../../../_Common/DraftComponents';
 import { BBAStatsRow, FBAStatsRow } from '../../../_Common/SeasonStatsRow';
+import {
+    SimCBB,
+    SimCFB,
+    SimNBA,
+    SimNFL
+} from '../../../../Constants/CommonConstants';
 
 export const NBADraftHelpModal = ({ isNBA }) => {
     return (
@@ -243,11 +249,7 @@ const NFLScoutingCard = ({
                         <div className="col-auto">
                             <div className="align-middle">
                                 <h6>Overall</h6>
-                                <p>
-                                    {profile.ShowCount < 4
-                                        ? player.OverallGrade
-                                        : player.Overall}
-                                </p>
+                                <p>{player.OverallGrade}</p>
                             </div>
                         </div>
                         {attrList.map((x, idx) => (
@@ -320,7 +322,11 @@ export const ScoutingModal = ({ profile, retro, isNFL, wr, reveal }) => {
         return {};
     }, [data]);
 
-    const teamLogo = getLogo(TeamStandings.TeamAbbr, retro);
+    const teamLogo = getLogo(
+        isNFL ? SimCFB : SimCBB,
+        TeamStandings.TeamID,
+        retro
+    );
 
     useEffect(() => {
         if (

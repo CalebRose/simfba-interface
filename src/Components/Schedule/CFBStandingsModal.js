@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
-import { SeasonsList } from '../../Constants/CommonConstants';
+import { SeasonsList, SimCFB } from '../../Constants/CommonConstants';
 import { GetModalClass } from '../../Constants/CSSClassHelper';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import StandingsCard from '../BBA/Schedule/StandingsModalCard';
@@ -157,6 +157,7 @@ const CFBStandingsModal = (props) => {
                                         <StandingsCard
                                             standings={x}
                                             retro={retro}
+                                            league={SimCFB}
                                         />
                                     ))}
                                 </div>

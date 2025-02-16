@@ -133,7 +133,7 @@ export const FormationMap = {
         Ranges: {
             TraditionalRun: { Min: 20, Max: 60 },
             OptionRun: { Min: 0, Max: 0 },
-            RPO: { Min: 0, Max: 10 },
+            RPO: { Min: 0, Max: 30 },
             Pass: { Min: 40, Max: 80 }
         },
         Notes: 'This scheme centers on the short pass, but still allows for a bit of running.'
@@ -225,7 +225,7 @@ export const FormationMap = {
         Ranges: {
             TraditionalRun: { Min: 20, Max: 60 },
             OptionRun: { Min: 0, Max: 5 },
-            RPO: { Min: 5, Max: 10 },
+            RPO: { Min: 5, Max: 30 },
             Pass: { Min: 40, Max: 80 }
         },
         Notes: 'This scheme focuses on short passes and passes far more often than it runs.'
@@ -474,7 +474,7 @@ export const FormationMap = {
         Ranges: {
             TraditionalRun: { Min: 40, Max: 80 },
             OptionRun: { Min: 20, Max: 60 },
-            RPO: { Min: 0, Max: 0 },
+            RPO: { Min: 0, Max: 20 },
             Pass: { Min: 20, Max: 40 }
         },
         Notes: 'This scheme is also fairly balanced (run vs. pass) like the Wing-T, but it does not have access to any shotgun formations.'
@@ -715,7 +715,6 @@ export const FormationMap = {
         ],
         SchemeFits: [
             'Run Stopper DE',
-            'Run Stopper DT',
             'Nose Tackle DT',
             'Pass Rush OLB',
             'Run Stopper OLB',
@@ -831,8 +830,8 @@ export const FormationMap = {
             'Coverage ILB'
         ],
         BadFits: [
+            'Nose Tackle DT',
             'Run Stopper DE',
-            'Run Stopper DT',
             'Run Stopper OLB',
             'Run Stopper ILB',
             'Run Stopper FS',

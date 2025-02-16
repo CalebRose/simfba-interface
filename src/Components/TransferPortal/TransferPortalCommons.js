@@ -6,6 +6,7 @@ import { BBAStatsRow, FBAStatsRow } from '../_Common/SeasonStatsRow';
 import { getLogo } from '../../Constants/getLogo';
 import { SetPriority } from '../../_Utility/RosterHelper';
 import AttributeRow from '../Roster/AttributeRow';
+import { SimCBB, SimCFB } from '../../Constants/CommonConstants';
 
 const CFBTransferPortalHeader = ({ viewMode }) => {
     return (
@@ -131,12 +132,17 @@ const CFBTransferBoardHeader = ({ viewMode }) => {
                     <th scope="col" style={{ width: 175 }}>
                         Name
                     </th>
+                    <th scope="col" style={{ width: 175 }}>
+                        Prev. Team
+                    </th>
                     <th scope="col">State</th>
                     <th scope="col">Stars</th>
                     <th scope="col">Overall</th>
                     <th scope="col">Potential</th>
                     <th scope="col">Leading Teams</th>
-                    <th scope="col">Allocate</th>
+                    <th scope="col" style={{ width: '10rem' }}>
+                        Allocate
+                    </th>
                     <th scope="col">Multiplier</th>
                     <th scope="col">Total Points</th>
                     <th scope="col">Actions</th>
@@ -497,6 +503,7 @@ export const ViewTransferPlayerModal = ({ player, isCFB, retro, viewMode }) => {
     const header = player
         ? `${player.PlayerID} ${year} ${player.Position} ${player.FirstName} ${player.LastName}`
         : 'Loading Player...';
+    const league = isCFB ? SimCFB : SimCBB;
 
     const standings = useMemo(() => {
         if (data) {
@@ -528,12 +535,11 @@ export const ViewTransferPlayerModal = ({ player, isCFB, retro, viewMode }) => {
             isCFB,
             player.PlayerID
         );
-        console.log({ res, isCFB });
         setData(() => res);
         setIsLoading(() => false);
     };
 
-    const teamLogo = standings && getLogo(standings.TeamAbbr, retro);
+    const teamLogo = standings && getLogo(league, standings.TeamID, retro);
 
     return (
         <ExtraLargeModal header={header} id={id}>

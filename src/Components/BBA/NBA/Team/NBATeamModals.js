@@ -3,6 +3,7 @@ import { GetModalClass } from '../../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../../Constants/getLogo';
 import { GetNFLRound } from '../../../../_Utility/RosterHelper';
 import { RoundToTwoDecimals } from '../../../../_Utility/utilHelper';
+import { SimCBB, SimNBA } from '../../../../Constants/CommonConstants';
 
 export const GLeagueModal = ({ player, idx, setToGLeague, viewMode }) => {
     const modalId = `gLeague${idx}`;
@@ -135,8 +136,8 @@ export const PlayerModal = ({ team, player, idx, viewMode, retro }) => {
     const modalId = `playerModal${idx}`;
     const modalClass = GetModalClass(viewMode);
     const teamKey = `${team.Team} ${team.Nickname}`;
-    const nbaLogo = getLogo(teamKey.trim(), retro);
-    const collegeLogo = getLogo(player.College, retro);
+    const nbaLogo = getLogo(SimNBA, player.TeamID, retro);
+    const collegeLogo = getLogo(SimCBB, player.CollegeID, retro);
     const { Contract, IsGLeague, IsOnTradeBlock, IsTwoWay, DraftedRound } =
         player;
     const draftedRound = GetNFLRound(DraftedRound);

@@ -1177,3 +1177,11 @@ hr.solid {
         max-width: 100vw;
     }
 }
+
+.modal-content-xl {
+    min-height: 35rem;
+}
+
+.modal-content-lg {
+    min-width: 45rem;
+}

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { getLogo } from '../../../Constants/getLogo';
 import CBBCrootModal from '../RecruitingBoard/DashboardComponents/CBBCrootModal';
+import { SimCBB } from '../../../Constants/CommonConstants';
 
 const CBBDashboardPlayerRow = (props) => {
     const [flag, setFlag] = React.useState(false);
@@ -12,7 +13,9 @@ const CBBDashboardPlayerRow = (props) => {
     const crootModalTarget = '#crootModal' + idx;
 
     const logo =
-        data && data.College.length > 0 ? getLogo(data.College, retro) : '';
+        data && data.College.length > 0
+            ? getLogo(SimCBB, data.TeamID, retro)
+            : '';
 
     useEffect(() => {
         if (map) {
@@ -29,10 +32,10 @@ const CBBDashboardPlayerRow = (props) => {
             (x, idx) => idx <= 2 && x.Odds > 0
         );
 
-        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+        const competingIDs = competingTeams.map((x) => x.TeamID);
 
-        return competingAbbrs.map((x) => {
-            const logo = getLogo(x, retro);
+        return competingIDs.map((x) => {
+            const logo = getLogo(SimCBB, x, retro);
             return (
                 <>
                     <img
@@ -118,11 +121,14 @@ const CBBDashboardPlayerRow = (props) => {
                     {!data.IsSigned ? (
                         <h6>{leadingTeams}</h6>
                     ) : (
-                        <img
-                            className="image-recruit-logo"
-                            src={logo}
-                            alt="WinningTeam"
-                        />
+                        <>
+                            <img
+                                className="image-recruit-logo"
+                                src={logo}
+                                alt="WinningTeam"
+                            />
+                            <h6>{data.College}</h6>
+                        </>
                     )}
                 </td>
                 <td className="align-middle">

@@ -22,7 +22,7 @@ import {
 import { MapObjOptions, MapOptions } from '../../_Utility/filterHelper';
 import {
     LetterGradesList,
-    PositionList,
+    BBPositionList,
     SimpleLetterGrades,
     StarsList
 } from '../../Constants/BBAConstants';
@@ -30,6 +30,7 @@ import Select from 'react-select';
 import { PromisePlayerModal } from '../_Common/ModalComponents';
 import { GetBBallTransferPortalStatements } from '../../Constants/CollusionStatements';
 import EasterEggService from '../../_Services/simFBA/EasterEggService';
+import { FBPositionList } from '../../Constants/CommonConstants';
 
 const TransferPortal = ({
     isCFB,
@@ -47,6 +48,7 @@ const TransferPortal = ({
     const [teamList, setTeamList] = useState([]);
     const [allTeams, setAllTeams] = useState([]);
     const [teamPromises, setTeamPromises] = useState([]);
+    const [activePromisesCount, setActivePromisesCount] = useState(0);
     const [allPlayers, setAllPlayers] = useState([]);
     const [filteredPlayers, setFilteredPlayers] = useState([]);
     const [viewablePlayers, setViewablePlayers] = useState([]);
@@ -66,12 +68,14 @@ const TransferPortal = ({
     const [count, setCount] = useState(100);
     const [sort, setSort] = useState('Rank');
     const [isAsc, setIsAsc] = useState(false);
+    const [isValid, setIsValid] = useState(false);
     const ts = useMemo(() => {
         return isCFB ? cfb_Timestamp : cbb_Timestamp;
     }, [isCFB, cfb_Timestamp, cbb_Timestamp]);
-    const positions = MapObjOptions(PositionList);
+    const positions = isCFB
+        ? MapObjOptions(FBPositionList)
+        : MapObjOptions(BBPositionList);
     const letterGrades = MapOptions(LetterGradesList);
-    const simpleGrades = MapOptions(SimpleLetterGrades);
     const stars = MapOptions(StarsList);
 
     // For mobile
@@ -87,6 +91,20 @@ const TransferPortal = ({
             GetTransferPortalData(id);
         }
     }, [currentUser]);
+
+    useEffect(() => {
+        if (teamPromises.length > 0) {
+            let count = 0;
+            for (let i = 0; i < teamPromises.length; i++) {
+                const prom = teamPromises[i];
+                if (prom.IsActive === false) {
+                    continue;
+                }
+                count++;
+            }
+            setActivePromisesCount(() => count);
+        }
+    }, [teamPromises]);
 
     useEffect(() => {
         const fp = filterPlayers(allPlayers);
@@ -111,15 +129,16 @@ const TransferPortal = ({
         if (board === null || board === undefined) board = [];
         setPortalProfiles(() => board);
         setTeamProfile(() => res.Team);
-        setAllPlayers(() => res.Players);
-        const fp = filterPlayers([...res.Players]);
+        const allPlayers = [...res.Players];
+        setAllPlayers(() => allPlayers);
+        const fp = filterPlayers(allPlayers);
         setFilteredPlayers(() => [...fp]);
         setViewablePlayers(() => [...fp].slice(0, count));
         setTeamPromises(() => res.TeamPromises);
         setIsLoading(() => false);
         const teamList = [...res.TeamList];
         const tl = teamList.map((x) => {
-            return { label: x.Team, value: x.ID };
+            return { label: isCFB ? x.TeamName : x.Team, value: x.ID };
         });
         const pMap = {};
         for (let i = 0; i < board.length; i++) {
@@ -128,6 +147,7 @@ const TransferPortal = ({
         setTeamList(() => tl);
         setAllTeams(() => teamList);
         setPortalMap(() => pMap);
+        Validate();
     };
 
     // Filter
@@ -196,7 +216,7 @@ const TransferPortal = ({
             SeasonID: ts.SeasonID,
             CollegePlayerID: player.PlayerID,
             ProfileID: tp.ID,
-            TeamAbbreviation: tp.TeamAbbr,
+            TeamAbbreviation: tp.TeamAbbreviation,
             TotalPoints: 0,
             CurrentWeeksPoints: 0,
             PreviouslySpentPoints: 0,
@@ -233,12 +253,16 @@ const TransferPortal = ({
     const RemovePlayerFromBoard = async (profile) => {
         const id = profile.ID;
         const res = await _portalService.RemovePortalProfile(isCFB, id);
+        const points = profile.CurrentWeeksPoints;
         if (res) {
             const pp = [...portalProfiles].filter((x) => x.ID !== id);
             const newMap = { ...portalMap };
             newMap[`${profile.CollegePlayerID}`] = false;
             setPortalProfiles(() => pp);
             setPortalMap(() => newMap);
+            const tp = { ...teamProfile };
+            tp.SpentPoints = tp.SpentPoints - points;
+            setTeamProfile(() => tp);
             toast.success('Successfully removed player from transfer board');
         }
     };
@@ -254,6 +278,9 @@ const TransferPortal = ({
             if (pointsSpent > 10) {
                 pointsSpent = 10;
             }
+            if (profileList[idx].PreviouslySpentPoints > pointsSpent) {
+                pointsSpent = profileList[idx].PreviouslySpentPoints;
+            }
             profileList[idx] = {
                 ...profileList[idx],
                 CurrentWeeksPoints: pointsSpent
@@ -267,7 +294,17 @@ const TransferPortal = ({
             tp.SpentPoints = Number(total);
             setTeamProfile(() => tp);
             setPortalProfiles(() => profileList);
+            Validate();
         }
+    };
+
+    const Validate = () => {
+        const tp = { ...teamProfile };
+        if (tp.SpentPoints > tp.WeeklyPoints) {
+            setIsValid(() => false);
+            return;
+        }
+        setIsValid(() => true);
     };
 
     const CommitPromise = async (dto) => {
@@ -342,6 +379,10 @@ const TransferPortal = ({
         }
     };
 
+    const ExportPortal = async () => {
+        await _portalService.ExportPortal();
+    };
+
     const loadRecords = () => {
         const newCount = [...viewablePlayers].concat(
             [...filteredPlayers].slice(count, count + 100)
@@ -366,6 +407,14 @@ const TransferPortal = ({
                         </div>
                         <div className="row">
                             <div className="col-sm-2">
+                                <div className="row mb-2 px-4 d-flex justify-column-center">
+                                    <button
+                                        className="btn btn-primary export-btn"
+                                        onClick={ExportPortal}
+                                    >
+                                        Export
+                                    </button>
+                                </div>
                                 <div className="row mb-2 d-flex justify-column-center">
                                     <h5>{teamProfile.TeamAbbr} Profile</h5>
                                 </div>
@@ -402,7 +451,7 @@ const TransferPortal = ({
                                             </div>
                                             <div className="col">
                                                 <h6>Total Promises Made</h6>
-                                                <p>{teamPromises.length}</p>
+                                                <p>{activePromisesCount}</p>
                                             </div>
                                         </div>
                                     </>
@@ -503,7 +552,7 @@ const TransferPortal = ({
                                                     Overall
                                                 </h5>
                                                 <Select
-                                                    options={simpleGrades}
+                                                    options={letterGrades}
                                                     isMulti={true}
                                                     className="basic-multi-select btn-dropdown-width-team z-index-5"
                                                     classNamePrefix="select"
@@ -750,6 +799,7 @@ const TransferPortal = ({
                                                             type="button"
                                                             className="btn btn-warning"
                                                             onClick={SaveBoard}
+                                                            disabled={!isValid}
                                                         >
                                                             Save Board
                                                         </button>

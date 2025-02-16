@@ -1315,9 +1315,6 @@ export const SimFBAGameModal = ({ game, isNFL, isMobile }) => {
                                                         Name
                                                     </div>
                                                     <div className="col-1">
-                                                        Position
-                                                    </div>
-                                                    <div className="col-1">
                                                         Solo TKL
                                                     </div>
                                                     <div className="col-1">
@@ -1331,6 +1328,9 @@ export const SimFBAGameModal = ({ game, isNFL, isMobile }) => {
                                                     </div>
                                                     <div className="col-1">
                                                         FF/FR
+                                                    </div>
+                                                    <div className="col-1">
+                                                        PD
                                                     </div>
                                                     <div className="col-1">
                                                         INT
@@ -1352,13 +1352,11 @@ export const SimFBAGameModal = ({ game, isNFL, isMobile }) => {
                                                                     }
                                                                 </div>
                                                                 <div className="col-2">
+                                                                    {x.Position}{' '}
                                                                     {
                                                                         x.FirstName
                                                                     }{' '}
                                                                     {x.LastName}
-                                                                </div>
-                                                                <div className="col-1">
-                                                                    {x.Position}
                                                                 </div>
                                                                 <div className="col-1">
                                                                     {
@@ -1387,6 +1385,11 @@ export const SimFBAGameModal = ({ game, isNFL, isMobile }) => {
                                                                     /{' '}
                                                                     {
                                                                         x.RecoveredFumbles
+                                                                    }
+                                                                </div>
+                                                                <div className="col-1">
+                                                                    {
+                                                                        x.PassDeflections
                                                                     }
                                                                 </div>
                                                                 <div className="col-1">
@@ -1415,13 +1418,11 @@ export const SimFBAGameModal = ({ game, isNFL, isMobile }) => {
                                                                     }
                                                                 </div>
                                                                 <div className="col-2">
+                                                                    {x.Position}{' '}
                                                                     {
                                                                         x.FirstName
                                                                     }{' '}
                                                                     {x.LastName}
-                                                                </div>
-                                                                <div className="col-1">
-                                                                    {x.Position}
                                                                 </div>
                                                                 <div className="col-1">
                                                                     {
@@ -1450,6 +1451,11 @@ export const SimFBAGameModal = ({ game, isNFL, isMobile }) => {
                                                                     /{' '}
                                                                     {
                                                                         x.RecoveredFumbles
+                                                                    }
+                                                                </div>
+                                                                <div className="col-1">
+                                                                    {
+                                                                        x.PassDeflections
                                                                     }
                                                                 </div>
                                                                 <div className="col-1">
@@ -1524,6 +1530,10 @@ export const SimFBAGameModal = ({ game, isNFL, isMobile }) => {
                                                                             }{' '}
                                                                             FF/FR,{' '}
                                                                             {
+                                                                                x.PassDeflections
+                                                                            }
+                                                                            PD,{' '}
+                                                                            {
                                                                                 x.InterceptionsCaught
                                                                             }{' '}
                                                                             INT{' '}
@@ -1588,6 +1598,10 @@ export const SimFBAGameModal = ({ game, isNFL, isMobile }) => {
                                                                                 x.RecoveredFumbles
                                                                             }{' '}
                                                                             FF/FR,{' '}
+                                                                            {
+                                                                                x.PassDeflections
+                                                                            }
+                                                                            PD,{' '}
                                                                             {
                                                                                 x.InterceptionsCaught
                                                                             }{' '}

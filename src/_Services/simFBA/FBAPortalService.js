@@ -42,4 +42,25 @@ export class PortalService {
         let u = isCFB ? url : BBAURL;
         return await PostCall(`${u}portal/saveboard`, dto);
     }
+
+    async ExportPortal() {
+        let json;
+        let fullURL = url + 'portal/export/players';
+        let response = await fetch(fullURL, {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'text/csv'
+            },
+            responseType: 'blob'
+        })
+            .then((res) => res.blob())
+            .then((blob) => saveAs(blob, `OfficialPortalList.csv`));
+
+        if (response.ok) {
+            console.log('Portal export complete.');
+        } else {
+            alert('HTTP-Error:', response.status);
+        }
+        return json;
+    }
 }

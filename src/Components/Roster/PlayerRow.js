@@ -3,10 +3,22 @@ import { GetOverall, GetYear, SetPriority } from '../../_Utility/RosterHelper';
 import { HeightToFeetAndInches } from '../../_Utility/utilHelper';
 
 const PlayerRow = (props) => {
-    const { idx, redshirtCount, ts, view, theme } = props;
-    let data = props.data;
+    const {
+        idx,
+        redshirtCount,
+        ts,
+        view,
+        theme,
+        setPromisePlayer,
+        data,
+        rosterCount,
+        cutPlayer
+    } = props;
     let modalTarget = '#redshirtModal' + idx;
     const playerTarget = '#playerModal' + idx;
+    const promiseModalTarget = '#promiseModal';
+    const cutPlayerTitle = `Cut ${data.FirstName}`;
+
     let ovr = GetOverall(data.Overall, data.Year);
     const year = GetYear(data);
     const heightObj = HeightToFeetAndInches(data.Height);
@@ -14,6 +26,12 @@ const PlayerRow = (props) => {
     if (data.IsInjured) {
         healthStatus = `${data.InjuryType} ${data.InjuryName}, ${data.WeeksOfRecovery} Games`;
     }
+    const cut = () => {
+        return cutPlayer(data);
+    };
+    const promiseHelper = () => {
+        return setPromisePlayer(data.PlayerID);
+    };
     return (
         <tr>
             <th
@@ -36,7 +54,10 @@ const PlayerRow = (props) => {
                 </button>
             </th>
             <td label="Archtype">{data.Archetype}</td>
-            <td label="Position">{data.Position}</td>
+            <td label="Position">
+                {data.Position}
+                {data.PositionTwo.length > 0 ? `/${data.PositionTwo}` : ''}
+            </td>
             <td label="Overall">{ovr ? ovr : ''}</td>
             <td label="Year">{year ? year : ''}</td>
             <td label="Height">
@@ -55,7 +76,7 @@ const PlayerRow = (props) => {
                         <button type="button" className="btn btn-sm" disabled>
                             <i className="bi bi-check-circle-fill rounded-circle link-danger"></i>
                         </button>
-                    ) : redshirtCount < 15 &&
+                    ) : redshirtCount < 20 &&
                       !data.IsRedshirt &&
                       ts.CollegeWeek < 5 &&
                       !ts.CFBSpringGames &&
@@ -80,7 +101,14 @@ const PlayerRow = (props) => {
                             ></i>
                         </button>
                     )}
-                    <button type="button" className="btn btn-sm" disabled>
+                    <button
+                        type="button"
+                        className="btn btn-sm"
+                        onClick={promiseHelper}
+                        data-bs-toggle="modal"
+                        data-bs-target={promiseModalTarget}
+                        disabled={data.TransferStatus < 1 || !view}
+                    >
                         <i
                             className={`bi bi-shield-fill ${
                                 data.TransferStatus === 1
@@ -88,6 +116,20 @@ const PlayerRow = (props) => {
                                     : 'link-success'
                             }`}
                         ></i>
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        title={cutPlayerTitle}
+                        disabled={
+                            rosterCount < 80 ||
+                            !view ||
+                            (ts.CollegeWeek > 0 && ts.CollegeWeek < 21) ||
+                            ts.TransferPortalPhase !== 3
+                        }
+                        onClick={cut}
+                    >
+                        <i className="bi bi-scissors" />
                     </button>
                 </div>
             </td>

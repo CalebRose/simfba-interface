@@ -1,5 +1,20 @@
 import firebase from 'firebase';
 
+export const calculateEndTimeNFL = (currentPick, timeLeft, isPaused) => {
+    let seconds = 0;
+    if (currentPick < 33 && timeLeft === 0) {
+        seconds = 300; // 5 minutes
+    } else if (currentPick > 32 && timeLeft === 0) {
+        seconds = 180; // 3 minutes
+    } else if (currentPick > 137 && timeLeft === 0) {
+        seconds = 120; // 2 minutes
+    } else if (isPaused && timeLeft > 0) {
+        seconds = timeLeft;
+    }
+
+    return new Date(Date.now() + seconds * 1000);
+};
+
 export const calculateEndTime = (currentPick, timeLeft, isPaused) => {
     let seconds = 0;
     if (currentPick < 32 && timeLeft === 0) {
@@ -11,6 +26,25 @@ export const calculateEndTime = (currentPick, timeLeft, isPaused) => {
     }
 
     return new Date(Date.now() + seconds * 1000);
+};
+
+export const GetStartTimerNFL = (
+    data,
+    currentPick,
+    timeLeft,
+    isPaused,
+    updateData
+) => {
+    const endTime = calculateEndTimeNFL(currentPick, timeLeft, isPaused);
+    const newData = {
+        ...data,
+        endTime: firebase.firestore.Timestamp.fromDate(endTime),
+        isPaused: false,
+        seconds: (endTime.getTime() - Date.now()) / 1000,
+        startAt: firebase.firestore.Timestamp.fromDate(new Date())
+    };
+
+    updateData(newData);
 };
 
 export const GetStartTimer = (

@@ -153,12 +153,6 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
         }
     }, [team]);
 
-    useEffect(() => {
-        if (gameplan) {
-            CheckValidation();
-        }
-    }, [gameplan]);
-
     const ValidatePlayDistribution = (dist, total, playType, setValidation) => {
         if (dist !== total) {
             const message = `Total ${playType} Distribution is set to ${dist}. Please navigate to the Offense Distribution Tab make sure your allocation equals 100.`;
@@ -294,8 +288,8 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
     };
 
     // Function Handlers
-    const CheckValidation = () => {
-        const gp = { ...gameplan };
+    const CheckValidation = (gamePlanObj) => {
+        const gp = { ...gamePlanObj };
         const offensiveScheme = FormationMap[gp.OffensiveScheme];
         const defensiveScheme = FormationMap[gp.DefensiveScheme];
         const { Ranges } = offensiveScheme;
@@ -310,52 +304,87 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
         let formationCount = 0;
         let enoughWeight = true;
         // Check Offensive formations
-        if (gp.OffForm1Weight > 0) {
+
+        let offForm1Weight =
+            gp.OffForm1TraditionalRun +
+            gp.OffForm1OptionRun +
+            gp.OffForm1RPO +
+            gp.OffForm1Pass;
+        let offForm2Weight =
+            gp.OffForm2TraditionalRun +
+            gp.OffForm2OptionRun +
+            gp.OffForm2RPO +
+            gp.OffForm2Pass;
+        let offForm3Weight =
+            gp.OffForm3TraditionalRun +
+            gp.OffForm3OptionRun +
+            gp.OffForm3RPO +
+            gp.OffForm3Pass;
+        let offForm4Weight =
+            gp.OffForm4TraditionalRun +
+            gp.OffForm4OptionRun +
+            gp.OffForm4RPO +
+            gp.OffForm4Pass;
+        let offForm5Weight =
+            gp.OffForm5TraditionalRun +
+            gp.OffForm5OptionRun +
+            gp.OffForm5RPO +
+            gp.OffForm5Pass;
+
+        gp.OffForm1Weight = offForm1Weight;
+        gp.OffForm2Weight = offForm2Weight;
+        gp.OffForm3Weight = offForm3Weight;
+        gp.OffForm4Weight = offForm4Weight;
+        gp.OffForm5Weight = offForm5Weight;
+
+        setGameplan(() => gp);
+
+        if (offForm1Weight > 0) {
             formationCount += 1;
             enoughWeight = CheckForDistributionWeight(
                 'One',
-                gp.OffForm1Weight,
+                offForm1Weight,
                 setValidation
             );
         }
 
         if (!enoughWeight) return;
 
-        if (gp.OffForm2Weight > 0) {
+        if (offForm2Weight > 0) {
             formationCount += 1;
             enoughWeight = CheckForDistributionWeight(
                 'Two',
-                gp.OffForm2Weight,
+                offForm2Weight,
                 setValidation
             );
         }
         if (!enoughWeight) return;
 
-        if (gp.OffForm3Weight > 0) {
+        if (offForm3Weight > 0) {
             formationCount += 1;
             enoughWeight = CheckForDistributionWeight(
                 'Three',
-                gp.OffForm3Weight,
+                offForm3Weight,
                 setValidation
             );
         }
         if (!enoughWeight) return;
 
-        if (gp.OffForm4Weight > 0) {
+        if (offForm4Weight > 0) {
             formationCount += 1;
             enoughWeight = CheckForDistributionWeight(
                 'Four',
-                gp.OffForm4Weight,
+                offForm4Weight,
                 setValidation
             );
         }
         if (!enoughWeight) return;
 
-        if (gp.OffForm5Weight > 0) {
+        if (offForm5Weight > 0) {
             formationCount += 1;
             enoughWeight = CheckForDistributionWeight(
                 'Five',
-                gp.OffForm5Weight,
+                offForm5Weight,
                 setValidation
             );
         }
@@ -379,11 +408,11 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
         }
 
         formationDist =
-            gp.OffForm1Weight +
-            gp.OffForm2Weight +
-            gp.OffForm3Weight +
-            gp.OffForm4Weight +
-            gp.OffForm5Weight;
+            offForm1Weight +
+            offForm2Weight +
+            offForm3Weight +
+            offForm4Weight +
+            offForm5Weight;
 
         if (formationDist !== totalDistribution) {
             message = `Total Offensive Formation Ratio is set to ${formationDist}. Please make sure your allocation equals 100.`;
@@ -404,7 +433,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
 
         const unusedWeightForm1 = CheckForDistributionInUnusedWeight(
             'One',
-            gp.OffForm1Weight,
+            offForm1Weight,
             gp.OffForm1TraditionalRun,
             gp.OffForm1OptionRun,
             gp.OffForm1RPO,
@@ -413,7 +442,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
         );
         const unusedWeightForm2 = CheckForDistributionInUnusedWeight(
             'Two',
-            gp.OffForm2Weight,
+            offForm2Weight,
             gp.OffForm2TraditionalRun,
             gp.OffForm2OptionRun,
             gp.OffForm2RPO,
@@ -422,7 +451,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
         );
         const unusedWeightForm3 = CheckForDistributionInUnusedWeight(
             'Three',
-            gp.OffForm3Weight,
+            offForm3Weight,
             gp.OffForm3TraditionalRun,
             gp.OffForm3OptionRun,
             gp.OffForm3RPO,
@@ -431,7 +460,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
         );
         const unusedWeightForm4 = CheckForDistributionInUnusedWeight(
             'Four',
-            gp.OffForm4Weight,
+            offForm4Weight,
             gp.OffForm4TraditionalRun,
             gp.OffForm4OptionRun,
             gp.OffForm4RPO,
@@ -440,7 +469,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
         );
         const unusedWeightForm5 = CheckForDistributionInUnusedWeight(
             'Five',
-            gp.OffForm5Weight,
+            offForm5Weight,
             gp.OffForm5TraditionalRun,
             gp.OffForm5OptionRun,
             gp.OffForm5RPO,
@@ -901,8 +930,13 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
             targetPositions.includes(x.Position)
         );
         setDepthChart([...positionPlayers]);
-        setOpponentScheme(() => OpponentScheme);
-
+        setOpponentScheme(() =>
+            OpponentScheme !== '' ? OpponentScheme : 'Power Run'
+        );
+        let tradRunDist = 0;
+        let optRunDist = 0;
+        let rpoDist = 0;
+        let passDist = 0;
         if (!isNFL) {
             const playerMap = {};
             const strPlayers = ['None'];
@@ -926,6 +960,34 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
             setGameplan({ ...CollegeGP, DoubleTeam: targetName });
             setPitchFocus(() => CollegeGP.PitchFocus);
             setDiveFocus(() => CollegeGP.DiveFocus);
+            tradRunDist =
+                CollegeGP.OffForm1TraditionalRun +
+                CollegeGP.OffForm2TraditionalRun +
+                CollegeGP.OffForm3TraditionalRun +
+                CollegeGP.OffForm4TraditionalRun +
+                CollegeGP.OffForm5TraditionalRun;
+
+            optRunDist =
+                CollegeGP.OffForm1OptionRun +
+                CollegeGP.OffForm2OptionRun +
+                CollegeGP.OffForm3OptionRun +
+                CollegeGP.OffForm4OptionRun +
+                CollegeGP.OffForm5OptionRun;
+
+            rpoDist =
+                CollegeGP.OffForm1RPO +
+                CollegeGP.OffForm2RPO +
+                CollegeGP.OffForm3RPO +
+                CollegeGP.OffForm4RPO +
+                CollegeGP.OffForm5RPO;
+
+            passDist =
+                CollegeGP.OffForm1Pass +
+                CollegeGP.OffForm2Pass +
+                CollegeGP.OffForm3Pass +
+                CollegeGP.OffForm4Pass +
+                CollegeGP.OffForm5Pass;
+            CheckValidation(CollegeGP);
         } else {
             const playerMap = {};
             const strPlayers = ['None'];
@@ -948,7 +1010,42 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
             setGameplan({ ...NFLGP, DoubleTeam: targetName });
             setPitchFocus(() => NFLGP.PitchFocus);
             setDiveFocus(() => NFLGP.DiveFocus);
+
+            tradRunDist =
+                NFLGP.OffForm1TraditionalRun +
+                NFLGP.OffForm2TraditionalRun +
+                NFLGP.OffForm3TraditionalRun +
+                NFLGP.OffForm4TraditionalRun +
+                NFLGP.OffForm5TraditionalRun;
+
+            optRunDist =
+                NFLGP.OffForm1OptionRun +
+                NFLGP.OffForm2OptionRun +
+                NFLGP.OffForm3OptionRun +
+                NFLGP.OffForm4OptionRun +
+                NFLGP.OffForm5OptionRun;
+
+            rpoDist =
+                NFLGP.OffForm1RPO +
+                NFLGP.OffForm2RPO +
+                NFLGP.OffForm3RPO +
+                NFLGP.OffForm4RPO +
+                NFLGP.OffForm5RPO;
+
+            passDist =
+                NFLGP.OffForm1Pass +
+                NFLGP.OffForm2Pass +
+                NFLGP.OffForm3Pass +
+                NFLGP.OffForm4Pass +
+                NFLGP.OffForm5Pass;
+
+            CheckValidation(NFLGP);
         }
+
+        setTradRunTotal(tradRunDist);
+        setOptRunTotal(optRunDist);
+        setRPOTotal(rpoDist);
+        setPassTotal(passDist);
     };
 
     const GetAvailableTeams = async () => {
@@ -992,7 +1089,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
             gp = MapDefaultOptions(gp, value);
         }
 
-        setGameplan(() => gp);
+        CheckValidation(gp);
     };
 
     const HandleNumberChange = (event) => {
@@ -1009,7 +1106,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
         gp[name] = num;
 
         // If Value IS NOT a Number...
-        setGameplan(() => gp);
+        CheckValidation(gp);
     };
 
     const HandleRangeChange = (event) => {
@@ -1350,22 +1447,22 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
                                             <div className="col-auto">
                                                 <h6 className="card-subtitle">
                                                     Traditional Run:{' '}
-                                                    {tradRunTotal}
+                                                    {tradRunTotal}%
                                                 </h6>
                                             </div>
                                             <div className="col-auto">
                                                 <h6 className="card-subtitle">
-                                                    Option Run: {optRunTotal}
+                                                    Option Run: {optRunTotal}%
                                                 </h6>
                                             </div>
                                             <div className="col-auto">
                                                 <h6 className="card-subtitle">
-                                                    Pass: {passTotal}
+                                                    Pass: {passTotal}%
                                                 </h6>
                                             </div>
                                             <div className="col-auto">
                                                 <h6 className="card-subtitle">
-                                                    RPO: {rpoTotal}
+                                                    RPO: {rpoTotal}%
                                                 </h6>
                                             </div>
                                         </div>
@@ -1416,7 +1513,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
                                                                         HandleNumberChange
                                                                     }
                                                                     isDefault={
-                                                                        isDefaultOffense
+                                                                        true
                                                                     }
                                                                 />
                                                                 <GameplanInputSm

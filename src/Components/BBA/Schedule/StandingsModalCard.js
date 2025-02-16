@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { StandingsRow } from '../../_Common/NBAStandingsCard';
 
-const StandingsCard = ({ standings, retro }) => {
+const StandingsCard = ({ standings, league, retro }) => {
     const [standingsOne, setStandingsOne] = React.useState([]);
     const [standingsTwo, setStandingsTwo] = React.useState([]);
 
@@ -48,13 +48,23 @@ const StandingsCard = ({ standings, retro }) => {
             </div>
             {standingsOne.length > 0 &&
                 standingsOne.map((x, idx) => (
-                    <StandingsRow row={x} rank={idx + 1} retro={retro} />
+                    <StandingsRow
+                        row={x}
+                        rank={idx + 1}
+                        retro={retro}
+                        league={league}
+                    />
                 ))}
             {standingsTwo.length > 0 && standings[0].DivisionID > 0 ? (
                 <>
                     <br />
                     {standingsTwo.map((x, idx) => (
-                        <StandingsRow row={x} rank={idx + 1} retro={retro} />
+                        <StandingsRow
+                            row={x}
+                            rank={idx + 1}
+                            retro={retro}
+                            league={league}
+                        />
                     ))}
                 </>
             ) : (

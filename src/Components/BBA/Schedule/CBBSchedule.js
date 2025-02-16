@@ -7,7 +7,7 @@ import BBATeamService from '../../../_Services/simNBA/BBATeamService';
 import CBBGameModal from './CBBGameModal';
 import CBBGameRow from './CBBGameRow';
 import CBBStandingsModal from './CBBStandingsModal';
-import { SeasonsList } from '../../../Constants/CommonConstants';
+import { SeasonsList, SimCBB } from '../../../Constants/CommonConstants';
 import { SubmitCollegePollForm } from '../../_Common/SubmitCollegePollModal';
 import { CollegePollModal } from '../../_Common/CollegePollModal';
 
@@ -28,7 +28,7 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, nbaTeam, cbb_Timestamp }) => {
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [selectedWeek, setSelectedWeek] = useState(null);
     const [selectedSeason, setSelectedSeason] = useState(null);
-    const [leagueView, setLeagueView] = useState(''); // CBB, NBA, ISL
+    const [leagueView, setLeagueView] = useState('CBB'); // CBB, NBA, ISL
     const [viewType, setViewType] = useState('WEEK');
     const [viewGame, setViewGame] = useState(null);
     const [cbbTeams, setCBBTeams] = useState([]);
@@ -179,8 +179,9 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, nbaTeam, cbb_Timestamp }) => {
         } else if (seasonID === 3) {
             nbaWeekID = week;
             startingWeekID = 20;
-        } else {
-            // startingWeekID = 40;
+        } else if (seasonID === 4) {
+            nbaWeekID = week + 30;
+            startingWeekID = 62;
         }
         week += startingWeekID;
 
@@ -231,10 +232,6 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, nbaTeam, cbb_Timestamp }) => {
         setSelectedTeam(() => '');
         ResetWeekViewOptions();
         setLeagueView(() => value);
-        if (value === 'CBB') {
-            setShowCGames(() => false);
-            setShowDGames(() => false);
-        }
     };
 
     const SelectWeekView = () => {
@@ -564,6 +561,7 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, nbaTeam, cbb_Timestamp }) => {
                         currentUser={currentUser}
                         timestamp={cbb_Timestamp}
                         seasonOptions={seasons}
+                        league={SimCBB}
                     />
 
                     <div className="col-md-10 px-md-4">
@@ -577,6 +575,7 @@ const CBBSchedulePage = ({ currentUser, cbbTeam, nbaTeam, cbb_Timestamp }) => {
                                                 idx={idx}
                                                 key={x.ID}
                                                 game={x}
+                                                leagueView={leagueView}
                                                 ts={cbb_Timestamp}
                                                 SetGame={SetGame}
                                                 viewType={viewType}

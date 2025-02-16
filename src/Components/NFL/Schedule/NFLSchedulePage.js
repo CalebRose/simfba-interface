@@ -166,7 +166,7 @@ const NFLSchedulePage = ({ nflTeam, cfb_Timestamp, viewMode, currentUser }) => {
     return (
         <div className="container-fluid">
             <div className="justify-content-start">
-                <h2>SimFBA {cfb_Timestamp.Season} Schedule</h2>
+                <h2>SimSN {cfb_Timestamp.Season} Schedule</h2>
                 <div className="row">
                     <div className="col-md-2">
                         <h5>Schedule Filters</h5>

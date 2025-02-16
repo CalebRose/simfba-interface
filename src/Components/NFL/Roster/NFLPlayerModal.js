@@ -11,14 +11,15 @@ import {
     RoundToTwoDecimals
 } from '../../../_Utility/utilHelper';
 import AttributeRow from '../../Roster/AttributeRow';
+import { SimCFB, SimNFL } from '../../../Constants/CommonConstants';
 
 export const NFLPlayerModal = ({ team, player, idx, viewMode, retro }) => {
     const modalId = 'playerModal' + idx;
     const modalClass = GetModalClass(viewMode);
     const heightObj = HeightToFeetAndInches(player.Height);
     player['priorityAttributes'] = SetNFLPriority(player);
-    const logo = getLogo(team.TeamName + ' ' + team.Mascot, retro);
-    const CollegeLogo = getLogo(player.College, retro);
+    const logo = getLogo(SimNFL, team.ID, retro);
+    const CollegeLogo = getLogo(SimCFB, player.CollegeID, retro);
     const CurrentYearSalary =
         player.Contract.Y1BaseSalary + player.Contract.Y1Bonus;
     const draftedRound = GetNFLRound(player.DraftedRound);
@@ -61,6 +62,12 @@ export const NFLPlayerModal = ({ team, player, idx, viewMode, retro }) => {
                                 <h5>Experience</h5>
                                 {player.Experience}
                             </div>
+                            {player.PositionTwo.length > 0 && (
+                                <div className="col">
+                                    <h5>Secondary Pos.</h5>
+                                    {player.ArchetypeTwo} {player.PositionTwo}
+                                </div>
+                            )}
                             <div className="col">
                                 <h5>Age</h5>
                                 {player.Age}

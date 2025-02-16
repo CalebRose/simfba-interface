@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { getLogo } from '../Constants/getLogo';
+import { SimNFL } from '../Constants/CommonConstants';
 
 export const GetPicksByCurrentRound = (draftList, currentRound) => {
     const currentRoundOfPicks = useMemo(() => {
@@ -166,7 +167,7 @@ export const GetNextDraftPickObj = (allDraftPicks, nextDraftPickIdx) => {
 export const GetPickTeamLogo = (draftPick, isRetro) => {
     const logo = useMemo(() => {
         if (draftPick) {
-            return getLogo(draftPick.Team, isRetro);
+            return getLogo(SimNFL, draftPick.TeamID, isRetro);
         }
         return null;
     }, [draftPick]);

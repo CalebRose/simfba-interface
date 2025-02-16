@@ -1,12 +1,14 @@
 import React from 'react';
 import { getLogo } from '../../Constants/getLogo';
 import { RoundToTwoDecimals } from '../../_Utility/utilHelper';
+import { SimNBA, SimNFL } from '../../Constants/CommonConstants';
 
 export const ProfessionalTeamRow = ({ team, isNFL, click }) => {
     const teamName = isNFL
         ? `${team.TeamName} ${team.Mascot}`
         : `${team.Team} ${team.Nickname}`;
-    const teamLogo = getLogo(teamName.trim(), false);
+    const league = isNFL ? SimNFL : SimNBA;
+    const teamLogo = getLogo(league, team.ID, false);
 
     const NFLCard = () => {
         return (
@@ -216,10 +218,8 @@ export const ProfessionalTeamRow = ({ team, isNFL, click }) => {
 
 export const ProfessionalCapsheetRow = ({ team, isNFL, ts }) => {
     const { Capsheet } = team;
-    const teamName = isNFL
-        ? `${team.TeamName} ${team.Mascot}`
-        : `${team.Team} ${team.Nickname}`;
-    const teamLogo = getLogo(teamName.trim(), false);
+    const league = isNFL ? SimNFL : SimNBA;
+    const teamLogo = getLogo(league, team.ID, false);
 
     const NFLCard = () => {
         const y1total =

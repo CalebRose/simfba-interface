@@ -6,6 +6,12 @@ import { connect, useDispatch } from 'react-redux';
 import { getLogo } from '../../Constants/getLogo';
 import { setViewMode } from '../../Redux/viewMode/viewMode.actions';
 import { FBAToggle } from '../_Common/SwitchToggle';
+import {
+    SimCBB,
+    SimCFB,
+    SimNBA,
+    SimNFL
+} from '../../Constants/CommonConstants';
 
 var TeamTab = ({ user }) => {
     return (
@@ -51,19 +57,35 @@ const Profile = ({ currentUser, cfbTeam, viewMode }) => {
     useEffect(() => {
         if (currentUser) {
             if (currentUser.cbb_id > 0) {
-                const cbb = getLogo(currentUser.cbb_abbr, currentUser.IsRetro);
+                const cbb = getLogo(
+                    SimCBB,
+                    currentUser.cbb_id,
+                    currentUser.IsRetro
+                );
                 setCBBLogo(() => cbb);
             }
             if (currentUser.teamId > 0) {
-                const cfb = getLogo(currentUser.teamAbbr, currentUser.IsRetro);
+                const cfb = getLogo(
+                    SimCFB,
+                    currentUser.teamId,
+                    currentUser.IsRetro
+                );
                 setCFBLogo(() => cfb);
             }
             if (currentUser.NFLTeamID > 0) {
-                const nfl = getLogo(currentUser.NFLTeam, currentUser.IsRetro);
+                const nfl = getLogo(
+                    SimNFL,
+                    currentUser.NFLTeamID,
+                    currentUser.IsRetro
+                );
                 setNFLLogo(() => nfl);
             }
             if (currentUser.NBATeamID > 0) {
-                const nba = getLogo(currentUser.NBATeam, currentUser.IsRetro);
+                const nba = getLogo(
+                    SimNBA,
+                    currentUser.NBATeamID,
+                    currentUser.IsRetro
+                );
                 setNBALogo(() => nba);
             }
         }

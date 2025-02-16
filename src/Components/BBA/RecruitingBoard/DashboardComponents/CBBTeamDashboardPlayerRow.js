@@ -3,6 +3,7 @@ import { getLogo } from '../../../../Constants/getLogo';
 import ConfirmRemovePlayerFromBoardModal from '../../../TeamRecruitingBoard/CFBTeamRecruitingComponents/CFBTeamRemovePlayerModal';
 import ConfirmRevokeModal from '../../../TeamRecruitingBoard/CFBTeamRecruitingComponents/CFBTeamRevokeScholarshipModal';
 import CBBCrootModal from './CBBCrootModal';
+import { SimCBB } from '../../../../Constants/CommonConstants';
 
 const CBBTeamDashboardPlayerRow = (props) => {
     const viewMode = props.viewMode;
@@ -11,8 +12,8 @@ const CBBTeamDashboardPlayerRow = (props) => {
     const retro = props.retro;
     const recruit = data.Recruit;
     const logo =
-        recruit && recruit.College.length > 0
-            ? getLogo(recruit.College, retro)
+        recruit && recruit.TeamID > 0
+            ? getLogo(SimCBB, recruit.TeamID, retro)
             : '';
     const crootModalTarget = '#crootModal' + idx;
     const revokeModalTarget = '#revokeModal' + idx;
@@ -26,9 +27,9 @@ const CBBTeamDashboardPlayerRow = (props) => {
             (x, idx) => idx <= 2 && x.Odds > 0
         );
 
-        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
-        return competingAbbrs.map((x) => {
-            const logo = getLogo(x, retro);
+        const competingIDs = competingTeams.map((x) => x.TeamID);
+        return competingIDs.map((x) => {
+            const logo = getLogo(SimCBB, x, retro);
             return (
                 <>
                     <img
@@ -59,7 +60,7 @@ const CBBTeamDashboardPlayerRow = (props) => {
             <CBBCrootModal crt={recruit} idx={idx} viewMode={viewMode} />
             <ConfirmRevokeModal
                 idx={idx}
-                toggleScholarship={toggleScholarship}
+                revoke={toggleScholarship}
                 viewMode={viewMode}
             />
             <ConfirmRemovePlayerFromBoardModal
@@ -160,11 +161,14 @@ const CBBTeamDashboardPlayerRow = (props) => {
                 <td className="align-middle">{recruit.SigningStatus}</td>
                 <td className="align-middle">
                     {recruit.IsSigned ? (
-                        <img
-                            className="image-recruit-logo"
-                            src={logo}
-                            alt="WinningTeam"
-                        />
+                        <>
+                            <img
+                                className="image-recruit-logo"
+                                src={logo}
+                                alt="WinningTeam"
+                            />
+                            <h6>{recruit.College}</h6>
+                        </>
                     ) : (
                         <h6>{leadingTeams}</h6>
                     )}

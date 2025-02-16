@@ -12,6 +12,7 @@ import CFBMatchCard from '../cfb/CFBMatchCard';
 import NFLStandingsCard from '../../../_Common/NFLStandingsCard';
 import FBALandingPageService from '../../../../_Services/simFBA/FBALandingPageService';
 import { NewsLogSmall } from '../../../_Common/NewsLog';
+import { SimNFL } from '../../../../Constants/CommonConstants';
 
 const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
     let _teamService = new FBATeamService();
@@ -38,7 +39,9 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
     useEffect(() => {
         if (currentUser) {
             setTeam(currentUser.NFLTeam);
-            setLogo(getLogo(currentUser.NFLTeam, currentUser.IsRetro));
+            setLogo(
+                getLogo(SimNFL, currentUser.NFLTeamID, currentUser.IsRetro)
+            );
         }
         if (!nflTeam) {
             getTeam();
@@ -146,6 +149,8 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
             nflTeam.ID,
             cfb_Timestamp.NFLSeasonID
         );
+
+        console.log({ res });
 
         setGames(() => res);
     };

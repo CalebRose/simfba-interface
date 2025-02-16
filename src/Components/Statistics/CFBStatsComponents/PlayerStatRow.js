@@ -1,6 +1,7 @@
 import React from 'react';
 import { GetStatsYear } from '../../../_Utility/RosterHelper';
 import { getLogo } from '../../../Constants/getLogo';
+import { SimCFB, SimNFL } from '../../../Constants/CommonConstants';
 const _ = require('lodash');
 
 export const PlayerStatRow = ({
@@ -12,11 +13,12 @@ export const PlayerStatRow = ({
     retro
 }) => {
     const name = player.FirstName + ' ' + player.LastName;
+    const league = isNFL ? SimNFL : SimCFB;
     const s = viewType === 'SEASON' ? player.SeasonStats : player.Stats;
     const games = player.SeasonStats ? player.SeasonStats.GamesPlayed : 0;
     const year = !isNFL ? GetStatsYear(player, viewType) : player.Year;
-    const teamLogo = getLogo(player.TeamAbbr, retro);
-    const opposingLogo = getLogo(s.OpposingTeam, retro);
+    const teamLogo = getLogo(league, s.TeamID, retro);
+    const opposingLogo = getLogo(league, s.OpposingTeamID, retro);
 
     const PassingRow = () => {
         const percentLabel =

@@ -9,7 +9,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import {
     CountryList,
     LetterGradesList,
-    PositionList,
+    BBPositionList,
     SimpleLetterGrades,
     StarsList,
     StatesList
@@ -45,7 +45,7 @@ const CBBRecruitingDashboard = ({
     let _easterEggService = new EasterEggService();
 
     // Hooks
-    const positions = MapObjOptions(PositionList);
+    const positions = MapObjOptions(BBPositionList);
     const states = MapOptions(StatesList);
     const countries = MapOptions(CountryList);
     const letterGrades = MapOptions(LetterGradesList);
@@ -557,7 +557,8 @@ const CBBRecruitingDashboard = ({
                                 dataLength={viewableRecruits.length}
                                 next={loadMoreRecords}
                                 hasMore={true}
-                                scrollThreshold={0.7}
+                                scrollThreshold={0.8}
+                                height={570}
                                 loader={
                                     <div className="row justify-content-center">
                                         Loading More Croots...

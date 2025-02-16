@@ -7,7 +7,10 @@ import BBATeamPlayerRow from './BBATeamPlayerRow';
 import BBATeamDropdownItem from './BBATeamDropdownItem';
 import ConfirmRedshirtModal from '../../Roster/RedshirtModal';
 import { GetTableHoverClass } from '../../../Constants/CSSClassHelper';
-import { PromisePlayerModal } from '../../_Common/ModalComponents';
+import {
+    PromisePlayerModal,
+    TeamPromisesModal
+} from '../../_Common/ModalComponents';
 import { PortalService } from '../../../_Services/simFBA/FBAPortalService';
 import { useMediaQuery } from 'react-responsive';
 
@@ -20,7 +23,9 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
     const [teams, setTeams] = useState('');
     const [filteredTeams, setFilteredTeams] = useState('');
     const [roster, setRoster] = useState([]);
+    const [rosterMap, setRosterMap] = useState({});
     const [promisePlayer, setPromisePlayer] = useState(null);
+    const [promises, setPromises] = useState([]);
     const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:844px)` });
     const tableHoverClass = GetTableHoverClass(viewMode);
@@ -71,7 +76,14 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
         if (id !== null || id > 0) {
             let response = await _playerService.GetPlayersByTeam(id);
             // Pad Player Attributes to have Letters instead of numbers
-            setRoster(response);
+            const { Players, Promises } = response;
+            setRoster(() => Players);
+            const rMap = {};
+            for (let i = 0; i < Players.length; i++) {
+                rMap[Players[i].PlayerID] = Players[i];
+            }
+            setRosterMap(() => rMap);
+            setPromises(() => Promises);
         }
     };
 
@@ -213,15 +225,14 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
                             <li>
                                 <hr className="dropdown-divider" />
                             </li>
-                            {filteredTeams
-                                ? filteredTeams.map((x) => (
-                                      <BBATeamDropdownItem
-                                          key={x.ID}
-                                          selectTeam={selectTeam}
-                                          team={x}
-                                      />
-                                  ))
-                                : ''}
+                            {filteredTeams &&
+                                filteredTeams.map((x) => (
+                                    <BBATeamDropdownItem
+                                        key={x.ID}
+                                        selectTeam={selectTeam}
+                                        team={x}
+                                    />
+                                ))}
                         </ul>
                     </div>
                 </div>
@@ -271,6 +282,16 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
                                     <p>{team.DefenseGrade}</p>
                                 </div>
                             </div>
+                            <div className="row mb-1 px-4">
+                                <button
+                                    className="btn btn-primary"
+                                    disabled={promises.length === 0}
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#teamPromisesModal"
+                                >
+                                    Promises
+                                </button>
+                            </div>
                         </>
                     )}
                 </div>
@@ -281,6 +302,11 @@ const BBATeam = ({ currentUser, cbb_Timestamp, viewMode }) => {
                         teams={teams}
                         seasonID={cbb_Timestamp.SeasonID}
                         teamID={userTeam.ID}
+                    />
+                    <TeamPromisesModal
+                        promises={promises}
+                        rosterMap={rosterMap}
+                        team={team}
                     />
                     <div className="row mb-5">
                         <table className={tableHoverClass}>

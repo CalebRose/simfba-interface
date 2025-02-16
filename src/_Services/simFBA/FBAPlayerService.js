@@ -3,7 +3,7 @@ import url from '../../Constants/url.js';
 import { GetActionCall, GetCall, PostCall } from './FetchHelper.js';
 
 export default class FBAPlayerService {
-    async GetPlayersByTeam(teamID) {
+    async GetCFBRosterDataByTeamID(teamID) {
         return await GetCall(`${url}collegeplayers/team/${teamID}`);
     }
 
@@ -116,5 +116,15 @@ export default class FBAPlayerService {
 
     async CancelExtensionOffer(dto) {
         return await PostCall(`${url}nfl/extension/cancel/offer`, dto);
+    }
+
+    async CutCFBPlayerFromRoster(playerID) {
+        return await GetActionCall(
+            `${url}collegeplayers/cut/player/${playerID.toString()}`
+        );
+    }
+
+    async TagPlayer(dto) {
+        return await PostCall(`${url}nflplayers/tag/player/`, dto);
     }
 }

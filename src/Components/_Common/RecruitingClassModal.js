@@ -5,6 +5,7 @@ import { getLogo } from '../../Constants/getLogo';
 import FBARecruitingService from '../../_Services/simFBA/FBARecruitingService';
 import BBARecruitingService from '../../_Services/simNBA/BBARecruitingService';
 import { GetOverall } from '../../_Utility/RosterHelper';
+import { SimCBB, SimCFB } from '../../Constants/CommonConstants';
 
 const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode, retro }) => {
     let _recruitingService = new FBARecruitingService();
@@ -24,9 +25,8 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode, retro }) => {
         teamOptions.sort((a, b) => (a.label > b.label ? 1 : -1));
     const [currentTeam, setCurrentTeam] = React.useState(userTeam.ID);
     const [recruitingClass, setClass] = React.useState(null);
-    const [logoKey, setLogoKey] = React.useState(
-        isCFB ? userTeam.TeamAbbr : userTeam.Abbr
-    );
+    const [logoKey, setLogoKey] = React.useState(userTeam.ID);
+    const league = isCFB ? SimCFB : SimCBB;
     const [logo, setLogo] = React.useState('');
 
     useEffect(() => {
@@ -34,14 +34,14 @@ const RecruitingClassModal = ({ isCFB, teams, userTeam, viewMode, retro }) => {
     }, [currentTeam]);
 
     useEffect(() => {
-        const logoSrc = getLogo(logoKey, retro);
+        const logoSrc = getLogo(league, logoKey, retro);
         setLogo(() => logoSrc);
     }, [logoKey]);
 
     const SelectTeam = (options) => {
         const opts = options.value;
         setCurrentTeam(() => opts);
-        setLogoKey(() => options.label);
+        setLogoKey(() => opts);
     };
 
     const GetRecruitingClass = async () => {

@@ -18,7 +18,11 @@ const MobileRow = ({ data }) => {
     return (
         <div className="card mb-2">
             <div className="card-body">
-                <h5 className="card-title">
+                <h5
+                    className={`card-title ${
+                        healthStatus !== 'Healthy' ? 'text-danger' : ''
+                    }`}
+                >
                     {player.FirstName} {player.LastName}
                 </h5>
                 <h6 className="card-subtitle mb-2 text-body-secondary">
@@ -104,7 +108,9 @@ const MobileRow = ({ data }) => {
                         type="button"
                         className="btn btn-secondary"
                         title={cutPlayerTitle}
-                        disabled={rosterCount < 10 || !view}
+                        disabled={
+                            rosterCount < 10 || !view || ts.CollegeWeek > 0
+                        }
                         onClick={cut}
                     >
                         <i className="bi bi-scissors" />
@@ -133,7 +139,11 @@ const DesktopRow = ({ data }) => {
     return (
         <tr>
             <th scope="row" className="align-middle">
-                <h6>
+                <h6
+                    className={`card-title ${
+                        healthStatus !== 'Healthy' ? 'text-danger' : ''
+                    }`}
+                >
                     {player.Position} {player.FirstName} {player.LastName}
                 </h6>
             </th>
@@ -203,7 +213,9 @@ const DesktopRow = ({ data }) => {
                         type="button"
                         className="btn btn-secondary"
                         title={cutPlayerTitle}
-                        disabled={rosterCount < 10 || !view}
+                        disabled={
+                            rosterCount < 10 || !view || ts.CollegeWeek > 0
+                        }
                         onClick={cut}
                     >
                         <i className="bi bi-scissors" />

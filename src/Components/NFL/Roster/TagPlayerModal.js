@@ -107,10 +107,29 @@ export const TagPlayerModal = ({ player, tag, team, viewMode }) => {
                                 ? 'btn-primary'
                                 : 'btn-secondary'
                         }`}
-                        onClick={() => setTagType(() => 'Basic')}
                         disabled={tagType === 'Basic'}
                     >
                         Basic
+                    </button>
+                    <button
+                        className={`btn ${
+                            tagType === 'Transition'
+                                ? 'btn-primary'
+                                : 'btn-secondary'
+                        }`}
+                        disabled
+                    >
+                        Playtime
+                    </button>
+                    <button
+                        className={`btn ${
+                            tagType === 'Transition'
+                                ? 'btn-primary'
+                                : 'btn-secondary'
+                        }`}
+                        disabled
+                    >
+                        Transition
                     </button>
                     <button
                         className={`btn ${
@@ -118,26 +137,10 @@ export const TagPlayerModal = ({ player, tag, team, viewMode }) => {
                                 ? 'btn-primary'
                                 : 'btn-secondary'
                         }`}
-                        onClick={() => setTagType(() => 'Franchise')}
-                        disabled={
-                            tagType === 'Franchise' ||
-                            UsedTagThisSeason ||
-                            ProBowls < 2
-                        }
+                        disabled={tagType === 'Franchise' || UsedTagThisSeason}
                     >
                         Franchise
                     </button>
-                    {/* <button
-                        className={`btn ${
-                            tagType === 'Transition'
-                                ? 'btn-primary'
-                                : 'btn-secondary'
-                        }`}
-                        onClick={() => setTagType(() => 'Transition')}
-                        disabled
-                    >
-                        Transition
-                    </button> */}
                 </div>
             </div>
         </ConfirmModal>

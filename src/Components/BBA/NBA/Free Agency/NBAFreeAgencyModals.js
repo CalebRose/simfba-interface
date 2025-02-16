@@ -21,6 +21,7 @@ import {
 } from '../../../NFL/FreeAgency/FreeAgencyOfferInput';
 import { SwitchToggle } from '../../../_Common/SwitchToggle';
 import { BBAStatsRow } from '../../../_Common/SeasonStatsRow';
+import { SimNBA } from '../../../../Constants/CommonConstants';
 
 export const NBAFreeAgencyPlayerModal = ({ player, idx, theme, retro }) => {
     const modalId = 'playerModal' + idx;
@@ -32,7 +33,7 @@ export const NBAFreeAgencyPlayerModal = ({ player, idx, theme, retro }) => {
     const modalClass = GetModalClass(theme);
 
     const OfferingTeam = ({ offer, idx }) => {
-        const logo = getLogo(offer.Team, retro);
+        const logo = getLogo(SimNBA, offer.TeamID, retro);
         const rank = idx + 1;
         return (
             <div className="row">

@@ -1,8 +1,10 @@
 import React from 'react';
 import { getLogo } from '../../../Constants/getLogo';
+import { SimCBB, SimNBA } from '../../../Constants/CommonConstants';
 
 const CBBGameRow = (props) => {
-    const { idx, game, ts, viewType, retro } = props;
+    const { idx, game, ts, viewType, retro, leagueView } = props;
+    const league = leagueView === 'CBB' ? SimCBB : SimNBA;
 
     const currentSeason = ts.SeasonID;
     const pastSeason = game.SeasonID < currentSeason;
@@ -22,17 +24,19 @@ const CBBGameRow = (props) => {
         TeamScore: game.HomeTeamScore,
         TeamWin: game.HomeTeamWin,
         Coach: game.HomeTeamCoach,
-        Rank: game.HomeTeamRank
+        Rank: game.HomeTeamRank,
+        ID: game.HomeTeamID
     };
     const awayTeam = {
+        ID: game.AwayTeamID,
         Team: game.AwayTeam,
         TeamScore: game.AwayTeamScore,
         TeamWin: game.AwayTeamWin,
         Coach: game.AwayTeamCoach,
         Rank: game.AwayTeamRank
     };
-    const HomeTeamLogo = getLogo(homeTeam.Team, retro);
-    const AwayTeamLogo = getLogo(awayTeam.Team, retro);
+    const HomeTeamLogo = getLogo(league, homeTeam.ID, retro);
+    const AwayTeamLogo = getLogo(league, awayTeam.ID, retro);
     const GameWeek = game.Week;
     const ConferenceGame = game.IsConference;
     let detailsLabel = '';

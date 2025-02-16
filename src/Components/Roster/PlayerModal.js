@@ -38,6 +38,9 @@ const PlayerModal = (props) => {
                         <p>
                             <strong>Position: </strong>
                             {player.Position}
+                            {player.PositionTwo.length > 0
+                                ? `/${player.PositionTwo}`
+                                : ''}
                         </p>
                         <p>
                             <strong>Archetype:</strong> {player.Archetype}

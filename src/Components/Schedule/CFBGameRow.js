@@ -8,7 +8,9 @@ import {
 import { Dropdown } from '../_Common/Dropdown';
 import {
     CFBTimeSlotList,
-    NFLTimeSlotList
+    NFLTimeSlotList,
+    SimCFB,
+    SimNFL
 } from '../../Constants/CommonConstants';
 
 const GameRow = ({
@@ -30,10 +32,12 @@ const GameRow = ({
     if (isNFL) {
         TimeSlotList = NFLTimeSlotList;
     }
+    const league = isNFL ? SimNFL : SimCFB;
     const { HighTemp, LowTemp, Precip, WindCategory, WindSpeed, TimeSlot } =
         game;
 
     const homeTeam = {
+        ID: game.HomeTeamID,
         Team: game.HomeTeam,
         TeamScore: game.HomeTeamScore,
         TeamWin: game.HomeTeamWin,
@@ -41,14 +45,15 @@ const GameRow = ({
     };
 
     const awayTeam = {
+        ID: game.AwayTeamID,
         Team: game.AwayTeam,
         TeamScore: game.AwayTeamScore,
         TeamWin: game.AwayTeamWin,
         Coach: game.AwayTeamCoach
     };
 
-    const HomeTeamLogo = getLogo(homeTeam.Team, retro);
-    const AwayTeamLogo = getLogo(awayTeam.Team, retro);
+    const HomeTeamLogo = getLogo(league, homeTeam.ID, retro);
+    const AwayTeamLogo = getLogo(league, awayTeam.ID, retro);
     const GameWeek = game.Week;
     const ConferenceGame = game.IsConference;
     const DivisionGame = game.IsDivisional;

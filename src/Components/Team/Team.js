@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { getLogo } from '../../Constants/getLogo';
 import routes from '../../Constants/routes';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
+import { SimCFB } from '../../Constants/CommonConstants';
 
 const Team = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     let _teamService = new FBATeamService();
@@ -25,7 +26,7 @@ const Team = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
 
     useEffect(() => {
         if (currentUser) {
-            setLogo(getLogo(currentUser.teamAbbr, currentUser.IsRetro));
+            setLogo(getLogo(SimCFB, currentUser.teamId, currentUser.IsRetro));
         }
     }, [currentUser]);
 

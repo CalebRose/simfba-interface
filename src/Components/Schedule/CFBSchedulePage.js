@@ -7,7 +7,7 @@ import FBAScheduleService from '../../_Services/simFBA/FBAScheduleService';
 import FBATeamService from '../../_Services/simFBA/FBATeamService';
 import GameRow from './CFBGameRow';
 import CFBStandingsModal from './CFBStandingsModal';
-import { SeasonsList } from '../../Constants/CommonConstants';
+import { SeasonsList, SimCFB } from '../../Constants/CommonConstants';
 import { SimFBAGameModal } from '../_Common/SimFBAGameModal';
 import { SubmitCollegePollForm } from '../_Common/SubmitCollegePollModal';
 import { CollegePollModal } from '../_Common/CollegePollModal';
@@ -219,7 +219,7 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
         <div className="container-fluid">
             <div className="justify-content-start">
                 <h2>
-                    SimFBA {cfb_Timestamp.Season} Schedule
+                    SimSN {cfb_Timestamp.Season} Schedule
                     {viewType === 'WEEK' ? `, Week ${selectedWeek}` : ''}
                 </h2>
                 <div className="row">
@@ -439,8 +439,9 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
                             <button
                                 type="button"
                                 className="btn btn-primary"
-                                disabled={!selectedWeek || !selectedSeason}
-                                onClick={ExportResults}
+                                disabled
+                                // disabled={!selectedWeek || !selectedSeason}
+                                // onClick={ExportResults}
                             >
                                 Export Week {selectedWeek} {exportType} Results
                             </button>
@@ -465,6 +466,7 @@ const SchedulePage = ({ cfbTeam, cfb_Timestamp, viewMode, currentUser }) => {
                         currentUser={currentUser}
                         timestamp={cfb_Timestamp}
                         seasonOptions={seasons}
+                        league={SimCFB}
                         isCFB
                     />
                     <div className="col-md-10 px-md-4">

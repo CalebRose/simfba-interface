@@ -51,7 +51,7 @@ import { Toaster } from 'react-hot-toast';
 import NFLDraftPage from './Components/NFL/Draft Room/NFLDraftPage';
 import TransferPortal from './Components/TransferPortal/TransferPortal';
 
-const Home = ({ viewMode }) => {
+const Home = ({ viewMode, cfb_Timestamp }) => {
     const user = useSelector((state) => state.user.currentUser);
     const [roleId, setRole] = React.useState('');
     const [bbaRoleId, setBBARole] = React.useState('');
@@ -215,7 +215,7 @@ const Home = ({ viewMode }) => {
                 exact
                 path={routes.CFB_TRANSFER}
                 render={() =>
-                    viewingBeta ? (
+                    CFBTeam > 0 ? (
                         <TransferPortal isCFB={true} />
                     ) : (
                         <Redirect to={routes.LANDING} />
@@ -480,7 +480,7 @@ const Home = ({ viewMode }) => {
                 }
             >
                 <div className="container">
-                    <span>SimFBA, {new Date().getFullYear()}</span>
+                    <span>SimSN, {new Date().getFullYear()}</span>
                 </div>
             </footer>
         </div>

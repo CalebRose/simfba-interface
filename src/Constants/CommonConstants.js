@@ -1,4 +1,4 @@
-export const PositionList = [
+export const FBPositionList = [
     { name: 'Quarterbacks', abbr: 'QB' },
     { name: 'Runningbacks', abbr: 'RB' },
     { name: 'Fullbacks', abbr: 'FB' },
@@ -21,7 +21,7 @@ export const PositionList = [
 
 export const ArchetypesListForFA = [
     { name: 'Pocket', abbr: 'Pocket' },
-    { name: 'Scrambling', abbr: 'Scrambling' },
+    { name: 'Scrambler', abbr: 'Scrambler' },
     { name: 'Balanced', abbr: 'Balanced' },
     { name: 'Field General', abbr: 'Field General' },
     { name: 'Power', abbr: 'Power' },
@@ -68,7 +68,7 @@ export const NBAArchetypesList = [
 
 export const ArchetypeList = [
     { pos: 'QB', archetype: 'Pocket' },
-    { pos: 'QB', archetype: 'Scrambling' },
+    { pos: 'QB', archetype: 'Scrambler' },
     { pos: 'QB', archetype: 'Balanced' },
     { pos: 'QB', archetype: 'Field General' },
     { pos: 'RB', archetype: 'Balanced' },
@@ -386,6 +386,12 @@ export const NFLDivisionList = [
     { label: 'NFC West', value: 8 }
 ];
 
+export const GameTypeList = [
+    { label: 'Preseason', value: 1 },
+    { label: 'Regular Season', value: 2 },
+    { label: 'Postseason', value: 3 }
+];
+
 export const LeaguesList = [
     { label: 'College Football', value: 'CFB' },
     { label: 'College Basketball', value: 'CBB' },
@@ -416,7 +422,7 @@ export const RecruitingLoadMessages = [
     'Sync is currently running... please be patient while the Ivy League schools count the numbers, smidge the numbers in their favor and return the results.',
     "Do you think recruits dream while the sync runs? Probably not, they're only pieces of data after all.",
     'This is load message #5.',
-    "One of these days we're going to put recruiting in SimFBA on our resumes for a recruiting coordinator job at some school and the recruiter is going to look very strangely at us.",
+    "One of these days we're going to put recruiting in SimSN on our resumes for a recruiting coordinator job at some school and the recruiter is going to look very strangely at us.",
     'Fun fact: Toucans prefer Froot Loops over Trix cereal.',
     'Please do not feed the recruits while the sync is running.',
     'Please do not venmo the admins money for recruiting favors. It is highly corrupt, and we prefer to be paid in Froot Loops.',
@@ -490,7 +496,7 @@ export const RecruitingLoadMessages = [
     "Gameplanning Tip: If you don't have the depth, go for a higher ranked recruit and start them early. Their progressions will benefit in the long run.",
     "Gameplanning Tip: If you're the kind of recruiter who keeps recruiting 5 stars at one position only, recruit a 1 star. Those five stars are not going to develop to their full potential.",
     "Fun Fact: If you're looking to learn how to code, look up Traversy Media on youtube. He has some good tutorials on where to start. Or just ask Toucan.",
-    'Fun Fact: Development on the SimFBA discord bot originally began from another project that Toucan was building involving an rpg text adventure.',
+    'Fun Fact: Development on the SimSN discord bot originally began from another project that Toucan was building involving an rpg text adventure.',
     'Fun Fact: Toucan will likely develop a different project after work on the interface is complete. Will it be complete though?',
     'Fun Fact: This recruiting sync runs like clockwork. As in, no button was pressed to trigger the sync. Neat, huh?',
     `Fun Fact: If your star player doesn't make it to the professional leagues, there's always the International Super League...`,
@@ -529,3 +535,7 @@ export const cfbPromiseTypes = [
     'Not Bad Gameplan Fit'
 ];
 export const weightValues = ['Very Low', 'Low', 'Medium', 'High', 'Very High'];
+export const SimCFB = 'SimCFB';
+export const SimNFL = 'SimNFL';
+export const SimCBB = 'SimCBB';
+export const SimNBA = 'SimNBA';

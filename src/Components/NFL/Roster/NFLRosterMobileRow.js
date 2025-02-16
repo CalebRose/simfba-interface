@@ -212,7 +212,7 @@ const NFLMobileRosterRow = ({
                         {canExtendPlayer ? (
                             <button
                                 className={`btn ${
-                                    player.IsTagged ? 'btn-success' : ''
+                                    player.TagType > 0 ? 'btn-success' : ''
                                 }`}
                                 title="Tag Player"
                                 data-bs-toggle="modal"

@@ -105,12 +105,14 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         const namesList = [...res.OpposingRoster].map(
             (x) => `${x.FirstName} ${x.LastName}`
         );
+        namesList.unshift('None');
         setOpposingRoster(() => [...namesList]);
     };
 
     const getRoster = async () => {
-        let players = await playerService.GetPlayersByTeam(currentUser.cbb_id);
-        const sortedPlayers = players.sort((a, b) => b.Minutes - a.Minutes);
+        let res = await playerService.GetPlayersByTeam(currentUser.cbb_id);
+        const { Players } = res;
+        const sortedPlayers = Players.sort((a, b) => b.Minutes - a.Minutes);
         setRoster(() => sortedPlayers);
     };
 
@@ -167,6 +169,22 @@ const CBBGameplan = ({ currentUser, viewMode }) => {
         const totalMinutes = P1Minutes + P2Minutes + P3Minutes;
         if (P1Minutes < 0 || P2Minutes < 0 || P3Minutes < 0) {
             const message = `${FirstName} ${LastName} has allocated negative minutes. Please set the number of minutes to 0 or above.`;
+            setValidation(false);
+            toast.error(
+                (t) => (
+                    <span>
+                        {message}
+                        <button onClick={() => toast.dismiss(t.id)}>
+                            Dismiss
+                        </button>
+                    </span>
+                ),
+                { duration: 6000 }
+            );
+            return false;
+        }
+        if (totalMinutes > 0 && player.IsInjured) {
+            const message = `${FirstName} ${LastName} has allocated minutes but is unfortunately injured. Please set the number of minutes to 0.`;
             setValidation(false);
             toast.error(
                 (t) => (

@@ -4,6 +4,7 @@ import {
     GetCollegeYear,
     GetPromiseMultiplier
 } from '../../_Utility/utilHelper';
+import { SimCBB, SimCFB } from '../../Constants/CommonConstants';
 
 const CFBOverviewRow = ({
     player,
@@ -23,11 +24,11 @@ const CFBOverviewRow = ({
     const keyCode = `${player.PlayerID}`;
     const previousLogo =
         player && player.PreviousTeam.length > 0
-            ? getLogo(player.PreviousTeam, retro)
+            ? getLogo(SimCFB, player.PreviousTeamID, retro)
             : '';
     const newTeamLogo =
         player && player.TeamAbbr.length > 0
-            ? getLogo(player.TeamAbbr, retro)
+            ? getLogo(SimCFB, player.TeamID, retro)
             : '';
     const portalModalTarget = '#portalPlayerModal';
     useEffect(() => {
@@ -52,15 +53,15 @@ const CFBOverviewRow = ({
             return 'None';
 
         const competingTeams = p.LeadingTeams.filter(
-            (x, idx) => idx <= 2 && x.Odds > 0
+            (x, idx) => idx <= 8 && x.Odds > 0
         );
 
         if (competingTeams.length === 0) return 'None';
 
-        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+        const competingIDs = competingTeams.map((x) => x.TeamID);
 
-        return competingAbbrs.map((x) => {
-            const logo = getLogo(x, retro);
+        return competingIDs.map((x) => {
+            const logo = getLogo(SimCFB, x, retro);
             return (
                 <>
                     <img
@@ -98,18 +99,31 @@ const CFBOverviewRow = ({
                     </button>
                 </td>
                 <td className="align-middle">
-                    <h6>{player.Position}</h6>
+                    <h6>
+                        {player.Position}
+                        {player.PositionTwo.length > 0
+                            ? `/${player.PositionTwo}`
+                            : ''}
+                    </h6>
                 </td>
                 <td className="align-middle">
-                    <h6>{player.Archetype}</h6>
+                    <h6>
+                        {player.Archetype}
+                        {player.ArchetypeTwo.length > 0
+                            ? `/${player.ArchetypeTwo}`
+                            : ''}
+                    </h6>
                 </td>
                 <td className="align-middle">
                     {player.PreviousTeam.length > 0 && (
-                        <img
-                            className="image-recruit-logo"
-                            src={previousLogo}
-                            alt="WinningTeam"
-                        />
+                        <>
+                            <img
+                                className="image-recruit-logo"
+                                src={previousLogo}
+                                alt="WinningTeam"
+                            />
+                            <h6>{player.PreviousTeam}</h6>
+                        </>
                     )}
                 </td>
                 <td className="align-middle">
@@ -140,7 +154,7 @@ const CFBOverviewRow = ({
                     )}
                 </td>
                 <td className="align-middle">
-                    {player.IsSigned || timestamp.CollegeWeek === 16 ? (
+                    {player.IsSigned || timestamp.CollegeWeek === 16 || ds ? (
                         <h2>
                             <i class="bi bi-file-lock-fill"></i>
                         </h2>
@@ -178,11 +192,11 @@ const CBBOverviewRow = ({
     const keyCode = `${player.PlayerID}`;
     const previousLogo =
         player && player.PreviousTeam.length > 0
-            ? getLogo(player.PreviousTeam, retro)
+            ? getLogo(SimCBB, player.PreviousTeamID, retro)
             : '';
     const newTeamLogo =
         player && player.TeamAbbr.length > 0
-            ? getLogo(player.TeamAbbr, retro)
+            ? getLogo(SimCBB, player.TeamID, retro)
             : '';
     const portalModalTarget = '#portalPlayerModal';
 
@@ -213,10 +227,10 @@ const CBBOverviewRow = ({
 
         if (competingTeams.length === 0) return 'None';
 
-        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+        const competingIDs = competingTeams.map((x) => x.TeamID);
 
-        return competingAbbrs.map((x) => {
-            const logo = getLogo(x, retro);
+        return competingIDs.map((x) => {
+            const logo = getLogo(SimCBB, x, retro);
             return (
                 <>
                     <img
@@ -261,11 +275,19 @@ const CBBOverviewRow = ({
                 </td>
                 <td className="align-middle">
                     {player.PreviousTeam.length > 0 && (
-                        <img
-                            className="image-recruit-logo"
-                            src={previousLogo}
-                            alt="WinningTeam"
-                        />
+                        <>
+                            <img
+                                className="image-recruit-logo"
+                                src={previousLogo}
+                                alt="WinningTeam"
+                            />
+                            <h6>{player.PreviousTeam}</h6>
+                        </>
+                    )}
+                    {player.PreviousTeam.length === 0 && (
+                        <p>
+                            <strong>Unsigned</strong>
+                        </p>
                     )}
                 </td>
                 <td className="align-middle">
@@ -393,11 +415,11 @@ const CFBProfileRow = ({
     const { CollegePlayer } = profile;
     const previousLogo =
         CollegePlayer && CollegePlayer.PreviousTeam.length > 0
-            ? getLogo(CollegePlayer.PreviousTeam, retro)
+            ? getLogo(SimCFB, CollegePlayer.PreviousTeamID, retro)
             : '';
     const newTeamLogo =
         CollegePlayer && CollegePlayer.TeamAbbr.length > 0
-            ? getLogo(CollegePlayer.TeamAbbr, retro)
+            ? getLogo(SimCFB, CollegePlayer.TeamID, retro)
             : '';
     const year = GetCollegeYear(CollegePlayer);
     const profileModalTarget = '#promiseModal';
@@ -414,16 +436,16 @@ const CFBProfileRow = ({
             return 'None';
 
         const competingTeams = data.LeadingTeams.filter(
-            (x, idx) => idx <= 2 && x.Odds > 0
+            (x, idx) => idx <= 8 && x.Odds > 0
         );
 
         if (competingTeams === null || competingTeams.length === 0) {
             return 'None';
         }
 
-        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
-        return competingAbbrs.map((x) => {
-            const logo = getLogo(x, retro);
+        const competingIDs = competingTeams.map((x) => x.TeamID);
+        return competingIDs.map((x) => {
+            const logo = getLogo(SimCFB, x, retro);
             return (
                 <>
                     <img
@@ -441,7 +463,7 @@ const CFBProfileRow = ({
     };
 
     const removePlayerFromBoard = () => {
-        return props.remove(idx, data);
+        return cancel(profile);
     };
 
     let leadingTeams = leadingTeamsMapper(CollegePlayer);
@@ -450,6 +472,9 @@ const CFBProfileRow = ({
             <tr>
                 <th scope="row" className="align-middle">
                     <h6>{CollegePlayer.Position}</h6>
+                </th>
+                <th scope="row" className="align-middle">
+                    <h6>{CollegePlayer.Archetype}</h6>
                 </th>
                 <td className="align-middle">
                     <h6
@@ -462,11 +487,19 @@ const CFBProfileRow = ({
                 </td>
                 <td className="align-middle">
                     {CollegePlayer.PreviousTeam.length > 0 && (
-                        <img
-                            className="image-recruit-logo"
-                            src={previousLogo}
-                            alt="WinningTeam"
-                        />
+                        <>
+                            <img
+                                className="image-recruit-logo"
+                                src={previousLogo}
+                                alt="WinningTeam"
+                            />
+                            <h6>{CollegePlayer.PreviousTeam}</h6>
+                        </>
+                    )}
+                    {CollegePlayer.PreviousTeam.length === 0 && (
+                        <p>
+                            <strong>Unsigned</strong>
+                        </p>
                     )}
                 </td>
                 <td className="align-middle">
@@ -483,11 +516,14 @@ const CFBProfileRow = ({
                 </td>
                 <td className="align-middle">
                     {profile.LockProfile ? (
-                        <img
-                            className="image-recruit-logo"
-                            src={newTeamLogo}
-                            alt="WinningTeam"
-                        />
+                        <>
+                            <img
+                                className="image-recruit-logo"
+                                src={newTeamLogo}
+                                alt="WinningTeam"
+                            />
+                            <h6>{CollegePlayer.TeamAbbr}</h6>
+                        </>
                     ) : (
                         <h6>{leadingTeams}</h6>
                     )}
@@ -527,7 +563,7 @@ const CFBProfileRow = ({
                         <button
                             type="button"
                             className="btn btn-danger btn-sm"
-                            onClick={() => cancel(profile)}
+                            onClick={removePlayerFromBoard}
                         >
                             <i className="bi bi-x-circle-fill rounded-circle" />
                         </button>
@@ -553,11 +589,11 @@ const CBBProfileRow = ({
     const { CollegePlayer } = profile;
     const previousLogo =
         CollegePlayer && CollegePlayer.PreviousTeam.length > 0
-            ? getLogo(CollegePlayer.PreviousTeam, retro)
+            ? getLogo(SimCBB, CollegePlayer.PreviousTeamID, retro)
             : '';
     const newTeamLogo =
-        CollegePlayer && CollegePlayer.TeamAbbr.length > 0
-            ? getLogo(CollegePlayer.TeamAbbr, retro)
+        CollegePlayer && CollegePlayer.TeamID > 0
+            ? getLogo(SimCBB, CollegePlayer.TeamID, retro)
             : '';
     const year = GetCollegeYear(CollegePlayer);
     const profileModalTarget = '#promiseModal';
@@ -581,9 +617,9 @@ const CBBProfileRow = ({
             return 'None';
         }
 
-        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
-        return competingAbbrs.map((x) => {
-            const logo = getLogo(x, retro);
+        const competingIDs = competingTeams.map((x) => x.TeamID);
+        return competingIDs.map((x) => {
+            const logo = getLogo(SimCBB, x, retro);
             return (
                 <>
                     <img
@@ -601,7 +637,7 @@ const CBBProfileRow = ({
     };
 
     const removePlayerFromBoard = () => {
-        return props.remove(idx, data);
+        return cancel(profile);
     };
 
     let leadingTeams = leadingTeamsMapper(CollegePlayer);
@@ -623,11 +659,14 @@ const CBBProfileRow = ({
                 </td>
                 <td className="align-middle">
                     {CollegePlayer.PreviousTeam.length > 0 && (
-                        <img
-                            className="image-recruit-logo"
-                            src={previousLogo}
-                            alt="WinningTeam"
-                        />
+                        <>
+                            <img
+                                className="image-recruit-logo"
+                                src={previousLogo}
+                                alt="WinningTeam"
+                            />
+                            <h6>{CollegePlayer.PreviousTeam}</h6>
+                        </>
                     )}
                 </td>
                 <td className="align-middle">
@@ -668,11 +707,14 @@ const CBBProfileRow = ({
                 </td>
                 <td className="align-middle">
                     {profile.LockProfile ? (
-                        <img
-                            className="image-recruit-logo"
-                            src={newTeamLogo}
-                            alt="WinningTeam"
-                        />
+                        <>
+                            <img
+                                className="image-recruit-logo"
+                                src={newTeamLogo}
+                                alt="WinningTeam"
+                            />
+                            <h6>{CollegePlayer.TeamAbbr}</h6>
+                        </>
                     ) : (
                         <h6>{leadingTeams}</h6>
                     )}
@@ -712,7 +754,7 @@ const CBBProfileRow = ({
                         <button
                             type="button"
                             className="btn btn-danger btn-sm"
-                            onClick={() => cancel(profile)}
+                            onClick={removePlayerFromBoard}
                         >
                             <i className="bi bi-x-circle-fill rounded-circle" />
                         </button>
@@ -748,6 +790,7 @@ export const TPProfileRow = ({
             viewMode={viewMode}
             retro={retro}
             setProfile={setProfile}
+            cancel={cancel}
         />
     ) : (
         <CBBProfileRow

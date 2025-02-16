@@ -12,6 +12,7 @@ import BBAMatchService from '../../../../_Services/simNBA/BBAMatchService';
 import { BBAMatchCard } from '../../../_Common/BBAMatchCard';
 import BBANewsService from '../../../../_Services/simNBA/BBANewsService';
 import { NewsLogSmall } from '../../../_Common/NewsLog';
+import { SimCBB } from '../../../../Constants/CommonConstants';
 
 const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     let _teamService = new BBATeamService();
@@ -37,7 +38,9 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
     useEffect(() => {
         if (currentUser) {
             setTeamName(() => currentUser.cbb_team);
-            setLogo(() => getLogo(currentUser.cbb_abbr, currentUser.IsRetro));
+            setLogo(() =>
+                getLogo(SimCBB, currentUser.cbb_id, currentUser.IsRetro)
+            );
         }
         if (!cbbTeam) {
             GetTeam();
@@ -240,6 +243,7 @@ const CBBHomePage = ({ currentUser, cbbTeam, cbb_Timestamp }) => {
                                     <StandingsCard
                                         standings={standings}
                                         retro={currentUser.IsRetro}
+                                        league={SimCBB}
                                     />
                                     <div className="cbb-news-feed">
                                         {newsFeed.length > 0 &&

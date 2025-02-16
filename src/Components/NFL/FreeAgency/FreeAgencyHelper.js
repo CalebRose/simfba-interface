@@ -154,7 +154,12 @@ export const ValidateRule4 = (len, y1, y2, y3, y4, y5) => {
 };
 
 export const ValidateRule5 = (bonus, total, isOffseason) => {
-    if (!isOffseason) return true;
+    if (!isOffseason) {
+        if (total > 5) {
+            return bonus / total >= 0.3;
+        }
+        return true;
+    }
     return bonus / total >= 0.3;
 };
 

@@ -133,12 +133,12 @@ export default class FBARequestService {
                 authorization: localStorage.getItem('token'),
                 'Content-Type': 'application/json'
             },
-            method: 'DELETE',
+            method: 'POST',
             body: JSON.stringify({
                 ID: payload.ID,
                 TeamID: payload.ReqID,
                 Username: payload.Username,
-                IsApproved: true
+                IsApproved: false
             })
         });
         return res;

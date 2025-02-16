@@ -19,6 +19,7 @@ import {
     NFLTotalRow,
     OfferValueRow
 } from '../../_Common/CommonOfferComponents';
+import { RoundToTwoDecimals } from '../../../_Utility/utilHelper';
 
 export const FreeAgentOfferModal = ({
     team,
@@ -413,7 +414,8 @@ export const FreeAgentOfferModal = ({
                             </div>
                             <div className="col-md-auto ms-auto">
                                 <h4 className="">
-                                    Minimum Value: ${MinimumValue}M
+                                    Minimum Value: $
+                                    {RoundToTwoDecimals(MinimumValue)}M
                                 </h4>
                             </div>
                         </div>
@@ -446,7 +448,9 @@ export const FreeAgentOfferModal = ({
                                             5: Before the draft, at least 30% of
                                             any contract must be bonus money.
                                             After the draft, bonus can be any
-                                            amount, even 0%.
+                                            amount; but once the total value is
+                                            greater than $5M, 30% of the
+                                            contract must be bonus money.
                                         </p>
                                     </div>
                                     <div className="col">

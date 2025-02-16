@@ -8,6 +8,7 @@ import {
 } from '../../../_Utility/utilHelper';
 import { GetNFLOverall, SetNFLPriority } from '../../../_Utility/RosterHelper';
 import AttributeRow from '../../Roster/AttributeRow';
+import { SimNFL } from '../../../Constants/CommonConstants';
 
 export const FreeAgencyPlayerModal = ({ player, idx, viewMode, retro }) => {
     const modalId = 'playerModal' + idx;
@@ -20,22 +21,15 @@ export const FreeAgencyPlayerModal = ({ player, idx, viewMode, retro }) => {
     player['priorityAttributes'] = SetNFLPriority(player);
     const teamsList = AllOffers.map((x) => x.Team);
     const shuffledTeamList = ShuffleList(teamsList);
-    const OfferingTeam = ({ offer, idx }) => {
-        const logo = getLogo(offer.Team, retro);
-        const rank = idx + 1;
+    const OfferingTeam = ({ offer }) => {
+        const logo = getLogo(SimNFL, offer.TeamID, retro);
         return (
             <div className="row">
                 <div className="col">
                     <img src={logo} className="image-nfl-player-modal" alt="" />
                 </div>
                 <div className="col">
-                    <h6>Rank: {rank}</h6>
-                </div>
-                <div className="col">
-                    <h6>
-                        Contract Value: $
-                        {RoundToTwoDecimals(offer.ContractValue)}
-                    </h6>
+                    <h6>{offer.Team}</h6>
                 </div>
             </div>
         );
@@ -124,19 +118,6 @@ export const FreeAgencyPlayerModal = ({ player, idx, viewMode, retro }) => {
                                     : 'Waiver Player'}
                             </div>
                         </div>
-                        {player &&
-                            !IsNegotiating &&
-                            AllOffers !== null &&
-                            AllOffers.length > 0 && (
-                                <div className="row g-1 mb-3">
-                                    <h5>Offers</h5>
-                                    {AllOffers.map((x, i) => {
-                                        return (
-                                            <OfferingTeam offer={x} idx={i} />
-                                        );
-                                    })}
-                                </div>
-                            )}
                         {IsNegotiating && (
                             <div className="row g-1 mb-3">
                                 <h5>This player is now negotiating.</h5>
@@ -146,12 +127,12 @@ export const FreeAgencyPlayerModal = ({ player, idx, viewMode, retro }) => {
                                     signs. Until then, all contract info will
                                     remain hidden.
                                 </p>
-                                <h6>Teams Negotiating</h6>
-                                {shuffledTeamList.map((x) => (
-                                    <p>{x}</p>
-                                ))}
                             </div>
                         )}
+                        <h6>Teams In Contention</h6>
+                        {shuffledTeamList.map((x) => (
+                            <p>{x}</p>
+                        ))}
                         <div className="row">
                             {SeasonStats.ID > 0 && (
                                 <div className="col">

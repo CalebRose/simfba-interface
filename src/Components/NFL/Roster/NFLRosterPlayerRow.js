@@ -139,8 +139,18 @@ export const NFLRosterPlayerRow = ({
                         />
                     </button>
                 </th>
-                <td label="Archtype">{player.Archetype}</td>
-                <td label="Position">{player.Position}</td>
+                <td label="Archtype">
+                    {player.Archetype}
+                    {player.ArchetypeTwo.length > 0
+                        ? `/${player.ArchetypeTwo}`
+                        : ''}
+                </td>
+                <td label="Position">
+                    {player.Position}
+                    {player.PositionTwo.length > 0
+                        ? `/${player.PositionTwo}`
+                        : ''}
+                </td>
                 <td label="Year">{year ? year : ''}</td>
                 <td label="Overall">{ovr ? ovr : ''}</td>
                 <td label="Health">{healthStatus}</td>
@@ -200,7 +210,7 @@ export const NFLRosterPlayerRow = ({
                         </button>
                         <button
                             className={`btn ${
-                                player.IsTagged ? 'btn-success' : ''
+                                player.TagType > 0 ? 'btn-success' : ''
                             }`}
                             title="Tag Player"
                             data-bs-toggle="modal"

@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { getLogo } from '../../Constants/getLogo';
+import { SimNFL } from '../../Constants/CommonConstants';
 
 const StandingsRow = (props) => {
     const { row, rank, retro } = props;
-    const logoKey = row.TeamName + ' ' + row.Mascot;
-    const logo = getLogo(logoKey, retro);
+    const logoKey = row.TeamID;
+    const logo = getLogo(SimNFL, logoKey, retro);
     return (
         <div className="row mb-2">
             <div className="col">{rank}</div>

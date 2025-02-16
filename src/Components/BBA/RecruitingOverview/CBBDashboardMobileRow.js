@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { GetMobileCardClass } from '../../../Constants/CSSClassHelper';
 import { getLogo } from '../../../Constants/getLogo';
 import { MobileAttribute } from '../../_Common/MobileAttributeTab';
+import { SimCBB } from '../../../Constants/CommonConstants';
 
 const CBBDashboardMobileRow = (props) => {
     const [flag, setFlag] = React.useState(false);
@@ -18,7 +19,7 @@ const CBBDashboardMobileRow = (props) => {
         croot.State +
         croot.Country;
     const logo =
-        croot && croot.College.length > 0 ? getLogo(croot.College, retro) : '';
+        croot && croot.TeamID > 0 ? getLogo(SimCBB, croot.TeamID, retro) : '';
     const mobileClass = GetMobileCardClass(theme);
     useEffect(() => {
         if (map) setFlag(map[keyCode]);
@@ -33,10 +34,10 @@ const CBBDashboardMobileRow = (props) => {
             (x, idx) => idx <= 2 && x.Odds > 0
         );
 
-        const competingAbbrs = competingTeams.map((x) => x.TeamAbbr);
+        const competingIDs = competingTeams.map((x) => x.TeamID);
 
-        return competingAbbrs.map((x) => {
-            const logo = getLogo(x, retro);
+        return competingIDs.map((x) => {
+            const logo = getLogo(SimCBB, x, retro);
             return (
                 <>
                     <img
@@ -83,11 +84,14 @@ const CBBDashboardMobileRow = (props) => {
                             {!croot.IsSigned ? (
                                 <>{leadingTeams}</>
                             ) : (
-                                <img
-                                    className="image-recruit-logo image-recruit-signed ms-auto"
-                                    src={logo}
-                                    alt="WinningTeam"
-                                />
+                                <>
+                                    <img
+                                        className="image-recruit-logo image-recruit-signed ms-auto"
+                                        src={logo}
+                                        alt="WinningTeam"
+                                    />
+                                    <h6>{recruit.College}</h6>
+                                </>
                             )}
                         </div>
                     </div>

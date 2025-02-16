@@ -6,12 +6,13 @@ import { getLogo } from '../../../Constants/getLogo';
 import { useEffect } from 'react';
 import { ExtraLargeModal } from '../../_Common/ModalComponents';
 import { Spinner } from '../../_Common/Spinner';
+import { SimCFB, SimNFL } from '../../../Constants/CommonConstants';
 
 export const InjuryReportModal = ({ retro }) => {
     const _playerService = new FBAPlayerService();
     const id = `injuryReportModal`;
     const header = 'Injury Report Modal';
-    const [league, setLeague] = useState('cfb');
+    const [league, setLeague] = useState(SimCFB);
     const [viewablePlayers, setViewablePlayers] = useState(null);
     const [injuredCollegePlayers, setInjuredCollegePlayers] = useState(null);
     const [injuredNFLPlayers, setInjuredNFLPlayers] = useState(null);
@@ -37,7 +38,7 @@ export const InjuryReportModal = ({ retro }) => {
         const { value } = event.target;
         setViewablePlayers(() => []);
         setLeague(() => value);
-        if (value === 'cfb') {
+        if (value === SimCFB) {
             setViewablePlayers(() => injuredCollegePlayers);
         } else {
             setViewablePlayers(() => injuredNFLPlayers);
@@ -63,13 +64,13 @@ export const InjuryReportModal = ({ retro }) => {
                             <StatsPageButton
                                 statType={league}
                                 action={SelectLeague}
-                                value="cfb"
+                                value={SimCFB}
                                 label="College"
                             />
                             <StatsPageButton
                                 statType={league}
                                 action={SelectLeague}
-                                value="nfl"
+                                value={SimNFL}
                                 label="NFL"
                             />
                         </div>
@@ -91,7 +92,7 @@ export const InjuryReportModal = ({ retro }) => {
 
                     {viewablePlayers &&
                         viewablePlayers.map((x) => {
-                            const logo = getLogo(x.TeamAbbr, retro);
+                            const logo = getLogo(league, x.TeamID, retro);
                             return (
                                 <div className="row mt-2">
                                     <div className="col-3">

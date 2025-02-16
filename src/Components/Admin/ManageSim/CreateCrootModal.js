@@ -5,7 +5,7 @@ import {
     ArchetypeList,
     FreeAgencyList,
     PersonalitiesList,
-    PositionList,
+    FBPositionList,
     RecruitingBiasList,
     StatesList,
     WorkEthicList
@@ -24,7 +24,7 @@ const CreateCrootModal = (props) => {
         []
     );
     const [validStatus, setValidStatus] = React.useState(false);
-    const positions = [...PositionList.map((x) => x.abbr)];
+    const positions = [...FBPositionList.map((x) => x.abbr)];
     const initialArchetypes = [...ArchetypeList];
     const starRatings = [1, 2, 3, 4, 5];
     const { handleChange } = props;

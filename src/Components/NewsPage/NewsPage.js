@@ -194,7 +194,7 @@ const NewsPage = ({ currentUser, cfbTeam, cfb_Timestamp, cbb_Timestamp }) => {
     return (
         <div className="container-fluid">
             <div className="justify-content-start">
-                <h2>SimFBA News</h2>
+                <h2>SimSN News</h2>
                 <h4 className="align-end">
                     CFB Week: {cfb_Timestamp.CollegeWeek} | CBB Week:{' '}
                     {cbb_Timestamp.CollegeWeek} | NFL Week:{' '}
