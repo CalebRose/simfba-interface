@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import FormInput from '../FormInput/FormInput';
 import './LoginPage.style.css';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
