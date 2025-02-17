@@ -89,15 +89,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             getGames();
             getPersonalizedNewsFeed();
         }
-    }, [
-        currentUser,
-        cfbTeam,
-        cfb_Timestamp,
-        getTeam,
-        getConferenceStandings,
-        getGames,
-        getPersonalizedNewsFeed
-    ]);
+    }, [currentUser, cfbTeam, cfb_Timestamp]);
 
     useEffect(() => {
         if (!cfb_Timestamp?.CollegeWeek || !games.length) return;
@@ -116,14 +108,14 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     }, [cfb_Timestamp, games, isMobile]);
 
     useEffect(() => {
-        if (teamData) {
+        if (cfbTeam) {
             setTeamColors({
                 color: '#fff',
-                backgroundColor: teamData.ColorOne || '#6c757d',
-                borderColor: teamData.ColorOne || '#6c757d'
+                backgroundColor: cfbTeam.ColorOne || '#6c757d',
+                borderColor: cfbTeam.ColorOne || '#6c757d'
             });
         }
-    }, [teamData]);
+    }, [cfbTeam]);
 
     return (
         <>
