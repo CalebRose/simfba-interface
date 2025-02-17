@@ -2,114 +2,94 @@ import React, { Component } from 'react';
 import FormInput from '../FormInput/FormInput';
 import './LoginPage.style.css';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import routes from '../../../Constants/routes';
 
-class LoginPage extends Component {
-    state = {
-        email: '',
-        password: '',
-        hasError: false,
-        isLoading: false,
-        message: ''
-    };
+const LoginPage = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
+    const [hasError, setHasError] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-    handleSubmit = async (event) => {
+    const navigate = useNavigate();
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const { email, password } = this.state;
+        setIsLoading(true);
+        setMessage('Attempting Sign In...');
+
         try {
-            this.setState({
-                isLoading: true,
-                message: 'Attempting Sign In...'
-            });
             const auth = getAuth();
             await signInWithEmailAndPassword(auth, email, password);
-            this.setState({
-                email: '',
-                password: '',
-                isLoading: false,
-                message: 'Sign In successful. Please return to Landing Page.'
-            });
-            console.log('successful login.');
+            setIsLoading(false);
+            setMessage('Sign In successful. Redirecting...');
+
             const user = auth.currentUser;
             if (user) {
-                const idToken = await user.getIdToken(/* forceRefresh */ true);
+                const idToken = await user.getIdToken(true);
                 localStorage.setItem('token', idToken);
             }
-            this.setState({ message: '' });
-            this.props.history.push('/user'); // on successful login, change user's location to their home page: /user
-        } catch (error) {
-            console.log('test 2');
-            console.log(error);
-            this.setState({
-                message: error.message,
-                hasError: true,
-                isLoading: false
-            });
+
             setTimeout(() => {
-                this.setState({ message: '', hasError: false });
+                navigate(routes.USER); // Replaces history.push('/user')
+            }, 1000);
+        } catch (error) {
+            console.error(error);
+            setMessage(error.message);
+            setHasError(true);
+            setIsLoading(false);
+
+            setTimeout(() => {
+                setMessage('');
+                setHasError(false);
             }, 5000);
         }
     };
 
-    handleChange = (event) => {
-        //
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
-    };
-
-    render() {
-        const { email, password, message, hasError, isLoading } = this.state;
-        return (
-            <div className="LoginPage">
-                <div className="row">
-                    <form>
-                        <FormInput
-                            name="email"
-                            value={email}
-                            label="Email"
-                            type="email"
-                            handleChange={this.handleChange}
-                        />
-                        <FormInput
-                            name="password"
-                            value={password}
-                            label="Password"
-                            type="password"
-                            handleChange={this.handleChange}
-                        />
-                        <div className="row signup-button">
-                            <Link to={routes.LANDING}>
-                                <button
-                                    className="btn btn-primary login-button"
-                                    onClick={this.handleSubmit}
-                                >
-                                    Login
-                                </button>
-                            </Link>
-                        </div>
-                    </form>
-                </div>
-                <div className="row mt-2">
-                    {message.length > 0 && !isLoading && !hasError ? (
-                        <div className="alert alert-success">{message}</div>
-                    ) : (
-                        ''
-                    )}
-                    {message.length > 0 && isLoading && !hasError ? (
-                        <div className="alert alert-secondary">{message}</div>
-                    ) : (
-                        ''
-                    )}
-                    {message.length > 0 && hasError && !isLoading ? (
-                        <div className="alert alert-danger">{message}</div>
-                    ) : (
-                        ''
-                    )}
-                </div>
+    return (
+        <div className="LoginPage">
+            <div className="row">
+                <form>
+                    <FormInput
+                        name="email"
+                        value={email}
+                        label="Email"
+                        type="email"
+                        handleChange={(e) => setEmail(e.target.value)}
+                    />
+                    <FormInput
+                        name="password"
+                        value={password}
+                        label="Password"
+                        type="password"
+                        handleChange={(e) => setPassword(e.target.value)}
+                    />
+                    <div className="row signup-button">
+                        <Link to={routes.LANDING}>
+                            <button
+                                className="btn btn-primary login-button"
+                                onClick={handleSubmit}
+                            >
+                                Login
+                            </button>
+                        </Link>
+                    </div>
+                </form>
             </div>
-        );
-    }
-}
+            <div className="row mt-2">
+                {message && (
+                    <div
+                        className={`alert ${
+                            hasError ? 'alert-danger' : 'alert-success'
+                        }`}
+                    >
+                        {message}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
 
 export default LoginPage;

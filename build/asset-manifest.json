@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/simfba-interface/static/css/main.0101e9fb.css",
-    "main.js": "/simfba-interface/static/js/main.575e9a5f.js",
+    "main.css": "/simfba-interface/static/css/main.ece08da3.css",
+    "main.js": "/simfba-interface/static/js/main.7fe1a73c.js",
     "index.html": "/simfba-interface/index.html",
-    "main.0101e9fb.css.map": "/simfba-interface/static/css/main.0101e9fb.css.map",
-    "main.575e9a5f.js.map": "/simfba-interface/static/js/main.575e9a5f.js.map"
+    "main.ece08da3.css.map": "/simfba-interface/static/css/main.ece08da3.css.map",
+    "main.7fe1a73c.js.map": "/simfba-interface/static/js/main.7fe1a73c.js.map"
   },
   "entrypoints": [
-    "static/css/main.0101e9fb.css",
-    "static/js/main.575e9a5f.js"
+    "static/css/main.ece08da3.css",
+    "static/js/main.7fe1a73c.js"
   ]
 }

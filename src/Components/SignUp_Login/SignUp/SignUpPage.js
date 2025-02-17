@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FormInput from '../FormInput/FormInput';
 import './SignUpPage.style.css';
 import {
@@ -7,43 +8,40 @@ import {
     sendEmailVerification
 } from 'firebase/auth';
 import { createUserProfileDocument } from '../../../Firebase/firebase'; // Updated import
-import { Link } from 'react-router-dom';
-import routes from './../../../Constants/routes';
+import routes from '../../../Constants/routes';
 
-class SignUp extends React.Component {
-    state = {
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-    };
-    handleSubmit = async (event) => {
+const SignUp = () => {
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [message, setMessage] = useState('');
+    const [hasError, setHasError] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const navigate = useNavigate(); // useNavigate replaces history.push
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const { username, email, password, confirmPassword } = this.state;
-        if (
-            username === null ||
-            username.length === 0 ||
-            email === null ||
-            email.length === 0 ||
-            password === null ||
-            password.length === 0 ||
-            confirmPassword === null ||
-            confirmPassword.length === 0
-        ) {
+
+        if (!username || !email || !password || !confirmPassword) {
             alert(
                 'WARNING! You need to fill out all input fields in the form.'
             );
             return;
         }
         if (password !== confirmPassword) {
-            alert(
-                'WARNING! Password does not match with Password Confirmation'
-            );
+            alert('WARNING! Password does not match Password Confirmation');
             return;
         }
+
+        setIsLoading(true);
+        setMessage('Creating your account...');
+
         try {
             const auth = getAuth();
-            const userCredential = await auth.createUserWithEmailAndPassword(
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
                 email,
                 password
             );
@@ -62,72 +60,78 @@ class SignUp extends React.Component {
             const idToken = await user.getIdToken(true);
             localStorage.setItem('token', idToken);
 
-            this.setState({
-                username: '',
-                email: '',
-                password: '',
-                confirmPassword: ''
-            });
-            this.props.history.push('/user');
-            alert('Successfully registered. Welcome, ' + username + '!');
+            setUsername('');
+            setEmail('');
+            setPassword('');
+            setConfirmPassword('');
+            setMessage(`Successfully registered. Welcome, ${username}!`);
+
+            setTimeout(() => {
+                navigate(routes.USER); // Redirect to user page
+            }, 1000);
         } catch (error) {
-            console.log(error);
+            console.error(error);
+            setMessage(error.message);
+            setHasError(true);
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    handleChange = (event) => {
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
-    };
-    render() {
-        const { username, email, password, confirmPassword } = this.state;
-        return (
-            <div className="SignUp">
-                <div className="row">
-                    <form>
-                        <FormInput
-                            name="username"
-                            type="text"
-                            value={username}
-                            label="Username"
-                            handleChange={this.handleChange}
-                        />
-                        <FormInput
-                            name="email"
-                            type="email"
-                            value={email}
-                            label="Email"
-                            handleChange={this.handleChange}
-                        />
-                        <FormInput
-                            name="password"
-                            type="password"
-                            value={password}
-                            label="Password"
-                            handleChange={this.handleChange}
-                        />
-                        <FormInput
-                            name="confirmPassword"
-                            type="password"
-                            value={confirmPassword}
-                            label="Confirm Password"
-                            handleChange={this.handleChange}
-                        />
-                        <div className="row signup-button">
-                            <Link to={routes.LANDING}>
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={this.handleSubmit}
-                                >
-                                    Sign Up
-                                </button>
-                            </Link>
-                        </div>
-                    </form>
-                </div>
+    return (
+        <div className="SignUp">
+            <div className="row">
+                <form onSubmit={handleSubmit}>
+                    <FormInput
+                        name="username"
+                        type="text"
+                        value={username}
+                        label="Username"
+                        handleChange={(e) => setUsername(e.target.value)}
+                    />
+                    <FormInput
+                        name="email"
+                        type="email"
+                        value={email}
+                        label="Email"
+                        handleChange={(e) => setEmail(e.target.value)}
+                    />
+                    <FormInput
+                        name="password"
+                        type="password"
+                        value={password}
+                        label="Password"
+                        handleChange={(e) => setPassword(e.target.value)}
+                    />
+                    <FormInput
+                        name="confirmPassword"
+                        type="password"
+                        value={confirmPassword}
+                        label="Confirm Password"
+                        handleChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                    <div className="row signup-button">
+                        <button
+                            type="submit"
+                            className="btn btn-primary"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Signing Up...' : 'Sign Up'}
+                        </button>
+                    </div>
+                </form>
             </div>
-        );
-    }
-}
+            {message && (
+                <div
+                    className={`alert ${
+                        hasError ? 'alert-danger' : 'alert-success'
+                    } mt-2`}
+                >
+                    {message}
+                </div>
+            )}
+        </div>
+    );
+};
 
 export default SignUp;
