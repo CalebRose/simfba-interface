@@ -3,7 +3,7 @@
     "name": "interface",
     "version": "0.1.0",
     "private": true,
-    "description": "Web Interface for the SimFBA Community",
+    "description": "Web Interface for the SimSN Community",
     "browser": "index.html",
     "devDependencies": {
         "@babel/plugin-proposal-class-properties": "^7.10.4",
