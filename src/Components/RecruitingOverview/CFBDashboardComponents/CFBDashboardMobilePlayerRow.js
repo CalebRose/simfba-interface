@@ -142,7 +142,7 @@ const CFBDashboardMobilePlayerRow = (props) => {
                     <div className="row justify-content-center">
                         {croot.IsSigned || timestamp.CollegeWeek === 21 ? (
                             <h2 className="mb-1 text-center">
-                                <i class="bi bi-file-lock-fill"></i>
+                                <i className="bi bi-file-lock-fill"></i>
                             </h2>
                         ) : flag ? (
                             <>

@@ -193,7 +193,7 @@ export const NBAFreeAgencyRow = ({
                             data-bs-target={cancelTarget}
                             disabled={!hasOffer || !canModify}
                         >
-                            <i class="bi bi-x-circle image-nfl-roster" />
+                            <i className="bi bi-x-circle image-nfl-roster" />
                         </button>
                     </div>
                 </td>

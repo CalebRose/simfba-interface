@@ -20,9 +20,9 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp, cfb_Timestamp }) => {
 
     var CFBTeam = () => {
         return (
-            <li className="nav-item dropdown">
+            <div className="nav-item dropdown">
                 <a
-                    class="nav-link dropdown-toggle"
+                    className="nav-link dropdown-toggle"
                     href="#"
                     id="navbarDropdownMenuLink"
                     role="button"
@@ -99,15 +99,15 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp, cfb_Timestamp }) => {
                         </Link>
                     </li>
                 </ul>
-            </li>
+            </div>
         );
     };
 
     var NFLTeam = () => {
         return (
-            <li className="nav-item dropdown">
+            <div className="nav-item dropdown">
                 <a
-                    class="nav-link dropdown-toggle"
+                    className="nav-link dropdown-toggle"
                     href="#"
                     id="navbarDropdownMenuLink"
                     role="button"
@@ -181,15 +181,15 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp, cfb_Timestamp }) => {
                         </li>
                     )}
                 </ul>
-            </li>
+            </div>
         );
     };
 
     const CBBTeam = () => {
         return (
-            <li className="nav-item dropdown">
+            <div className="nav-item dropdown">
                 <a
-                    class="nav-link dropdown-toggle"
+                    className="nav-link dropdown-toggle"
                     href="#"
                     id="navbarDropdownMenuLink"
                     role="button"
@@ -253,15 +253,15 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp, cfb_Timestamp }) => {
                         </Link>
                     </li>
                 </ul>
-            </li>
+            </div>
         );
     };
 
     const NBATeam = () => {
         return (
-            <li className="nav-item dropdown">
+            <div className="nav-item dropdown">
                 <a
-                    class="nav-link dropdown-toggle"
+                    className="nav-link dropdown-toggle"
                     href="#"
                     id="navbarDropdownMenuLink"
                     role="button"
@@ -327,7 +327,7 @@ const NavBar_Start = ({ currentUser, cbb_Timestamp, cfb_Timestamp }) => {
                         </li>
                     )}
                 </ul>
-            </li>
+            </div>
         );
     };
 

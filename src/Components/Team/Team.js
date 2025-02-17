@@ -184,7 +184,7 @@ const Team = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                     <Link
                         to={routes.CFB_GAMEPLAN}
                         role="button"
-                        class="btn btn-primary btn-md me-2 shadow"
+                        className="btn btn-primary btn-md me-2 shadow"
                         style={teamColors ? teamColors : {}}
                     >
                         Gameplan
@@ -193,7 +193,7 @@ const Team = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                     <Link
                         to={routes.DEPTHCHART}
                         role="button"
-                        class="btn btn-primary btn-md me-2 shadow"
+                        className="btn btn-primary btn-md me-2 shadow"
                         style={teamColors ? teamColors : {}}
                     >
                         Depth Chart
@@ -201,21 +201,21 @@ const Team = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                     <Link
                         to={routes.CFB_TEAM_RECRUITING_BOARD}
                         type="button"
-                        class="btn btn-primary btn-md me-2 shadow"
+                        className="btn btn-primary btn-md me-2 shadow"
                         style={teamColors ? teamColors : {}}
                     >
                         Recruiting Board
                     </Link>
                     <button
                         type="button"
-                        class="btn btn-primary btn-md me-2 shadow"
+                        className="btn btn-primary btn-md me-2 shadow"
                         style={teamColors ? teamColors : {}}
                     >
                         Stats
                     </button>
                     <button
                         type="button"
-                        class="btn btn-primary btn-md shadow"
+                        className="btn btn-primary btn-md shadow"
                         style={teamColors ? teamColors : {}}
                     >
                         Schedule

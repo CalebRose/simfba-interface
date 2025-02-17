@@ -32,6 +32,12 @@ h2 {
     font-size: 1.6vh !important;
 }
 
+.infinite-scroll-component {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    width: 100% !important;
+}
+
 .dark {
     background-color: #202020;
     color: #fff;

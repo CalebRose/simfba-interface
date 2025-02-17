@@ -160,7 +160,7 @@ export const NFLFreeAgencyMobileRow = ({
                                 data-bs-toggle="modal"
                                 data-bs-target={cancelTarget}
                             >
-                                <i class="bi bi-x-circle image-nfl-roster" />
+                                <i className="bi bi-x-circle image-nfl-roster" />
                             </button>
                         ) : (
                             <button
@@ -169,7 +169,7 @@ export const NFLFreeAgencyMobileRow = ({
                                 title="Cancel Existing Offer"
                                 disabled
                             >
-                                <i class="bi bi-x-circle image-nfl-roster" />
+                                <i className="bi bi-x-circle image-nfl-roster" />
                             </button>
                         )}
                     </li>

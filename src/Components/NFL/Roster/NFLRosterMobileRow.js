@@ -160,7 +160,7 @@ const NFLMobileRosterRow = ({
                                 !canModify
                             }
                         >
-                            <i class="bi bi-bandaid" />
+                            <i className="bi bi-bandaid" />
                         </button>
                     </li>
                     <li className="list-group-item">
@@ -173,7 +173,7 @@ const NFLMobileRosterRow = ({
                                 data-bs-toggle="modal"
                                 data-bs-target={cutPlayerTarget}
                             >
-                                <i class="bi bi-scissors" />
+                                <i className="bi bi-scissors" />
                             </button>
                         ) : (
                             'Unavailable'
@@ -201,7 +201,7 @@ const NFLMobileRosterRow = ({
                                     acceptedExtensionBool
                                 }
                             >
-                                <i class="bi bi-currency-dollar" />
+                                <i className="bi bi-currency-dollar" />
                             </button>
                         ) : (
                             'Unavailable'
@@ -231,7 +231,7 @@ const NFLMobileRosterRow = ({
                                 }
                                 onClick={() => tagPlayer(() => player)}
                             >
-                                <i class="bi bi-tag-fill" />
+                                <i className="bi bi-tag-fill" />
                             </button>
                         ) : (
                             'Unavailable'
@@ -249,7 +249,7 @@ const NFLMobileRosterRow = ({
                                 data-bs-toggle="modal"
                                 data-bs-target={tradeBlockTarget}
                             >
-                                <i class="bi bi-arrow-down-up" />
+                                <i className="bi bi-arrow-down-up" />
                             </button>
                         ) : (
                             <button
@@ -262,7 +262,7 @@ const NFLMobileRosterRow = ({
                                 title={tradeBlockTitle}
                                 disabled
                             >
-                                <i class="bi bi-arrow-down-up" />
+                                <i className="bi bi-arrow-down-up" />
                             </button>
                         )}
                     </li>
@@ -282,9 +282,9 @@ const NFLMobileRosterRow = ({
                                 disabled={player.Experience > 3}
                             >
                                 {player.IsPracticeSquad ? (
-                                    <i class="bi bi-person-fill-up" />
+                                    <i className="bi bi-person-fill-up" />
                                 ) : (
-                                    <i class="bi bi-person-fill-down" />
+                                    <i className="bi bi-person-fill-down" />
                                 )}
                             </button>
                         ) : (
@@ -298,9 +298,9 @@ const NFLMobileRosterRow = ({
                                 disabled={player.Experience > 3}
                             >
                                 {player.IsPracticeSquad ? (
-                                    <i class="bi bi-person-fill-up" />
+                                    <i className="bi bi-person-fill-up" />
                                 ) : (
-                                    <i class="bi bi-person-fill-down" />
+                                    <i className="bi bi-person-fill-down" />
                                 )}
                             </button>
                         )}

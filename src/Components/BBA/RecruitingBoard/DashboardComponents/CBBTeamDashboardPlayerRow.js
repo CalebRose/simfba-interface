@@ -72,7 +72,7 @@ const CBBTeamDashboardPlayerRow = (props) => {
                 <th scope="row">
                     {data.IsLocked || data.IsSigned ? (
                         <h2>
-                            <i class="bi bi-file-lock-fill"></i>
+                            <i className="bi bi-file-lock-fill"></i>
                         </h2>
                     ) : data.ScholarshipRevoked ? (
                         <h2>
@@ -190,7 +190,7 @@ const CBBTeamDashboardPlayerRow = (props) => {
                         <input
                             name="CurrentPoints"
                             type="number"
-                            class="form-control"
+                            className="form-control"
                             id="currentPoints"
                             aria-describedby="currentPoints"
                             value={data.CurrentWeeksPoints}

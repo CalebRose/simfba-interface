@@ -707,7 +707,7 @@ const CFBStatisticsPage = ({ currentUser, cfb_Timestamp, viewMode }) => {
                                 data-bs-toggle="modal"
                                 data-bs-target="#injuryReportModal"
                             >
-                                Injury Report <i class="bi bi-bandaid" />
+                                Injury Report <i className="bi bi-bandaid" />
                             </button>
                         </div>
                     </div>

@@ -137,7 +137,7 @@ const CBBDashboardMobileRow = (props) => {
                         {croot.IsSigned || timestamp.CollegeWeek === 21 ? (
                             <>
                                 <h2 className="mb-1 text-center">
-                                    <i class="bi bi-file-lock-fill"></i>
+                                    <i className="bi bi-file-lock-fill"></i>
                                 </h2>
                                 <h6 className="text-center">Signed</h6>
                             </>

@@ -155,7 +155,7 @@ const CFBDashboardPlayerRow = (props) => {
                 <td className="align-middle">
                     {croot.IsSigned || timestamp.CollegeWeek === 21 ? (
                         <h2>
-                            <i class="bi bi-file-lock-fill"></i>
+                            <i className="bi bi-file-lock-fill"></i>
                         </h2>
                     ) : flag ? (
                         <h2>

@@ -340,7 +340,7 @@ const CBBOverviewRow = ({
                 <td className="align-middle">
                     {player.IsSigned || timestamp.CollegeWeek === 16 ? (
                         <h2>
-                            <i class="bi bi-file-lock-fill"></i>
+                            <i className="bi bi-file-lock-fill"></i>
                         </h2>
                     ) : flag ? (
                         <h2>

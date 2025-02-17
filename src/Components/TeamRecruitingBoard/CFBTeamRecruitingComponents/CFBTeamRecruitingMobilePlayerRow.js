@@ -224,7 +224,7 @@ const CFBTeamMobilePlayerRow = (props) => {
                         ) : recruitProfile.IsLocked ? (
                             <>
                                 <h2 className="text-center">
-                                    <i class="bi bi-file-lock-fill card-link"></i>
+                                    <i className="bi bi-file-lock-fill card-link"></i>
                                 </h2>
                                 <h6 className="text-center">
                                     Signed Elsewhere

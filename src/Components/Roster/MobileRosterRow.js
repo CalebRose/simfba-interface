@@ -90,7 +90,7 @@ const MobileRosterRow = (props) => {
                                 data-bs-toggle="modal"
                                 data-bs-target={modalTarget}
                             >
-                                <i class="bi bi-person-fill-lock link-danger"></i>
+                                <i className="bi bi-person-fill-lock link-danger"></i>
                             </button>
                         ) : (
                             <button
@@ -99,7 +99,7 @@ const MobileRosterRow = (props) => {
                                 disabled
                             >
                                 <i
-                                    class={`bi bi-person-fill ${
+                                    className={`bi bi-person-fill ${
                                         player.IsRedshirt
                                             ? 'link-danger'
                                             : 'link-secondary'

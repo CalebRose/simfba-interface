@@ -8,10 +8,20 @@ crypto.createHash = (algorithm) =>
 module.exports = [
     {
         entry: [path.resolve(__dirname, './src/index.js')],
-        mode: 'production',
+        mode: 'development',
         output: {
             filename: 'bundle.js',
-            path: path.resolve(__dirname, './public')
+            path: path.resolve(__dirname, './public'),
+            publicPath: '/'
+        },
+        devServer: {
+            static: {
+                directory: path.join(__dirname, 'dist')
+            },
+            historyApiFallback: true, // Fixes routing issues with React Router
+            compress: true,
+            port: 3000,
+            hot: true // Enable Hot Module Replacement (HMR)
         },
         devtool: 'source-map',
         module: {
@@ -29,14 +39,13 @@ module.exports = [
                 },
                 {
                     test: /\.(jpe?g|png|gif|svg)$/i,
-                    loader: 'url-loader?name=app/images/[name].[ext]'
+                    use: {
+                        loader: 'url-loader',
+                        options: {
+                            name: 'app/images/[name].[ext]' // ✅ Corrected loader syntax
+                        }
+                    }
                 }
-                // {
-                //     test: /\.jsx?$/,
-                //     // loader: "ts-loader?{configFile: \"tsconfig.json\"}",
-                //     include: [path.resolve(__dirname, "./src")],
-                //     options: { allowTsInNodeModules: true }
-                // }
             ]
         },
         resolve: {

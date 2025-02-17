@@ -149,7 +149,7 @@ export const CommonModal = (props) => {
         <div
             className="modal fade"
             id={props.ID}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="commonModalLabel"
             aria-hidden="true"
         >

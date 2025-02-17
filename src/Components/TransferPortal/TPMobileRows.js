@@ -139,7 +139,7 @@ const CFBOverviewRow = ({
                         ds ? (
                             <>
                                 <h2 className="mb-1 text-center">
-                                    <i class="bi bi-file-lock-fill"></i>
+                                    <i className="bi bi-file-lock-fill"></i>
                                 </h2>
                                 <h6 className="text-center">Locked</h6>
                             </>
@@ -332,7 +332,7 @@ const CBBOverviewRow = ({
                         ds ? (
                             <>
                                 <h2 className="mb-1 text-center">
-                                    <i class="bi bi-file-lock-fill"></i>
+                                    <i className="bi bi-file-lock-fill"></i>
                                 </h2>
                                 <h6 className="text-center">Locked</h6>
                             </>

@@ -13,7 +13,7 @@ const AuthorizedUser = ({ user, setCurrentUser, inbox }) => {
         return (
             <li className="nav-item dropdown">
                 <a
-                    class="nav-link dropdown-toggle"
+                    className="nav-link dropdown-toggle"
                     id="navbarDropdownMenuLink"
                     href="#"
                     role="button"
@@ -70,7 +70,7 @@ const AuthorizedUser = ({ user, setCurrentUser, inbox }) => {
         return (
             <li className="nav-item dropdown">
                 <a
-                    class="nav-link dropdown-toggle"
+                    className="nav-link dropdown-toggle"
                     href="#"
                     id="navbarDropdownMenuLink"
                     role="button"

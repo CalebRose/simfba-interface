@@ -75,12 +75,12 @@ const MobileRow = ({ data }) => {
                             data-bs-target={modalTarget}
                             title="Redshirt Player"
                         >
-                            <i class="bi bi-person-fill-lock link-danger"></i>
+                            <i className="bi bi-person-fill-lock link-danger"></i>
                         </button>
                     ) : (
                         <button type="button" className="btn btn-sm" disabled>
                             <i
-                                class={`bi bi-person-fill ${
+                                className={`bi bi-person-fill ${
                                     player.IsRedshirt
                                         ? 'link-danger'
                                         : 'link-secondary'
@@ -180,12 +180,12 @@ const DesktopRow = ({ data }) => {
                             data-bs-target={modalTarget}
                             title="Redshirt Player"
                         >
-                            <i class="bi bi-person-fill-lock link-danger"></i>
+                            <i className="bi bi-person-fill-lock link-danger"></i>
                         </button>
                     ) : (
                         <button type="button" className="btn btn-sm" disabled>
                             <i
-                                class={`bi bi-person-fill ${
+                                className={`bi bi-person-fill ${
                                     player.IsRedshirt
                                         ? 'link-danger'
                                         : 'link-secondary'

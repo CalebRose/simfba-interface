@@ -30,7 +30,7 @@ export const ProfessionalTeamRow = ({ team, isNFL, click }) => {
                                     className="btn btn-sm btn-outline-danger"
                                     onClick={click}
                                 >
-                                    <i class="bi bi-x-circle" />
+                                    <i className="bi bi-x-circle" />
                                 </button>
                             )}
                         </p>
@@ -51,7 +51,7 @@ export const ProfessionalTeamRow = ({ team, isNFL, click }) => {
                                     className="btn btn-sm btn-outline-danger"
                                     onClick={click}
                                 >
-                                    <i class="bi bi-x-circle" />
+                                    <i className="bi bi-x-circle" />
                                 </button>
                             )}
                         </p>
@@ -72,7 +72,7 @@ export const ProfessionalTeamRow = ({ team, isNFL, click }) => {
                                     name={team.ID}
                                     onClick={click}
                                 >
-                                    <i class="bi bi-x-circle" />
+                                    <i className="bi bi-x-circle" />
                                 </button>
                             )}
                         </p>
@@ -93,7 +93,7 @@ export const ProfessionalTeamRow = ({ team, isNFL, click }) => {
                                     className="btn btn-sm btn-outline-danger"
                                     onClick={click}
                                 >
-                                    <i class="bi bi-x-circle" />
+                                    <i className="bi bi-x-circle" />
                                 </button>
                             )}
                         </p>
@@ -123,7 +123,7 @@ export const ProfessionalTeamRow = ({ team, isNFL, click }) => {
                                     className="btn btn-sm btn-outline-danger"
                                     onClick={click}
                                 >
-                                    <i class="bi bi-x-circle" />
+                                    <i className="bi bi-x-circle" />
                                 </button>
                             )}
                         </p>
@@ -144,7 +144,7 @@ export const ProfessionalTeamRow = ({ team, isNFL, click }) => {
                                     className="btn btn-sm btn-outline-danger"
                                     onClick={click}
                                 >
-                                    <i class="bi bi-x-circle" />
+                                    <i className="bi bi-x-circle" />
                                 </button>
                             )}
                         </p>
@@ -165,7 +165,7 @@ export const ProfessionalTeamRow = ({ team, isNFL, click }) => {
                                     name={team.ID}
                                     onClick={click}
                                 >
-                                    <i class="bi bi-x-circle" />
+                                    <i className="bi bi-x-circle" />
                                 </button>
                             )}
                         </p>
@@ -186,7 +186,7 @@ export const ProfessionalTeamRow = ({ team, isNFL, click }) => {
                                     className="btn btn-sm btn-outline-danger"
                                     onClick={click}
                                 >
-                                    <i class="bi bi-x-circle" />
+                                    <i className="bi bi-x-circle" />
                                 </button>
                             )}
                         </p>

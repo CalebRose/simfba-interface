@@ -215,7 +215,7 @@ export const OptionCard = ({
                                 className="btn remove-option-btn"
                                 onClick={removeHelper}
                             >
-                                <i class="bi bi-x-circle-fill" />
+                                <i className="bi bi-x-circle-fill" />
                             </button>
                         </div>
                     </div>

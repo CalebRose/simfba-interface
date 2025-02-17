@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { connect, useSelector } from 'react-redux';
 
 // Routes & Components
@@ -51,7 +51,7 @@ import { Toaster } from 'react-hot-toast';
 import NFLDraftPage from './Components/NFL/Draft Room/NFLDraftPage';
 import TransferPortal from './Components/TransferPortal/TransferPortal';
 
-const Home = ({ viewMode, cfb_Timestamp }) => {
+const Home = ({ viewMode }) => {
     const user = useSelector((state) => state.user.currentUser);
     const [roleId, setRole] = React.useState('');
     const [bbaRoleId, setBBARole] = React.useState('');
@@ -82,396 +82,429 @@ const Home = ({ viewMode, cfb_Timestamp }) => {
         <div className={`App ${viewMode}`}>
             <Toaster position="top-right" />
             <NavBar />
-            <Route exact path={routes.LANDING} component={LandingPage} />
-            <Route
-                exact
-                path={routes.USER}
-                render={() =>
-                    user !== null ? (
-                        <Profile />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.TEAM}
-                render={() =>
-                    CFBTeam > 0 ? <Team /> : <Redirect to={routes.LANDING} />
-                }
-            />
-            <Route
-                exact
-                path={routes.ROSTER}
-                render={() =>
-                    CFBTeam > 0 ? <Roster /> : <Redirect to={routes.LANDING} />
-                }
-            />
-            <Route
-                exact
-                path={routes.CFB_GAMEPLAN}
-                render={() =>
-                    CFBTeam > 0 ? (
-                        <CFBGameplan />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.DEPTHCHART}
-                render={() =>
-                    CFBTeam > 0 ? (
-                        <CFBDepthChart />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.CFB_SCHEDULE}
-                render={() =>
-                    CFBTeam > 0 ? (
-                        <CFBSchedulePage />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route exact path={routes.APPROVE}>
-                {roleId === Constants.ADMIN ? (
-                    <ApproveRequests />
-                ) : (
-                    <Redirect to={routes.LANDING} />
-                )}
-            </Route>
-            <Route exact path={routes.APPROVE_NFL}>
-                {roleId === Constants.ADMIN ? (
-                    <ApproveNFLRequests />
-                ) : (
-                    <Redirect to={routes.LANDING} />
-                )}
-            </Route>
-            <Route exact path={routes.NFL_ADMIN_TRADE}>
-                {roleId === Constants.ADMIN ? (
-                    <AdminTradePortal />
-                ) : (
-                    <Redirect to={routes.LANDING} />
-                )}
-            </Route>
-            <Route
-                exact
-                path={routes.MANAGE_USERS}
-                render={() =>
-                    roleId === Constants.ADMIN ? (
-                        <ManageTeams />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.MANAGE_SIM}
-                render={() =>
-                    roleId === Constants.ADMIN ? (
-                        <ManageSim />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.AVAILABLE_TEAMS}
-                component={AvailableTeams}
-            />
-            <Route
-                exact
-                path={routes.CFB_RECRUITING}
-                render={() =>
-                    CFBTeam > 0 ? (
-                        <CFBRecruitingOverview />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.CFB_TEAM_RECRUITING_BOARD}
-                render={() =>
-                    CFBTeam > 0 ? (
-                        <CFBTeamRecruitingBoard />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.CFB_TRANSFER}
-                render={() =>
-                    CFBTeam > 0 ? (
-                        <TransferPortal isCFB={true} />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.CBB_TRANSFER}
-                render={() =>
-                    CBBTeam > 0 ? (
-                        <TransferPortal />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.CFB_STATS}
-                render={() =>
-                    CFBTeam > 0 || NFLTeam > 0 ? (
-                        <CFBStatisticsPage />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.NEWS}
-                render={() =>
-                    CFBTeam > 0 ? (
-                        <NewsPage />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.NFL_ROSTER}
-                render={() =>
-                    NFLTeam > 0 ? (
-                        <NFLRoster />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.NFL_GAMEPLAN}
-                render={() =>
-                    NFLTeam > 0 ? (
-                        <CFBGameplan isNFL />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.NFL_DEPTHCHART}
-                render={() =>
-                    NFLTeam > 0 ? (
-                        <NFLDepthChart />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.NFL_FREE_AGENCY}
-                render={() =>
-                    NFLTeam > 0 ? (
-                        <NFLFreeAgency />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.NFL_TRADEBLOCK}
-                render={() =>
-                    NFLTeam > 0 ? (
-                        <NFLTradeBlock />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.NFL_SCHEDULE}
-                render={() =>
-                    NFLTeam > 0 ? (
-                        <NFLSchedulePage />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
+            <Routes>
+                <Route path={routes.LANDING} element={<LandingPage />} />
+                <Route
+                    path={routes.USER}
+                    element={
+                        user !== null ? (
+                            <Profile />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.TEAM}
+                    element={
+                        CFBTeam > 0 ? (
+                            <Team />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.ROSTER}
+                    element={
+                        CFBTeam > 0 ? (
+                            <Roster />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.CFB_GAMEPLAN}
+                    element={
+                        CFBTeam > 0 ? (
+                            <CFBGameplan />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.DEPTHCHART}
+                    element={
+                        CFBTeam > 0 ? (
+                            <CFBDepthChart />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.CFB_SCHEDULE}
+                    element={
+                        CFBTeam > 0 ? (
+                            <CFBSchedulePage />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.APPROVE}
+                    element={
+                        roleId === Constants.ADMIN ? (
+                            <ApproveRequests />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
 
-            <Route exact path={routes.NFL_DRAFT_ROOM}>
-                {NFLTeam > 0 ? (
-                    <NFLDraftPage />
-                ) : (
-                    <Redirect to={routes.LANDING} />
-                )}
-            </Route>
+                <Route
+                    path={routes.APPROVE_NFL}
+                    element={
+                        roleId === Constants.ADMIN ? (
+                            <ApproveNFLRequests />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
 
-            <Route exact path={routes.SIGNUP} component={SignUp} />
-            <Route exact path={routes.LOGIN} component={Login} />
-            <Route
-                exact
-                path={routes.BBA_ADMIN}
-                render={() =>
-                    bbaRoleId === Constants.ADMIN ? (
-                        <BBAManageSim />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route exact path={routes.NBA_ADMIN_TRADE}>
-                {bbaRoleId === Constants.ADMIN ? (
-                    <NBATradePortal />
-                ) : (
-                    <Redirect to={routes.LANDING} />
-                )}
-            </Route>
-            <Route exact path={routes.BBA_APPROVE}>
-                {bbaRoleId === Constants.ADMIN ? (
-                    <BBAApproveRequests />
-                ) : (
-                    <Redirect to={routes.LANDING} />
-                )}
-            </Route>
-            <Route exact path={routes.NBA_APPROVE}>
-                {bbaRoleId === Constants.ADMIN ? (
-                    <NBAApproveRequests />
-                ) : (
-                    <Redirect to={routes.LANDING} />
-                )}
-            </Route>
-            <Route exact path={routes.BBA_USERS}>
-                {bbaRoleId === Constants.ADMIN ? (
-                    <BBAManageTeams />
-                ) : (
-                    <Redirect to={routes.LANDING} />
-                )}
-            </Route>
-            <Route
-                exact
-                path={routes.CBB_GAMEPLAN}
-                render={() =>
-                    CBBTeam > 0 ? (
-                        <CBBGameplan />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.CBB_TEAM}
-                render={() =>
-                    CBBTeam > 0 ? <BBATeam /> : <Redirect to={routes.LANDING} />
-                }
-            />
-            <Route exact path={routes.NBA_ROSTER}>
-                {NBATeam > 0 ? (
-                    <NBARosterPage />
-                ) : (
-                    <Redirect to={routes.LANDING} />
-                )}
-            </Route>
-            <Route exact path={routes.NBA_GAMEPLAN}>
-                {NBATeam > 0 ? (
-                    <NBAGameplan />
-                ) : (
-                    <Redirect to={routes.LANDING} />
-                )}
-            </Route>
+                <Route
+                    path={routes.NFL_ADMIN_TRADE}
+                    element={
+                        roleId === Constants.ADMIN ? (
+                            <AdminTradePortal />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
 
-            <Route exact path={routes.NBA_FREE_AGENCY}>
-                {NBATeam > 0 ? (
-                    <NBAFreeAgency />
-                ) : (
-                    <Redirect to={routes.LANDING} />
-                )}
-            </Route>
+                <Route
+                    path={routes.MANAGE_USERS}
+                    element={
+                        roleId === Constants.ADMIN ? (
+                            <ManageTeams />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.MANAGE_SIM}
+                    element={
+                        roleId === Constants.ADMIN ? (
+                            <ManageSim />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.AVAILABLE_TEAMS}
+                    element={<AvailableTeams />}
+                />
+                <Route
+                    path={routes.CFB_RECRUITING}
+                    element={
+                        CFBTeam > 0 ? (
+                            <CFBRecruitingOverview />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.CFB_TEAM_RECRUITING_BOARD}
+                    element={
+                        CFBTeam > 0 ? (
+                            <CFBTeamRecruitingBoard />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.CFB_TRANSFER}
+                    element={
+                        CFBTeam > 0 ? (
+                            <TransferPortal isCFB={true} />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.CBB_TRANSFER}
+                    element={
+                        CBBTeam > 0 ? (
+                            <TransferPortal />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.CFB_STATS}
+                    element={
+                        CFBTeam > 0 || NFLTeam > 0 ? (
+                            <CFBStatisticsPage />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.NEWS}
+                    element={
+                        CFBTeam > 0 ? (
+                            <NewsPage />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.NFL_ROSTER}
+                    element={
+                        NFLTeam > 0 ? (
+                            <NFLRoster />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.NFL_GAMEPLAN}
+                    element={
+                        NFLTeam > 0 ? (
+                            <CFBGameplan isNFL />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.NFL_DEPTHCHART}
+                    element={
+                        NFLTeam > 0 ? (
+                            <NFLDepthChart />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.NFL_FREE_AGENCY}
+                    element={
+                        NFLTeam > 0 ? (
+                            <NFLFreeAgency />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.NFL_TRADEBLOCK}
+                    element={
+                        NFLTeam > 0 ? (
+                            <NFLTradeBlock />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.NFL_SCHEDULE}
+                    element={
+                        NFLTeam > 0 ? (
+                            <NFLSchedulePage />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.NFL_DRAFT_ROOM}
+                    element={
+                        NFLTeam > 0 ? (
+                            <NFLDraftPage />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
 
-            <Route exact path={routes.NBA_TRADEBLOCK}>
-                {NBATeam > 0 ? (
-                    <NBATradeblock />
-                ) : (
-                    <Redirect to={routes.LANDING} />
-                )}
-            </Route>
+                <Route path={routes.SIGNUP} element={<SignUp />} />
+                <Route path={routes.LOGIN} element={<Login />} />
+                <Route
+                    path={routes.BBA_ADMIN}
+                    element={
+                        bbaRoleId === Constants.ADMIN ? (
+                            <BBAManageSim />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.NBA_ADMIN_TRADE}
+                    element={
+                        bbaRoleId === Constants.ADMIN ? (
+                            <NBATradePortal />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
 
-            <Route exact path={routes.NBA_DRAFT_ROOM}>
-                {NBATeam > 0 ? (
-                    <NBADraftPage />
-                ) : (
-                    <Redirect to={routes.LANDING} />
-                )}
-            </Route>
+                <Route
+                    path={routes.BBA_APPROVE}
+                    element={
+                        bbaRoleId === Constants.ADMIN ? (
+                            <BBAApproveRequests />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
 
-            <Route
-                exact
-                path={routes.CBB_RECRUITING}
-                render={() =>
-                    CBBTeam > 0 ? (
-                        <CBBRecruitingDashboard />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.CBB_RECRUITING_BOARD}
-                render={() =>
-                    CBBTeam > 0 ? (
-                        <CBBRecruitingTeamBoard />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.CBB_SCHEDULE}
-                render={() =>
-                    CBBTeam > 0 || NBATeam > 0 ? (
-                        <CBBSchedule />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
-            <Route
-                exact
-                path={routes.CBB_STATS}
-                render={() =>
-                    CBBTeam > 0 || NBATeam > 0 ? (
-                        <CBBStatistics />
-                    ) : (
-                        <Redirect to={routes.LANDING} />
-                    )
-                }
-            />
+                <Route
+                    path={routes.NBA_APPROVE}
+                    element={
+                        bbaRoleId === Constants.ADMIN ? (
+                            <NBAApproveRequests />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+
+                <Route
+                    path={routes.BBA_USERS}
+                    element={
+                        bbaRoleId === Constants.ADMIN ? (
+                            <BBAManageTeams />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+
+                <Route
+                    path={routes.CBB_GAMEPLAN}
+                    element={
+                        CBBTeam > 0 ? (
+                            <CBBGameplan />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.CBB_TEAM}
+                    element={
+                        CBBTeam > 0 ? (
+                            <BBATeam />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.NBA_ROSTER}
+                    element={
+                        NBATeam > 0 ? (
+                            <NBARosterPage />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+
+                <Route
+                    path={routes.NBA_GAMEPLAN}
+                    element={
+                        NBATeam > 0 ? (
+                            <NBAGameplan />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+
+                <Route
+                    path={routes.NBA_FREE_AGENCY}
+                    element={
+                        NBATeam > 0 ? (
+                            <NBAFreeAgency />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+
+                <Route
+                    path={routes.NBA_TRADEBLOCK}
+                    element={
+                        NBATeam > 0 ? (
+                            <NBATradeblock />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+
+                <Route
+                    path={routes.NBA_DRAFT_ROOM}
+                    element={
+                        NBATeam > 0 ? (
+                            <NBADraftPage />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+
+                <Route
+                    path={routes.CBB_RECRUITING}
+                    element={
+                        CBBTeam > 0 ? (
+                            <CBBRecruitingDashboard />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.CBB_RECRUITING_BOARD}
+                    element={
+                        CBBTeam > 0 ? (
+                            <CBBRecruitingTeamBoard />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.CBB_SCHEDULE}
+                    element={
+                        CBBTeam > 0 || NBATeam > 0 ? (
+                            <CBBSchedule />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route
+                    path={routes.CBB_STATS}
+                    element={
+                        CBBTeam > 0 || NBATeam > 0 ? (
+                            <CBBStatistics />
+                        ) : (
+                            <Navigate to={routes.LANDING} />
+                        )
+                    }
+                />
+                <Route path="*" element={<Navigate to={routes.LANDING} />} />
+            </Routes>
             <footer
                 className={
                     !isMobile

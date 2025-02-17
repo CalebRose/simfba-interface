@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import toast from 'react-hot-toast';
@@ -20,22 +20,62 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     let _scheduleService = new FBAScheduleService();
     let _landingPageService = new FBALandingPageService();
     const dispatch = useDispatch();
-    const [team, setTeam] = React.useState('');
-    const [logo, setLogo] = React.useState('');
-    const [teamData, setTeamData] = React.useState(null);
-    const [teamColors, setTeamColors] = React.useState('');
-    const [viewableMatches, setViewableMatches] = React.useState(null);
-    const [games, setGames] = React.useState([]);
-    const [standings, setStandings] = React.useState([]);
-    const [newsFeed, setNewsFeed] = React.useState([]);
-    const [viewWidth, setViewWidth] = React.useState(window.innerWidth);
+    const [team, setTeam] = useState('');
+    const [logo, setLogo] = useState('');
+    const [teamData, setTeamData] = useState(null);
+    const [teamColors, setTeamColors] = useState('');
+    const [viewableMatches, setViewableMatches] = useState(null);
+    const [games, setGames] = useState([]);
+    const [standings, setStandings] = useState([]);
+    const [newsFeed, setNewsFeed] = useState([]);
+    const [viewWidth, setViewWidth] = useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:845px)` });
+
+    const getTeam = useCallback(async () => {
+        let response = await teamService.GetTeamByTeamId(currentUser.teamId);
+        setTeamData(response);
+        dispatch(setCFBTeam(response));
+    }, [currentUser.teamId, dispatch]);
+
+    const getConferenceStandings = useCallback(async () => {
+        if (!cfbTeam?.ConferenceID || !cfb_Timestamp?.CollegeSeasonID) return;
+        const res = await teamService.GetTeamStandingsByConference(
+            cfbTeam.ConferenceID,
+            cfb_Timestamp.CollegeSeasonID
+        );
+        setStandings(res);
+    }, [cfbTeam, cfb_Timestamp, teamService]);
+
+    const getGames = useCallback(async () => {
+        if (!cfbTeam?.ID || !cfb_Timestamp?.CollegeSeasonID) return;
+        const res = await _scheduleService.GetCollegeGamesByTeamAndSeason(
+            cfbTeam.ID,
+            cfb_Timestamp.CollegeSeasonID
+        );
+        setGames(res);
+    }, [cfbTeam, cfb_Timestamp, _scheduleService]);
+
+    const getPersonalizedNewsFeed = useCallback(async () => {
+        if (!currentUser?.teamId) return;
+        const res = await _landingPageService.GetPersonalizedNewsFeed(
+            'CFB',
+            currentUser.teamId
+        );
+        setNewsFeed(res);
+    }, [currentUser?.teamId, _landingPageService]);
+
+    const getBread = () => {
+        toast(`Here's some bread!`, {
+            icon: '🍞'
+        });
+    };
+
     // For mobile
     useEffect(() => {
         if (!viewWidth) {
             setViewWidth(window.innerWidth);
         }
-    }, [viewWidth]);
+    }, [viewWidth, isMobile]);
 
     // Get Team call
     useEffect(() => {
@@ -43,118 +83,47 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
             setTeam(currentUser.team);
             setLogo(getLogo(SimCFB, currentUser.teamId, currentUser.IsRetro));
         }
-        if (!cfbTeam) {
-            getTeam();
-        } else {
-            if (!teamData) {
-                setTeamData(cfbTeam);
-            }
-        }
+        if (!cfbTeam) getTeam();
         if (cfb_Timestamp && cfbTeam) {
-            GetConferenceStandings();
-            GetGames();
+            getConferenceStandings();
+            getGames();
             getPersonalizedNewsFeed();
         }
-    }, [currentUser, cfbTeam, cfb_Timestamp]);
+    }, [
+        currentUser,
+        cfbTeam,
+        cfb_Timestamp,
+        getTeam,
+        getConferenceStandings,
+        getGames,
+        getPersonalizedNewsFeed
+    ]);
 
     useEffect(() => {
-        if (
-            cfb_Timestamp &&
-            cfb_Timestamp.CollegeWeek > -1 &&
-            games &&
-            games.length > 0
-        ) {
-            const currentWeek = cfb_Timestamp.CollegeWeek;
-            let prevWeek = isMobile ? currentWeek - 1 : currentWeek - 2;
-            let nextWeek = isMobile ? currentWeek + 1 : currentWeek + 2;
-            let prevIdx = 0;
-            let nextIdx = 0;
-            if (prevWeek < 0) {
-                nextWeek = nextWeek - prevWeek;
-                prevWeek = 0;
-            }
-            prevIdx = games.findIndex((x) => x.Week === prevWeek);
-            nextIdx = games.findIndex((x) => x.Week === nextWeek);
-            while (prevIdx === -1) {
-                prevWeek += 1;
-                if (prevWeek > 20) {
-                    prevIdx = -2;
-                    break;
-                }
-                prevIdx = games.findIndex((x) => x.Week === prevWeek);
-            }
-            while (nextIdx === -1) {
-                nextWeek -= 1;
-                nextIdx = games.findIndex((x) => x.Week === nextWeek);
-                if (nextWeek <= prevWeek) {
-                    nextIdx = prevIdx;
-                    break;
-                }
-            }
-            if (nextIdx === prevIdx && prevIdx === -2) {
-                setViewableMatches(() => []);
-            } else {
-                let gameRange = games.slice(prevIdx, nextIdx + 1);
-                setViewableMatches(() => gameRange);
-            }
+        if (!cfb_Timestamp?.CollegeWeek || !games.length) return;
+        let currentWeek = cfb_Timestamp.CollegeWeek;
+        let prevWeek = isMobile ? currentWeek - 1 : currentWeek - 2;
+        let nextWeek = isMobile ? currentWeek + 1 : currentWeek + 2;
+
+        let prevIdx = games.findIndex((x) => x.Week === prevWeek);
+        let nextIdx = games.findIndex((x) => x.Week === nextWeek);
+
+        if (prevIdx === -1 || nextIdx === -1) {
+            setViewableMatches([]);
+        } else {
+            setViewableMatches(games.slice(prevIdx, nextIdx + 1));
         }
-    }, [cfb_Timestamp, games]);
+    }, [cfb_Timestamp, games, isMobile]);
 
     useEffect(() => {
         if (teamData) {
-            const colors = {
+            setTeamColors({
                 color: '#fff',
-                backgroundColor:
-                    teamData && teamData.ColorOne
-                        ? teamData.ColorOne
-                        : '#6c757d',
-                borderColor:
-                    teamData && teamData.ColorOne
-                        ? teamData.ColorOne
-                        : '#6c757d'
-            };
-            setTeamColors(colors);
+                backgroundColor: teamData.ColorOne || '#6c757d',
+                borderColor: teamData.ColorOne || '#6c757d'
+            });
         }
     }, [teamData]);
-
-    const getTeam = async () => {
-        let response = await teamService.GetTeamByTeamId(currentUser.teamId);
-        setTeamData(response);
-        dispatch(setCFBTeam(response));
-    };
-
-    const GetConferenceStandings = async () => {
-        const res = await teamService.GetTeamStandingsByConference(
-            cfbTeam.ConferenceID,
-            cfb_Timestamp.CollegeSeasonID
-        );
-
-        setStandings(() => res);
-    };
-
-    const GetGames = async () => {
-        const res = await _scheduleService.GetCollegeGamesByTeamAndSeason(
-            cfbTeam.ID,
-            cfb_Timestamp.CollegeSeasonID
-        );
-
-        setGames(() => res);
-    };
-
-    const getPersonalizedNewsFeed = async () => {
-        let res = await _landingPageService.GetPersonalizedNewsFeed(
-            'CFB',
-            currentUser.teamId
-        );
-
-        setNewsFeed(() => res);
-    };
-
-    const getBread = () => {
-        toast(`Here's some bread!`, {
-            icon: '🍞'
-        });
-    };
 
     return (
         <>
@@ -165,7 +134,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                             className="landing-image"
                             src={logo}
                             alt="Go Cougs"
-                        />{' '}
+                        />
                         {team}
                     </h2>
                 </div>
@@ -385,7 +354,7 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                 : 'row justify-content-start  ms-1'
                         }
                     >
-                        {standings && standings.length > 0 ? (
+                        {standings.length > 0 ? (
                             <>
                                 <div
                                     className={

@@ -23,7 +23,7 @@ class LoginPage extends Component {
                 message: 'Attempting Sign In...'
             });
             const auth = getAuth();
-            await signInWithEmailAndPassword(email, password);
+            await signInWithEmailAndPassword(auth, email, password);
             this.setState({
                 email: '',
                 password: '',
@@ -62,7 +62,7 @@ class LoginPage extends Component {
         const { email, password, message, hasError, isLoading } = this.state;
         return (
             <div className="LoginPage">
-                <div class="row">
+                <div className="row">
                     <form>
                         <FormInput
                             name="email"

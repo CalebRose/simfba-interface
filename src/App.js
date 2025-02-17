@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Redux
 import { connect } from 'react-redux';
@@ -10,11 +10,7 @@ import { setCFBTimestamp } from './Redux/timestamp/timestamp.actions';
 // Firebase
 import { getAuth, onAuthStateChanged, getIdToken } from 'firebase/auth';
 import { doc, getDoc, onSnapshot } from 'firebase/firestore';
-import {
-    auth,
-    firestore,
-    createUserProfileDocument
-} from './Firebase/firebase';
+import { firestore } from './Firebase/firebase';
 // CSS
 import './style.css';
 
@@ -23,70 +19,13 @@ import Home from './Home';
 import AdminService from './_Services/simFBA/AdminService';
 import BBAAdminService from './_Services/simNBA/BBAAdminService';
 
-class App extends Component {
-    state = {
-        user: {
-            id: null,
-            username: '',
-            team: '',
-            teamAbbr: '',
-            mascot: '',
-            roleID: null,
-            teamId: ''
-        },
-        cbbTimeStamp: {
-            ID: null,
-            SeasonID: null,
-            CollegeWeekID: null,
-            NBAWeekID: null,
-            CollegeWeek: null,
-            NBAWeek: null,
-            GamesARan: false,
-            GamesBRan: false,
-            GamesCRan: false,
-            RecruitingSynced: false,
-            GMActionsComplete: false,
-            IsOffSeason: false
-        },
-        cfbTimeStamp: {
-            ID: null,
-            CollegeWeekID: null,
-            CollegeWeek: null,
-            CollegeSeasonID: null,
-            CollegeSeason: null,
-            NFLSeasonID: null,
-            NFLSeason: null,
-            ThursdayGames: false,
-            FridayGames: false,
-            SaturdayMorning: false,
-            SaturdayNoon: false,
-            SaturdayEvening: false,
-            SaturdayNight: false,
-            NFLThursdayEvening: false,
-            NFLSundayNoon: false,
-            NFLSundayAfternoon: false,
-            NFLSundayEvening: false,
-            NFLMondayEvening: false,
-            NFLTradingAllowed: false,
-            NFLPreseason: false,
-            RecruitingSynced: false,
-            GMActionsCompleted: false,
-            IsOffSeason: false
-        }
-    };
-
-    _adminService = new AdminService();
-    _bbaAdminService = new BBAAdminService();
-
-    // Global Variables
-    unSubscribeFromAuth = null;
-
-    // Components
-    componentDidMount() {
-        const { setCurrentUser, setCBBTimestamp, setCFBTimestamp } = this.props;
-        const authInstance = getAuth(); // Use the correct Firebase Auth instance
-
-        this.unSubscribeFromAuth = onAuthStateChanged(
+const App = ({ setCurrentUser, setCBBTimestamp, setCFBTimestamp }) => {
+    const navigate = useNavigate(); // ✅ Hooks are now inside a functional component
+    const authInstance = getAuth();
+    const _adminService = new AdminService();
+    const _bbaAdminService = new BBAAdminService();
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(
             authInstance,
             async (userAuth) => {
                 if (userAuth) {
@@ -110,6 +49,11 @@ class App extends Component {
                         }
                     });
 
+                    const cfbTS = await _adminService.GetCurrentTimestamp();
+                    const cbbTS = await _bbaAdminService.GetCurrentTimestamp();
+                    setCFBTimestamp(cfbTS);
+                    setCBBTimestamp(cbbTS);
+
                     // Fetch ID Token
                     try {
                         const idToken = await getIdToken(userAuth);
@@ -120,15 +64,12 @@ class App extends Component {
                 }
             }
         );
-    }
 
-    componentWillUnmount() {
-        this.unSubscribeFromAuth();
-    }
-    render() {
-        return <Home />;
-    }
-}
+        return () => unsubscribe(); // Cleanup function to avoid memory leaks
+    }, [setCurrentUser]);
+
+    return <Home />;
+};
 
 // const mapStateToProps = ({ user }) => ({ // commenting out, not used
 //   setCurrentUser: user.currentUser
@@ -140,4 +81,4 @@ const mapDispatchToProps = (dispatch) => ({
     setCFBTimestamp: (cfbTimestamp) => dispatch(setCFBTimestamp(cfbTimestamp))
 });
 
-export default withRouter(connect(null, mapDispatchToProps)(App));
+export default connect(null, mapDispatchToProps)(App);

@@ -95,6 +95,7 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
     const getRoster = async (ID) => {
         if (ID !== null || ID > 0) {
             const res = await rosterService.GetCFBRosterDataByTeamID(ID);
+            console.log({ res });
             const { Players, Promises } = res;
             setRoster(() => [...Players]);
             setViewRoster(() => [...Players]);
@@ -383,14 +384,18 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
                     team={team}
                     isCFB
                 />
-                <PromisePlayerModal
-                    promisePlayer={promisePlayer}
-                    submit={MakePromise}
-                    teams={teams}
-                    seasonID={cfb_Timestamp.CollegeSeasonID}
-                    teamID={team.ID}
-                    isCFB
-                />
+
+                {cfb_Timestamp && (
+                    <PromisePlayerModal
+                        promisePlayer={promisePlayer}
+                        submit={MakePromise}
+                        teams={teams}
+                        seasonID={cfb_Timestamp.CollegeSeasonID}
+                        teamID={team.ID}
+                        isCFB
+                    />
+                )}
+
                 <div className="col-md-10">
                     <div className="row">
                         <div className="col-4">
@@ -543,7 +548,8 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {viewRoster &&
+                                        {cfb_Timestamp &&
+                                            viewRoster &&
                                             viewRoster.length > 0 &&
                                             viewRoster.map((player, idx) => (
                                                 <>
@@ -593,7 +599,8 @@ const Roster = ({ currentUser, cfbTeam, cfb_Timestamp, viewMode }) => {
                             </div>
                         ) : (
                             <>
-                                {viewRoster &&
+                                {cfb_Timestamp &&
+                                    viewRoster &&
                                     viewRoster.length > 0 &&
                                     viewRoster.map((player, idx) => (
                                         <>

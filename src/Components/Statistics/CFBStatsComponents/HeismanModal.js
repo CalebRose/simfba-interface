@@ -6,26 +6,26 @@ const HeismanModal = ({ list, viewMode }) => {
     const modalClass = GetModalClass(viewMode);
     return (
         <div
-            class="modal fade"
+            className="modal fade"
             id="heismanModal"
             tabindex="-1"
             aria-labelledby="heismanModal"
             aria-hidden="true"
         >
-            <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                <div class={modalClass}>
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">
+            <div className="modal-dialog modal-dialog-scrollable modal-xl">
+                <div className={modalClass}>
+                    <div className="modal-header">
+                        <h5 className="modal-title" id="exampleModalLabel">
                             Heisman Watch List
                         </h5>
                         <button
                             type="button"
-                            class="btn-close"
+                            className="btn-close"
                             data-bs-dismiss="modal"
                             aria-label="Close"
                         ></button>
                     </div>
-                    <div class="modal-body">
+                    <div className="modal-body">
                         <div className="row">
                             <div className="col-md-1">
                                 <h4>Rank</h4>
@@ -78,10 +78,10 @@ const HeismanModal = ({ list, viewMode }) => {
                                 );
                             })}
                     </div>
-                    <div class="modal-footer">
+                    <div className="modal-footer">
                         <button
                             type="button"
-                            class="btn btn-secondary"
+                            className="btn btn-secondary"
                             data-bs-dismiss="modal"
                         >
                             Close

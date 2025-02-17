@@ -229,7 +229,7 @@ export const NFLRosterPlayerRow = ({
                             }
                             onClick={() => tagPlayer(() => player)}
                         >
-                            <i class="bi bi-tag-fill" />
+                            <i className="bi bi-tag-fill" />
                         </button>
                         <button
                             type="button"
@@ -244,7 +244,7 @@ export const NFLRosterPlayerRow = ({
                                 !canModify
                             }
                         >
-                            <i class="bi bi-bandaid" />
+                            <i className="bi bi-bandaid" />
                         </button>
                         <button
                             type="button"

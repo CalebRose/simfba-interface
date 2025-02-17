@@ -54,7 +54,7 @@ export const NBADrafteeRow = ({
                         </h2>
                     ) : lockFlag ? (
                         <h2>
-                            <i class="bi bi-file-lock-fill" />
+                            <i className="bi bi-file-lock-fill" />
                         </h2>
                     ) : (
                         <h2>
@@ -91,7 +91,7 @@ export const NBADrafteeRow = ({
                             </h2>
                         ) : lockFlag ? (
                             <h2>
-                                <i class="bi bi-file-lock-fill" />
+                                <i className="bi bi-file-lock-fill" />
                             </h2>
                         ) : (
                             <h2>

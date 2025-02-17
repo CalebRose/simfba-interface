@@ -641,8 +641,13 @@ const CFBRecruitingOverview = ({
                                 </div>
 
                                 <div className="row justify-content-center pt-2 mt-4 mb-2">
-                                    <div class="spinner-border" role="status">
-                                        <span class="sr-only">Loading...</span>
+                                    <div
+                                        className="spinner-border"
+                                        role="status"
+                                    >
+                                        <span className="sr-only">
+                                            Loading...
+                                        </span>
                                     </div>
                                 </div>
                             </>

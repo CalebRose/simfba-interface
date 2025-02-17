@@ -282,7 +282,7 @@ class AvailableTeams extends Component {
                         <div className="btn-group-vertical mb-2">
                             <button
                                 type="button"
-                                class="btn btn-primary btn-sm mb-1"
+                                className="btn btn-primary btn-sm mb-1"
                                 value="CFB"
                                 onClick={this.selectSport}
                             >
@@ -290,7 +290,7 @@ class AvailableTeams extends Component {
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-primary btn-sm mb-1"
+                                className="btn btn-primary btn-sm mb-1"
                                 value="NFL"
                                 onClick={this.selectSport}
                             >
@@ -298,7 +298,7 @@ class AvailableTeams extends Component {
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-primary btn-sm mb-1"
+                                className="btn btn-primary btn-sm mb-1"
                                 value="CBB"
                                 onClick={this.selectSport}
                             >
@@ -306,7 +306,7 @@ class AvailableTeams extends Component {
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-primary btn-sm"
+                                className="btn btn-primary btn-sm"
                                 value="NBA"
                                 onClick={this.selectSport}
                             >

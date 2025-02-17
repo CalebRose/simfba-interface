@@ -221,7 +221,7 @@ const NFLTeamDropdownItem = (props) => {
     };
     return (
         <li>
-            <p class="dropdown-item" value={team} onClick={handleChange}>
+            <p className="dropdown-item" value={team} onClick={handleChange}>
                 {team.TeamName}
             </p>
         </li>
