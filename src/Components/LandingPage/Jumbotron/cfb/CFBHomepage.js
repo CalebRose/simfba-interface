@@ -31,38 +31,38 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
     const [viewWidth, setViewWidth] = useState(window.innerWidth);
     const isMobile = useMediaQuery({ query: `(max-width:845px)` });
 
-    const getTeam = useCallback(async () => {
+    const getTeam = async () => {
         let response = await teamService.GetTeamByTeamId(currentUser.teamId);
         setTeamData(response);
         dispatch(setCFBTeam(response));
-    }, [currentUser.teamId, dispatch]);
+    };
 
-    const getConferenceStandings = useCallback(async () => {
+    const getConferenceStandings = async () => {
         if (!cfbTeam?.ConferenceID || !cfb_Timestamp?.CollegeSeasonID) return;
         const res = await teamService.GetTeamStandingsByConference(
             cfbTeam.ConferenceID,
             cfb_Timestamp.CollegeSeasonID
         );
         setStandings(res);
-    }, [cfbTeam, cfb_Timestamp, teamService]);
+    };
 
-    const getGames = useCallback(async () => {
+    const getGames = async () => {
         if (!cfbTeam?.ID || !cfb_Timestamp?.CollegeSeasonID) return;
         const res = await _scheduleService.GetCollegeGamesByTeamAndSeason(
             cfbTeam.ID,
             cfb_Timestamp.CollegeSeasonID
         );
         setGames(res);
-    }, [cfbTeam, cfb_Timestamp, _scheduleService]);
+    };
 
-    const getPersonalizedNewsFeed = useCallback(async () => {
+    const getPersonalizedNewsFeed = async () => {
         if (!currentUser?.teamId) return;
         const res = await _landingPageService.GetPersonalizedNewsFeed(
             'CFB',
             currentUser.teamId
         );
         setNewsFeed(res);
-    }, [currentUser?.teamId, _landingPageService]);
+    };
 
     const getBread = () => {
         toast(`Here's some bread!`, {
