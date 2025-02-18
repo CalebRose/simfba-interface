@@ -39,8 +39,8 @@
     "scripts": {
         "predeploy": "npm run build",
         "start": "webpack serve --mode development --config webpack-config.js",
-        "build": "webpack --mode production",
-        "deploy": "webpack --mode production && firebase deploy",
+        "build": "webpack --mode production --config webpack-config.js",
+        "deploy": "gh-pages -d public",
         "clean": "rm -rf public/*",
         "webpack": "webpack --config webpack-config.js",
         "test": "react-scripts test",

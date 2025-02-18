@@ -14,7 +14,7 @@ module.exports = {
         filename: 'bundle.js',
         path: path.resolve(__dirname, './public'),
         clean: true,
-        publicPath: '/simsn-interface/'
+        publicPath: '/'
     },
     devServer: {
         static: {
