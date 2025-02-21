@@ -32,7 +32,7 @@ const LoginPage = () => {
             }
 
             setTimeout(() => {
-                navigate(routes.USER); // Replaces history.push('/user')
+                navigate(routes.LANDING); // Replaces history.push('/user')
             }, 1000);
         } catch (error) {
             console.error(error);

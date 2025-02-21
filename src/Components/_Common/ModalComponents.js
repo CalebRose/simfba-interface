@@ -30,7 +30,7 @@ export const InfoModal = (props) => (
     <div
         className="modal modal-lg fade"
         id={props.id}
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="schemeModalLabel"
         aria-hidden="true"
     >
@@ -66,7 +66,7 @@ export const OfficialPollModal = (props) => (
     <div
         className="modal modal-md fade"
         id={props.id}
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="schemeModalLabel"
         aria-hidden="true"
     >
@@ -102,7 +102,7 @@ export const ExtraLargeModal = (props) => (
     <div
         className="modal modal-xl fade"
         id={props.id}
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="modalLabel"
         aria-hidden="true"
     >
@@ -190,7 +190,7 @@ export const ConfirmModal = (props) => {
         <div
             className="modal fade"
             id={props.ModalID}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="saveRecruitingBoardModalLabel"
             aria-hidden="true"
         >

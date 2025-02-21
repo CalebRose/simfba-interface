@@ -14,7 +14,7 @@ export const TradeBlockModal = ({ player, idx, tradeblock, viewMode }) => {
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="extendPlayerModalLabel"
             aria-hidden="true"
         >

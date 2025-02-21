@@ -11,7 +11,7 @@ const ConfirmRESSyncModal = (props) => {
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="syncRESModalLabel"
             aria-hidden="true"
         >

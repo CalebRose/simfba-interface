@@ -15,7 +15,7 @@ const CBBRankingsModal = (props) => {
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             data-bs-keyboard="false"
             aria-labelledby="rankingModalLabel"
             aria-hidden="true"

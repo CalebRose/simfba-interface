@@ -209,7 +209,7 @@ export const CFBRecruitingAIConfigModal = ({
         <div
             className="modal fade"
             id="recruitingAIModal"
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="saveRecruitingBoardModalLabel"
             aria-hidden="true"
         >

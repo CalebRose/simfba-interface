@@ -415,7 +415,7 @@ export const NBATradeProposalModal = ({
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="proposalModalLabel"
             aria-hidden="true"
         >
@@ -582,7 +582,7 @@ export const NBATradePreferencesModal = ({
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="extendPlayerModalLabel"
             aria-hidden="true"
         >

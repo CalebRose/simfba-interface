@@ -11,7 +11,7 @@ const ConfirmWeekSyncModal = (props) => {
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="syncRecruitModalLabel"
             aria-hidden="true"
         >

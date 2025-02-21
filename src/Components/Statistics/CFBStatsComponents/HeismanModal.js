@@ -8,7 +8,7 @@ const HeismanModal = ({ list, viewMode }) => {
         <div
             className="modal fade"
             id="heismanModal"
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="heismanModal"
             aria-hidden="true"
         >

@@ -17,7 +17,7 @@ export const GLeagueModal = ({ player, idx, setToGLeague, viewMode }) => {
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="cutPlayerModalLabel"
             aria-hidden="true"
         >
@@ -81,7 +81,7 @@ export const TwoWayModal = ({ player, idx, setToTwoWay, viewMode }) => {
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="cutPlayerModalLabel"
             aria-hidden="true"
         >
@@ -155,7 +155,7 @@ export const PlayerModal = ({ team, player, idx, viewMode, retro }) => {
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="cutPlayerModalLabel"
             aria-hidden="true"
         >

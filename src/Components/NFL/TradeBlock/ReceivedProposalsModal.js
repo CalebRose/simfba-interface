@@ -167,7 +167,7 @@ export const ReceivedProposalsModal = ({
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="proposalModalLabel"
             aria-hidden="true"
         >

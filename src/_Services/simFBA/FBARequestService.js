@@ -110,20 +110,12 @@ export default class FBARequestService {
 
     async RejectRequest(payload) {
         // DB Request
-        let res = await fetch(url + 'requests/reject/', {
-            headers: {
-                authorization: localStorage.getItem('token'),
-                'Content-Type': 'application/json'
-            },
-            method: 'DELETE',
-            body: JSON.stringify({
-                ID: payload.ID,
-                TeamID: payload.ReqID,
-                Username: payload.Username,
-                IsApproved: true
-            })
+        return await PostCall(`${url}requests/reject/`, {
+            ID: payload.ID,
+            TeamID: payload.ReqID,
+            Username: payload.Username,
+            IsApproved: true
         });
-        return res;
     }
 
     async RejectNFLRequest(payload) {

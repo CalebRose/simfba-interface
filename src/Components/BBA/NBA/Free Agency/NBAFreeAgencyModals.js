@@ -57,7 +57,7 @@ export const NBAFreeAgencyPlayerModal = ({ player, idx, theme, retro }) => {
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="extendPlayerModalLabel"
             aria-hidden="true"
         >
@@ -589,7 +589,7 @@ export const NBAFreeAgentOfferModal = ({
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="extendPlayerModalLabel"
             aria-hidden="true"
         >
@@ -1029,7 +1029,7 @@ export const NBAWaiverOfferModal = ({
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="extendPlayerModalLabel"
             aria-hidden="true"
         >

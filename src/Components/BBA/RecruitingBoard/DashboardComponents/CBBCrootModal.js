@@ -64,7 +64,7 @@ const CBBCrootModal = (props) => {
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="crootModalLabel"
             aria-hidden="true"
         >

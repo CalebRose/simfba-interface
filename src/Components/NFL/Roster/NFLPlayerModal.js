@@ -35,7 +35,7 @@ export const NFLPlayerModal = ({ team, player, idx, viewMode, retro }) => {
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="extendPlayerModalLabel"
             aria-hidden="true"
         >

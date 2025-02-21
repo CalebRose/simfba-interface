@@ -312,7 +312,7 @@ export const ExtendPlayerModal = ({
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="extendPlayerModalLabel"
             aria-hidden="true"
         >
@@ -799,7 +799,7 @@ export const ExtendNBAPlayerModal = ({
         <div
             className="modal fade"
             id={modalId}
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="extendPlayerModalLabel"
             aria-hidden="true"
         >
