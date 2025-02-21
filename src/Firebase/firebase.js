@@ -7,7 +7,8 @@ import {
     doc,
     getDoc,
     onSnapshot,
-    updateDoc
+    updateDoc,
+    setDoc
 } from 'firebase/firestore';
 import config_env from './../config';
 
@@ -35,7 +36,7 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
         const createdAt = new Date();
 
         try {
-            await updateDoc(userRef, {
+            await setDoc(userRef, {
                 username,
                 email,
                 createdAt,
