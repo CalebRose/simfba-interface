@@ -161,7 +161,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         to={routes.ROSTER}
                                         role="button"
                                         className="btn btn-primary btn-sm me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Roster
                                     </Link>
@@ -169,7 +168,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         to={routes.CFB_GAMEPLAN}
                                         role="button"
                                         className="btn btn-primary btn-sm me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Gameplan
                                     </Link>
@@ -177,7 +175,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         to={routes.DEPTHCHART}
                                         role="button"
                                         className="btn btn-primary btn-sm me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Depth Chart
                                     </Link>
@@ -187,7 +184,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                             to={routes.CFB_RECRUITING}
                                             type="button"
                                             className="btn btn-primary btn-sm me-2 shadow"
-                                            style={teamColors ? teamColors : {}}
                                         >
                                             Recruit
                                         </Link>
@@ -196,7 +192,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                             to={routes.CFB_TRANSFER}
                                             type="button"
                                             className="btn btn-primary btn-sm me-2 shadow"
-                                            style={teamColors ? teamColors : {}}
                                         >
                                             Portal
                                         </Link>
@@ -209,7 +204,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         to={routes.CFB_STATS}
                                         type="button"
                                         className="btn btn-primary btn-sm me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Stats
                                     </Link>
@@ -217,7 +211,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         to={routes.CFB_SCHEDULE}
                                         type="button"
                                         className="btn btn-primary btn-sm me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Schedule
                                     </Link>
@@ -232,7 +225,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         to={routes.ROSTER}
                                         role="button"
                                         className="btn btn-primary btn-sm me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Roster
                                     </Link>
@@ -240,7 +232,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         to={routes.CFB_GAMEPLAN}
                                         role="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Gameplan
                                     </Link>
@@ -248,7 +239,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         to={routes.DEPTHCHART}
                                         role="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Depth Chart
                                     </Link>
@@ -272,7 +262,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                             to={routes.CFB_RECRUITING}
                                             type="button"
                                             className="btn btn-primary btn-sm me-2 shadow"
-                                            style={teamColors ? teamColors : {}}
                                         >
                                             Recruit
                                         </Link>
@@ -281,7 +270,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                             to={routes.CFB_TRANSFER}
                                             type="button"
                                             className="btn btn-primary btn-sm me-2 shadow"
-                                            style={teamColors ? teamColors : {}}
                                         >
                                             Portal
                                         </Link>
@@ -290,7 +278,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         to={routes.CFB_STATS}
                                         type="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Statistics
                                     </Link>
@@ -298,7 +285,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         to={routes.CFB_SCHEDULE}
                                         type="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Schedule
                                     </Link>
@@ -306,7 +292,6 @@ const CFBHomepage = ({ currentUser, cfbTeam, cfb_Timestamp }) => {
                                         to={routes.NEWS}
                                         type="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         News
                                     </Link>

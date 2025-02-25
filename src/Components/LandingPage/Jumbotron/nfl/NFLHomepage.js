@@ -199,7 +199,6 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                         to={routes.NFL_ROSTER}
                                         role="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Team
                                     </Link>
@@ -207,7 +206,6 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                         to={routes.NFL_GAMEPLAN}
                                         role="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Gameplan
                                     </Link>
@@ -215,7 +213,6 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                         to={routes.NFL_DEPTHCHART}
                                         role="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Depth Chart
                                     </Link>
@@ -227,7 +224,6 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                         to={routes.NFL_FREE_AGENCY}
                                         role="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Free Agency
                                     </Link>
@@ -235,7 +231,6 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                         to={routes.NFL_SCHEDULE}
                                         role="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Schedule
                                     </Link>
@@ -243,7 +238,6 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                         to={routes.CFB_STATS}
                                         role="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Stats
                                     </Link>
@@ -258,7 +252,6 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                         to={routes.NFL_ROSTER}
                                         role="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Team
                                     </Link>
@@ -266,7 +259,6 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                         to={routes.NFL_GAMEPLAN}
                                         role="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Gameplan
                                     </Link>
@@ -274,7 +266,6 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                         to={routes.NFL_DEPTHCHART}
                                         role="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Depth Chart
                                     </Link>
@@ -282,7 +273,6 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                         to={routes.NFL_FREE_AGENCY}
                                         role="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Free Agency
                                     </Link>
@@ -290,7 +280,6 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                         to={routes.NFL_SCHEDULE}
                                         role="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Schedule
                                     </Link>
@@ -298,7 +287,6 @@ const NFLHomepage = ({ currentUser, nflTeam, cfb_Timestamp }) => {
                                         to={routes.CFB_STATS}
                                         role="button"
                                         className="btn btn-primary btn-md me-2 shadow"
-                                        style={teamColors ? teamColors : {}}
                                     >
                                         Stats
                                     </Link>
