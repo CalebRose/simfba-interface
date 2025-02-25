@@ -506,7 +506,6 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
                         to={isNFL ? routes.NFL_GAMEPLAN : routes.CFB_GAMEPLAN}
                         type="button"
                         className="btn btn-primary btn-md me-2 shadow"
-                        style={teamColors ? teamColors : {}}
                     >
                         Gameplan
                     </Link>
@@ -567,7 +566,6 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
                                     id="dropdownMenuButton1"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
-                                    style={teamColors ? teamColors : {}}
                                 >
                                     <span>{team ? team.TeamName : ''}</span>
                                 </button>
@@ -614,7 +612,6 @@ const CFBDepthChart = ({ currentUser, cfbTeam, viewMode, isNFL }) => {
                                     id="dropdownMenuButton2"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
-                                    style={teamColors ? teamColors : {}}
                                 >
                                     <span>
                                         {currentPosition

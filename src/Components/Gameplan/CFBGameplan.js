@@ -61,7 +61,7 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
     const [userTeam, setUserTeam] = useState('');
     const [team, setTeam] = useState('');
     const [aiTeams, setAITeams] = useState(null);
-    const [teamColors, setTeamColors] = useState('');
+    const [teamColors, setTeamColors] = useState({});
     const [initialGameplan, setInitialGameplan] = useState(null);
     const [gameplan, setGameplan] = useState(null);
     const [opponentScheme, setOpponentScheme] = useState(null);
@@ -1270,7 +1270,6 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
                                 id="dropdownMenuButton1"
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false"
-                                style={teamColors ? teamColors : {}}
                             >
                                 <span>{team ? team.TeamName : ''}</span>
                             </button>
@@ -1307,7 +1306,6 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
                         to={isNFL ? routes.NFL_DEPTHCHART : routes.DEPTHCHART}
                         type="button"
                         className="btn btn-primary btn-md me-2 shadow"
-                        style={teamColors ? teamColors : {}}
                     >
                         Depth Chart
                     </Link>
@@ -2123,11 +2121,6 @@ const CFBGameplan = ({ currentUser, cfbTeam, nflTeam, isNFL }) => {
                                                                         id="dropdownMenuButton1"
                                                                         data-bs-toggle="dropdown"
                                                                         aria-expanded="false"
-                                                                        style={
-                                                                            teamColors
-                                                                                ? teamColors
-                                                                                : {}
-                                                                        }
                                                                         disabled={
                                                                             isDefaultDefense
                                                                         }

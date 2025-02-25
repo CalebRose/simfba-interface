@@ -30,7 +30,6 @@ export const SchemeDropdown = ({
                 id="dropdownMenuButton1"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
-                style={teamColors ? teamColors : {}}
                 disabled={isDefault}
             >
                 {scheme}
